@@ -1,314 +1,445 @@
-const STORAGE_KEY = "japaneseGrammarPrefs";
+(function () {
+  "use strict";
 
-const state = {
-  activeTab: "N5",
-  expanded: new Set(),
-  saved: new Set(),
-  furigana: true,
-  search: ""
-};
-
-const CATEGORY_ORDER = [
-  "Particles",
-  "Verb Forms",
-  "Adjectives",
-  "Basic Sentence Patterns",
-  "Questions & Question Words",
-  "Time & Sequence",
-  "Desire, Ability & Preference",
-  "Requests & Permission",
-  "Comparison & Degree",
-  "Reasons & Connections",
-  "Conditions & Other Patterns"
-];
-
-const CATEGORY_MAP = {
-  "n5-wa":"Particles", "n5-ga":"Particles", "n5-o":"Particles", "n5-ni":"Particles",
-  "n5-de":"Particles", "n5-no":"Particles", "n5-ka":"Particles", "n5-mo":"Particles",
-  "n5-e":"Particles", "n5-to":"Particles", "n5-ya":"Particles", "n5-kara":"Particles",
-  "n5-made":"Particles", "n5-dake":"Particles",
-
-  "n5-masu":"Verb Forms", "n5-teiru":"Verb Forms", "n5-plain-form":"Verb Forms",
-  "n5-tari-tari":"Verb Forms", "n5-nagara":"Verb Forms", "n5-kata":"Verb Forms",
-  "n5-toki":"Time & Sequence", "n5-mae-ni":"Time & Sequence", "n5-ato-de":"Time & Sequence",
-
-  "n5-i-adj":"Adjectives", "n5-na-adj":"Adjectives",
-
-  "n5-desu":"Basic Sentence Patterns", "n5-janai":"Basic Sentence Patterns",
-  "n5-aru":"Basic Sentence Patterns", "n5-iru":"Basic Sentence Patterns", "n5-ga-hoshii":"Basic Sentence Patterns",
-  "n5-kono":"Basic Sentence Patterns", "n5-kore":"Basic Sentence Patterns", "n5-ne":"Basic Sentence Patterns",
-  "n5-yo":"Basic Sentence Patterns", "n5-ndesu":"Basic Sentence Patterns", "n5-deshou":"Basic Sentence Patterns",
-  "n5-darou":"Basic Sentence Patterns",
-
-  "n5-dare":"Questions & Question Words", "n5-nani":"Questions & Question Words", "n5-doko":"Questions & Question Words",
-  "n5-doushite":"Questions & Question Words", "n5-dou":"Questions & Question Words", "n5-douyatte":"Questions & Question Words",
-  "n5-donna":"Questions & Question Words", "n5-zenzen":"Questions & Question Words", "n5-amari":"Questions & Question Words",
-
-  "n5-itsumo":"Time & Sequence", "n5-mou":"Time & Sequence", "n5-mada":"Time & Sequence",
-
-  "n5-tai":"Desire, Ability & Preference", "n5-hoshii":"Desire, Ability & Preference", "n5-jouzu":"Desire, Ability & Preference",
-  "n5-suki":"Desire, Ability & Preference", "n5-suki-na":"Desire, Ability & Preference", "n5-koto-ga-suki":"Desire, Ability & Preference",
-  "n5-koto-ga-dekiru":"Desire, Ability & Preference", "n5-chotto":"Desire, Ability & Preference",
-
-  "n5-te-kudasai":"Requests & Permission", "n5-naide-kudasai":"Requests & Permission", "n5-te-mo-ii":"Requests & Permission",
-  "n5-te-wa-ikenai":"Requests & Permission", "n5-mashou":"Requests & Permission", "n5-masenk-a":"Requests & Permission",
-  "n5-mashouka":"Requests & Permission", "n5-nakereba":"Requests & Permission", "n5-nai-to-ikenai":"Requests & Permission",
-  "n5-hou-ga-ii":"Requests & Permission",
-
-  "n5-ichiban":"Comparison & Degree", "n5-yori-hou":"Comparison & Degree",
-
-  "n5-kedo":"Reasons & Connections", "n5-demo":"Reasons & Connections", "n5-soshite":"Reasons & Connections",
-  "n5-sorekara":"Reasons & Connections", "n5-kara":"Reasons & Connections",
-
-  "n5-tara":"Conditions & Other Patterns", "n5-nara":"Conditions & Other Patterns"
-};
-
-function loadPrefs() {
-  try {
-    const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
-    state.saved = new Set(Array.isArray(data.saved) ? data.saved : []);
-    state.furigana = data.furigana !== false;
-  } catch (_) {}
-}
-
-function savePrefs() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify({
-    saved: [...state.saved],
-    furigana: state.furigana
-  }));
-}
-
-function escapeHtml(value) {
-  return String(value).replace(/[&<>"']/g, c => ({
-    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
-  }[c]));
-}
-
-function rubyHtml(japanese, furigana) {
-  if (!furigana) return escapeHtml(japanese);
-  return `<ruby>${escapeHtml(japanese)}<rt>${escapeHtml(furigana)}</rt></ruby>`;
-}
-
-function categoryFor(item) {
-  if (CATEGORY_MAP[item.id]) return CATEGORY_MAP[item.id];
-  if (item.category && CATEGORY_ORDER.includes(item.category)) return item.category;
-  return "Conditions & Other Patterns";
-}
-
-function searchableText(item) {
-  return [
-    item.pattern, item.title, item.short, item.explanation, item.notes || "",
-    ...(item.usages || []).flatMap(u => [u.title, ...(u.examples || []).flatMap(e => [e.japanese, e.furigana, e.english])])
-  ].join(" ").toLowerCase();
-}
-
-function matchesSearch(item) {
-  const q = state.search.trim().toLowerCase();
-  return !q || searchableText(item).includes(q);
-}
-
-function getAllGrammarData() {
-  const collection = [];
-  if (typeof GRAMMAR !== "undefined") collection.push(...GRAMMAR);
-  if (typeof N5_GRAMMAR !== "undefined") collection.push(...N5_GRAMMAR);
-  if (typeof N4_GRAMMAR !== "undefined") collection.push(...N4_GRAMMAR);
-  if (typeof N3_GRAMMAR !== "undefined") collection.push(...N3_GRAMMAR);
-  if (typeof N2_GRAMMAR !== "undefined") collection.push(...N2_GRAMMAR);
-  if (typeof N1_GRAMMAR !== "undefined") collection.push(...N1_GRAMMAR);
-
-  const seen = new Set();
-  return collection.filter(item => {
-    if (!item.id || seen.has(item.id)) return false;
-    seen.add(item.id);
-    return true;
-  });
-}
-
-function renderTabs() {
-  const tabs = [
+  var LEVELS = [
     { id: "N5", label: "N5" },
     { id: "N4", label: "N4" },
     { id: "N3", label: "N3" },
     { id: "N2", label: "N2" },
-    { id: "N1", label: "N1" },
-    { id: "SAVED", label: "★ Saved" }
+    { id: "N1", label: "N1" }
   ];
 
-  document.getElementById("tabs").innerHTML = tabs.map(tab => `
-    <button class="tab ${state.activeTab === tab.id ? "active" : ""}"
-            data-tab="${tab.id}">
-      ${tab.label}${tab.id === "SAVED" ? ` · ${state.saved.size}` : ""}
-    </button>
-  `).join("");
+  // grammar-data.js declares these with `const` at top level, so they live
+  // in the shared global lexical scope rather than as window properties —
+  // reference them directly, not via window.*.
+  var LEVEL_DATA = {
+    N5: (typeof N5_GRAMMAR !== "undefined") ? N5_GRAMMAR : [],
+    N4: (typeof N4_GRAMMAR !== "undefined") ? N4_GRAMMAR : [],
+    N3: (typeof N3_GRAMMAR !== "undefined") ? N3_GRAMMAR : [],
+    N2: (typeof N2_GRAMMAR !== "undefined") ? N2_GRAMMAR : [],
+    N1: (typeof N1_GRAMMAR !== "undefined") ? N1_GRAMMAR : []
+  };
 
-  document.querySelectorAll(".tab").forEach(btn => {
-    btn.addEventListener("click", () => {
-      state.activeTab = btn.dataset.tab;
-      state.search = "";
-      document.getElementById("grammarSearch").value = "";
-      render();
+  var STORAGE_SAVED = "grammarNotebook.saved";
+  var STORAGE_THEME = "grammarNotebook.theme";
+
+  var state = {
+    activeTab: "N5",
+    query: "",
+    saved: loadSaved()
+  };
+
+  function loadSaved() {
+    try {
+      var raw = localStorage.getItem(STORAGE_SAVED);
+      return raw ? JSON.parse(raw) : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function persistSaved() {
+    try {
+      localStorage.setItem(STORAGE_SAVED, JSON.stringify(state.saved));
+    } catch (e) { /* storage unavailable, ignore */ }
+  }
+
+  function isSaved(id) {
+    return state.saved.indexOf(id) !== -1;
+  }
+
+  function toggleSaved(id) {
+    var idx = state.saved.indexOf(id);
+    if (idx === -1) state.saved.push(id);
+    else state.saved.splice(idx, 1);
+    persistSaved();
+  }
+
+  function allEntries() {
+    var out = [];
+    LEVELS.forEach(function (lvl) { out = out.concat(LEVEL_DATA[lvl.id]); });
+    return out;
+  }
+
+  function entriesForLevel(levelId) {
+    return LEVEL_DATA[levelId] || [];
+  }
+
+  // ---------- Heuristic categorization ----------
+  // grammar-data.js carries no explicit "theme" field, so section headers
+  // are inferred from the pattern/title/short text. This is an approximation,
+  // not hand-curated data.
+  var PARTICLE_SET = ["は", "が", "を", "に", "で", "と", "も", "の", "か", "や", "へ", "ね", "よ", "こそ", "さえ", "しか", "だけ", "くらい", "ぐらい", "まで", "から", "ばかり", "など", "って"];
+
+  function categorize(entry) {
+    var raw = entry.pattern.replace(/[~～]/g, "").trim();
+    var first = raw.split(/[／\/]/)[0].trim();
+    var t = (entry.title + " " + entry.short).toLowerCase();
+
+    if (PARTICLE_SET.indexOf(first) !== -1) return "Particles";
+    if (/adjective/.test(t)) return "Adjectives";
+    if (/(potential|passive|causative|volitional|imperative|command|honorific|humble)/.test(t)) return "Verb Forms";
+    if (/(hearsay|rumor|conjecture|seems|looks like|appears|typical)/.test(t)) return "Conjecture & Hearsay";
+    if (/(permission|prohibition|obligation|must|have to|request)/.test(t)) return "Requests, Permission & Obligation";
+    if (/(reason|because|cause|thanks to|due to|blame)/.test(t)) return "Reason & Cause";
+    if (/(compare|comparison|than\b)/.test(t)) return "Comparison";
+    if (/(unless|conditional|even if|even though|despite|although|concession)/.test(t)) return "Conditionals & Concession";
+    if (/(formal|literary|written)/.test(t)) return "Formal & Literary";
+    if (/(want|desire|intend|plan)/.test(t)) return "Desire & Intention";
+    if (/(exist|there is|there are)/.test(t)) return "Existence & Possession";
+    return "Grammar Points";
+  }
+
+  var CATEGORY_ORDER = [
+    "Particles", "Verb Forms", "Adjectives", "Existence & Possession",
+    "Desire & Intention", "Conditionals & Concession", "Reason & Cause",
+    "Comparison", "Requests, Permission & Obligation", "Conjecture & Hearsay",
+    "Formal & Literary", "Grammar Points"
+  ];
+
+  function groupByCategory(entries) {
+    var groups = [];
+    var index = {};
+    entries.forEach(function (entry) {
+      var cat = categorize(entry);
+      if (!(cat in index)) {
+        index[cat] = { category: cat, items: [] };
+        groups.push(index[cat]);
+      }
+      index[cat].items.push(entry);
     });
+    groups.sort(function (a, b) {
+      var ai = CATEGORY_ORDER.indexOf(a.category);
+      var bi = CATEGORY_ORDER.indexOf(b.category);
+      if (ai === -1) ai = CATEGORY_ORDER.length;
+      if (bi === -1) bi = CATEGORY_ORDER.length;
+      return ai - bi;
+    });
+    return groups;
+  }
+
+  // ---------- Furigana -> ruby markup ----------
+  // Aligns a plain-Japanese string against its all-hiragana furigana string
+  // and produces <ruby>kanji<rt>reading</rt></ruby> markup. Falls back to
+  // showing the japanese text plain if alignment ever fails.
+  var KANJI_RUN_RE = /[\u4e00-\u9faf\u30050-9\uFF10-\uFF19]+/g;
+
+  function buildRuby(japanese, furigana) {
+    if (!furigana) return escapeHtml(japanese);
+    var literalParts = japanese.split(KANJI_RUN_RE);
+    var kanjiRuns = japanese.match(KANJI_RUN_RE) || [];
+    var ptr = 0;
+    var out = "";
+    for (var i = 0; i < literalParts.length; i++) {
+      var lit = literalParts[i];
+      if (lit) {
+        var idx = furigana.indexOf(lit, ptr);
+        if (idx === -1) return escapeHtml(japanese);
+        ptr = idx + lit.length;
+        out += escapeHtml(lit);
+      }
+      if (i < kanjiRuns.length) {
+        var run = kanjiRuns[i];
+        var nextLit = literalParts[i + 1];
+        var end;
+        if (nextLit) {
+          end = furigana.indexOf(nextLit, ptr + 1);
+          if (end === -1) return escapeHtml(japanese);
+        } else {
+          end = furigana.length;
+        }
+        if (end === ptr) return escapeHtml(japanese);
+        var reading = furigana.slice(ptr, end);
+        out += "<ruby>" + escapeHtml(run) + "<rt>" + escapeHtml(reading) + "</rt></ruby>";
+        ptr = end;
+      }
+    }
+    return out;
+  }
+
+  function matchesQuery(entry, q) {
+    if (!q) return true;
+    q = q.toLowerCase();
+    var haystack = [entry.title, entry.short, entry.pattern, entry.explanation, entry.notes || ""].join(" ").toLowerCase();
+    if (haystack.indexOf(q) !== -1) return true;
+    for (var i = 0; i < entry.usages.length; i++) {
+      var u = entry.usages[i];
+      if (u.title.toLowerCase().indexOf(q) !== -1) return true;
+      for (var j = 0; j < u.examples.length; j++) {
+        var ex = u.examples[j];
+        var text = (ex.japanese + " " + ex.furigana + " " + ex.english).toLowerCase();
+        if (text.indexOf(q) !== -1) return true;
+      }
+    }
+    return false;
+  }
+
+  // ---------- Rendering ----------
+
+  var $tabBar = document.getElementById("tabBar");
+  var $main = document.getElementById("mainContent");
+  var $search = document.getElementById("searchInput");
+  var $searchWrap = document.getElementById("searchWrap");
+
+  function renderTabs() {
+    var html = "";
+    LEVELS.forEach(function (lvl) {
+      html += tabButtonHtml(lvl.id, lvl.label, "var(--lvl-" + lvl.id.toLowerCase() + ")");
+    });
+    html += tabButtonHtml("saved", "Saved · " + state.saved.length, "var(--accent)", true);
+    $tabBar.innerHTML = html;
+
+    Array.prototype.forEach.call($tabBar.querySelectorAll(".tab-btn"), function (btn) {
+      btn.addEventListener("click", function () {
+        state.activeTab = btn.getAttribute("data-tab");
+        state.query = "";
+        $search.value = "";
+        renderTabs();
+        renderMain();
+      });
+    });
+  }
+
+  function tabButtonHtml(id, label, color, star) {
+    var active = state.activeTab === id ? " active" : "";
+    return (
+      '<button class="tab-btn' + active + '" data-tab="' + id + '" style="--tab-color:' + color + '">' +
+      (star ? '<span class="star-icon">' + starSvg(true) + "</span>" : '<span class="dot" style="--tab-color:' + color + '"></span>') +
+      "<span>" + label + "</span>" +
+      "</button>"
+    );
+  }
+
+  function starSvg(filled) {
+    return '<svg viewBox="0 0 24 24" width="14" height="14" fill="' + (filled ? "currentColor" : "none") + '" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.63 22 9.24 16.5 14.14 18.18 21 12 17.27 5.82 21 7.5 14.14 2 9.24 8.91 8.63 12 2"/></svg>';
+  }
+
+  function chevronSvg() {
+    return '<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>';
+  }
+
+  function searchSvg() {
+    return '<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>';
+  }
+
+  var $pageHeading = document.getElementById("pageHeading");
+
+  function renderMain() {
+    var isSavedTab = state.activeTab === "saved";
+    $search.placeholder = isSavedTab ? "Search your saved points…" : "Search " + state.activeTab + " grammar…";
+
+    var entries = isSavedTab
+      ? allEntries().filter(function (e) { return isSaved(e.id); })
+      : entriesForLevel(state.activeTab);
+
+    $pageHeading.innerHTML = pageHeadingHtml(isSavedTab, entries.length);
+
+    var filtered = entries.filter(function (e) { return matchesQuery(e, state.query); });
+
+    if (filtered.length === 0) {
+      $main.innerHTML = emptyStateHtml(isSavedTab, entries.length === 0);
+      return;
+    }
+
+    var html;
+    if (isSavedTab) {
+      html = '<div class="entry-list">' + filtered.map(entryHtml).join("") + "</div>";
+    } else {
+      html = groupByCategory(filtered).map(function (g) {
+        return '<div class="theme-heading">' + escapeHtml(g.category) + "</div>" +
+          '<div class="entry-list">' + g.items.map(entryHtml).join("") + "</div>";
+      }).join("");
+    }
+    $main.innerHTML = html;
+    attachOpenHandlers();
+    attachSaveHandlers();
+  }
+
+  function pageHeadingHtml(isSavedTab, count) {
+    var title = isSavedTab ? "Saved" : state.activeTab + " Grammar";
+    var subtitle = isSavedTab
+      ? "Your saved grammar points for review."
+      : state.activeTab + " Japanese grammar patterns and usages.";
+    return (
+      '<div class="page-heading">' +
+        "<div>" +
+          '<h2 class="page-heading-title">' + escapeHtml(title) + "</h2>" +
+          '<p class="page-heading-subtitle">' + escapeHtml(subtitle) + "</p>" +
+        "</div>" +
+        '<div class="page-heading-count">' + count + "</div>" +
+      "</div>"
+    );
+  }
+
+  function emptyStateHtml(isSavedTab, noneAtAll) {
+    if (isSavedTab && noneAtAll) {
+      return '<div class="empty-state">No saved grammar points yet.<br>Tap the star on any entry to add it here for quick review.</div>';
+    }
+    return '<div class="empty-state">No grammar points match your search.</div>';
+  }
+
+  function entryHtml(entry) {
+    var saved = isSaved(entry.id);
+    var color = "var(--lvl-" + entry.level.toLowerCase() + ")";
+    var badge = state.activeTab === "saved"
+      ? '<span class="level-badge" style="--entry-color:' + color + '">' + entry.level + "</span>"
+      : "";
+    var usagesHtml = entry.usages.map(usageHtml).join("");
+    var notesHtml = entry.notes
+      ? '<div class="entry-note"><span class="entry-note-label">Note</span>' + escapeHtml(entry.notes) + "</div>"
+      : "";
+    var iconText = entry.pattern.replace(/^[~～]/, "").split(/[／\/]/)[0].trim();
+    var iconClass = iconText.length > 3 ? " entry-icon--long" : "";
+    return (
+      '<div class="entry" data-id="' + entry.id + '" style="--entry-color:' + color + '">' +
+        '<div class="entry-head" data-toggle="' + entry.id + '" role="button" tabindex="0" aria-expanded="false">' +
+          '<div class="entry-icon' + iconClass + ' jp">' + escapeHtml(iconText) + "</div>" +
+          '<div class="entry-head-text">' +
+            '<div class="entry-pattern">' + badge + escapeHtml(entry.title) + "</div>" +
+            '<div class="entry-meaning">' + escapeHtml(entry.short) + "</div>" +
+          "</div>" +
+          '<div class="entry-actions">' +
+            '<button class="save-btn' + (saved ? " saved" : "") + '" data-save="' + entry.id + '" aria-label="Save grammar point" title="Save for review">' + starSvg(saved) + "</button>" +
+            chevronSvg() +
+          "</div>" +
+        "</div>" +
+        '<div class="entry-body">' +
+          '<div class="entry-body-inner">' +
+            '<p class="entry-explanation">' + escapeHtml(entry.explanation) + "</p>" +
+            usagesHtml +
+            notesHtml +
+          "</div>" +
+        "</div>" +
+      "</div>"
+    );
+  }
+
+  function usageHtml(usage) {
+    var showTitle = usage.title && usage.title.length > 0;
+    return (
+      '<div class="usage-group">' +
+        (showTitle ? '<div class="usage-title">' + escapeHtml(usage.title) + "</div>" : "") +
+        usage.examples.map(exampleHtml).join("") +
+      "</div>"
+    );
+  }
+
+  function exampleHtml(ex) {
+    return (
+      '<div class="example">' +
+        '<div class="example-jp jp-body">' + buildRuby(ex.japanese, ex.furigana) + "</div>" +
+        '<div class="example-en">' + escapeHtml(ex.english) + "</div>" +
+      "</div>"
+    );
+  }
+
+  function escapeHtml(str) {
+    return String(str == null ? "" : str).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+
+  function attachOpenHandlers() {
+    Array.prototype.forEach.call($main.querySelectorAll("[data-toggle]"), function (btn) {
+      btn.addEventListener("click", function (evt) {
+        if (evt.target.closest("[data-save]")) return; // star click shouldn't toggle open
+        toggleEntry(btn);
+      });
+      btn.addEventListener("keydown", function (evt) {
+        if (evt.key === "Enter" || evt.key === " " || evt.key === "Spacebar") {
+          evt.preventDefault();
+          toggleEntry(btn);
+        }
+      });
+    });
+  }
+
+  function toggleEntry(headEl) {
+    var card = headEl.closest(".entry");
+    var open = card.classList.toggle("open");
+    headEl.setAttribute("aria-expanded", open ? "true" : "false");
+  }
+
+  function attachSaveHandlers() {
+    Array.prototype.forEach.call($main.querySelectorAll("[data-save]"), function (btn) {
+      btn.addEventListener("click", function (evt) {
+        evt.stopPropagation();
+        var id = btn.getAttribute("data-save");
+        toggleSaved(id);
+        renderTabs();
+        if (state.activeTab === "saved") {
+          renderMain();
+        } else {
+          btn.classList.toggle("saved");
+          btn.innerHTML = starSvg(isSaved(id));
+        }
+      });
+    });
+  }
+
+  // ---------- Search ----------
+
+  $search.addEventListener("input", function () {
+    state.query = $search.value.trim();
+    renderMain();
   });
-}
 
-function renderExample(example) {
-  return `
-    <div class="example">
-      <div class="japanese">${rubyHtml(example.japanese, example.furigana)}</div>
-      <div class="translation">${escapeHtml(example.english)}</div>
-    </div>
-  `;
-}
+  // ---------- Theme ----------
 
-function renderCard(item) {
-  const expanded = state.expanded.has(item.id);
-  const saved = state.saved.has(item.id);
+  function applyTheme(theme) {
+    document.documentElement.setAttribute("data-theme", theme);
+    document.getElementById("themeToggle").innerHTML = theme === "dark" ? sunSvg() : moonSvg();
+  }
 
-  return `
-    <article class="card ${expanded ? "expanded" : ""}" data-id="${item.id}">
-      <div class="card-header" role="button" tabindex="0"
-           aria-expanded="${expanded}" data-action="expand">
-        <div class="pattern">${escapeHtml(item.pattern)}</div>
-        <div class="card-summary">
-          <div class="card-title">${escapeHtml(item.title)}</div>
-          <div class="card-short">${escapeHtml(item.short)}</div>
-        </div>
-        <button class="save-button ${saved ? "saved" : ""}"
-                aria-label="${saved ? "Remove from saved" : "Save grammar point"}"
-                data-action="save">${saved ? "★" : "☆"}</button>
-        <span class="chevron" aria-hidden="true"></span>
-      </div>
+  function moonSvg() {
+    return '<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+  }
+  function sunSvg() {
+    return '<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="4"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
+  }
 
-      <div class="card-body">
-        <p class="explanation">${escapeHtml(item.explanation)}</p>
-        ${(item.usages || []).map(usage => `
-          <section class="usage">
-            <div class="usage-title">${escapeHtml(usage.title)}</div>
-            ${(usage.examples || []).map(renderExample).join("")}
-          </section>
-        `).join("")}
-        ${item.notes ? `<div class="notes"><strong>Note:</strong> ${escapeHtml(item.notes)}</div>` : ""}
-      </div>
-    </article>
-  `;
-}
+  function initTheme() {
+    var saved = null;
+    try { saved = localStorage.getItem(STORAGE_THEME); } catch (e) {}
+    var theme = saved || (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    applyTheme(theme);
+  }
 
-function groupItems(items) {
-  const groups = new Map();
-  for (const category of CATEGORY_ORDER) groups.set(category, []);
-  items.forEach(item => groups.get(categoryFor(item)).push(item));
-  return [...groups.entries()].filter(([, group]) => group.length);
-}
-
-function renderGroupedList(items) {
-  return groupItems(items).map(([category, group]) => `
-    <section class="grammar-section">
-      <h2 class="grammar-section-title">${escapeHtml(category)}</h2>
-      <div class="grammar-list">
-        ${group.map(renderCard).join("")}
-      </div>
-    </section>
-  `).join("");
-}
-
-function updateFuriganaVisibility() {
-  document.querySelectorAll(".japanese ruby").forEach(ruby => {
-    ruby.classList.toggle("ruby-hidden", !state.furigana);
+  document.getElementById("themeToggle").addEventListener("click", function () {
+    var current = document.documentElement.getAttribute("data-theme");
+    var next = current === "dark" ? "light" : "dark";
+    applyTheme(next);
+    try { localStorage.setItem(STORAGE_THEME, next); } catch (e) {}
   });
-}
 
-function render() {
+  // ---------- Furigana toggle ----------
+
+  var STORAGE_FURIGANA = "grammarNotebook.furigana";
+  var $furiganaToggle = document.getElementById("furiganaToggle");
+
+  function applyFurigana(show) {
+    document.documentElement.classList.toggle("furigana-off", !show);
+    $furiganaToggle.checked = show;
+  }
+
+  function initFurigana() {
+    var saved = null;
+    try { saved = localStorage.getItem(STORAGE_FURIGANA); } catch (e) {}
+    applyFurigana(saved !== "off");
+  }
+
+  $furiganaToggle.addEventListener("change", function () {
+    var show = $furiganaToggle.checked;
+    applyFurigana(show);
+    try { localStorage.setItem(STORAGE_FURIGANA, show ? "on" : "off"); } catch (e) {}
+  });
+
+  // ---------- Init ----------
+
+  $searchWrap.insertAdjacentHTML("afterbegin", searchSvg());
+
+  initTheme();
+  initFurigana();
   renderTabs();
-
-  const allData = getAllGrammarData();
-  const isSaved = state.activeTab === "SAVED";
-  const allItems = isSaved
-    ? allData.filter(item => state.saved.has(item.id))
-    : allData.filter(item => item.level === state.activeTab);
-  const items = allItems.filter(matchesSearch);
-  const searching = state.search.trim().length > 0;
-
-  document.getElementById("sectionTitle").textContent = isSaved ? "Saved Grammar" : `${state.activeTab} Grammar`;
-  document.getElementById("grammarSearch").placeholder = isSaved ? "Search saved grammar..." : `Search ${state.activeTab} grammar...`;
-  document.getElementById("searchClear").hidden = !state.search;
-  document.getElementById("sectionDescription").textContent = searching
-    ? `${items.length} result${items.length === 1 ? "" : "s"} matching “${state.search.trim()}”.`
-    : isSaved
-      ? "Grammar points saved for quick review."
-      : `${state.activeTab} Japanese grammar patterns and usages.`;
-  document.getElementById("countBadge").textContent = items.length;
-
-  const list = document.getElementById("grammarList");
-  const empty = document.getElementById("emptyState");
-  const noResults = document.getElementById("noResultsState");
-
-  list.hidden = items.length === 0;
-  empty.hidden = !(isSaved && allItems.length === 0);
-  noResults.hidden = !(items.length === 0 && allItems.length > 0);
-  list.innerHTML = items.length ? renderGroupedList(items) : "";
-
-  document.querySelectorAll(".card").forEach(card => {
-    const id = card.dataset.id;
-    const header = card.querySelector(".card-header");
-
-    const toggleCard = () => {
-      if (state.expanded.has(id)) {
-        state.expanded.delete(id);
-        card.classList.remove("expanded");
-        header.setAttribute("aria-expanded", "false");
-      } else {
-        state.expanded.add(id);
-        card.classList.add("expanded");
-        header.setAttribute("aria-expanded", "true");
-      }
-    };
-
-    header.addEventListener("click", event => {
-      if (event.target.closest("[data-action='save']")) return;
-      toggleCard();
-    });
-
-    header.addEventListener("keydown", event => {
-      if (event.key === "Enter" || event.key === " ") {
-        if (event.target.closest("[data-action='save']")) return;
-        event.preventDefault();
-        toggleCard();
-      }
-    });
-  });
-
-  document.querySelectorAll("[data-action='save']").forEach(button => {
-    button.addEventListener("click", event => {
-      event.stopPropagation();
-      const id = button.closest(".card").dataset.id;
-      if (state.saved.has(id)) state.saved.delete(id);
-      else state.saved.add(id);
-      savePrefs();
-      render();
-    });
-  });
-
-  document.getElementById("furiganaToggle").checked = state.furigana;
-  updateFuriganaVisibility();
-}
-
-document.getElementById("furiganaToggle").addEventListener("change", event => {
-  state.furigana = event.target.checked;
-  savePrefs();
-  updateFuriganaVisibility();
-});
-
-document.getElementById("grammarSearch").addEventListener("input", event => {
-  state.search = event.target.value;
-  render();
-});
-
-document.getElementById("searchClear").addEventListener("click", () => {
-  state.search = "";
-  document.getElementById("grammarSearch").value = "";
-  render();
-  document.getElementById("grammarSearch").focus();
-});
-
-loadPrefs();
-render();
+  renderMain();
+})();

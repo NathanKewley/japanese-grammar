@@ -1,65 +1,41 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#121212">
-  <title>Japanese Grammar</title>
-  <link rel="stylesheet" href="styles.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Japanese Grammar — JLPT Grammar Library</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header class="app-header">
-    <div class="header-inner">
-      <div>
-        <div class="app-title">Japanese Grammar</div>
-        <div class="app-subtitle">JLPT grammar library</div>
-      </div>
-      <label class="switch-row" title="Show or hide furigana">
-        <span>Furigana</span>
-        <input id="furiganaToggle" type="checkbox" role="switch" aria-label="Show furigana">
-        <span class="switch"></span>
-      </label>
-    </div>
-  </header>
 
-  <nav class="tabs" aria-label="JLPT levels">
-    <div class="tabs-inner" id="tabs"></div>
-  </nav>
-
-  <div class="search-bar-wrap">
-    <div class="search-bar-inner">
-      <label class="search-box">
-        <span class="search-icon" aria-hidden="true">⌕</span>
-        <input id="grammarSearch" type="search" autocomplete="off" placeholder="Search N5 grammar..." aria-label="Search current grammar level">
-        <button class="search-clear" id="searchClear" type="button" aria-label="Clear search" hidden>×</button>
-      </label>
-    </div>
+<header class="app-header">
+  <div>
+    <h1 class="app-title">Japanese Grammar</h1>
+    <p class="app-subtitle">JLPT grammar library</p>
   </div>
+  <div class="header-controls">
+    <label class="furigana-toggle-wrap">
+      <span class="furigana-toggle-label">Furigana</span>
+      <span class="switch">
+        <input type="checkbox" id="furiganaToggle" checked>
+        <span class="switch-track"><span class="switch-thumb"></span></span>
+      </span>
+    </label>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle dark mode"></button>
+  </div>
+</header>
 
-  <main class="content">
-    <div class="content-inner">
-      <section class="level-heading">
-        <div>
-          <h1 id="sectionTitle">N5 Grammar</h1>
-          <p id="sectionDescription">Beginner Japanese grammar and particles.</p>
-        </div>
-        <span class="count-badge" id="countBadge">10</span>
-      </section>
-      <div id="grammarList" class="grammar-list"></div>
-      <div id="emptyState" class="empty-state" hidden>
-        <div class="empty-icon">☆</div>
-        <h2>No saved grammar yet</h2>
-        <p>Tap ☆ on a grammar point to add it here.</p>
-      </div>
-      <div id="noResultsState" class="empty-state" hidden>
-        <div class="empty-icon">⌕</div>
-        <h2>No matching grammar</h2>
-        <p>Try a different English word, Japanese pattern, or example.</p>
-      </div>
-    </div>
-  </main>
+<nav class="tab-bar" id="tabBar"></nav>
 
-  <script src="grammar.js"></script>
-  <script src="app.js"></script>
+<main class="app-main">
+  <div class="search-wrap" id="searchWrap">
+    <input type="text" class="search-input" id="searchInput" placeholder="Search grammar points…" autocomplete="off">
+  </div>
+  <div id="pageHeading"></div>
+  <div id="mainContent"></div>
+</main>
+
+<script src="grammar-data.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
