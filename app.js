@@ -65,6 +65,16 @@
     return LEVEL_DATA[levelId] || [];
   }
 
+  function findEntryById(id) {
+    for (var i = 0; i < LEVELS.length; i++) {
+      var arr = LEVEL_DATA[LEVELS[i].id];
+      for (var j = 0; j < arr.length; j++) {
+        if (arr[j].id === id) return arr[j];
+      }
+    }
+    return null;
+  }
+
   // ---------- Heuristic categorization ----------
   // grammar-data.js carries no explicit "theme" field, so section headers
   // are inferred from the pattern/title/short text. This is an approximation,
@@ -149,7 +159,196 @@
   // させました/させた/させて/させます. We add the conjugation stem as an
   // extra candidate so the highlight still finds it regardless of tense.
   var ICHIDAN_PRECEDING = "いきぎしじちぢにひびぴみりえけげせぜてでねへべぺめれ";
-  var GODAN_RU_TAILS = ["ある", "なる", "わかる", "かかる", "はじまる", "おわる"];
+  // Godan verbs' euphonic て/た-form and ます-stem depend only on which
+  // kana the dictionary form ends in — uniform across every verb sharing
+  // that ending, so a single per-ending rule covers all of them (this
+  // fully replaces the old approach of listing specific verbs like ある/
+  // なる by hand, which never generalized to ones we hadn't thought of).
+  var GODAN_ENDINGS = {
+    "く": { masu: "き", te: "いて", ta: "いた" },
+    "ぐ": { masu: "ぎ", te: "いで", ta: "いだ" },
+    "す": { masu: "し", te: "して", ta: "した" },
+    "つ": { masu: "ち", te: "って", ta: "った" },
+    "ぬ": { masu: "に", te: "んで", ta: "んだ" },
+    "ぶ": { masu: "び", te: "んで", ta: "んだ" },
+    "む": { masu: "み", te: "んで", ta: "んだ" }
+  };
+
+  // For polite ません, a godan verb's negative stem (あ-row: 飲ま-ない) needs
+  // its final kana raised to the い-row (飲み-ません) — ichidan verbs need no
+  // change since their nai-stem and masu-stem are identical (食べ-ない /
+  // 食べ-ません). This table covers the row conversion for godan verbs.
+  var AROW_TO_IROW = {
+    "あ": "い", "か": "き", "が": "ぎ", "さ": "し", "ざ": "じ",
+    "た": "ち", "だ": "ぢ", "な": "に", "は": "ひ", "ば": "び",
+    "ぱ": "ぴ", "ま": "み", "ら": "り", "わ": "い"
+  };
+
+  // A handful of ない-endings are idiomatic/irregular rather than regular
+  // verb negatives (しかない, がない, ではない, じゃない all trace back to
+  // ある's suppletive negative), so their polite forms don't follow the
+  // regular row-conversion rule above and are listed directly.
+  var IDIOMATIC_NAI_POLITE = {
+    "しかない": "しかありません",
+    "がない": "がありません",
+    "はない": "はありません",
+    "もない": "もありません",
+    "ほかない": "ほかありません",
+    "ではない": "ではありません",
+    "じゃない": "じゃありません"
+  };
+
+  function withPoliteVariant(frag) {
+    var out = [frag];
+    if (frag.length < 2 || frag.slice(-2) !== "ない") return out;
+
+    var matchedIdiom = false;
+    for (var idiom in IDIOMATIC_NAI_POLITE) {
+      if (frag.slice(-idiom.length) === idiom) {
+        out.push(frag.slice(0, -idiom.length) + IDIOMATIC_NAI_POLITE[idiom]);
+        matchedIdiom = true;
+        break;
+      }
+    }
+
+    if (!matchedIdiom && frag.length >= 3) {
+      var beforeNai = frag.charAt(frag.length - 3);
+      if (ICHIDAN_PRECEDING.indexOf(beforeNai) !== -1) {
+        // Ichidan (or already い/え-row): straight substitution.
+        out.push(frag.slice(0, -2) + "ません");
+      } else if (AROW_TO_IROW[beforeNai]) {
+        // Godan: raise the preceding kana to its い-row counterpart first.
+        out.push(frag.slice(0, -3) + AROW_TO_IROW[beforeNai] + "ません");
+      }
+    }
+
+    // ない itself conjugates like an い-adjective (無い): なく (adverbial,
+    // "までもなく"), なかった (past, "禁じ得なかった"). Add both regardless
+    // of the verb-negative handling above, since either may be what an
+    // example actually uses.
+    out.push(frag.slice(0, -2) + "なく");
+    out.push(frag.slice(0, -2) + "なかった");
+
+    return out;
+  }
+
+  // ます itself conjugates (ません/ました/ませんでした) — needed for the
+  // ～ます entry, where the bare pattern text never appears verbatim in a
+  // negative or past-tense example.
+  function withMasuVariant(frag) {
+    var out = [frag];
+    if (frag.slice(-2) === "ます") {
+      var stem = frag.slice(0, -2);
+      out.push(stem + "ません");
+      out.push(stem + "ました");
+      out.push(stem + "ませんでした");
+    } else if (frag.slice(-3) === "ますか") {
+      var qStem = frag.slice(0, -3);
+      out.push(qStem + "ませんか");
+    }
+    return out;
+  }
+
+  // だ/です are the same copula at different formality, and both further
+  // conjugate (だった/でした for past, で for the connective/te-form). Any
+  // auxiliary built on だ — わけだ, はずだ, そうだ, ようだ, 〜予定だ — shows
+  // up in examples in any of these forms depending on register and
+  // sentence position.
+  function withCopulaVariant(frag) {
+    var out = [frag];
+    if (frag.length >= 2 && frag.slice(-1) === "だ") {
+      var stem = frag.slice(0, -1);
+      out.push(stem + "です");
+      out.push(stem + "で");
+      // そう and よう additionally appear in adverbial (に) and
+      // attributive (な) form, since they behave like な-adjectives.
+      if (stem.slice(-2) === "そう" || stem.slice(-2) === "よう") {
+        out.push(stem + "に");
+        out.push(stem + "な");
+      }
+    } else if (frag.slice(-2) === "です") {
+      var dStem = frag.slice(0, -2);
+      out.push(dStem + "でした");
+      out.push(dStem + "だった");
+    }
+    return out;
+  }
+
+  // てしまう/でしまう commonly contract to ちゃう/じゃう in casual speech
+  // (宿題をやってしまった -> やっちゃった), which then conjugates as an
+  // ordinary う-verb via the existing godan handling once substituted in.
+  function withCasualContraction(frag) {
+    var out = [frag];
+    if (frag.indexOf("てしまう") !== -1) {
+      out.push(frag.replace(/てしまう/, "ちゃう"));
+    } else if (frag.indexOf("でしまう") !== -1) {
+      out.push(frag.replace(/でしまう/, "じゃう"));
+    }
+    return out;
+  }
+
+  // ～になる／～にする (noun/な-adjective attachment) and ～くなる／～くする
+  // (い-adjective attachment) are two attachment forms of the same pattern;
+  // an entry's `pattern` field typically only spells out one; add the other
+  // as a sibling so both surface in examples.
+  // A handful of small, independent surface variations that don't fit the
+  // broader rules above: some words optionally drop a trailing particle
+  // before a pause (ため/ために, 末に/末の -> bare ため/末), one common
+  // orthographic alternation (づ/ず, both pronounced "zu"), a couple of
+  // fixed attributive/adverbial alternates, and one idiom built on ある's
+  // suppletive negative.
+  function withMiscVariant(frag) {
+    var out = [frag];
+    if (frag.slice(-3) === "ために") out.push(frag.slice(0, -1));
+    if (frag === "末に" || frag === "末の") out.push("末");
+    if (frag.indexOf("づ") !== -1) out.push(frag.replace(/づ/g, "ず"));
+    if (frag.slice(-4) === "ばかりに") out.push(frag.slice(0, -1) + "の");
+    if (frag === "さらに") out.push("さらなる");
+    if (frag.charAt(0) === "に" && frag.length > 1) out.push("にも" + frag.slice(1));
+    if (frag.slice(-3) === "がある") out.push(frag.slice(0, -3) + "はありません");
+    return out;
+  }
+
+  // Some patterns list several particle-attached alternates that share a
+  // long common prefix or suffix (次第だ／次第で／次第による all share
+  // 次第; その結果／た結果 both end in 結果) — the shared portion is often
+  // exactly what appears in an example on its own, so add it as one more
+  // fallback candidate once all the alternates for a pattern are known.
+  function withSharedSubstring(pieces) {
+    if (pieces.length < 2) return pieces;
+    var prefix = pieces[0];
+    var suffix = pieces[0];
+    for (var i = 1; i < pieces.length; i++) {
+      while (prefix && pieces[i].indexOf(prefix) !== 0) prefix = prefix.slice(0, -1);
+      while (suffix && pieces[i].slice(-suffix.length) !== suffix) suffix = suffix.slice(1);
+    }
+    var out = pieces.slice();
+    if (prefix.length >= 2) out.push(prefix);
+    if (suffix.length >= 2) out.push(suffix);
+    return out;
+  }
+
+  function withNiKuVariant(frag) {
+    var out = [frag];
+    if (frag.slice(-3) === "になる" || frag.slice(-3) === "にする") {
+      out.push("く" + frag.slice(-2));
+    }
+    return out;
+  }
+
+  // い-adjectives (and adjective-like verb suffixes such as たい) conjugate
+  // by dropping い and adding くない/かった/くなかった/くて. Applied to any
+  // fragment ending in い so it also covers cases like ～たい → ～たくない.
+  function withAdjectiveVariant(frag) {
+    var out = [frag];
+    if (frag.length < 2 || frag.charAt(frag.length - 1) !== "い") return out;
+    var stem = frag.slice(0, -1);
+    out.push(stem + "くない");
+    out.push(stem + "かった");
+    out.push(stem + "くなかった");
+    out.push(stem + "くて");
+    return out;
+  }
 
   function withConjugationStems(frag) {
     // られる only correctly attaches after ichidan-verb stems; for godan
@@ -159,6 +358,19 @@
     var candidates = [frag];
     if (frag.indexOf("られる") !== -1) {
       candidates.push(frag.replace(/られる/, "れる"));
+    }
+    // Causative-passive contracts for godan verbs: [causative-stem]せられる
+    // -> [causative-stem]される (飲ませられる -> 飲まされる). The pattern
+    // text itself models this with する (させられる), where さ is する's
+    // own irregular causative stem — not part of the transferable
+    // morpheme — so we first strip that down to the bare せられる that
+    // actually attaches after other verbs, then contract that.
+    if (frag.indexOf("させられる") !== -1) {
+      var bareSeraeru = frag.replace(/させられる/, "せられる");
+      candidates.push(bareSeraeru);
+      candidates.push(bareSeraeru.replace(/せられる/, "される"));
+    } else if (frag.indexOf("せられる") !== -1) {
+      candidates.push(frag.replace(/せられる/, "される"));
     }
 
     var out = [];
@@ -183,17 +395,44 @@
         out.push(stem + "い");
         out.push(stem + "って");
         out.push(stem + "った");
-      } else {
-        for (var i = 0; i < GODAN_RU_TAILS.length; i++) {
-          var tail = GODAN_RU_TAILS[i];
-          if (c.length > tail.length && c.slice(-tail.length) === tail) {
-            out.push(c.slice(0, -tail.length) + tail.slice(0, -1) + "り");
-            break;
-          }
-        }
+      } else if (last === "る") {
+        // Godan る-verb (ある/なる/終わる/取る/曲がる/...): uniform
+        // euphonic pattern regardless of the preceding kana — り for
+        // ます-stem, って/った for て/た-form.
+        var ruStem = c.slice(0, -1);
+        out.push(ruStem + "り");
+        out.push(ruStem + "って");
+        out.push(ruStem + "った");
+      } else if (c.slice(-2) === "行く" || c.slice(-2) === "いく") {
+        // 行く is the one well-known exception to the く-ending rule below
+        // (行って/行った, not the euphonic 行いて/行いた).
+        var ikuStem = c.slice(0, -1);
+        out.push(ikuStem + "き");
+        out.push(ikuStem + "って");
+        out.push(ikuStem + "った");
+      } else if (GODAN_ENDINGS[last]) {
+        // Any other godan verb ending in く/ぐ/す/つ/ぬ/ぶ/む: apply that
+        // ending's regular euphonic て/た-form and ます-stem.
+        var rule = GODAN_ENDINGS[last];
+        var gStem = c.slice(0, -1);
+        out.push(gStem + rule.masu);
+        out.push(gStem + rule.te);
+        out.push(gStem + rule.ta);
       }
     });
     return out;
+  }
+
+  // Pattern text uses a single leading ～/~ as the conventional "attaches
+  // here" marker, which we strip and keep the rest as one fragment. But a
+  // ～ or bare capital letter appearing mid-string (AよりBのほうが,
+  // どんな～も, 全然～ない) is a genuine placeholder standing in for
+  // arbitrary content that will never appear verbatim in an example — for
+  // those we split around the placeholder and search each surrounding
+  // chunk independently instead of concatenating across the gap.
+  function splitOnPlaceholders(text) {
+    var pieces = text.split(/[~～A-Z]+/).map(function (s) { return s.trim(); }).filter(Boolean);
+    return pieces.length ? pieces : [text];
   }
 
   function extractFragments(pattern) {
@@ -205,13 +444,36 @@
     }
     var withoutParens = pattern.replace(parenRe, " ");
     var allText = [withoutParens].concat(frags).join(" / ");
-    var parts = allText.split(/[\/／・]/);
+    var rawParts = allText.split(/[\/／・]/);
+    var cleanedParts = [];
+    rawParts.forEach(function (p) {
+      p = p.trim();
+      if (!p) return;
+      if (/^[~～]/.test(p)) p = p.slice(1).trim();
+      if (p) cleanedParts.push(p);
+    });
+    var parts = withSharedSubstring(cleanedParts);
     var out = [];
     parts.forEach(function (p) {
-      p = p.replace(/[~～]/g, "").trim();
-      if (!p) return;
-      withConjugationStems(p).forEach(function (variant) {
-        out = out.concat(withVoicedVariant(variant));
+      splitOnPlaceholders(p).forEach(function (piece) {
+        if (!piece) return;
+        withMiscVariant(piece).forEach(function (mc) {
+          withNiKuVariant(mc).forEach(function (nk) {
+            withCasualContraction(nk).forEach(function (cc) {
+              withAdjectiveVariant(cc).forEach(function (av) {
+                withMasuVariant(av).forEach(function (mv) {
+                  withCopulaVariant(mv).forEach(function (cv) {
+                    withPoliteVariant(cv).forEach(function (pv) {
+                      withConjugationStems(pv).forEach(function (variant) {
+                        out = out.concat(withVoicedVariant(variant));
+                      });
+                    });
+                  });
+                });
+              });
+            });
+          });
+        });
       });
     });
     out.sort(function (a, b) { return b.length - a.length; });
@@ -501,6 +763,7 @@
       : "";
     var usagesHtml = entry.usages.map(function (u) { return usageHtml(u, entry.pattern); }).join("");
     var conjugationsHtml = conjugationTableHtml(entry.conjugations, entry.pattern);
+    var relatedHtml = relatedGrammarHtml(entry.related);
     var notesHtml = entry.notes
       ? '<div class="entry-note"><span class="entry-note-label">Note</span>' + escapeHtml(entry.notes) + "</div>"
       : "";
@@ -524,9 +787,33 @@
             explanationHtml(entry.explanation) +
             usagesHtml +
             conjugationsHtml +
+            relatedHtml +
             notesHtml +
           "</div>" +
         "</div>" +
+      "</div>"
+    );
+  }
+
+  function relatedGrammarHtml(relatedIds) {
+    if (!relatedIds || !relatedIds.length) return "";
+    var chips = relatedIds.map(function (id) {
+      var target = findEntryById(id);
+      if (!target) return "";
+      var iconText = target.pattern.replace(/^[~～]/, "").split(/[／\/]/)[0].trim();
+      var chipColor = "var(--lvl-" + target.level.toLowerCase() + ")";
+      return (
+        '<button class="related-chip" data-navigate="' + target.id + '" style="--chip-color:' + chipColor + '">' +
+          '<span class="related-chip-level">' + target.level + "</span>" +
+          '<span class="related-chip-pattern jp">' + escapeHtml(iconText) + "</span>" +
+        "</button>"
+      );
+    }).join("");
+    if (!chips) return "";
+    return (
+      '<div class="related-wrap">' +
+        '<div class="related-title">Related grammar</div>' +
+        '<div class="related-chips">' + chips + "</div>" +
       "</div>"
     );
   }
@@ -575,7 +862,13 @@
   }
 
   function exampleHtml(ex, pattern) {
-    var hl = findHighlightRange(ex.japanese, ex.furigana, pattern);
+    // A few entries (い-adjectives, な-adjectives, 普通形) describe a whole
+    // word class rather than a fixed piece of text, so there's no pattern
+    // string to match against. For those, the example itself names the
+    // exact substring to highlight instead.
+    var hl = ex.hl
+      ? (function () { var idx = ex.japanese.indexOf(ex.hl); return idx === -1 ? null : { start: idx, end: idx + ex.hl.length }; })()
+      : findHighlightRange(ex.japanese, ex.furigana, pattern);
     return (
       '<div class="example">' +
         '<div class="example-jp jp-body">' + buildRuby(ex.japanese, ex.furigana, hl) + "</div>" +
@@ -603,6 +896,31 @@
         }
       });
     });
+    Array.prototype.forEach.call($main.querySelectorAll("[data-navigate]"), function (btn) {
+      btn.addEventListener("click", function (evt) {
+        evt.stopPropagation();
+        navigateToEntry(btn.getAttribute("data-navigate"));
+      });
+    });
+  }
+
+  function navigateToEntry(id) {
+    var target = findEntryById(id);
+    if (!target) return;
+    state.query = "";
+    $search.value = "";
+    if (state.activeTab !== target.level) {
+      state.activeTab = target.level;
+      renderTabs();
+    }
+    renderMain();
+    var card = $main.querySelector('.entry[data-id="' + id + '"]');
+    if (!card) return;
+    var head = card.querySelector("[data-toggle]");
+    if (head && !card.classList.contains("open")) toggleEntry(head);
+    if (typeof card.scrollIntoView === "function") {
+      card.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
   }
 
   function toggleEntry(headEl) {

@@ -184,7 +184,8 @@ const N5_GRAMMAR = [
     ],
     conjugations: [
       { pos: "Verb", form: "て-form", example: "読む → 読んでいる" }
-    ], notes: "The same ～ている form can express different ideas depending on the verb, so context matters."
+    ],
+    related: ["n3-tsutsu-aru"], notes: "The same ～ている form can express different ideas depending on the verb, so context matters."
   },
   {
     id: "n5-ka", level: "N5", pattern: "か", title: "Question marker", short: "Turns a statement into a polite question.",
@@ -319,13 +320,13 @@ const N5_GRAMMAR = [
     explanation: "い-adjectives can directly come before nouns and can change their endings to make negative or past forms. They are one of the two main adjective groups in Japanese.",
     usages: [
       { title: "Before a noun", examples: [
-        { japanese: "大きい犬です。", furigana: "おおきいいぬです。", english: "It is a big dog." }
+        { japanese: "大きい犬です。", furigana: "おおきいいぬです。", english: "It is a big dog.", hl: "大きい" }
       ]},
       { title: "Negative", examples: [
-        { japanese: "今日は寒くないです。", furigana: "きょうはさむくないです。", english: "It is not cold today." }
+        { japanese: "今日は寒くないです。", furigana: "きょうはさむくないです。", english: "It is not cold today.", hl: "寒くない" }
       ]},
       { title: "Past", examples: [
-        { japanese: "昨日は暑かったです。", furigana: "きのうはあつかったです。", english: "It was hot yesterday." }
+        { japanese: "昨日は暑かったです。", furigana: "きのうはあつかったです。", english: "It was hot yesterday.", hl: "暑かった" }
       ]}
     ], notes: "Not every adjective ending in い is an い-adjective; common exceptions such as きれい belong to the な-adjective group."
   },
@@ -334,13 +335,13 @@ const N5_GRAMMAR = [
     explanation: "な-adjectives use な when they directly modify a noun. They behave more like nouns when forming polite negative and past sentences.",
     usages: [
       { title: "Before a noun", examples: [
-        { japanese: "静かな町です。", furigana: "しずかなまちです。", english: "It is a quiet town." }
+        { japanese: "静かな町です。", furigana: "しずかなまちです。", english: "It is a quiet town.", hl: "静かな" }
       ]},
       { title: "Polite description", examples: [
-        { japanese: "この町は静かです。", furigana: "このまちはしずかです。", english: "This town is quiet." }
+        { japanese: "この町は静かです。", furigana: "このまちはしずかです。", english: "This town is quiet.", hl: "静かです" }
       ]},
       { title: "Negative", examples: [
-        { japanese: "便利ではありません。", furigana: "べんりではありません。", english: "It is not convenient." }
+        { japanese: "便利ではありません。", furigana: "べんりではありません。", english: "It is not convenient.", hl: "便利ではありません" }
       ]}
     ]
   },
@@ -483,7 +484,8 @@ const N5_GRAMMAR = [
     conjugations: [
       { pos: "Noun (time)", form: "+ から", example: "9時 → 9時から" },
       { pos: "Verb / い-Adjective / な-Adjective / Noun", form: "plain or polite form + から", example: "雨です → 雨ですから" }
-    ]
+    ],
+    related: ["n2-monodakara","n3-tame-reason","n4-node"]
   },
   {
     id: "n5-made", level: "N5", pattern: "まで", title: "Until / as far as", short: "Marks an endpoint in time or space.",
@@ -511,7 +513,8 @@ const N5_GRAMMAR = [
     ],
     conjugations: [
       { pos: "Noun", form: "+ だけ", example: "水 → 水だけ" }
-    ]
+    ],
+    related: ["n4-shika-nai","n3-bakari","n2-tada-nomi"]
   },
   {
     id: "n5-kedo", level: "N5", pattern: "けど", title: "But / though", short: "Connects ideas with a contrast or softens what comes next.",
@@ -794,7 +797,8 @@ const N5_GRAMMAR = [
     ],
     conjugations: [
       { pos: "Verb", form: "て-form", example: "座る → 座ってもいい" }
-    ]
+    ],
+    related: ["n3-temo-kamawanai"]
   },
   {
     id: "n5-te-wa-ikenai", level: "N5", pattern: "～てはいけない", title: "Must not / not allowed", short: "Says that an action is forbidden or not allowed.",
@@ -820,7 +824,8 @@ const N5_GRAMMAR = [
     ],
     conjugations: [
       { pos: "Verb", form: "negative stem + ければ", example: "行く → 行かなければならない" }
-    ], notes: "A common spoken alternative is ～ないといけない."
+    ],
+    related: ["n5-nai-to-ikenai","n4-nakutewa","n2-nebanaranai","n3-beki"], notes: "A common spoken alternative is ～ないといけない."
   },
   {
     id: "n5-nai-to-ikenai", level: "N5", pattern: "～ないといけない", title: "Must / have to", short: "A common conversational way to say that something must be done.",
@@ -833,7 +838,8 @@ const N5_GRAMMAR = [
     ],
     conjugations: [
       { pos: "Verb", form: "negative stem", example: "帰る → 帰らないといけない" }
-    ]
+    ],
+    related: ["n5-nakereba"]
   },
   {
     id: "n5-tari-tari", level: "N5", pattern: "～たり～たりする", title: "Do things such as A and B", short: "Lists representative actions without giving a complete list.",
@@ -954,7 +960,8 @@ const N5_GRAMMAR = [
     ],
     conjugations: [
       { pos: "な-Adjective", form: "stem + ではありません", example: "上手 → あまり上手ではありません" }
-    ]
+    ],
+    related: ["n3-mettani"]
   },
   {
     id: "n5-soshite", level: "N5", pattern: "そして", title: "And / and then", short: "Connects related statements or events.",
@@ -1029,17 +1036,18 @@ const N5_GRAMMAR = [
     ],
     conjugations: [
       { pos: "Verb", form: "past (た) form", example: "帰る → 帰ったら" }
-    ]
+    ],
+    related: ["n4-to-conditional","n4-ba-form","n4-nara-conditional"]
   },
   {
     id: "n5-plain-form", level: "N5", pattern: "普通形", title: "Plain / casual forms", short: "Basic non-polite verb and adjective forms used in casual speech and before many grammar patterns.",
     explanation: "Plain forms are the basic casual forms of Japanese verbs and adjectives, such as 食べる, 食べない, 食べた, and 食べなかった. They are also used before many grammar patterns.",
     usages: [
       { title: "Casual statement", examples: [
-        { japanese: "明日、学校に行く。", furigana: "あした、がっこうにいく。", english: "I am going to school tomorrow." }
+        { japanese: "明日、学校に行く。", furigana: "あした、がっこうにいく。", english: "I am going to school tomorrow.", hl: "行く" }
       ]},
       { title: "Before another grammar pattern", examples: [
-        { japanese: "日本語を話すことができます。", furigana: "にほんごをはなすことができます。", english: "I can speak Japanese." }
+        { japanese: "日本語を話すことができます。", furigana: "にほんごをはなすことができます。", english: "I can speak Japanese.", hl: "話す" }
       ]}
     ], notes: "This is a foundation rather than a single suffix; the exact plain form depends on the verb or adjective."
   }
@@ -1125,7 +1133,8 @@ const N4_GRAMMAR = [
     conjugations: [
       { pos: "Verb (godan)", form: "negative stem + れる", example: "読む → 読まれる" },
       { pos: "Verb (ichidan)", form: "stem + られる", example: "好む → 好まれる" }
-    ]
+    ],
+    related: ["n4-causative","n4-potential"]
   },
   {
     id: "n4-causative", level: "N4", pattern: "～させる / ～せられる", title: "Causative voice", short: "Expresses making or letting someone do something.",
@@ -1143,7 +1152,8 @@ const N4_GRAMMAR = [
     conjugations: [
       { pos: "Verb (godan)", form: "negative stem + せる", example: "練習する → 練習させる" },
       { pos: "Verb (する)", form: "irregular: させる", example: "する → させる" }
-    ]
+    ],
+    related: ["n4-passive","n4-causative-passive"]
   },
   {
     id: "n4-causative-passive", level: "N4", pattern: "～させられる", title: "Causative-Passive voice", short: "Expresses being forced to do something against your will.",
@@ -1160,7 +1170,8 @@ const N4_GRAMMAR = [
     ],
     conjugations: [
       { pos: "Verb", form: "causative stem + られる", example: "掃除する → 掃除させられる" }
-    ]
+    ],
+    related: ["n4-causative"]
   },
   {
     id: "n4-sou-da-looks", level: "N4", pattern: "～そうだ（様態）", title: "Looks like / appears to be", short: "Expresses a visual impression or impression of likelihood.",
@@ -1181,7 +1192,8 @@ const N4_GRAMMAR = [
     conjugations: [
       { pos: "Verb", form: "ます-stem", example: "降る → 降りそうだ" },
       { pos: "い-Adjective", form: "stem (drop い)", example: "美味しい → 美味しそうだ" }
-    ], notes: "The negative for いい is よさそう, and for ない is なさそう."
+    ],
+    related: ["n4-sou-da-hearsay"], notes: "The negative for いい is よさそう, and for ない is なさそう."
   },
   {
     id: "n4-sou-da-hearsay", level: "N4", pattern: "～そうだ（伝聞）", title: "I heard that / rumor", short: "Used to report information you heard from another source.",
@@ -1204,7 +1216,8 @@ const N4_GRAMMAR = [
       { pos: "Verb", form: "plain form", example: "降る → 降るそうだ" },
       { pos: "い-Adjective", form: "plain form", example: "美味しい → 美味しいそうだ" },
       { pos: "Noun / な-Adjective", form: "+ だ", example: "学者 → 学者だそうだ" }
-    ]
+    ],
+    related: ["n4-sou-da-looks","n4-rashii","n3-toiu"]
   },
   {
     id: "n4-youdes", level: "N4", pattern: "～ようだ / ～ようです", title: "It seems / looks like", short: "Expresses a logical conjecture based on sensory evidence.",
@@ -1228,7 +1241,8 @@ const N4_GRAMMAR = [
       { pos: "い-Adjective", form: "plain form", example: "寒い → 寒いようだ" },
       { pos: "な-Adjective", form: "stem + な", example: "元気 → 元気なようだ" },
       { pos: "Noun", form: "+ の", example: "病気 → 病気のようだ" }
-    ]
+    ],
+    related: ["n4-mitai","n4-rashii"]
   },
   {
     id: "n4-mitai", level: "N4", pattern: "～みたい", title: "Looks like / resembles", short: "A casual expression for 'looks like' or 'resembles'.",
@@ -1245,7 +1259,8 @@ const N4_GRAMMAR = [
     ],
     conjugations: [
       { pos: "Noun / plain form", form: "+ みたい", example: "病気 → 病気みたい" }
-    ]
+    ],
+    related: ["n4-youdes"]
   },
   {
     id: "n4-volitional", level: "N4", pattern: "意向形 (～よう / ～おう)", title: "Volitional form (Casual)", short: "Casual equivalent of ～ましょう, used for suggestions or intentions.",
@@ -1343,7 +1358,8 @@ const N4_GRAMMAR = [
     ],
     conjugations: [
       { pos: "Verb", form: "dictionary or negative form", example: "聞こえる → 聞こえるように" }
-    ]
+    ],
+    related: ["n3-tame-ni-purpose"]
   },
   {
     id: "n4-you-ni-naru", level: "N4", pattern: "～ようになる", title: "To reach the point where / become able to", short: "Describes a change in state or ability over time.",
@@ -1378,7 +1394,8 @@ const N4_GRAMMAR = [
     conjugations: [
       { pos: "Verb", form: "ば-form", example: "行く → 行けば" },
       { pos: "い-Adjective", form: "ば-form (stem + ければ)", example: "安い → 安ければ" }
-    ]
+    ],
+    related: ["n4-to-conditional","n5-tara","n4-nara-conditional"]
   },
   {
     id: "n4-to-conditional", level: "N4", pattern: "～と", title: "Natural conditional / Whenever", short: "Shows that Y automatically or naturally happens when X occurs.",
@@ -1397,7 +1414,8 @@ const N4_GRAMMAR = [
     ],
     conjugations: [
       { pos: "Verb", form: "dictionary form", example: "押す → 押すと" }
-    ]
+    ],
+    related: ["n4-ba-form","n5-tara","n4-nara-conditional"]
   },
   {
     id: "n4-nara-conditional", level: "N4", pattern: "～なら", title: "Contextual conditional / If it is the case that", short: "Used when responding to a situation or topic presented by someone else.",
@@ -1415,7 +1433,8 @@ const N4_GRAMMAR = [
     conjugations: [
       { pos: "Verb", form: "plain form", example: "行く → 行くなら" },
       { pos: "Noun", form: "+ なら", example: "学生 → 学生なら" }
-    ]
+    ],
+    related: ["n4-to-conditional","n4-ba-form","n5-tara"]
   },
   {
     id: "n4-naru", level: "N4", pattern: "～になる", title: "To become", short: "Describes a change of state or transformation.",
@@ -1436,7 +1455,8 @@ const N4_GRAMMAR = [
       { pos: "い-Adjective", form: "stem + く", example: "暖かい → 暖かくなる" },
       { pos: "な-Adjective", form: "stem + に", example: "きれい → きれいになる" },
       { pos: "Noun", form: "+ に", example: "医者 → 医者になる" }
-    ]
+    ],
+    related: ["n1-tomosureba"]
   },
   {
     id: "n4-suru-change", level: "N4", pattern: "～にする", title: "To make something / decide on", short: "Describes intentionally changing a state or making a choice.",
@@ -1448,7 +1468,7 @@ const N4_GRAMMAR = [
       ]},
       { title: "With nouns", examples: [
         { japanese: "コーヒーにします。", furigana: "コーヒーにします。", english: "I will go with coffee." },
-        { japanese: "これに決めた。", furigana: "これにきめた。", english: "I decided on this one." }
+        { japanese: "彼はコーヒーにした。", furigana: "かれはコーヒーにした。", english: "He decided on coffee." }
       ]}
     ],
     conjugations: [
@@ -1624,7 +1644,8 @@ const N4_GRAMMAR = [
     ],
     conjugations: [
       { pos: "Noun", form: "+ しか ... ない", example: "百円 → 百円しかない" }
-    ]
+    ],
+    related: ["n5-dake"]
   },
   {
     id: "n4-tokoro-da", level: "N4", pattern: "～ところだ", title: "Just about to / in middle of / just finished", short: "Describes the precise stage of progress of an action.",
@@ -1710,7 +1731,8 @@ const N4_GRAMMAR = [
     ],
     conjugations: [
       { pos: "Verb", form: "plain form", example: "来る → 来るはずだ" }
-    ]
+    ],
+    related: ["n3-hazu-ga-nai"]
   },
   {
     id: "n4-koto-ni-suru", level: "N4", pattern: "～ことにする", title: "Decide to do", short: "Expresses a conscious personal decision.",
@@ -1760,7 +1782,34 @@ const N4_GRAMMAR = [
     conjugations: [
       { pos: "Verb", form: "plain form", example: "練習した → 練習したのに" },
       { pos: "Noun / な-Adjective", form: "+ な", example: "夜 → 夜なのに" }
-    ], notes: "のに is more emotional than けど; it often implies 'and yet' with a touch of disappointment."
+    ],
+    related: ["n3-kuse-ni"], notes: "のに is more emotional than けど; it often implies 'and yet' with a touch of disappointment."
+  },
+  {
+    id: "n4-node", level: "N4", pattern: "～ので", title: "Because / Since (polite reason)", short: "A softer, more objective way to give a reason than から, common in polite or formal contexts.",
+    explanation: "～ので attaches to a plain-form clause (with な inserted after な-adjectives and nouns) and gives a reason, similar to から but softer and more objective-sounding — it presents the reason as a natural, matter-of-fact cause rather than the speaker's own justification. This makes it especially common in polite requests, apologies, and formal writing, where から can sound a little too assertive or self-centered.\n\nBecause ので frames the reason as an objective fact rather than a personal opinion, it's often preferred when asking someone for something or explaining a situation to someone of higher status. から remains more natural for a reason that's clearly rooted in the speaker's own feelings or judgment.",
+    usages: [
+      { title: "With verbs", examples: [
+        { japanese: "電車が遅れたので、遅刻しました。", furigana: "でんしゃがおくれたので、ちこくしました。", english: "Since the train was delayed, I was late." },
+        { japanese: "雨が降っているので、傘を持っていきます。", furigana: "あめがふっているので、かさをもっていきます。", english: "Since it's raining, I'll bring an umbrella." }
+      ]},
+      { title: "With adjectives", examples: [
+        { japanese: "忙しいので、後で連絡します。", furigana: "いそがしいので、あとでれんらくします。", english: "Since I'm busy, I'll contact you later." },
+        { japanese: "静かなので、集中できます。", furigana: "しずかなので、しゅうちゅうできます。", english: "Since it's quiet, I can concentrate." }
+      ]},
+      { title: "With nouns", examples: [
+        { japanese: "今日は休みなので、家にいます。", furigana: "きょうはやすみなので、いえにいます。", english: "Since today is a day off, I'll be at home." },
+        { japanese: "まだ子供なので、よく分かりません。", furigana: "まだこどもなので、よくわかりません。", english: "Since he's still a child, he doesn't really understand yet." }
+      ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "plain form", example: "遅れた → 遅れたので" },
+      { pos: "い-Adjective", form: "plain form", example: "忙しい → 忙しいので" },
+      { pos: "な-Adjective", form: "stem + な", example: "静か → 静かなので" },
+      { pos: "Noun", form: "+ な", example: "休み → 休みなので" }
+    ],
+    related: ["n5-kara", "n3-tame-reason"],
+    notes: "のに and ので are easy to mix up since both attach the same way (plain form, +な after nouns/な-adjectives) — のに means 'although' (contrast), ので means 'because' (reason)."
   },
   {
     id: "n4-temo", level: "N4", pattern: "～ても", title: "Even if / even though", short: "Presents a condition that does not change the outcome.",
@@ -1783,7 +1832,8 @@ const N4_GRAMMAR = [
       { pos: "Verb", form: "て-form", example: "降る → 降っても" },
       { pos: "い-Adjective", form: "て-form (くても)", example: "高い → 高くても" },
       { pos: "Noun", form: "+ でも", example: "休日 → 休日でも" }
-    ]
+    ],
+    related: ["n2-tatte"]
   },
   {
     id: "n4-tatoe-temo", level: "N4", pattern: "たとえ～ても", title: "Even if (strong concession)", short: "Stresses that the result holds no matter how extreme the condition.",
@@ -2013,7 +2063,8 @@ const N4_GRAMMAR = [
     ],
     conjugations: [
       { pos: "Noun / Verb", form: "+ とか", example: "映画を見る → 映画を見るとか" }
-    ]
+    ],
+    related: ["n2-soretomo","n2-toitta"]
   },
   {
     id: "n4-zutsu", level: "N4", pattern: "～ずつ", title: "Each / a fixed amount at a time", short: "Says that something is done or given in equal portions.",
@@ -2105,7 +2156,8 @@ const N4_GRAMMAR = [
     conjugations: [
       { pos: "Verb (ichidan)", form: "stem + られる", example: "食べる → 食べられる" },
       { pos: "Verb (godan)", form: "e-row stem + る", example: "読む → 読める" }
-    ], notes: "For る-verbs, the potential form (食べられる) and the passive form (食べられる) are identical in writing; only context tells them apart. Casual speech often drops ら (ら抜き言葉): 食べれる."
+    ],
+    related: ["n4-passive"], notes: "For る-verbs, the potential form (食べられる) and the passive form (食べられる) are identical in writing; only context tells them apart. Casual speech often drops ら (ら抜き言葉): 食べれる."
   },
   {
     id: "n4-rashii", level: "N4", pattern: "～らしい", title: "I heard / seems typical of", short: "Reports secondhand information, or says something fits a typical image.",
@@ -2123,7 +2175,8 @@ const N4_GRAMMAR = [
     conjugations: [
       { pos: "Verb", form: "plain form", example: "帰る → 帰ったらしい" },
       { pos: "Noun", form: "+ らしい", example: "雪 → 雪らしい" }
-    ], notes: "Compare with N4 ～そうだ（伝聞）: そうだ reports information exactly as heard, while らしい adds a slight sense of the speaker's own inference."
+    ],
+    related: ["n4-sou-da-hearsay","n4-youdes"], notes: "Compare with N4 ～そうだ（伝聞）: そうだ reports information exactly as heard, while らしい adds a slight sense of the speaker's own inference."
   },
   {
     id: "n4-hitsuyou-ga-aru", level: "N4", pattern: "～必要がある", title: "Need to / it is necessary to", short: "States that an action is required.",
@@ -2330,7 +2383,8 @@ const N4_GRAMMAR = [
     ],
     conjugations: [
       { pos: "Verb", form: "negative stem", example: "食べる → 食べないで" }
-    ], notes: "Don't confuse with ～なくて, which gives a reason or simply connects a negative fact rather than describing an accompanying circumstance."
+    ],
+    related: ["n1-nashi-ni"], notes: "Don't confuse with ～なくて, which gives a reason or simply connects a negative fact rather than describing an accompanying circumstance."
   },
   {
     id: "n4-nakutewa", level: "N4", pattern: "～なくては", title: "Must / Have to (alternate form)", short: "Another common way to conjugate the negative obligation pattern.",
@@ -2343,7 +2397,8 @@ const N4_GRAMMAR = [
     ],
     conjugations: [
       { pos: "Verb", form: "negative stem", example: "帰る → 帰らなくては" }
-    ], notes: "In casual speech, なくては is often shortened further to なくちゃ."
+    ],
+    related: ["n5-nakereba"], notes: "In casual speech, なくては is often shortened further to なくちゃ."
   },
   {
     id: "n4-nado", level: "N4", pattern: "～など", title: "Such as / Etc.", short: "Lists one or two examples from a larger, unstated category.",
@@ -2483,7 +2538,8 @@ const N3_GRAMMAR = [
     ],
     conjugations: [
       { pos: "Noun", form: "+ について", example: "文化 → 文化について" }
-    ]
+    ],
+    related: ["n3-nikanshi"]
   },
   {
     id: "n3-nikanshi", level: "N3", pattern: "～に関して", title: "Regarding / in relation to", short: "A more formal version of ～について.",
@@ -2497,7 +2553,8 @@ const N3_GRAMMAR = [
     ],
     conjugations: [
       { pos: "Noun", form: "+ に関して", example: "方針 → 方針に関して" }
-    ]
+    ],
+    related: ["n3-nitsuite"]
   },
   {
     id: "n3-niyotte", level: "N3", pattern: "～によって", title: "By / depending on / due to", short: "Expresses method, cause, agent in passive structures, or variation.",
@@ -2576,7 +2633,8 @@ const N3_GRAMMAR = [
       { pos: "Verb", form: "plain form", example: "知っている → 知っているくせに" },
       { pos: "な-Adjective", form: "stem + な", example: "下手 → 下手なくせに" },
       { pos: "Noun", form: "+ の", example: "子供 → 子供のくせに" }
-    ]
+    ],
+    related: ["n4-no-ni"]
   },
   {
     id: "n3-sei-de", level: "N3", pattern: "～せいで / ～せいか", title: "Because of / fault of", short: "Assigns blame to something for a negative outcome.",
@@ -2595,7 +2653,8 @@ const N3_GRAMMAR = [
     conjugations: [
       { pos: "Verb", form: "plain form", example: "遅れた → 遅れたせいで" },
       { pos: "Noun", form: "+ の", example: "事故 → 事故のせいで" }
-    ]
+    ],
+    related: ["n3-okage-de"]
   },
   {
     id: "n3-okage-de", level: "N3", pattern: "～おかげで", title: "Thanks to / because of", short: "Gives credit to something for a positive outcome.",
@@ -2614,7 +2673,8 @@ const N3_GRAMMAR = [
     conjugations: [
       { pos: "Verb", form: "plain form", example: "手伝ってくれた → 手伝ってくれたおかげで" },
       { pos: "Noun", form: "+ の", example: "先生 → 先生のおかげで" }
-    ]
+    ],
+    related: ["n3-sei-de"]
   },
   {
     id: "n3-touri-ni", level: "N3", pattern: "～とおりに / ～通りに", title: "Just as / in accordance with", short: "Shows doing an action exactly as instructed, planned, or seen.",
@@ -2674,7 +2734,8 @@ const N3_GRAMMAR = [
     ],
     conjugations: [
       { pos: "Noun", form: "+ ばかり", example: "ゲーム → ゲームばかり" }
-    ]
+    ],
+    related: ["n5-dake"]
   },
   {
     id: "n3-naraku", level: "N3", pattern: "～非 / ～無 / ～不 / ～未", title: "Prefixes of Negation", short: "Prefixes attached to nouns to alter meaning to 'un-', 'non-', or 'not yet'.",
@@ -2728,7 +2789,8 @@ const N3_GRAMMAR = [
     conjugations: [
       { pos: "Verb", form: "plain form", example: "遅れた → 遅れたため" },
       { pos: "Noun", form: "+ の", example: "大雨 → 大雨のため" }
-    ]
+    ],
+    related: ["n5-kara", "n4-node"]
   },
   {
     id: "n3-osore-ga-aru", level: "N3", pattern: "～おそれがある", title: "There is a risk that / fear that", short: "Used in news or formal warnings for potential negative events.",
@@ -2779,7 +2841,8 @@ const N3_GRAMMAR = [
     ],
     conjugations: [
       { pos: "Verb", form: "plain form", example: "降る → 降るかもしれない" }
-    ]
+    ],
+    related: ["n2-kanenai"]
   },
   {
     id: "n3-hazu-ga-nai", level: "N3", pattern: "～はずがない", title: "Cannot be / impossible that", short: "Strongly denies a possibility based on logical reasoning.",
@@ -2793,7 +2856,8 @@ const N3_GRAMMAR = [
     ],
     conjugations: [
       { pos: "Verb", form: "plain form", example: "解ける → 解けるはずがない" }
-    ]
+    ],
+    related: ["n4-pukai"]
   },
   {
     id: "n3-tame-ni-purpose", level: "N3", pattern: "～ために", title: "In order to / for the sake of", short: "Expresses deliberate intention to reach a target.",
@@ -2809,7 +2873,8 @@ const N3_GRAMMAR = [
     conjugations: [
       { pos: "Verb", form: "dictionary form", example: "買う → 買うために" },
       { pos: "Noun", form: "+ の", example: "健康 → 健康のために" }
-    ]
+    ],
+    related: ["n4-you-ni"]
   },
   {
     id: "n3-zu-ni", level: "N3", pattern: "～ずに", title: "Without doing", short: "A formal or written version of ～ないで.",
@@ -2849,7 +2914,8 @@ const N3_GRAMMAR = [
     conjugations: [
       { pos: "Verb", form: "ます-stem", example: "遅刻する → 遅刻しがち" },
       { pos: "Noun", form: "+ がち", example: "曇り → 曇りがち" }
-    ]
+    ],
+    related: ["n1-tomosureba"]
   },
   {
     id: "n3-psoi", level: "N3", pattern: "～っぽい", title: "Ish / seems like / easily becomes", short: "Gives a strong impression of a quality, or inclination towards a trait.",
@@ -2877,7 +2943,8 @@ const N3_GRAMMAR = [
     ],
     conjugations: [
       { pos: "Noun", form: "+ 向け", example: "子供 → 子供向け" }
-    ]
+    ],
+    related: ["n3-muki"]
   },
   {
     id: "n3-muki", level: "N3", pattern: "～向き", title: "Suitable for / fit for", short: "Indicates natural suitability for a particular person or group.",
@@ -2891,7 +2958,8 @@ const N3_GRAMMAR = [
     ],
     conjugations: [
       { pos: "Noun", form: "+ 向き", example: "初心者 → 初心者向き" }
-    ]
+    ],
+    related: ["n3-muke"]
   },
   {
     id: "n3-dake-de-naku", level: "N3", pattern: "～だけでなく", title: "Not only... but also...", short: "Extends a statement to include additional elements.",
@@ -2914,7 +2982,8 @@ const N3_GRAMMAR = [
       { pos: "Verb", form: "plain form", example: "話せる → 話せるだけでなく" },
       { pos: "い-Adjective / な-Adjective", form: "plain form", example: "安い → 安いだけでなく" },
       { pos: "Noun", form: "+ だけでなく", example: "日本語 → 日本語だけでなく" }
-    ]
+    ],
+    related: ["n3-bakari-ka","n2-nominarazu"]
   },
   {
     id: "n3-shikanai-verb", level: "N3", pattern: "～しかない", title: "Have no choice but to", short: "Expresses having no alternative other than doing a specific action.",
@@ -3082,7 +3151,8 @@ const N3_GRAMMAR = [
     conjugations: [
       { pos: "Verb", form: "past (た) form", example: "迷った → 迷ったあげく" },
       { pos: "Noun", form: "+ の", example: "議論 → 議論のあげく" }
-    ], notes: "A common related pattern is ～た末（すえ）に, which is similar but more neutral in tone."
+    ],
+    related: ["n3-sue-ni"], notes: "A common related pattern is ～た末（すえ）に, which is similar but more neutral in tone."
   },
   {
     id: "n3-bakari-ka", level: "N3", pattern: "～ばかりか", title: "Not only... but also", short: "Adds information on top of what was said, often with a surprising or critical nuance.",
@@ -3099,7 +3169,8 @@ const N3_GRAMMAR = [
       { pos: "Verb", form: "plain form", example: "忘れた → 忘れたばかりか" },
       { pos: "い-Adjective", form: "plain form", example: "高い → 高いばかりか" },
       { pos: "Noun", form: "+ ばかりか", example: "日本語 → 日本語ばかりか" }
-    ]
+    ],
+    related: ["n3-dake-de-naku"]
   },
   {
     id: "n3-darake", level: "N3", pattern: "～だらけ", title: "Covered in / full of", short: "A surface or thing is covered with, or full of, something unwanted.",
@@ -3116,7 +3187,8 @@ const N3_GRAMMAR = [
     ],
     conjugations: [
       { pos: "Noun", form: "+ だらけ", example: "泥 → 泥だらけ" }
-    ], notes: "Compare with N1 ～まみれ: だらけ can be abstract (mistakes, lies), while まみれ is mostly physical substances."
+    ],
+    related: ["n1-mamire"], notes: "Compare with N1 ～まみれ: だらけ can be abstract (mistakes, lies), while まみれ is mostly physical substances."
   },
   {
     id: "n3-tsutsu", level: "N3", pattern: "～つつ", title: "While / although (adversative)", short: "Two states exist at the same time even though they conflict.",
@@ -3130,7 +3202,8 @@ const N3_GRAMMAR = [
     ],
     conjugations: [
       { pos: "Verb", form: "ます-stem", example: "見る → 見つつ" }
-    ], notes: "Do not confuse with ～つつある below, which describes gradual ongoing change."
+    ],
+    related: ["n2-nagara-mo"], notes: "Do not confuse with ～つつある below, which describes gradual ongoing change."
   },
   {
     id: "n3-tsutsu-aru", level: "N3", pattern: "～つつある", title: "In the process of changing", short: "Describes a gradual, ongoing transformation.",
@@ -3144,7 +3217,8 @@ const N3_GRAMMAR = [
     ],
     conjugations: [
       { pos: "Verb", form: "ます-stem", example: "変わる → 変わりつつある" }
-    ]
+    ],
+    related: ["n5-teiru"]
   },
   {
     id: "n3-mono-da", level: "N3", pattern: "～ものだ", title: "General truths / nostalgia / how things should be", short: "States universal truths, reminisces about the past, or states proper behavior.",
@@ -3382,7 +3456,8 @@ const N3_GRAMMAR = [
     ],
     conjugations: [
       { pos: "Verb", form: "dictionary form", example: "謝る → 謝るほかない" }
-    ], notes: "Overlaps with N3 ～しかない; ほかない feels slightly more formal and conclusive."
+    ],
+    related: ["n2-yori-hoka-nai"], notes: "Overlaps with N3 ～しかない; ほかない feels slightly more formal and conclusive."
   },
   {
     id: "n3-ba-hodo", level: "N3", pattern: "～ば～ほど", title: "The more... the more...", short: "One degree increases in direct proportion to another.",
@@ -3434,7 +3509,8 @@ const N3_GRAMMAR = [
     conjugations: [
       { pos: "Verb", form: "past (た) form", example: "悩んだ → 悩んだ末に" },
       { pos: "Noun", form: "+ の", example: "議論 → 議論の末に" }
-    ]
+    ],
+    related: ["n3-ageku"]
   },
   {
     id: "n3-yara", level: "N3", pattern: "～やら～やら", title: "This and that / and so on", short: "Lists multiple things in a scattered, overwhelmed, or emotional way.",
@@ -3468,7 +3544,8 @@ const N3_GRAMMAR = [
     conjugations: [
       { pos: "Noun", form: "+ さえも", example: "時間 → 時間さえも" },
       { pos: "Verb", form: "ます-stem", example: "考える → 考えさえもしない" }
-    ]
+    ],
+    related: ["n1-desura"]
   },
   {
     id: "n3-gatai", level: "N3", pattern: "～がたい", title: "Hard to / difficult to", short: "Says an action is difficult or almost impossible to carry out emotionally or practically.",
@@ -3499,7 +3576,8 @@ const N3_GRAMMAR = [
     ],
     conjugations: [
       { pos: "Verb", form: "dictionary form (する → すべき)", example: "運動する → 運動するべき" }
-    ], notes: "する attaches irregularly as すべき (the older, more formal form) alongside the regular するべき; both are common today."
+    ],
+    related: ["n5-nakereba"], notes: "する attaches irregularly as すべき (the older, more formal form) alongside the regular するべき; both are common today."
   },
   {
     id: "n3-toiu", level: "N3", pattern: "～という", title: "Called / Named", short: "Introduces or explains the name or content of something.",
@@ -3516,7 +3594,8 @@ const N3_GRAMMAR = [
     ],
     conjugations: [
       { pos: "Noun", form: "+ という", example: "桜 → 桜という花" }
-    ]
+    ],
+    related: ["n4-sou-da-hearsay"]
   },
   {
     id: "n3-toiukoto", level: "N3", pattern: "～ということだ", title: "I heard that / It means that", short: "Reports information heard from someone else, or restates something in other words.",
@@ -3784,7 +3863,8 @@ const N3_GRAMMAR = [
     conjugations: [
       { pos: "い-Adjective", form: "plain form", example: "厳しい → 厳しいというより" },
       { pos: "Noun", form: "+ というより", example: "料理 → 料理というより" }
-    ]
+    ],
+    related: ["n2-mushiro"]
   },
   {
     id: "n3-to-ittemo", level: "N3", pattern: "～といっても", title: "Although I say ... / That said", short: "Softens or qualifies a statement that might otherwise sound too strong.",
@@ -3888,7 +3968,8 @@ const N3_GRAMMAR = [
         { japanese: "こんなチャンスはめったにありません。", furigana: "こんなチャンスはめったにありません。", english: "An opportunity like this is very rare." },
         { japanese: "彼女はめったに弱音を吐かない。", furigana: "かのじょはめったによわねをはかない。", english: "She hardly ever complains or shows weakness." }
       ]}
-    ]
+    ],
+    related: ["n5-amari"]
   },
   {
     id: "n3-moshikashitara", level: "N3", pattern: "もしかしたら～かもしれない", title: "Perhaps / Maybe", short: "Introduces a tentative guess or possibility.",
@@ -4100,7 +4181,8 @@ const N3_GRAMMAR = [
     ],
     conjugations: [
       { pos: "Verb", form: "て-form", example: "座る → 座ってもかまわない" }
-    ]
+    ],
+    related: ["n5-te-mo-ii"]
   }
 ];
 
@@ -4300,7 +4382,8 @@ const N2_GRAMMAR = [
     ],
     conjugations: [
       { pos: "Verb", form: "ます-stem", example: "招く → 招きかねない" }
-    ]
+    ],
+    related: ["n3-kamo-shirenai"]
   },
   {
     id: "n2-ni-kagirazui", level: "N2", pattern: "～に限らず", title: "Not limited to... but also", short: "Extends a condition beyond a specific noun to broader categories.",
@@ -4506,7 +4589,8 @@ const N2_GRAMMAR = [
     conjugations: [
       { pos: "Verb", form: "past (た) form + としても", example: "得た → 得たとしても" },
       { pos: "Noun", form: "+ だ + としても", example: "本当 → 本当だとしても" }
-    ]
+    ],
+    related: ["n2-ni-shite-kara"]
   },
   {
     id: "n2-ni-watatte", level: "N2", pattern: "～にわたって / ～にわたる", title: "Throughout / extending over", short: "Spans across an entire timeframe, geographical area, or range.",
@@ -4560,7 +4644,8 @@ const N2_GRAMMAR = [
     conjugations: [
       { pos: "Noun", form: "+ に過ぎない", example: "冗談 → 冗談に過ぎない" },
       { pos: "Verb", form: "plain form + に過ぎない", example: "言った → 言ったに過ぎない" }
-    ]
+    ],
+    related: ["n2-deshikanai"]
   },
   {
     id: "n2-ni-shite-wa", level: "N2", pattern: "～にしては", title: "For a / considering that it's", short: "The result is surprising given the specific identity or standard named.",
@@ -4765,7 +4850,8 @@ const N2_GRAMMAR = [
     conjugations: [
       { pos: "Verb", form: "dictionary form", example: "行く → 行くにしろ／にせよ" },
       { pos: "Noun", form: "+ にしろ／にせよ", example: "冗談 → 冗談にしろ" }
-    ]
+    ],
+    related: ["n2-toshite-mo"]
   },
   {
     id: "n2-mono-nara", level: "N2", pattern: "～ものなら", title: "If (you dare) / if it were possible", short: "Introduces a hypothetical, often a warning or a wish.",
@@ -4875,7 +4961,8 @@ const N2_GRAMMAR = [
     ],
     conjugations: [
       { pos: "Verb", form: "negative stem (ない → ず)", example: "笑う → 笑わずにはいられない" }
-    ], notes: "～してはいられない ('cannot afford to keep doing') is related but distinct."
+    ],
+    related: ["n2-hairarenai"], notes: "～してはいられない ('cannot afford to keep doing') is related but distinct."
   },
   {
     id: "n2-nara-de-wa", level: "N2", pattern: "～ならでは", title: "Unique to / only possible with", short: "A quality or thing that exists only because of its source.",
@@ -5050,7 +5137,8 @@ const N2_GRAMMAR = [
       { pos: "Verb", form: "ます-stem", example: "苦しむ → 苦しみながらも" },
       { pos: "い-Adjective", form: "plain form", example: "狭い → 狭いながらも" },
       { pos: "な-Adjective", form: "stem + であり／で", example: "残念 → 残念ながら" }
-    ], notes: "残念ながら and 幸いながら are set phrases where ながら clearly means 'although'."
+    ],
+    related: ["n3-tsutsu"], notes: "残念ながら and 幸いながら are set phrases where ながら clearly means 'although'."
   },
   {
     id: "n2-tada-nomi", level: "N2", pattern: "～ただ～のみだ / ～のみ", title: "Only / nothing but (formal)", short: "A formal, literary restriction meaning 'nothing more than'.",
@@ -5070,7 +5158,8 @@ const N2_GRAMMAR = [
     conjugations: [
       { pos: "Verb", form: "dictionary form + のみ", example: "祈る → 祈るのみ" },
       { pos: "Noun", form: "+ のみ", example: "本番 → 本番を待つのみ" }
-    ]
+    ],
+    related: ["n5-dake"]
   },
   {
     id: "n2-wa-moto-yori", level: "N2", pattern: "～はもとより", title: "Not to mention / of course", short: "X is obvious; Y goes without saying too.",
@@ -5115,7 +5204,8 @@ const N2_GRAMMAR = [
     ],
     conjugations: [
       { pos: "Noun", form: "+ をもとに", example: "データ → データをもとに" }
-    ]
+    ],
+    related: ["n1-wo-fumaete"]
   },
   {
     id: "n2-goto-ni", level: "N2", pattern: "～ごとに", title: "Each / every", short: "Something happens repeatedly at every instance of an event.",
@@ -5167,7 +5257,8 @@ const N2_GRAMMAR = [
     ],
     conjugations: [
       { pos: "Verb", form: "dictionary form", example: "謝る → 謝るよりほかない" }
-    ], notes: "Slightly more formal than ～ほかない (N3); meaning is essentially the same."
+    ],
+    related: ["n3-hoka-nai"], notes: "Slightly more formal than ～ほかない (N3); meaning is essentially the same."
   },
   {
     id: "n2-kara-shite", level: "N2", pattern: "～からして", title: "From the very / even by", short: "Judging from one representative aspect, everything else follows.",
@@ -5394,7 +5485,8 @@ const N2_GRAMMAR = [
       { pos: "Verb", form: "plain form", example: "失敗した → 失敗したからこそ" },
       { pos: "い-Adjective", form: "plain form", example: "つらい → つらいからこそ" },
       { pos: "な-Adjective / Noun", form: "+ だ", example: "大切 → 大切だからこそ" }
-    ]
+    ],
+    related: ["n1-bare-ba","n2-dakeni"]
   },
   {
     id: "n2-karasuruto", level: "N2", pattern: "～からすると / ～からすれば", title: "Judging from / From the standpoint of", short: "Reaches a conclusion or offers a perspective based on some piece of evidence.",
@@ -5435,7 +5527,8 @@ const N2_GRAMMAR = [
       { pos: "い-Adjective", form: "plain form", example: "安い → 安いからといって" },
       { pos: "な-Adjective", form: "stem + だ", example: "便利 → 便利だからといって" },
       { pos: "Noun", form: "+ だ", example: "学生 → 学生だからといって" }
-    ]
+    ],
+    related: ["n1-towaie"]
   },
   {
     id: "n2-karaniwa", level: "N2", pattern: "～からには", title: "Now that / Since (with resolve)", short: "Having committed to something, states the natural and necessary consequence.",
@@ -5542,7 +5635,8 @@ const N2_GRAMMAR = [
         { japanese: "彼は三か国語を話せる。しかも、全て独学だそうだ。", furigana: "かれはさんかこくごをはなせる。しかも、すべてどくがくだそうだ。", english: "He can speak three languages. What's more, apparently he taught himself all of them." },
         { japanese: "このアパートは駅から近い。しかも、家賃も安い。", furigana: "このアパートはえきからちかい。しかも、やちんもやすい。", english: "This apartment is close to the station. What's more, the rent is cheap too." }
       ]}
-    ]
+    ],
+    related: ["n2-sonoue"]
   },
   {
     id: "n2-shitagatte", level: "N2", pattern: "したがって", title: "Therefore / Accordingly", short: "A formal connector introducing a logical conclusion.",
@@ -5614,7 +5708,8 @@ const N2_GRAMMAR = [
         { japanese: "この部屋は静かだ。その上、日当たりもいい。", furigana: "このへやはしずかだ。そのうえ、ひあたりもいい。", english: "This room is quiet. On top of that, it also gets good sunlight." },
         { japanese: "彼は誠実だ。その上、仕事も速い。", furigana: "かれはせいじつだ。そのうえ、しごともはやい。", english: "He's sincere. On top of that, he's also fast at his work." }
       ]}
-    ]
+    ],
+    related: ["n2-shikamo"]
   },
   {
     id: "n2-soretomo", level: "N2", pattern: "それとも", title: "Or / Or else", short: "Presents a second alternative in a choice between two options.",
@@ -5626,7 +5721,8 @@ const N2_GRAMMAR = [
         { japanese: "今日行きますか。それとも、明日にしますか。", furigana: "きょういきますか。それとも、あしたにしますか。", english: "Will you go today? Or will you make it tomorrow?" },
         { japanese: "自分でやりますか。それとも、誰かに頼みますか。", furigana: "じぶんでやりますか。それとも、だれかにたのみますか。", english: "Will you do it yourself? Or will you ask someone else?" }
       ]}
-    ]
+    ],
+    related: ["n4-toka"]
   },
   {
     id: "n2-sorenanoni", level: "N2", pattern: "それなのに", title: "And yet / Despite that", short: "Expresses frustration or disbelief that the result contradicted expectations.",
@@ -5684,7 +5780,8 @@ const N2_GRAMMAR = [
       { pos: "Verb", form: "plain form", example: "準備してきた → 準備してきただけに" },
       { pos: "い-Adjective", form: "plain form", example: "長い → 長いだけあって" },
       { pos: "な-Adjective / Noun", form: "+ な / である", example: "国際大会 → 国際大会だけに" }
-    ]
+    ],
+    related: ["n2-karakoso"]
   },
   {
     id: "n2-tatte", level: "N2", pattern: "～たって", title: "Even if / No matter (casual)", short: "The casual spoken equivalent of ～ても.",
@@ -5709,7 +5806,8 @@ const N2_GRAMMAR = [
       { pos: "Verb", form: "て-form base + たって", example: "急ぐ → 急いだって" },
       { pos: "い-Adjective", form: "くたって", example: "高い → 高くたって" },
       { pos: "な-Adjective / Noun", form: "だって", example: "便利 → 便利だって" }
-    ]
+    ],
+    related: ["n4-temo"]
   },
   {
     id: "n2-tekoso", level: "N2", pattern: "～てこそ", title: "Only by doing / It's precisely by doing", short: "One thing truly becomes possible or meaningful only once another is done.",
@@ -5739,7 +5837,8 @@ const N2_GRAMMAR = [
     ],
     conjugations: [
       { pos: "Noun", form: "+ でしかない", example: "噂 → 噂でしかない" }
-    ]
+    ],
+    related: ["n2-ni-suginai"]
   },
   {
     id: "n2-hairarenai", level: "N2", pattern: "～てはいられない", title: "Can't afford to keep / Can't just", short: "The current situation is urgent enough that a habitual action must stop.",
@@ -5754,7 +5853,8 @@ const N2_GRAMMAR = [
     ],
     conjugations: [
       { pos: "Verb", form: "て-form", example: "休む → 休んではいられない" }
-    ]
+    ],
+    related: ["n2-zu-ni-wa-irarenai"]
   },
   {
     id: "n2-dewanaika", level: "N2", pattern: "～ではないか", title: "Isn't it? / Look, it's ...!", short: "Points out an obvious fact, or makes a firm suggestion.",
@@ -5821,7 +5921,8 @@ const N2_GRAMMAR = [
     ],
     conjugations: [
       { pos: "Noun", form: "+ といった", example: "すし、天ぷら → すし、天ぷらといった" }
-    ]
+    ],
+    related: ["n4-toka"]
   },
   {
     id: "n2-douse", level: "N2", pattern: "どうせ", title: "Anyway / In the end", short: "A resigned tone that the outcome was inevitable regardless of effort.",
@@ -6025,7 +6126,8 @@ const N2_GRAMMAR = [
     conjugations: [
       { pos: "Verb (godan)", form: "negative stem + ねばならない", example: "守る → 守らねばならない" },
       { pos: "Verb (する)", form: "irregular: せねばならない", example: "行動する → 行動せねばならない" }
-    ]
+    ],
+    related: ["n5-nakereba"]
   },
   {
     id: "n2-nominarazu", level: "N2", pattern: "～のみならず", title: "Not only ... but also (formal)", short: "A formal way to extend a statement beyond its first, obvious scope.",
@@ -6045,7 +6147,8 @@ const N2_GRAMMAR = [
     conjugations: [
       { pos: "Noun", form: "+ のみならず", example: "国内 → 国内のみならず" },
       { pos: "Verb", form: "plain form + のみならず", example: "話す → 話すのみならず" }
-    ]
+    ],
+    related: ["n3-dake-de-naku"]
   },
   {
     id: "n2-hatomokaku", level: "N2", pattern: "～はともかく", title: "Regardless of / Setting aside", short: "Sets one topic aside to focus attention on a more relevant one.",
@@ -6108,7 +6211,8 @@ const N2_GRAMMAR = [
         { japanese: "彼は天才というより、むしろ努力家だと思う。", furigana: "かれはてんさいというより、むしろどりょくかだとおもう。", english: "I think he's less a genius and more, if anything, a hard worker." },
         { japanese: "騒ぐより、むしろ静かに見守るほうが効果的だ。", furigana: "さわぐより、むしろしずかにみまもるほうがこうかてきだ。", english: "Rather than making a fuss, quietly watching over things is more effective." }
       ]}
-    ]
+    ],
+    related: ["n3-toiuyori"]
   },
   {
     id: "n2-monodakara", level: "N2", pattern: "～ものだから", title: "Because / It's just that", short: "Gives a reason, often as an excuse for an unintended result.",
@@ -6129,7 +6233,8 @@ const N2_GRAMMAR = [
       { pos: "Verb", form: "plain form", example: "分からなかった → 分からなかったものだから" },
       { pos: "い-Adjective", form: "plain form", example: "眠かった → 眠かったものだから" },
       { pos: "な-Adjective / Noun", form: "+ な / だった", example: "うるさかった → うるさかったものだから" }
-    ]
+    ],
+    related: ["n5-kara"]
   },
   {
     id: "n2-yousuruni", level: "N2", pattern: "要するに", title: "In short / In other words", short: "Summarizes a longer explanation into its essential point.",
@@ -6174,7 +6279,8 @@ const N1_GRAMMAR = [
     ],
     conjugations: [
       { pos: "Verb", form: "dictionary form", example: "鳴る → 鳴るや否や" }
-    ]
+    ],
+    related: ["n1-ga-ti-i-re"]
   },
   {
     id: "n1-nari", level: "N1", pattern: "～なり", title: "As soon as / right after", short: "A person does something unexpected right after an action.",
@@ -6234,7 +6340,8 @@ const N1_GRAMMAR = [
     conjugations: [
       { pos: "Noun", form: "+ に堪えない", example: "感謝 → 感謝に堪えない" },
       { pos: "Verb", form: "dictionary form", example: "聞く → 聞くに堪えない" }
-    ]
+    ],
+    related: ["n1-ni-taeru"]
   },
   {
     id: "n1-ni-taeru", level: "N1", pattern: "～に堪える", title: "Worthy of / capable of withstanding", short: "Has enough quality or value to deserve evaluation or reading/listening.",
@@ -6248,7 +6355,8 @@ const N1_GRAMMAR = [
     ],
     conjugations: [
       { pos: "Noun", form: "+ に堪える", example: "使用 → 使用に堪える" }
-    ]
+    ],
+    related: ["n1-ni-taenai"]
   },
   {
     id: "n1-wo-kagirini", level: "N1", pattern: "～を限りに", title: "As of / starting from (final deadline)", short: "Marks the absolute end of a period, practice, or capability.",
@@ -6374,7 +6482,8 @@ const N1_GRAMMAR = [
     ],
     conjugations: [
       { pos: "Verb", form: "dictionary form", example: "鳴る → 鳴るが早いか" }
-    ]
+    ],
+    related: ["n1-ya-ina-ya"]
   },
   {
     id: "n1-mamire", level: "N1", pattern: "～まみれ", title: "Covered in / smeared with", short: "A surface is unpleasantly covered in a liquid, powder, or substance.",
@@ -6388,7 +6497,8 @@ const N1_GRAMMAR = [
     ],
     conjugations: [
       { pos: "Noun", form: "+ まみれ", example: "泥 → 泥まみれ" }
-    ]
+    ],
+    related: ["n3-darake"]
   },
   {
     id: "n1-wo-yoshito-shinai", level: "N1", pattern: "～をもって", title: "By means of / as of (formal limit)", short: "Formal marker for means, cause, or precise point of termination.",
@@ -6416,7 +6526,8 @@ const N1_GRAMMAR = [
     ],
     conjugations: [
       { pos: "Verb", form: "ば-form", example: "信じる → 信じればこそ" }
-    ]
+    ],
+    related: ["n2-karakoso"]
   },
   {
     id: "n1-tottari-ni", level: "N1", pattern: "～と相まって", title: "Combined with / in synergy with", short: "Two factors combine to produce a heightened or distinct outcome.",
@@ -6746,7 +6857,8 @@ const N1_GRAMMAR = [
     ],
     conjugations: [
       { pos: "Noun", form: "+ をよそに", example: "心配 → 心配をよそに" }
-    ]
+    ],
+    related: ["n1-wo-mono-tomo-sezu"]
   },
   {
     id: "n1-wo-mono-tomo-sezu", level: "N1", pattern: "～をものともせず（に）", title: "Undaunted by / braving", short: "Pushing forward without being deterred by obstacles or dangers.",
@@ -6760,7 +6872,8 @@ const N1_GRAMMAR = [
     ],
     conjugations: [
       { pos: "Noun", form: "+ をものともせず", example: "困難 → 困難をものともせず" }
-    ]
+    ],
+    related: ["n1-wo-yosoni"]
   },
   {
     id: "n1-nashi-ni", level: "N1", pattern: "～なしに（は）", title: "Without (formal)", short: "A formal way of saying something cannot happen without X.",
@@ -6774,7 +6887,8 @@ const N1_GRAMMAR = [
     ],
     conjugations: [
       { pos: "Noun", form: "+ なしに", example: "連絡 → 連絡なしに" }
-    ]
+    ],
+    related: ["n4-naide"]
   },
   {
     id: "n1-de-are", level: "N1", pattern: "～であれ / ～であろうと", title: "Whether it be / no matter", short: "States that a conclusion holds across all cases without exception.",
@@ -6863,7 +6977,8 @@ const N1_GRAMMAR = [
     ],
     conjugations: [
       { pos: "Noun", form: "+ ですら", example: "専門家 → 専門家ですら" }
-    ]
+    ],
+    related: ["n3-sae-mo"]
   },
   {
     id: "n1-ga-saigo", level: "N1", pattern: "～が最後", title: "Once ... (an irreversible chain begins)", short: "Once a specific action happens, an inevitable and often unwelcome consequence follows.",
@@ -7271,7 +7386,8 @@ const N1_GRAMMAR = [
     ],
     conjugations: [
       { pos: "Noun", form: "+ を踏まえて", example: "結果 → 結果を踏まえて" }
-    ]
+    ],
+    related: ["n2-wo-moto-ni"]
   },
   {
     id: "n1-wo-hete", level: "N1", pattern: "～を経て", title: "Through / After (a process)", short: "Reaching a result only after passing through a certain process or period.",
@@ -7420,7 +7536,8 @@ const N1_GRAMMAR = [
         { japanese: "忙しいと、ともすれば健康管理がおろそかになる。", furigana: "いそがしいと、ともすればけんこうかんりがおろそかになる。", english: "When you're busy, you're apt to neglect taking care of your health." },
         { japanese: "一人暮らしはともすると、食生活が偏りがちになる。", furigana: "ひとりぐらしはともすると、しょくせいかつがかたよりがちになる。", english: "Living alone can easily lead to an unbalanced diet if you're not careful." }
       ]}
-    ]
+    ],
+    related: ["n4-naru","n3-gachi"]
   },
   {
     id: "n1-to-omoikiya", level: "N1", pattern: "～と思いきや", title: "I thought ..., but", short: "An expectation is unexpectedly overturned by what actually happens.",
@@ -7467,7 +7584,8 @@ const N1_GRAMMAR = [
     conjugations: [
       { pos: "Verb", form: "plain form", example: "過ぎた → 過ぎたとはいえ" },
       { pos: "い-Adjective", form: "plain form", example: "浅い → 浅いとはいえ" }
-    ]
+    ],
+    related: ["n2-karatoitte"]
   },
   {
     id: "n1-haoroka", level: "N1", pattern: "～はおろか", title: "Let alone / Not to mention", short: "Denies a basic claim, then makes clear an even more advanced one is equally impossible.",
