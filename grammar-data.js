@@ -1,653 +1,1047 @@
 const N5_GRAMMAR = [
   {
-    id:"n5-desu",level:"N5",pattern:"です",title:'Polite "to be"',short:"Polite statements about what something is or is like.",
-    explanation:"です is used to say that something is something else, or to describe what something is, in a polite way. It is commonly used after nouns and な-adjectives.",
-    usages:[
-      {title:"Identifying something",examples:[
-        {japanese:"私は学生です。",furigana:"わたしはがくせいです。",english:"I am a student."},
-        {japanese:"これは本です。",furigana:"これはほんです。",english:"This is a book."}]},
-      {title:"Describing something",examples:[
-        {japanese:"この町は静かです。",furigana:"このまちはしずかです。",english:"This town is quiet."}]},
-      {title:"Asking a question",examples:[
-        {japanese:"田中さんは先生ですか。",furigana:"たなかさんはせんせいですか。",english:"Is Tanaka a teacher?"}]}
-    ],notes:"This entry includes closely related polite forms such as ではありません and でした."
+    id: "n5-desu", level: "N5", pattern: "です", title: "Polite \"to be\"", short: "Polite statements about what something is or is like.",
+    explanation: "です is used to say that something is something else, or to describe what something is, in a polite way. It is commonly used after nouns and な-adjectives.",
+    usages: [
+      { title: "Identifying something", examples: [
+        { japanese: "私は学生です。", furigana: "わたしはがくせいです。", english: "I am a student." },
+        { japanese: "これは本です。", furigana: "これはほんです。", english: "This is a book." }
+      ]},
+      { title: "Describing something", examples: [
+        { japanese: "この町は静かです。", furigana: "このまちはしずかです。", english: "This town is quiet." }
+      ]},
+      { title: "Asking a question", examples: [
+        { japanese: "田中さんは先生ですか。", furigana: "たなかさんはせんせいですか。", english: "Is Tanaka a teacher?" }
+      ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ です", example: "学生 → 学生です" },
+      { pos: "な-Adjective", form: "stem + です", example: "静か → 静かです" }
+    ], notes: "This entry includes closely related polite forms such as ではありません and でした."
   },
   {
-    id:"n5-masu",level:"N5",pattern:"～ます",title:"Polite verb form",short:"A common polite way to use Japanese verbs.",
-    explanation:"～ます is used to make verbs polite and is one of the most common verb forms for beginners. It can describe something that happens regularly or something that will happen.",
-    usages:[
-      {title:"Present or habitual action",examples:[{japanese:"毎日、日本語を勉強します。",furigana:"まいにち、にほんごをべんきょうします。",english:"I study Japanese every day."}]},
-      {title:"Future action",examples:[{japanese:"明日、東京へ行きます。",furigana:"あした、とうきょうへいきます。",english:"I will go to Tokyo tomorrow."}]},
-      {title:"Other polite forms",examples:[
-        {japanese:"何を食べますか。",furigana:"なにをたべますか。",english:"What will you eat?"},
-        {japanese:"コーヒーを飲みません。",furigana:"コーヒーをのみません。",english:"I don't drink coffee."},
-        {japanese:"昨日、映画を見ました。",furigana:"きのう、えいがをみました。",english:"I watched a movie yesterday."}]}
-    ],notes:"The ～ます family includes ～ません, ～ました, and ～ませんでした."
+    id: "n5-masu", level: "N5", pattern: "～ます", title: "Polite verb form", short: "A common polite way to use Japanese verbs.",
+    explanation: "～ます is used to make verbs polite and is one of the most common verb forms for beginners. It can describe something that happens regularly or something that will happen.",
+    usages: [
+      { title: "Present or habitual action", examples: [
+        { japanese: "毎日、日本語を勉強します。", furigana: "まいにち、にほんごをべんきょうします。", english: "I study Japanese every day." }
+      ]},
+      { title: "Future action", examples: [
+        { japanese: "明日、東京へ行きます。", furigana: "あした、とうきょうへいきます。", english: "I will go to Tokyo tomorrow." }
+      ]},
+      { title: "Other polite forms", examples: [
+        { japanese: "何を食べますか。", furigana: "なにをたべますか。", english: "What will you eat?" },
+        { japanese: "コーヒーを飲みません。", furigana: "コーヒーをのみません。", english: "I don't drink coffee." },
+        { japanese: "昨日、映画を見ました。", furigana: "きのう、えいがをみました。", english: "I watched a movie yesterday." }
+      ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "ます-stem", example: "行く → 行きます" }
+    ], notes: "The ～ます family includes ～ません, ～ました, and ～ませんでした."
   },
   {
-    id:"n5-wa",level:"N5",pattern:"は",title:"Topic marker",short:"Shows what the sentence is mainly about.",
-    explanation:"は marks what the sentence is mainly about. It is often similar to saying “as for...” in English, although a natural English translation usually does not include those words.",
-    usages:[
-      {title:"Introducing a topic",examples:[{japanese:"私は学生です。",furigana:"わたしはがくせいです。",english:"I am a student."}]},
-      {title:"Talking about something",examples:[{japanese:"この本は面白いです。",furigana:"このほんはおもしろいです。",english:"This book is interesting."}]},
-      {title:"Contrast",examples:[
-        {japanese:"私はコーヒーが好きです。",furigana:"わたしはコーヒーがすきです。",english:"I like coffee."},
-        {japanese:"弟はコーヒーが好きではありません。",furigana:"おとうとはコーヒーがすきではありません。",english:"My younger brother does not like coffee."}]}
-    ],notes:"は is pronounced “wa” when used as the topic particle."
+    id: "n5-wa", level: "N5", pattern: "は", title: "Topic marker", short: "Shows what the sentence is mainly about.",
+    explanation: "は marks what the sentence is mainly about. It is often similar to saying “as for...” in English, although a natural English translation usually does not include those words.",
+    usages: [
+      { title: "Introducing a topic", examples: [
+        { japanese: "私は学生です。", furigana: "わたしはがくせいです。", english: "I am a student." }
+      ]},
+      { title: "Talking about something", examples: [
+        { japanese: "この本は面白いです。", furigana: "このほんはおもしろいです。", english: "This book is interesting." }
+      ]},
+      { title: "Contrast", examples: [
+        { japanese: "私はコーヒーが好きです。", furigana: "わたしはコーヒーがすきです。", english: "I like coffee." },
+        { japanese: "弟はコーヒーが好きではありません。", furigana: "おとうとはコーヒーがすきではありません。", english: "My younger brother does not like coffee." }
+      ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ は", example: "私 → 私は" }
+    ], notes: "は is pronounced “wa” when used as the topic particle."
   },
   {
-    id:"n5-ga",level:"N5",pattern:"が",title:"Subject / focus marker",short:"Marks the subject or puts focus on who or what.",
-    explanation:"が marks the subject of a sentence and can put emphasis on who or what performs an action or has a particular quality. It is also commonly used when introducing something new or answering a question about who or what.",
-    usages:[
-      {title:"Introducing something",examples:[{japanese:"猫がいます。",furigana:"ねこがいます。",english:"There is a cat."}]},
-      {title:"Answering “who?”",examples:[
-        {japanese:"誰が来ましたか。",furigana:"だれがきましたか。",english:"Who came?"},
-        {japanese:"田中さんが来ました。",furigana:"たなかさんがきました。",english:"Tanaka came."}]},
-      {title:"With a description",examples:[{japanese:"この料理が美味しいです。",furigana:"このりょうりがおいしいです。",english:"This dish is delicious."}]}
-    ],notes:"The difference between は and が is context-dependent; they should not be learned as completely interchangeable “subject particles.”"
+    id: "n5-ga", level: "N5", pattern: "が", title: "Subject / focus marker", short: "Marks the subject or puts focus on who or what.",
+    explanation: "が marks the subject of a sentence and can put emphasis on who or what performs an action or has a particular quality. It is also commonly used when introducing something new or answering a question about who or what.",
+    usages: [
+      { title: "Introducing something", examples: [
+        { japanese: "猫がいます。", furigana: "ねこがいます。", english: "There is a cat." }
+      ]},
+      { title: "Answering “who?”", examples: [
+        { japanese: "誰が来ましたか。", furigana: "だれがきましたか。", english: "Who came?" },
+        { japanese: "田中さんが来ました。", furigana: "たなかさんがきました。", english: "Tanaka came." }
+      ]},
+      { title: "With a description", examples: [
+        { japanese: "この料理が美味しいです。", furigana: "このりょうりがおいしいです。", english: "This dish is delicious." }
+      ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ が", example: "猫 → 猫が" }
+    ], notes: "The difference between は and が is context-dependent; they should not be learned as completely interchangeable “subject particles.”"
   },
   {
-    id:"n5-o",level:"N5",pattern:"を",title:"Object marker",short:"Marks the thing that a verb acts on.",
-    explanation:"を marks the thing that a verb acts on. It is normally pronounced お (o) rather than “wo” in modern Japanese.",
-    usages:[
-      {title:"Common actions",examples:[
-        {japanese:"ご飯を食べます。",furigana:"ごはんをたべます。",english:"I eat rice."},
-        {japanese:"水を飲みます。",furigana:"みずをのみます。",english:"I drink water."},
-        {japanese:"本を読みます。",furigana:"ほんをよみます。",english:"I read a book."}]}
+    id: "n5-o", level: "N5", pattern: "を", title: "Object marker", short: "Marks the thing that a verb acts on.",
+    explanation: "を marks the thing that a verb acts on. It is normally pronounced お (o) rather than “wo” in modern Japanese.",
+    usages: [
+      { title: "Common actions", examples: [
+        { japanese: "ご飯を食べます。", furigana: "ごはんをたべます。", english: "I eat rice." },
+        { japanese: "水を飲みます。", furigana: "みずをのみます。", english: "I drink water." },
+        { japanese: "本を読みます。", furigana: "ほんをよみます。", english: "I read a book." }
+      ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ を", example: "水 → 水を" }
     ]
   },
   {
-    id:"n5-ni",level:"N5",pattern:"に",title:"Time, destination & target",short:"Marks several relationships, including time, destination and target.",
-    explanation:"に marks several different relationships, including a specific time, a destination, or the target of an action. Its meaning depends on the type of sentence it appears in.",
-    usages:[
-      {title:"Specific time",examples:[{japanese:"7時に起きます。",furigana:"しちじにおきます。",english:"I wake up at 7 o'clock."}]},
-      {title:"Destination",examples:[{japanese:"日本に行きます。",furigana:"にほんにいきます。",english:"I go to Japan."}]},
-      {title:"Where something exists",examples:[{japanese:"机の上に本があります。",furigana:"つくえのうえにほんがあります。",english:"There is a book on the desk."}]},
-      {title:"Target or recipient",examples:[{japanese:"先生に聞きます。",furigana:"せんせいにききます。",english:"I ask the teacher."}]}
-    ],notes:"Common time words such as 今日, 明日 and 毎日 usually do not take に."
+    id: "n5-ni", level: "N5", pattern: "に", title: "Time, destination & target", short: "Marks several relationships, including time, destination and target.",
+    explanation: "に marks several different relationships, including a specific time, a destination, or the target of an action. Its meaning depends on the type of sentence it appears in.",
+    usages: [
+      { title: "Specific time", examples: [
+        { japanese: "7時に起きます。", furigana: "しちじにおきます。", english: "I wake up at 7 o'clock." }
+      ]},
+      { title: "Destination", examples: [
+        { japanese: "日本に行きます。", furigana: "にほんにいきます。", english: "I go to Japan." }
+      ]},
+      { title: "Where something exists", examples: [
+        { japanese: "机の上に本があります。", furigana: "つくえのうえにほんがあります。", english: "There is a book on the desk." }
+      ]},
+      { title: "Target or recipient", examples: [
+        { japanese: "先生に聞きます。", furigana: "せんせいにききます。", english: "I ask the teacher." }
+      ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ に", example: "日本 → 日本に" }
+    ], notes: "Common time words such as 今日, 明日 and 毎日 usually do not take に."
   },
   {
-    id:"n5-de",level:"N5",pattern:"で",title:"Location of action / means",short:"Marks where an action happens or what is used to do it.",
-    explanation:"で marks where an action happens or what is used to perform an action. It is different from に when talking about locations: に often marks where something exists, while で marks where an action takes place.",
-    usages:[
-      {title:"Location of an action",examples:[
-        {japanese:"学校で勉強します。",furigana:"がっこうでべんきょうします。",english:"I study at school."},
-        {japanese:"レストランで昼ご飯を食べました。",furigana:"レストランでひるごはんをたべました。",english:"I ate lunch at a restaurant."}]},
-      {title:"Means or tool",examples:[
-        {japanese:"電車で行きます。",furigana:"でんしゃでいきます。",english:"I go by train."},
-        {japanese:"箸で食べます。",furigana:"はしでたべます。",english:"I eat with chopsticks."}]}
+    id: "n5-de", level: "N5", pattern: "で", title: "Location of action / means", short: "Marks where an action happens or what is used to do it.",
+    explanation: "で marks where an action happens or what is used to perform an action. It is different from に when talking about locations: に often marks where something exists, while で marks where an action takes place.",
+    usages: [
+      { title: "Location of an action", examples: [
+        { japanese: "学校で勉強します。", furigana: "がっこうでべんきょうします。", english: "I study at school." },
+        { japanese: "レストランで昼ご飯を食べました。", furigana: "レストランでひるごはんをたべました。", english: "I ate lunch at a restaurant." }
+      ]},
+      { title: "Means or tool", examples: [
+        { japanese: "電車で行きます。", furigana: "でんしゃでいきます。", english: "I go by train." },
+        { japanese: "箸で食べます。", furigana: "はしでたべます。", english: "I eat with chopsticks." }
+      ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ で", example: "学校 → 学校で" }
     ]
   },
   {
-    id:"n5-no",level:"N5",pattern:"の",title:"Possession / relationship",short:"Connects nouns to show possession or another relationship.",
-    explanation:"の connects two nouns and shows a relationship between them, often possession or belonging. It is commonly translated as “of” or “’s”, but its use is broader than English possession.",
-    usages:[
-      {title:"Possession",examples:[{japanese:"私の本です。",furigana:"わたしのほんです。",english:"It is my book."}]},
-      {title:"Relationship or type",examples:[
-        {japanese:"日本語の先生です。",furigana:"にほんごのせんせいです。",english:"They are a Japanese teacher."},
-        {japanese:"日本の車です。",furigana:"にほんのくるまです。",english:"It is a Japanese car."}]},
-      {title:"Asking “whose?”",examples:[{japanese:"これは誰のかばんですか。",furigana:"これはだれのかばんですか。",english:"Whose bag is this?"}]}
+    id: "n5-no", level: "N5", pattern: "の", title: "Possession / relationship", short: "Connects nouns to show possession or another relationship.",
+    explanation: "の connects two nouns and shows a relationship between them, often possession or belonging. It is commonly translated as “of” or “’s”, but its use is broader than English possession.",
+    usages: [
+      { title: "Possession", examples: [
+        { japanese: "私の本です。", furigana: "わたしのほんです。", english: "It is my book." }
+      ]},
+      { title: "Relationship or type", examples: [
+        { japanese: "日本語の先生です。", furigana: "にほんごのせんせいです。", english: "They are a Japanese teacher." },
+        { japanese: "日本の車です。", furigana: "にほんのくるまです。", english: "It is a Japanese car." }
+      ]},
+      { title: "Asking “whose?”", examples: [
+        { japanese: "これは誰のかばんですか。", furigana: "これはだれのかばんですか。", english: "Whose bag is this?" }
+      ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ の", example: "私 → 私の" }
     ]
   },
   {
-    id:"n5-tai",level:"N5",pattern:"～たい",title:"Want to do something",short:"Expresses a desire to perform an action.",
-    explanation:"～たい expresses a desire to do something and is attached to the verb stem. It is mainly used to talk about the speaker’s own wishes, or someone else’s wishes when those wishes are known.",
-    usages:[
-      {title:"Personal desire",examples:[
-        {japanese:"日本に行きたいです。",furigana:"にほんにいきたいです。",english:"I want to go to Japan."},
-        {japanese:"ラーメンを食べたいです。",furigana:"ラーメンをたべたいです。",english:"I want to eat ramen."}]},
-      {title:"Negative desire",examples:[{japanese:"今日は出かけたくないです。",furigana:"きょうはでかけたくないです。",english:"I do not want to go out today."}]},
-      {title:"Past desire",examples:[{japanese:"昨日は早く寝たかったです。",furigana:"きのうははやくねたかったです。",english:"I wanted to go to bed early yesterday."}]}
-    ],notes:"～たい behaves like an い-adjective: たい → たくない → たかった → たくなかった."
+    id: "n5-tai", level: "N5", pattern: "～たい", title: "Want to do something", short: "Expresses a desire to perform an action.",
+    explanation: "～たい expresses a desire to do something and is attached to the verb stem. It is mainly used to talk about the speaker’s own wishes, or someone else’s wishes when those wishes are known.",
+    usages: [
+      { title: "Personal desire", examples: [
+        { japanese: "日本に行きたいです。", furigana: "にほんにいきたいです。", english: "I want to go to Japan." },
+        { japanese: "ラーメンを食べたいです。", furigana: "ラーメンをたべたいです。", english: "I want to eat ramen." }
+      ]},
+      { title: "Negative desire", examples: [
+        { japanese: "今日は出かけたくないです。", furigana: "きょうはでかけたくないです。", english: "I do not want to go out today." }
+      ]},
+      { title: "Past desire", examples: [
+        { japanese: "昨日は早く寝たかったです。", furigana: "きのうははやくねたかったです。", english: "I wanted to go to bed early yesterday." }
+      ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "ます-stem", example: "食べる → 食べたい" }
+    ], notes: "～たい behaves like an い-adjective: たい → たくない → たかった → たくなかった."
   },
   {
-    id:"n5-teiru",level:"N5",pattern:"～ている",title:"Ongoing action / continuing state",short:"Can describe an action happening now or a state that continues.",
-    explanation:"～ている can describe an action that is happening now, or a state that continues after something happened. The exact meaning depends on the verb and context.",
-    usages:[
-      {title:"Action happening now",examples:[
-        {japanese:"今、本を読んでいます。",furigana:"いま、ほんをよんでいます。",english:"I am reading a book now."},
-        {japanese:"雨が降っています。",furigana:"あめがふっています。",english:"It is raining."}]},
-      {title:"Continuing state",examples:[{japanese:"東京に住んでいます。",furigana:"とうきょうにすんでいます。",english:"I live in Tokyo."}]},
-      {title:"Resulting state",examples:[{japanese:"ドアが開いています。",furigana:"ドアがあいています。",english:"The door is open."}]}
-    ],notes:"The same ～ている form can express different ideas depending on the verb, so context matters."
+    id: "n5-teiru", level: "N5", pattern: "～ている", title: "Ongoing action / continuing state", short: "Can describe an action happening now or a state that continues.",
+    explanation: "～ている can describe an action that is happening now, or a state that continues after something happened. The exact meaning depends on the verb and context.",
+    usages: [
+      { title: "Action happening now", examples: [
+        { japanese: "今、本を読んでいます。", furigana: "いま、ほんをよんでいます。", english: "I am reading a book now." },
+        { japanese: "雨が降っています。", furigana: "あめがふっています。", english: "It is raining." }
+      ]},
+      { title: "Continuing state", examples: [
+        { japanese: "東京に住んでいます。", furigana: "とうきょうにすんでいます。", english: "I live in Tokyo." }
+      ]},
+      { title: "Resulting state", examples: [
+        { japanese: "ドアが開いています。", furigana: "ドアがあいています。", english: "The door is open." }
+      ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "て-form", example: "読む → 読んでいる" }
+    ], notes: "The same ～ている form can express different ideas depending on the verb, so context matters."
   },
-
   {
-    id:"n5-ka",level:"N5",pattern:"か",title:"Question marker",short:"Turns a statement into a polite question.",
-    explanation:"か is placed at the end of a sentence to mark a question in polite Japanese. It can also appear inside a sentence to mean “whether” or “or” in some patterns.",
-    usages:[
-      {title:"Yes / no question",examples:[{japanese:"学生ですか。",furigana:"がくせいですか。",english:"Are you a student?"}]},
-      {title:"Question word",examples:[{japanese:"何を食べますか。",furigana:"なにをたべますか。",english:"What will you eat?"}]}
+    id: "n5-ka", level: "N5", pattern: "か", title: "Question marker", short: "Turns a statement into a polite question.",
+    explanation: "か is placed at the end of a sentence to mark a question in polite Japanese. It can also appear inside a sentence to mean “whether” or “or” in some patterns.",
+    usages: [
+      { title: "Yes / no question", examples: [
+        { japanese: "学生ですか。", furigana: "がくせいですか。", english: "Are you a student?" }
+      ]},
+      { title: "Question word", examples: [
+        { japanese: "何を食べますか。", furigana: "なにをたべますか。", english: "What will you eat?" }
+      ]}
     ]
   },
   {
-    id:"n5-mo",level:"N5",pattern:"も",title:"Also / too",short:"Adds the meaning “also”, “too”, or “as well”.",
-    explanation:"も replaces a particle such as は or が when you want to say that something is also true. It can also emphasize a surprisingly large or small amount in other patterns.",
-    usages:[
-      {title:"Also / too",examples:[
-        {japanese:"私も学生です。",furigana:"わたしもがくせいです。",english:"I am also a student."},
-        {japanese:"田中さんも来ました。",furigana:"たなかさんもきました。",english:"Tanaka came too."}]}
+    id: "n5-mo", level: "N5", pattern: "も", title: "Also / too", short: "Adds the meaning “also”, “too”, or “as well”.",
+    explanation: "も replaces a particle such as は or が when you want to say that something is also true. It can also emphasize a surprisingly large or small amount in other patterns.",
+    usages: [
+      { title: "Also / too", examples: [
+        { japanese: "私も学生です。", furigana: "わたしもがくせいです。", english: "I am also a student." },
+        { japanese: "田中さんも来ました。", furigana: "たなかさんもきました。", english: "Tanaka came too." }
+      ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ も", example: "私 → 私も" }
     ]
   },
   {
-    id:"n5-e",level:"N5",pattern:"へ",title:"Direction / destination",short:"Shows the direction or destination of movement.",
-    explanation:"へ marks the direction or destination of movement. It is similar to に for destinations, but puts more emphasis on the direction of travel.",
-    usages:[
-      {title:"Going somewhere",examples:[
-        {japanese:"日本へ行きます。",furigana:"にほんへいきます。",english:"I am going to Japan."},
-        {japanese:"家へ帰ります。",furigana:"いえへかえります。",english:"I am going home."}]}
-    ],notes:"The particle へ is pronounced “e”."
+    id: "n5-e", level: "N5", pattern: "へ", title: "Direction / destination", short: "Shows the direction or destination of movement.",
+    explanation: "へ marks the direction or destination of movement. It is similar to に for destinations, but puts more emphasis on the direction of travel.",
+    usages: [
+      { title: "Going somewhere", examples: [
+        { japanese: "日本へ行きます。", furigana: "にほんへいきます。", english: "I am going to Japan." },
+        { japanese: "家へ帰ります。", furigana: "いえへかえります。", english: "I am going home." }
+      ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ へ", example: "日本 → 日本へ" }
+    ], notes: "The particle へ is pronounced “e”."
   },
   {
-    id:"n5-to",level:"N5",pattern:"と",title:"And / with",short:"Connects nouns or marks someone you do something with.",
-    explanation:"と connects nouns when listing complete items, and it can mark the person you do an action with. It has several other uses at higher levels.",
-    usages:[
-      {title:"And",examples:[{japanese:"りんごとバナナを買いました。",furigana:"りんごとバナナをかいました。",english:"I bought apples and bananas."}]},
-      {title:"With someone",examples:[{japanese:"友達と映画を見ます。",furigana:"ともだちとえいがをみます。",english:"I watch a movie with a friend."}]}
+    id: "n5-to", level: "N5", pattern: "と", title: "And / with", short: "Connects nouns or marks someone you do something with.",
+    explanation: "と connects nouns when listing complete items, and it can mark the person you do an action with. It has several other uses at higher levels.",
+    usages: [
+      { title: "And", examples: [
+        { japanese: "りんごとバナナを買いました。", furigana: "りんごとバナナをかいました。", english: "I bought apples and bananas." }
+      ]},
+      { title: "With someone", examples: [
+        { japanese: "友達と映画を見ます。", furigana: "ともだちとえいがをみます。", english: "I watch a movie with a friend." }
+      ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ と", example: "友達 → 友達と" }
     ]
   },
   {
-    id:"n5-ya",level:"N5",pattern:"や",title:"And, among other things",short:"Lists examples without saying the list is complete.",
-    explanation:"や connects nouns to give examples from a larger group. It is useful when you mean “A, B, and things like that.”",
-    usages:[
-      {title:"Giving examples",examples:[
-        {japanese:"りんごやバナナを買いました。",furigana:"りんごやバナナをかいました。",english:"I bought apples, bananas, and things like that."}]}
+    id: "n5-ya", level: "N5", pattern: "や", title: "And, among other things", short: "Lists examples without saying the list is complete.",
+    explanation: "や connects nouns to give examples from a larger group. It is useful when you mean “A, B, and things like that.”",
+    usages: [
+      { title: "Listing examples", examples: [
+        { japanese: "りんごやバナナを買いました。", furigana: "りんごやバナナをかいました。", english: "I bought apples, bananas, and things like that." },
+        { japanese: "机の上に本やノートがあります。", furigana: "つくえのうえにほんやノートがあります。", english: "There are things like books and notebooks on the desk." }
+      ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ や", example: "りんご → りんごや" }
     ]
   },
   {
-    id:"n5-ne",level:"N5",pattern:"ね",title:"Seeking agreement",short:"Adds a feeling like “right?”, “isn't it?”, or “you know”.",
-    explanation:"ね is used when the speaker expects the listener to agree, notice the same thing, or share the feeling. It can make a statement sound friendlier and more conversational.",
-    usages:[
-      {title:"Seeking agreement",examples:[
-        {japanese:"今日は暑いですね。",furigana:"きょうはあついですね。",english:"It's hot today, isn't it?"},
-        {japanese:"きれいですね。",furigana:"きれいですね。",english:"It's beautiful, isn't it?"}]}
+    id: "n5-ne", level: "N5", pattern: "ね", title: "Seeking agreement", short: "Adds a feeling like “right?”, “isn't it?”, or “you know”.",
+    explanation: "ね is used when the speaker expects the listener to agree, notice the same thing, or share the feeling. It can make a statement sound friendlier and more conversational.",
+    usages: [
+      { title: "Seeking agreement", examples: [
+        { japanese: "今日は暑いですね。", furigana: "きょうはあついですね。", english: "It's hot today, isn't it?" },
+        { japanese: "きれいですね。", furigana: "きれいですね。", english: "It's beautiful, isn't it?" }
+      ]}
     ]
   },
   {
-    id:"n5-yo",level:"N5",pattern:"よ",title:"Adding emphasis",short:"Emphasizes information or tells the listener something they may not know.",
-    explanation:"よ adds emphasis and can signal that the speaker is giving the listener useful or new information. It is common in friendly spoken Japanese.",
-    usages:[
-      {title:"Giving information",examples:[
-        {japanese:"これは美味しいですよ。",furigana:"これはおいしいですよ。",english:"This is delicious, you know."},
-        {japanese:"明日は休みですよ。",furigana:"あしたはやすみですよ。",english:"Tomorrow is a day off, you know."}]}
+    id: "n5-yo", level: "N5", pattern: "よ", title: "Adding emphasis", short: "Emphasizes information or tells the listener something they may not know.",
+    explanation: "よ adds emphasis and can signal that the speaker is giving the listener useful or new information. It is common in friendly spoken Japanese.",
+    usages: [
+      { title: "Giving information", examples: [
+        { japanese: "これは美味しいですよ。", furigana: "これはおいしいですよ。", english: "This is delicious, you know." },
+        { japanese: "明日は休みですよ。", furigana: "あしたはやすみですよ。", english: "Tomorrow is a day off, you know." }
+      ]}
     ]
   },
   {
-    id:"n5-aru",level:"N5",pattern:"あります",title:"There is / exists (things)",short:"Says that a non-living thing exists or is located somewhere.",
-    explanation:"あります is used for the existence or location of non-living things such as objects, plants, and places. The thing that exists is normally marked with が.",
-    usages:[
-      {title:"Something exists",examples:[{japanese:"机があります。",furigana:"つくえがあります。",english:"There is a desk."}]},
-      {title:"Something is somewhere",examples:[{japanese:"部屋にテレビがあります。",furigana:"へやにテレビがあります。",english:"There is a TV in the room."}]}
+    id: "n5-aru", level: "N5", pattern: "あります", title: "There is / exists (things)", short: "Says that a non-living thing exists or is located somewhere.",
+    explanation: "あります is used for the existence or location of non-living things such as objects, plants, and places. The thing that exists is normally marked with が.",
+    usages: [
+      { title: "Something exists", examples: [
+        { japanese: "机があります。", furigana: "つくえがあります。", english: "There is a desk." }
+      ]},
+      { title: "Something is somewhere", examples: [
+        { japanese: "部屋にテレビがあります。", furigana: "へやにテレビがあります。", english: "There is a TV in the room." }
+      ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ があります", example: "机 → 机があります" }
     ]
   },
   {
-    id:"n5-iru",level:"N5",pattern:"います",title:"There is / exists (living things)",short:"Says that a person or animal exists or is somewhere.",
-    explanation:"います is used for the existence or location of people and animals. The person or animal that exists is normally marked with が.",
-    usages:[
-      {title:"Someone or something living exists",examples:[
-        {japanese:"猫がいます。",furigana:"ねこがいます。",english:"There is a cat."},
-        {japanese:"先生がいます。",furigana:"せんせいがいます。",english:"The teacher is here."}]}
+    id: "n5-iru", level: "N5", pattern: "います", title: "There is / exists (living things)", short: "Says that a person or animal exists or is somewhere.",
+    explanation: "います is used for the existence or location of people and animals. The person or animal that exists is normally marked with が.",
+    usages: [
+      { title: "Someone or something living exists", examples: [
+        { japanese: "猫がいます。", furigana: "ねこがいます。", english: "There is a cat." },
+        { japanese: "先生がいます。", furigana: "せんせいがいます。", english: "The teacher is here." }
+      ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ がいます", example: "猫 → 猫がいます" }
     ]
   },
   {
-    id:"n5-janai",level:"N5",pattern:"じゃない / ではない",title:"Not / is not",short:"Makes a noun or な-adjective statement negative.",
-    explanation:"じゃない and ではない mean “is not” or “are not” after nouns and な-adjectives. じゃない is more conversational, while ではない is more formal or written.",
-    usages:[
-      {title:"Negative statement",examples:[
-        {japanese:"学生じゃないです。",furigana:"がくせいじゃないです。",english:"I am not a student."},
-        {japanese:"これは私の本ではありません。",furigana:"これはわたしのほんではありません。",english:"This is not my book."}]}
+    id: "n5-janai", level: "N5", pattern: "じゃない / ではない", title: "Not / is not", short: "Makes a noun or な-adjective statement negative.",
+    explanation: "じゃない and ではない mean “is not” or “are not” after nouns and な-adjectives. じゃない is more conversational, while ではない is more formal or written.",
+    usages: [
+      { title: "Negative statement", examples: [
+        { japanese: "学生じゃないです。", furigana: "がくせいじゃないです。", english: "I am not a student." },
+        { japanese: "これは私の本ではありません。", furigana: "これはわたしのほんではありません。", english: "This is not my book." }
+      ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ じゃない／ではない", example: "学生 → 学生じゃない" },
+      { pos: "な-Adjective", form: "stem + じゃない", example: "便利 → 便利じゃない" }
     ]
   },
   {
-    id:"n5-i-adj",level:"N5",pattern:"い-adjectives",title:"Describing with い-adjectives",short:"Adjectives ending in い that can directly describe nouns and change form.",
-    explanation:"い-adjectives can directly come before nouns and can change their endings to make negative or past forms. They are one of the two main adjective groups in Japanese.",
-    usages:[
-      {title:"Before a noun",examples:[{japanese:"大きい犬です。",furigana:"おおきいいぬです。",english:"It is a big dog."}]},
-      {title:"Negative",examples:[{japanese:"今日は寒くないです。",furigana:"きょうはさむくないです。",english:"It is not cold today."}]},
-      {title:"Past",examples:[{japanese:"昨日は暑かったです。",furigana:"きのうはあつかったです。",english:"It was hot yesterday."}]}
-    ],notes:"Not every adjective ending in い is an い-adjective; common exceptions such as きれい belong to the な-adjective group."
+    id: "n5-i-adj", level: "N5", pattern: "い-adjectives", title: "Describing with い-adjectives", short: "Adjectives ending in い that can directly describe nouns and change form.",
+    explanation: "い-adjectives can directly come before nouns and can change their endings to make negative or past forms. They are one of the two main adjective groups in Japanese.",
+    usages: [
+      { title: "Before a noun", examples: [
+        { japanese: "大きい犬です。", furigana: "おおきいいぬです。", english: "It is a big dog." }
+      ]},
+      { title: "Negative", examples: [
+        { japanese: "今日は寒くないです。", furigana: "きょうはさむくないです。", english: "It is not cold today." }
+      ]},
+      { title: "Past", examples: [
+        { japanese: "昨日は暑かったです。", furigana: "きのうはあつかったです。", english: "It was hot yesterday." }
+      ]}
+    ], notes: "Not every adjective ending in い is an い-adjective; common exceptions such as きれい belong to the な-adjective group."
   },
   {
-    id:"n5-na-adj",level:"N5",pattern:"な-adjectives",title:"Describing with な-adjectives",short:"Adjectives that use な before a noun and です in polite statements.",
-    explanation:"な-adjectives use な when they directly modify a noun. They behave more like nouns when forming polite negative and past sentences.",
-    usages:[
-      {title:"Before a noun",examples:[{japanese:"静かな町です。",furigana:"しずかなまちです。",english:"It is a quiet town."}]},
-      {title:"Polite description",examples:[{japanese:"この町は静かです。",furigana:"このまちはしずかです。",english:"This town is quiet."}]},
-      {title:"Negative",examples:[{japanese:"便利ではありません。",furigana:"べんりではありません。",english:"It is not convenient."}]}
+    id: "n5-na-adj", level: "N5", pattern: "な-adjectives", title: "Describing with な-adjectives", short: "Adjectives that use な before a noun and です in polite statements.",
+    explanation: "な-adjectives use な when they directly modify a noun. They behave more like nouns when forming polite negative and past sentences.",
+    usages: [
+      { title: "Before a noun", examples: [
+        { japanese: "静かな町です。", furigana: "しずかなまちです。", english: "It is a quiet town." }
+      ]},
+      { title: "Polite description", examples: [
+        { japanese: "この町は静かです。", furigana: "このまちはしずかです。", english: "This town is quiet." }
+      ]},
+      { title: "Negative", examples: [
+        { japanese: "便利ではありません。", furigana: "べんりではありません。", english: "It is not convenient." }
+      ]}
     ]
   },
   {
-    id:"n5-kono",level:"N5",pattern:"この / その / あの",title:"This / that / that over there",short:"Points to a noun based on its distance from the speaker and listener.",
-    explanation:"この, その, and あの come directly before nouns to mean “this”, “that”, and “that over there”. The choice depends on where the thing is relative to the people speaking.",
-    usages:[
-      {title:"Near the speaker",examples:[{japanese:"この本は面白いです。",furigana:"このほんはおもしろいです。",english:"This book is interesting."}]},
-      {title:"Near the listener",examples:[{japanese:"そのかばんはあなたのですか。",furigana:"そのかばんはあなたのですか。",english:"Is that bag yours?"}]},
-      {title:"Far from both",examples:[{japanese:"あの山は高いです。",furigana:"あのやまはたかいです。",english:"That mountain over there is tall."}]}
+    id: "n5-kono", level: "N5", pattern: "この / その / あの", title: "This / that / that over there", short: "Points to a noun based on its distance from the speaker and listener.",
+    explanation: "この, その, and あの come directly before nouns to mean “this”, “that”, and “that over there”. The choice depends on where the thing is relative to the people speaking.",
+    usages: [
+      { title: "Near the speaker", examples: [
+        { japanese: "この本は面白いです。", furigana: "このほんはおもしろいです。", english: "This book is interesting." }
+      ]},
+      { title: "Near the listener", examples: [
+        { japanese: "そのかばんはあなたのですか。", furigana: "そのかばんはあなたのですか。", english: "Is that bag yours?" }
+      ]},
+      { title: "Far from both", examples: [
+        { japanese: "あの山は高いです。", furigana: "あのやまはたかいです。", english: "That mountain over there is tall." }
+      ]}
     ]
   },
   {
-    id:"n5-kore",level:"N5",pattern:"これ / それ / あれ",title:"This / that / that over there",short:"Pronouns used to point to things.",
-    explanation:"これ, それ, and あれ stand alone as nouns and mean “this”, “that”, and “that over there”. They follow the same distance pattern as この, その, and あの.",
-    usages:[
-      {title:"Asking what something is",examples:[{japanese:"これは何ですか。",furigana:"これはなんですか。",english:"What is this?"}]},
-      {title:"Answering",examples:[{japanese:"それはペンです。",furigana:"それはペンです。",english:"That is a pen."}]}
+    id: "n5-kore", level: "N5", pattern: "これ / それ / あれ", title: "This / that / that over there", short: "Pronouns used to point to things.",
+    explanation: "これ, それ, and あれ stand alone as nouns and mean “this”, “that”, and “that over there”. They follow the same distance pattern as この, その, and あの.",
+    usages: [
+      { title: "Asking what something is", examples: [
+        { japanese: "これは何ですか。", furigana: "これはなんですか。", english: "What is this?" }
+      ]},
+      { title: "Answering", examples: [
+        { japanese: "それはペンです。", furigana: "それはペンです。", english: "That is a pen." }
+      ]}
     ]
   },
   {
-    id:"n5-dare",level:"N5",pattern:"誰 / だれ",title:"Who",short:"Asks which person or people.",
-    explanation:"誰 asks “who?” and is used when identifying a person. The polite form 誰ですか is common in basic questions.",
-    usages:[
-      {title:"Asking who someone is",examples:[
-        {japanese:"あの人は誰ですか。",furigana:"あのひとはだれですか。",english:"Who is that person?"},
-        {japanese:"誰が来ましたか。",furigana:"だれがきましたか。",english:"Who came?"}]}
+    id: "n5-dare", level: "N5", pattern: "誰 / だれ", title: "Who", short: "Asks which person or people.",
+    explanation: "誰 asks “who?” and is used when identifying a person. The polite form 誰ですか is common in basic questions.",
+    usages: [
+      { title: "Asking who someone is", examples: [
+        { japanese: "あの人は誰ですか。", furigana: "あのひとはだれですか。", english: "Who is that person?" },
+        { japanese: "誰が来ましたか。", furigana: "だれがきましたか。", english: "Who came?" }
+      ]}
     ]
   },
   {
-    id:"n5-nani",level:"N5",pattern:"何 / なに・なん",title:"What",short:"Asks about a thing or information.",
-    explanation:"何 asks “what?” and can be read なに or なん depending on the word that follows. It is one of the most common Japanese question words.",
-    usages:[
-      {title:"Asking what something is",examples:[{japanese:"これは何ですか。",furigana:"これはなんですか。",english:"What is this?"}]},
-      {title:"Asking what someone does",examples:[{japanese:"何を食べますか。",furigana:"なにをたべますか。",english:"What will you eat?"}]}
+    id: "n5-nani", level: "N5", pattern: "何 / なに・なん", title: "What", short: "Asks about a thing or information.",
+    explanation: "何 asks “what?” and can be read なに or なん depending on the word that follows. It is one of the most common Japanese question words.",
+    usages: [
+      { title: "Asking what something is", examples: [
+        { japanese: "これは何ですか。", furigana: "これはなんですか。", english: "What is this?" }
+      ]},
+      { title: "Asking what someone does", examples: [
+        { japanese: "何を食べますか。", furigana: "なにをたべますか。", english: "What will you eat?" }
+      ]}
     ]
   },
   {
-    id:"n5-doko",level:"N5",pattern:"どこ",title:"Where",short:"Asks about a place or location.",
-    explanation:"どこ asks “where?” and is used to ask about places or locations. It can be used with に, で, or other particles depending on the sentence.",
-    usages:[
-      {title:"Location",examples:[{japanese:"トイレはどこですか。",furigana:"トイレはどこですか。",english:"Where is the bathroom?"}]},
-      {title:"Destination",examples:[{japanese:"どこに行きますか。",furigana:"どこにいきますか。",english:"Where are you going?"}]}
+    id: "n5-doko", level: "N5", pattern: "どこ", title: "Where", short: "Asks about a place or location.",
+    explanation: "どこ asks “where?” and is used to ask about places or locations. It can be used with に, で, or other particles depending on the sentence.",
+    usages: [
+      { title: "Location", examples: [
+        { japanese: "トイレはどこですか。", furigana: "トイレはどこですか。", english: "Where is the bathroom?" }
+      ]},
+      { title: "Destination", examples: [
+        { japanese: "どこに行きますか。", furigana: "どこにいきますか。", english: "Where are you going?" }
+      ]}
     ]
   },
   {
-    id:"n5-doushite",level:"N5",pattern:"どうして",title:"Why",short:"Asks for a reason.",
-    explanation:"どうして asks why something happens or why someone does something. It is often followed by an answer using から.",
-    usages:[
-      {title:"Asking for a reason",examples:[{japanese:"どうして日本語を勉強しますか。",furigana:"どうしてにほんごをべんきょうしますか。",english:"Why do you study Japanese?"}]}
+    id: "n5-doushite", level: "N5", pattern: "どうして", title: "Why", short: "Asks for a reason.",
+    explanation: "どうして asks why something happens or why someone does something. It is often followed by an answer using から.",
+    usages: [
+      { title: "Asking for a reason", examples: [
+        { japanese: "どうして日本語を勉強しますか。", furigana: "どうしてにほんごをべんきょうしますか。", english: "Why do you study Japanese?" }
+      ]}
     ]
   },
   {
-    id:"n5-dou",level:"N5",pattern:"どう",title:"How / what do you think?",short:"Asks about a way, condition, or opinion.",
-    explanation:"どう asks how something is, how something should be done, or what someone thinks about something. The exact English wording depends on the context.",
-    usages:[
-      {title:"Asking how something is",examples:[{japanese:"日本の生活はどうですか。",furigana:"にほんのせいかつはどうですか。",english:"How is life in Japan?"}]},
-      {title:"Asking for an opinion",examples:[{japanese:"この映画はどうですか。",furigana:"このえいがはどうですか。",english:"What do you think of this movie?"}]}
+    id: "n5-dou", level: "N5", pattern: "どう", title: "How / what do you think?", short: "Asks about a way, condition, or opinion.",
+    explanation: "どう asks how something is, how something should be done, or what someone thinks about something. The exact English wording depends on the context.",
+    usages: [
+      { title: "Asking how something is", examples: [
+        { japanese: "日本の生活はどうですか。", furigana: "にほんのせいかつはどうですか。", english: "How is life in Japan?" }
+      ]},
+      { title: "Asking for an opinion", examples: [
+        { japanese: "この映画はどうですか。", furigana: "このえいがはどうですか。", english: "What do you think of this movie?" }
+      ]}
     ]
   },
   {
-    id:"n5-douyatte",level:"N5",pattern:"どうやって",title:"How / by what method",short:"Asks how to do something or how something is done.",
-    explanation:"どうやって asks about the method or way of doing something. It is often followed by a verb.",
-    usages:[
-      {title:"Asking how to get somewhere",examples:[{japanese:"駅へどうやって行きますか。",furigana:"えきへどうやっていきますか。",english:"How do you get to the station?"}]}
+    id: "n5-douyatte", level: "N5", pattern: "どうやって", title: "How / by what method", short: "Asks how to do something or how something is done.",
+    explanation: "どうやって asks about the method or way of doing something. It is often followed by a verb.",
+    usages: [
+      { title: "Asking how to get somewhere", examples: [
+        { japanese: "駅へどうやって行きますか。", furigana: "えきへどうやっていきますか。", english: "How do you get to the station?" }
+      ]}
     ]
   },
   {
-    id:"n5-itsumo",level:"N5",pattern:"いつも",title:"Always / usually",short:"Describes something that happens regularly or habitually.",
-    explanation:"いつも means “always” or “usually” and describes a repeated habit or regular situation. Its exact English translation depends on how often the action happens.",
-    usages:[
-      {title:"Habit",examples:[
-        {japanese:"いつも朝ご飯を食べます。",furigana:"いつもあさごはんをたべます。",english:"I always eat breakfast."},
-        {japanese:"彼はいつも忙しいです。",furigana:"かれはいつもいそがしいです。",english:"He is always busy."}]}
+    id: "n5-itsumo", level: "N5", pattern: "いつも", title: "Always / usually", short: "Describes something that happens regularly or habitually.",
+    explanation: "いつも means “always” or “usually” and describes a repeated habit or regular situation. Its exact English translation depends on how often the action happens.",
+    usages: [
+      { title: "Habit", examples: [
+        { japanese: "いつも朝ご飯を食べます。", furigana: "いつもあさごはんをたべます。", english: "I always eat breakfast." },
+        { japanese: "彼はいつも忙しいです。", furigana: "かれはいつもいそがしいです。", english: "He is always busy." }
+      ]}
     ]
   },
   {
-    id:"n5-mou",level:"N5",pattern:"もう",title:"Already / no longer",short:"Often means “already” or “anymore” depending on the sentence.",
-    explanation:"もう can show that something has already happened or that a previous state is no longer true. The negative form often gives the meaning “not anymore”.",
-    usages:[
-      {title:"Already",examples:[{japanese:"もう食べました。",furigana:"もうたべました。",english:"I already ate."}]},
-      {title:"No longer",examples:[{japanese:"もうありません。",furigana:"もうありません。",english:"There isn't any more."}]}
+    id: "n5-mou", level: "N5", pattern: "もう", title: "Already / no longer", short: "Often means “already” or “anymore” depending on the sentence.",
+    explanation: "もう can show that something has already happened or that a previous state is no longer true. The negative form often gives the meaning “not anymore”.",
+    usages: [
+      { title: "Already", examples: [
+        { japanese: "もう食べました。", furigana: "もうたべました。", english: "I already ate." }
+      ]},
+      { title: "No longer", examples: [
+        { japanese: "もうありません。", furigana: "もうありません。", english: "There isn't any more." }
+      ]}
     ]
   },
   {
-    id:"n5-mada",level:"N5",pattern:"まだ",title:"Still / not yet",short:"Shows that something continues or has not happened yet.",
-    explanation:"まだ can mean “still” when a situation continues, or “not yet” when used with a negative verb. It is commonly paired with まだ～ていません for “have not yet done”.",
-    usages:[
-      {title:"Still",examples:[{japanese:"まだ学生です。",furigana:"まだがくせいです。",english:"I am still a student."}]},
-      {title:"Not yet",examples:[{japanese:"まだ食べていません。",furigana:"まだたべていません。",english:"I have not eaten yet."}]}
+    id: "n5-mada", level: "N5", pattern: "まだ", title: "Still / not yet", short: "Shows that something continues or has not happened yet.",
+    explanation: "まだ can mean “still” when a situation continues, or “not yet” when used with a negative verb. It is commonly paired with まだ～ていません for “have not yet done”.",
+    usages: [
+      { title: "Still", examples: [
+        { japanese: "まだ学生です。", furigana: "まだがくせいです。", english: "I am still a student." }
+      ]},
+      { title: "Not yet", examples: [
+        { japanese: "まだ食べていません。", furigana: "まだたべていません。", english: "I have not eaten yet." }
+      ]}
     ]
   },
   {
-    id:"n5-kara",level:"N5",pattern:"から",title:"From / because",short:"Can mark a starting point or give a reason.",
-    explanation:"から can mean “from” when marking a starting point, or “because” when giving a reason. The meaning is clear from what surrounds it.",
-    usages:[
-      {title:"Starting point",examples:[{japanese:"9時から働きます。",furigana:"くじからはたらきます。",english:"I work from 9 o'clock."}]},
-      {title:"Because",examples:[{japanese:"雨ですから、行きません。",furigana:"あめですから、いきません。",english:"Because it is raining, I will not go."}]}
+    id: "n5-kara", level: "N5", pattern: "から", title: "From / because", short: "Can mark a starting point or give a reason.",
+    explanation: "から can mean “from” when marking a starting point, or “because” when giving a reason. The meaning is clear from what surrounds it.",
+    usages: [
+      { title: "Starting point", examples: [
+        { japanese: "9時から働きます。", furigana: "くじからはたらきます。", english: "I work from 9 o'clock." }
+      ]},
+      { title: "Because", examples: [
+        { japanese: "雨ですから、行きません。", furigana: "あめですから、いきません。", english: "Because it is raining, I will not go." }
+      ]}
+    ],
+    conjugations: [
+      { pos: "Noun (time)", form: "+ から", example: "9時 → 9時から" },
+      { pos: "Verb / い-Adjective / な-Adjective / Noun", form: "plain or polite form + から", example: "雨です → 雨ですから" }
     ]
   },
   {
-    id:"n5-made",level:"N5",pattern:"まで",title:"Until / as far as",short:"Marks an endpoint in time or space.",
-    explanation:"まで marks the point where something ends, such as a time, place, or range. It often translates as “until” or “as far as”.",
-    usages:[
-      {title:"Until a time",examples:[{japanese:"5時まで働きます。",furigana:"ごじまではたらきます。",english:"I work until 5 o'clock."}]},
-      {title:"As far as a place",examples:[{japanese:"駅まで歩きます。",furigana:"えきまであるきます。",english:"I walk as far as the station."}]}
+    id: "n5-made", level: "N5", pattern: "まで", title: "Until / as far as", short: "Marks an endpoint in time or space.",
+    explanation: "まで marks the point where something ends, such as a time, place, or range. It often translates as “until” or “as far as”.",
+    usages: [
+      { title: "Until a time", examples: [
+        { japanese: "5時まで働きます。", furigana: "ごじまではたらきます。", english: "I work until 5 o'clock." }
+      ]},
+      { title: "As far as a place", examples: [
+        { japanese: "駅まで歩きます。", furigana: "えきまであるきます。", english: "I walk as far as the station." }
+      ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ まで", example: "5時 → 5時まで" }
     ]
   },
   {
-    id:"n5-dake",level:"N5",pattern:"だけ",title:"Only / just",short:"Limits something to the stated amount or thing.",
-    explanation:"だけ means “only” or “just” and limits what is being talked about. It can follow nouns and other forms.",
-    usages:[
-      {title:"Only one thing",examples:[
-        {japanese:"水だけ飲みます。",furigana:"みずだけのみます。",english:"I only drink water."},
-        {japanese:"これだけです。",furigana:"これだけです。",english:"This is all."}]}
+    id: "n5-dake", level: "N5", pattern: "だけ", title: "Only / just", short: "Limits something to the stated amount or thing.",
+    explanation: "だけ means “only” or “just” and limits what is being talked about. It can follow nouns and other forms.",
+    usages: [
+      { title: "Only one thing", examples: [
+        { japanese: "水だけ飲みます。", furigana: "みずだけのみます。", english: "I only drink water." },
+        { japanese: "これだけです。", furigana: "これだけです。", english: "This is all." }
+      ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ だけ", example: "水 → 水だけ" }
     ]
   },
   {
-    id:"n5-kedo",level:"N5",pattern:"けど",title:"But / though",short:"Connects ideas with a contrast or softens what comes next.",
-    explanation:"けど means “but” or “though” and connects two ideas that contrast. It can also be left at the end of a sentence to soften an unfinished thought or invitation.",
-    usages:[
-      {title:"Contrast",examples:[{japanese:"高いけど、買います。",furigana:"たかいけど、かいます。",english:"It is expensive, but I will buy it."}]},
-      {title:"Softening a statement",examples:[{japanese:"ちょっと聞きたいんですけど…。",furigana:"ちょっとききたいんですけど…。",english:"I wanted to ask you something..."}]}
-    ],notes:"けれど and けれども are more formal variants with a similar basic meaning."
+    id: "n5-kedo", level: "N5", pattern: "けど", title: "But / though", short: "Connects ideas with a contrast or softens what comes next.",
+    explanation: "けど means “but” or “though” and connects two ideas that contrast. It can also be left at the end of a sentence to soften an unfinished thought or invitation.",
+    usages: [
+      { title: "Contrast", examples: [
+        { japanese: "高いけど、買います。", furigana: "たかいけど、かいます。", english: "It is expensive, but I will buy it." }
+      ]},
+      { title: "Softening a statement", examples: [
+        { japanese: "ちょっと聞きたいんですけど…。", furigana: "ちょっとききたいんですけど…。", english: "I wanted to ask you something..." }
+      ]}
+    ], notes: "けれど and けれども are more formal variants with a similar basic meaning."
   },
   {
-    id:"n5-demo",level:"N5",pattern:"でも",title:"But / however",short:"Introduces a contrasting idea.",
-    explanation:"でも commonly means “but” or “however” at the start of a sentence. It can also mean “even” in other constructions, but that use is better treated separately.",
-    usages:[
-      {title:"Contrasting sentences",examples:[{japanese:"行きたいです。でも、時間がありません。",furigana:"いきたいです。でも、じかんがありません。",english:"I want to go. But I don't have time."}]}
+    id: "n5-demo", level: "N5", pattern: "でも", title: "But / however", short: "Introduces a contrasting idea.",
+    explanation: "でも commonly means “but” or “however” at the start of a sentence. It can also mean “even” in other constructions, but that use is better treated separately.",
+    usages: [
+      { title: "Contrasting sentences", examples: [
+        { japanese: "行きたいです。でも、時間がありません。", furigana: "いきたいです。でも、じかんがありません。", english: "I want to go. But I don't have time." }
+      ]}
     ]
   },
   {
-    id:"n5-mashou",level:"N5",pattern:"～ましょう",title:"Let's / shall we",short:"Suggests doing something together.",
-    explanation:"～ましょう is a polite way to suggest that the speaker and listener do something together. It can also be used to accept or make a group proposal.",
-    usages:[
-      {title:"Making a suggestion",examples:[
-        {japanese:"一緒に行きましょう。",furigana:"いっしょにいきましょう。",english:"Let's go together."},
-        {japanese:"休みましょう。",furigana:"やすみましょう。",english:"Let's take a break."}]}
+    id: "n5-mashou", level: "N5", pattern: "～ましょう", title: "Let's / shall we", short: "Suggests doing something together.",
+    explanation: "～ましょう is a polite way to suggest that the speaker and listener do something together. It can also be used to accept or make a group proposal.",
+    usages: [
+      { title: "Making a suggestion", examples: [
+        { japanese: "一緒に行きましょう。", furigana: "いっしょにいきましょう。", english: "Let's go together." },
+        { japanese: "休みましょう。", furigana: "やすみましょう。", english: "Let's take a break." }
+      ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "ます-stem", example: "行く → 行きましょう" }
     ]
   },
   {
-    id:"n5-masenk-a",level:"N5",pattern:"～ませんか",title:"Would you like to…?",short:"Makes a polite invitation or suggestion.",
-    explanation:"～ませんか is a polite way to invite someone to do something. Although it contains the negative form ません, the overall meaning is usually an invitation rather than a refusal.",
-    usages:[
-      {title:"Invitation",examples:[
-        {japanese:"一緒に映画を見ませんか。",furigana:"いっしょにえいがをみませんか。",english:"Would you like to watch a movie together?"},
-        {japanese:"コーヒーを飲みませんか。",furigana:"コーヒーをのみませんか。",english:"Would you like some coffee?"}]}
+    id: "n5-masenk-a", level: "N5", pattern: "～ませんか", title: "Would you like to…?", short: "Makes a polite invitation or suggestion.",
+    explanation: "～ませんか is a polite way to invite someone to do something. Although it contains the negative form ません, the overall meaning is usually an invitation rather than a refusal.",
+    usages: [
+      { title: "Invitation", examples: [
+        { japanese: "一緒に映画を見ませんか。", furigana: "いっしょにえいがをみませんか。", english: "Would you like to watch a movie together?" },
+        { japanese: "コーヒーを飲みませんか。", furigana: "コーヒーをのみませんか。", english: "Would you like some coffee?" }
+      ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "ます-stem (negative question)", example: "見る → 見ませんか" }
     ]
   },
   {
-    id:"n5-mashouka",level:"N5",pattern:"～ましょうか",title:"Shall I…? / Shall we…?",short:"Offers to do something or asks whether to do something together.",
-    explanation:"～ましょうか can be used to offer to do something for someone or to suggest doing something together. The situation usually makes the intended meaning clear.",
-    usages:[
-      {title:"Offering help",examples:[{japanese:"手伝いましょうか。",furigana:"てつだいましょうか。",english:"Shall I help?"}]},
-      {title:"Suggesting an action",examples:[{japanese:"そろそろ帰りましょうか。",furigana:"そろそろかえりましょうか。",english:"Shall we head home soon?"}]}
+    id: "n5-mashouka", level: "N5", pattern: "～ましょうか", title: "Shall I…? / Shall we…?", short: "Offers to do something or asks whether to do something together.",
+    explanation: "～ましょうか can be used to offer to do something for someone or to suggest doing something together. The situation usually makes the intended meaning clear.",
+    usages: [
+      { title: "Offering help", examples: [
+        { japanese: "手伝いましょうか。", furigana: "てつだいましょうか。", english: "Shall I help?" }
+      ]},
+      { title: "Suggesting an action", examples: [
+        { japanese: "そろそろ帰りましょうか。", furigana: "そろそろかえりましょうか。", english: "Shall we head home soon?" }
+      ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "ます-stem", example: "手伝う → 手伝いましょうか" }
     ]
   },
   {
-    id:"n5-te-kudasai",level:"N5",pattern:"～てください",title:"Please do",short:"Makes a polite request.",
-    explanation:"～てください asks someone to do an action in a polite way. It is formed with the verb's て-form followed by ください.",
-    usages:[
-      {title:"Request",examples:[
-        {japanese:"ちょっと待ってください。",furigana:"ちょっとまってください。",english:"Please wait a moment."},
-        {japanese:"ここに名前を書いてください。",furigana:"ここになまえをかいてください。",english:"Please write your name here."}]}
+    id: "n5-te-kudasai", level: "N5", pattern: "～てください", title: "Please do", short: "Makes a polite request.",
+    explanation: "～てください asks someone to do an action in a polite way. It is formed with the verb's て-form followed by ください.",
+    usages: [
+      { title: "Request", examples: [
+        { japanese: "ちょっと待ってください。", furigana: "ちょっとまってください。", english: "Please wait a moment." },
+        { japanese: "ここに名前を書いてください。", furigana: "ここになまえをかいてください。", english: "Please write your name here." }
+      ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "て-form", example: "待つ → 待ってください" }
     ]
   },
   {
-    id:"n5-naide-kudasai",level:"N5",pattern:"～ないでください",title:"Please don't",short:"Makes a polite request not to do something.",
-    explanation:"～ないでください asks someone not to do an action. It uses the negative ない-form followed by でください.",
-    usages:[
-      {title:"Request not to do something",examples:[
-        {japanese:"ここで写真を撮らないでください。",furigana:"ここでしゃしんをとらないでください。",english:"Please do not take photos here."},
-        {japanese:"忘れないでください。",furigana:"わすれないでください。",english:"Please don't forget."}]}
+    id: "n5-naide-kudasai", level: "N5", pattern: "～ないでください", title: "Please don't", short: "Makes a polite request not to do something.",
+    explanation: "～ないでください asks someone not to do an action. It uses the negative ない-form followed by でください.",
+    usages: [
+      { title: "Request not to do something", examples: [
+        { japanese: "ここで写真を撮らないでください。", furigana: "ここでしゃしんをとらないでください。", english: "Please do not take photos here." },
+        { japanese: "忘れないでください。", furigana: "わすれないでください。", english: "Please don't forget." }
+      ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "negative stem", example: "撮る → 撮らないでください" }
     ]
   },
   {
-    id:"n5-hoshii",level:"N5",pattern:"～がほしい",title:"Want a thing",short:"Says that you want a particular thing.",
-    explanation:"～がほしい expresses a desire to have or get something. It is used with a noun marked by が.",
-    usages:[
-      {title:"Wanting something",examples:[
-        {japanese:"新しい車がほしいです。",furigana:"あたらしいくるまがほしいです。",english:"I want a new car."},
-        {japanese:"水がほしいです。",furigana:"みずがほしいです。",english:"I want some water."}]}
+    id: "n5-hoshii", level: "N5", pattern: "～がほしい", title: "Want a thing", short: "Says that you want a particular thing.",
+    explanation: "～がほしい expresses a desire to have or get something. It is used with a noun marked by が.",
+    usages: [
+      { title: "Wanting something", examples: [
+        { japanese: "新しい車がほしいです。", furigana: "あたらしいくるまがほしいです。", english: "I want a new car." },
+        { japanese: "水がほしいです。", furigana: "みずがほしいです。", english: "I want some water." }
+      ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ がほしい", example: "車 → 車がほしい" }
     ]
   },
   {
-    id:"n5-hou-ga-ii",level:"N5",pattern:"～ほうがいい",title:"Should / it is better to",short:"Gives simple advice about what is better to do.",
-    explanation:"～ほうがいい is used to say that one choice is better than another. With verbs, it commonly gives advice such as “you should...” or “you had better...”.",
-    usages:[
-      {title:"Advice to do something",examples:[{japanese:"早く寝たほうがいいです。",furigana:"はやくねたほうがいいです。",english:"You should go to bed early."}]},
-      {title:"Advice not to do something",examples:[{japanese:"無理をしないほうがいいです。",furigana:"むりをしないほうがいいです。",english:"You should not push yourself."}]}
+    id: "n5-hou-ga-ii", level: "N5", pattern: "～ほうがいい", title: "Should / it is better to", short: "Gives simple advice about what is better to do.",
+    explanation: "～ほうがいい is used to say that one choice is better than another. With verbs, it commonly gives advice such as “you should...” or “you had better...”.",
+    usages: [
+      { title: "Advice to do something", examples: [
+        { japanese: "早く寝たほうがいいです。", furigana: "はやくねたほうがいいです。", english: "You should go to bed early." }
+      ]},
+      { title: "Advice not to do something", examples: [
+        { japanese: "無理をしないほうがいいです。", furigana: "むりをしないほうがいいです。", english: "You should not push yourself." }
+      ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "past (た) or negative form", example: "寝る → 寝たほうがいい" }
     ]
   },
   {
-    id:"n5-ga-hoshii",level:"N5",pattern:"～がある / ～がいる",title:"There is / there are",short:"Describes existence, using different verbs for things and living beings.",
-    explanation:"Use ある for non-living things and いる for people and animals. The thing or person that exists is usually marked with が.",
-    usages:[
-      {title:"Non-living thing",examples:[{japanese:"机の上に本があります。",furigana:"つくえのうえにほんがあります。",english:"There is a book on the desk."}]},
-      {title:"Person or animal",examples:[{japanese:"公園に子どもがいます。",furigana:"こうえんにこどもがいます。",english:"There are children in the park."}]}
-    ],notes:"The separate あります and います entries above focus on each verb; this entry highlights the contrast."
+    id: "n5-ga-hoshii", level: "N5", pattern: "～がある / ～がいる", title: "There is / there are", short: "Describes existence, using different verbs for things and living beings.",
+    explanation: "Use ある for non-living things and いる for people and animals. The thing or person that exists is usually marked with が.",
+    usages: [
+      { title: "Non-living thing", examples: [
+        { japanese: "机の上に本があります。", furigana: "つくえのうえにほんがあります。", english: "There is a book on the desk." }
+      ]},
+      { title: "Person or animal", examples: [
+        { japanese: "公園に子どもがいます。", furigana: "こうえんにこどもがいます。", english: "There are children in the park." }
+      ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ がある／がいる", example: "本 → 本があります" }
+    ], notes: "The separate あります and います entries above focus on each verb; this entry highlights the contrast."
   },
   {
-    id:"n5-kata",level:"N5",pattern:"～方（かた）",title:"Way of doing something",short:"Turns a verb stem into a noun meaning “way of doing”.",
-    explanation:"～方 is attached to a verb stem to talk about the way or method of doing something. It is useful for asking or explaining how to use or do something.",
-    usages:[
-      {title:"How to do something",examples:[
-        {japanese:"使い方を教えてください。",furigana:"つかいかたをおしえてください。",english:"Please teach me how to use it."},
-        {japanese:"日本語の話し方が分かりません。",furigana:"にほんごのはなしかたがわかりません。",english:"I don't know how to speak Japanese."}]}
+    id: "n5-kata", level: "N5", pattern: "～方（かた）", title: "Way of doing something", short: "Turns a verb stem into a noun meaning “way of doing”.",
+    explanation: "～方 is attached to a verb stem to talk about the way or method of doing something. It is useful for asking or explaining how to use or do something.",
+    usages: [
+      { title: "How to do something", examples: [
+        { japanese: "使い方を教えてください。", furigana: "つかいかたをおしえてください。", english: "Please teach me how to use it." },
+        { japanese: "日本語の話し方が分かりません。", furigana: "にほんごのはなしかたがわかりません。", english: "I don't know how to speak Japanese." }
+      ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "ます-stem", example: "使う → 使い方" }
     ]
   },
   {
-    id:"n5-mae-ni",level:"N5",pattern:"～前に",title:"Before doing / before",short:"Says that something happens before another event.",
-    explanation:"～前に means “before” and can be used with nouns or the dictionary form of verbs. It places one event earlier than another.",
-    usages:[
-      {title:"Before an action",examples:[{japanese:"寝る前に歯を磨きます。",furigana:"ねるまえにはをみがきます。",english:"I brush my teeth before going to bed."}]},
-      {title:"Before a time or event",examples:[{japanese:"三日前に日本へ来ました。",furigana:"みっかまえににほんへきました。",english:"I came to Japan three days ago."}]}
+    id: "n5-mae-ni", level: "N5", pattern: "～前に", title: "Before doing / before", short: "Says that something happens before another event.",
+    explanation: "～前に means “before” and can be used with nouns or the dictionary form of verbs. It places one event earlier than another.",
+    usages: [
+      { title: "Before an action", examples: [
+        { japanese: "寝る前に歯を磨きます。", furigana: "ねるまえにはをみがきます。", english: "I brush my teeth before going to bed." }
+      ]},
+      { title: "Before a time or event", examples: [
+        { japanese: "三日前に日本へ来ました。", furigana: "みっかまえににほんへきました。", english: "I came to Japan three days ago." }
+      ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary form", example: "寝る → 寝る前に" },
+      { pos: "Noun (quantity)", form: "+ 前に", example: "三日 → 三日前に" }
     ]
   },
   {
-    id:"n5-jouzu",level:"N5",pattern:"上手 / 下手",title:"Good / bad at",short:"Describes someone's skill at doing something.",
-    explanation:"上手 means “good at” and 下手 means “bad at”. They are commonly used with が to describe ability or skill.",
-    usages:[
-      {title:"Good at something",examples:[{japanese:"私は料理が上手です。",furigana:"わたしはりょうりがじょうずです。",english:"I am good at cooking."}]},
-      {title:"Not good at something",examples:[{japanese:"私は歌が下手です。",furigana:"わたしはうたがへたです。",english:"I am bad at singing."}]}
+    id: "n5-jouzu", level: "N5", pattern: "上手 / 下手", title: "Good / bad at", short: "Describes someone's skill at doing something.",
+    explanation: "上手 means “good at” and 下手 means “bad at”. They are commonly used with が to describe ability or skill.",
+    usages: [
+      { title: "Good at something", examples: [
+        { japanese: "私は料理が上手です。", furigana: "わたしはりょうりがじょうずです。", english: "I am good at cooking." }
+      ]},
+      { title: "Not good at something", examples: [
+        { japanese: "私は歌が下手です。", furigana: "わたしはうたがへたです。", english: "I am bad at singing." }
+      ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ が上手／下手", example: "料理 → 料理が上手" }
     ]
   },
   {
-    id:"n5-suki",level:"N5",pattern:"好き / 嫌い",title:"Like / dislike",short:"Describes things you like or dislike.",
-    explanation:"好き means “like” and 嫌い means “dislike”. Japanese treats these as な-adjectives, and the thing you like or dislike is commonly marked with が.",
-    usages:[
-      {title:"Like",examples:[{japanese:"私は日本語が好きです。",furigana:"わたしはにほんごがすきです。",english:"I like Japanese."}]},
-      {title:"Dislike",examples:[{japanese:"魚が嫌いです。",furigana:"さかながきらいです。",english:"I dislike fish."}]}
+    id: "n5-suki", level: "N5", pattern: "好き / 嫌い", title: "Like / dislike", short: "Describes things you like or dislike.",
+    explanation: "好き means “like” and 嫌い means “dislike”. Japanese treats these as な-adjectives, and the thing you like or dislike is commonly marked with が.",
+    usages: [
+      { title: "Like", examples: [
+        { japanese: "私は日本語が好きです。", furigana: "わたしはにほんごがすきです。", english: "I like Japanese." }
+      ]},
+      { title: "Dislike", examples: [
+        { japanese: "魚が嫌いです。", furigana: "さかながきらいです。", english: "I dislike fish." }
+      ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ が好き／嫌い", example: "日本語 → 日本語が好き" }
     ]
   },
   {
-    id:"n5-suki-na",level:"N5",pattern:"～が好き",title:"Like something",short:"Says that you like a person, thing, or activity.",
-    explanation:"～が好き describes what someone likes, with the liked thing marked by が. The pattern is especially useful because English uses a verb (“like”) where Japanese uses an adjective.",
-    usages:[
-      {title:"Liking a thing",examples:[{japanese:"音楽が好きです。",furigana:"おんがくがすきです。",english:"I like music."}]},
-      {title:"Liking an activity",examples:[{japanese:"日本語を勉強するのが好きです。",furigana:"にほんごをべんきょうするのがすきです。",english:"I like studying Japanese."}]}
+    id: "n5-suki-na", level: "N5", pattern: "～が好き", title: "Like something", short: "Says that you like a person, thing, or activity.",
+    explanation: "～が好き describes what someone likes, with the liked thing marked by が. The pattern is especially useful because English uses a verb (“like”) where Japanese uses an adjective.",
+    usages: [
+      { title: "Liking a thing", examples: [
+        { japanese: "音楽が好きです。", furigana: "おんがくがすきです。", english: "I like music." }
+      ]},
+      { title: "Liking an activity", examples: [
+        { japanese: "日本語を勉強するのが好きです。", furigana: "にほんごをべんきょうするのがすきです。", english: "I like studying Japanese." }
+      ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ が好き", example: "音楽 → 音楽が好き" },
+      { pos: "Verb", form: "dictionary form + の + が好き", example: "勉強する → 勉強するのが好き" }
     ]
   },
   {
-    id:"n5-chotto",level:"N5",pattern:"ちょっと",title:"A little / somewhat",short:"Means “a little” and is also often used to soften a statement or refusal.",
-    explanation:"ちょっと means “a little” or “a bit”. In conversation it can also soften a negative response, sometimes implying “that may be difficult” without saying no directly.",
-    usages:[
-      {title:"A little",examples:[{japanese:"日本語がちょっと分かります。",furigana:"にほんごがちょっとわかります。",english:"I understand a little Japanese."}]},
-      {title:"Softening a response",examples:[{japanese:"今日はちょっと…。",furigana:"きょうはちょっと…。",english:"Today might be a little difficult..."}]}
+    id: "n5-chotto", level: "N5", pattern: "ちょっと", title: "A little / somewhat", short: "Means “a little” and is also often used to soften a statement or refusal.",
+    explanation: "ちょっと means “a little” or “a bit”. In conversation it can also soften a negative response, sometimes implying “that may be difficult” without saying no directly.",
+    usages: [
+      { title: "A little", examples: [
+        { japanese: "日本語がちょっと分かります。", furigana: "にほんごがちょっとわかります。", english: "I understand a little Japanese." }
+      ]},
+      { title: "Softening a response", examples: [
+        { japanese: "今日はちょっと…。", furigana: "きょうはちょっと…。", english: "Today might be a little difficult..." }
+      ]}
     ]
   },
   {
-    id:"n5-ichiban",level:"N5",pattern:"一番",title:"The most / number one",short:"Marks the highest degree within a group.",
-    explanation:"一番 means “the most” or “number one” and is used when comparing three or more things. It usually comes before an adjective or other comparison phrase.",
-    usages:[
-      {title:"The most",examples:[
-        {japanese:"これが一番好きです。",furigana:"これがいちばんすきです。",english:"I like this the most."},
-        {japanese:"日本で一番高い山です。",furigana:"にほんでいちばんたかいやまです。",english:"It is the tallest mountain in Japan."}]}
+    id: "n5-ichiban", level: "N5", pattern: "一番", title: "The most / number one", short: "Marks the highest degree within a group.",
+    explanation: "一番 means “the most” or “number one” and is used when comparing three or more things. It usually comes before an adjective or other comparison phrase.",
+    usages: [
+      { title: "The most", examples: [
+        { japanese: "これが一番好きです。", furigana: "これがいちばんすきです。", english: "I like this the most." },
+        { japanese: "日本で一番高い山です。", furigana: "にほんでいちばんたかいやまです。", english: "It is the tallest mountain in Japan." }
+      ]}
     ]
   },
   {
-    id:"n5-yori-hou",level:"N5",pattern:"AよりBのほうが",title:"B is more than A",short:"Compares two things and says B has more of a quality than A.",
-    explanation:"AよりBのほうが compares two things and says that B is more [adjective] than A. The adjective comes after のほうが.",
-    usages:[
-      {title:"Simple comparison",examples:[{japanese:"犬より猫のほうが好きです。",furigana:"いぬよりねこのほうがすきです。",english:"I like cats more than dogs."}]},
-      {title:"Comparing qualities",examples:[{japanese:"電車より車のほうが速いです。",furigana:"でんしゃよりくるまのほうがはやいです。",english:"Cars are faster than trains."}]}
+    id: "n5-yori-hou", level: "N5", pattern: "AよりBのほうが", title: "B is more than A", short: "Compares two things and says B has more of a quality than A.",
+    explanation: "AよりBのほうが compares two things and says that B is more [adjective] than A. The adjective comes after のほうが.",
+    usages: [
+      { title: "Simple comparison", examples: [
+        { japanese: "犬より猫のほうが好きです。", furigana: "いぬよりねこのほうがすきです。", english: "I like cats more than dogs." }
+      ]},
+      { title: "Comparing qualities", examples: [
+        { japanese: "電車より車のほうが速いです。", furigana: "でんしゃよりくるまのほうがはやいです。", english: "Cars are faster than trains." }
+      ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "A より B のほうが", example: "犬 / 猫 → 犬より猫のほうが" }
     ]
   },
   {
-    id:"n5-issho-ni",level:"N5",pattern:"一緒に",title:"Together",short:"Says that people do something together.",
-    explanation:"一緒に means “together” and commonly comes before a verb. It is often used with invitations and suggestions.",
-    usages:[
-      {title:"Doing something together",examples:[
-        {japanese:"一緒に勉強しましょう。",furigana:"いっしょにべんきょうしましょう。",english:"Let's study together."},
-        {japanese:"友達と一緒に行きます。",furigana:"ともだちといっしょにいきます。",english:"I go together with my friend."}]}
+    id: "n5-issho-ni", level: "N5", pattern: "一緒に", title: "Together", short: "Says that people do something together.",
+    explanation: "一緒に means “together” and commonly comes before a verb. It is often used with invitations and suggestions.",
+    usages: [
+      { title: "Doing something together", examples: [
+        { japanese: "一緒に勉強しましょう。", furigana: "いっしょにべんきょうしましょう。", english: "Let's study together." },
+        { japanese: "友達と一緒に行きます。", furigana: "ともだちといっしょにいきます。", english: "I go together with my friend." }
+      ]}
     ]
   },
   {
-    id:"n5-toki",level:"N5",pattern:"～時",title:"When / at the time",short:"Says when something happens or happened.",
-    explanation:"～時 means “when” or “at the time” and connects an event with the time it occurs. It can follow nouns, adjectives, and verb forms.",
-    usages:[
-      {title:"When doing something",examples:[{japanese:"日本へ行く時、写真を撮ります。",furigana:"にほんへいくとき、しゃしんをとります。",english:"When I go to Japan, I take photos."}]},
-      {title:"At a specific time",examples:[{japanese:"子どもの時、よくここに来ました。",furigana:"こどものとき、よくここにきました。",english:"When I was a child, I often came here."}]}
+    id: "n5-toki", level: "N5", pattern: "～時", title: "When / at the time", short: "Says when something happens or happened.",
+    explanation: "～時 means “when” or “at the time” and connects an event with the time it occurs. It can follow nouns, adjectives, and verb forms.",
+    usages: [
+      { title: "When doing something", examples: [
+        { japanese: "日本へ行く時、写真を撮ります。", furigana: "にほんへいくとき、しゃしんをとります。", english: "When I go to Japan, I take photos." }
+      ]},
+      { title: "At a specific time", examples: [
+        { japanese: "子どもの時、よくここに来ました。", furigana: "こどものとき、よくここにきました。", english: "When I was a child, I often came here." }
+      ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary or past form", example: "行く → 行く時" }
     ]
   },
   {
-    id:"n5-te-mo-ii",level:"N5",pattern:"～てもいい",title:"May / it is okay to",short:"Asks for or gives permission to do something.",
-    explanation:"～てもいい means that an action is permitted or acceptable. In a question, it is commonly used to ask “May I...?”",
-    usages:[
-      {title:"Asking permission",examples:[{japanese:"ここに座ってもいいですか。",furigana:"ここにすわってもいいですか。",english:"May I sit here?"}]},
-      {title:"Giving permission",examples:[{japanese:"写真を撮ってもいいです。",furigana:"しゃしんをとってもいいです。",english:"You may take photos."}]}
+    id: "n5-te-mo-ii", level: "N5", pattern: "～てもいい", title: "May / it is okay to", short: "Asks for or gives permission to do something.",
+    explanation: "～てもいい means that an action is permitted or acceptable. In a question, it is commonly used to ask “May I...?”",
+    usages: [
+      { title: "Asking permission", examples: [
+        { japanese: "ここに座ってもいいですか。", furigana: "ここにすわってもいいですか。", english: "May I sit here?" }
+      ]},
+      { title: "Giving permission", examples: [
+        { japanese: "写真を撮ってもいいです。", furigana: "しゃしんをとってもいいです。", english: "You may take photos." }
+      ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "て-form", example: "座る → 座ってもいい" }
     ]
   },
   {
-    id:"n5-te-wa-ikenai",level:"N5",pattern:"～てはいけない",title:"Must not / not allowed",short:"Says that an action is forbidden or not allowed.",
-    explanation:"～てはいけない says that someone must not do something or that an action is not allowed. A more polite version is ～てはいけません.",
-    usages:[
-      {title:"Prohibition",examples:[
-        {japanese:"ここで写真を撮ってはいけません。",furigana:"ここでしゃしんをとってはいけません。",english:"You must not take photos here."},
-        {japanese:"この部屋に入ってはいけません。",furigana:"このへやにはいってはいけません。",english:"You must not enter this room."}]}
+    id: "n5-te-wa-ikenai", level: "N5", pattern: "～てはいけない", title: "Must not / not allowed", short: "Says that an action is forbidden or not allowed.",
+    explanation: "～てはいけない says that someone must not do something or that an action is not allowed. A more polite version is ～てはいけません.",
+    usages: [
+      { title: "Prohibition", examples: [
+        { japanese: "ここで写真を撮ってはいけません。", furigana: "ここでしゃしんをとってはいけません。", english: "You must not take photos here." },
+        { japanese: "この部屋に入ってはいけません。", furigana: "このへやにはいってはいけません。", english: "You must not enter this room." }
+      ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "て-form", example: "撮る → 撮ってはいけない" }
     ]
   },
   {
-    id:"n5-nakereba",level:"N5",pattern:"～なければならない",title:"Must / have to",short:"Says that something is necessary or required.",
-    explanation:"～なければならない means “must” or “have to”. It is formed from the negative ない-form and expresses an obligation to do the action.",
-    usages:[
-      {title:"Obligation",examples:[
-        {japanese:"明日、学校へ行かなければなりません。",furigana:"あした、がっこうへいかなければなりません。",english:"I have to go to school tomorrow."}]}
-    ],notes:"A common spoken alternative is ～ないといけない."
+    id: "n5-nakereba", level: "N5", pattern: "～なければならない", title: "Must / have to", short: "Says that something is necessary or required.",
+    explanation: "～なければならない means “must” or “have to”. It is formed from the negative ない-form and expresses an obligation to do the action.",
+    usages: [
+      { title: "Obligation", examples: [
+        { japanese: "明日、学校へ行かなければなりません。", furigana: "あした、がっこうへいかなければなりません。", english: "I have to go to school tomorrow." },
+        { japanese: "薬を毎日飲まなければなりません。", furigana: "くすりをまいにちのまなければなりません。", english: "I have to take medicine every day." }
+      ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "negative stem + ければ", example: "行く → 行かなければならない" }
+    ], notes: "A common spoken alternative is ～ないといけない."
   },
   {
-    id:"n5-nai-to-ikenai",level:"N5",pattern:"～ないといけない",title:"Must / have to",short:"A common conversational way to say that something must be done.",
-    explanation:"～ないといけない expresses an obligation to do something. It is common in everyday conversation and is similar in meaning to ～なければならない.",
-    usages:[
-      {title:"Everyday obligation",examples:[{japanese:"もう帰らないといけません。",furigana:"もうかえらないといけません。",english:"I have to go home now."}]}
+    id: "n5-nai-to-ikenai", level: "N5", pattern: "～ないといけない", title: "Must / have to", short: "A common conversational way to say that something must be done.",
+    explanation: "～ないといけない expresses an obligation to do something. It is common in everyday conversation and is similar in meaning to ～なければならない.",
+    usages: [
+      { title: "Obligation", examples: [
+        { japanese: "もう帰らないといけません。", furigana: "もうかえらないといけません。", english: "I have to go home now." },
+        { japanese: "明日までにレポートを出さないといけません。", furigana: "あしたまでにレポートをださないといけません。", english: "I have to submit the report by tomorrow." }
+      ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "negative stem", example: "帰る → 帰らないといけない" }
     ]
   },
   {
-    id:"n5-tari-tari",level:"N5",pattern:"～たり～たりする",title:"Do things such as A and B",short:"Lists representative actions without giving a complete list.",
-    explanation:"～たり～たりする lists examples of actions that someone does, often with the sense of “do things like A and B”. The list does not have to include every action.",
-    usages:[
-      {title:"Listing activities",examples:[{japanese:"週末は映画を見たり、本を読んだりします。",furigana:"しゅうまつはえいがをみたり、ほんをよんだりします。",english:"On weekends I do things like watch movies and read books."}]}
+    id: "n5-tari-tari", level: "N5", pattern: "～たり～たりする", title: "Do things such as A and B", short: "Lists representative actions without giving a complete list.",
+    explanation: "～たり～たりする lists examples of actions that someone does, often with the sense of “do things like A and B”. The list does not have to include every action.",
+    usages: [
+      { title: "Listing representative actions", examples: [
+        { japanese: "週末は映画を見たり、本を読んだりします。", furigana: "しゅうまつはえいがをみたり、ほんをよんだりします。", english: "On weekends I do things like watch movies and read books." },
+        { japanese: "休みの日は掃除をしたり、料理をしたりします。", furigana: "やすみのひはそうじをしたり、りょうりをしたりします。", english: "On my days off, I do things like cleaning and cooking." }
+      ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "past (た) form + り", example: "見る → 見たり／読んだり" }
     ]
   },
   {
-    id:"n5-koto-ga-dekiru",level:"N5",pattern:"～ことができる",title:"Can / be able to",short:"Says that someone has the ability or opportunity to do something.",
-    explanation:"～ことができる means “can” or “be able to” and is used with the dictionary form of a verb. It describes ability or possibility.",
-    usages:[
-      {title:"Ability",examples:[{japanese:"日本語を話すことができます。",furigana:"にほんごをはなすことができます。",english:"I can speak Japanese."}]},
-      {title:"Possibility",examples:[{japanese:"ここでカードを使うことができます。",furigana:"ここでカードをつかうことができます。",english:"You can use a card here."}]}
+    id: "n5-koto-ga-dekiru", level: "N5", pattern: "～ことができる", title: "Can / be able to", short: "Says that someone has the ability or opportunity to do something.",
+    explanation: "～ことができる means “can” or “be able to” and is used with the dictionary form of a verb. It describes ability or possibility.",
+    usages: [
+      { title: "Ability", examples: [
+        { japanese: "日本語を話すことができます。", furigana: "にほんごをはなすことができます。", english: "I can speak Japanese." }
+      ]},
+      { title: "Possibility", examples: [
+        { japanese: "ここでカードを使うことができます。", furigana: "ここでカードをつかうことができます。", english: "You can use a card here." }
+      ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary form", example: "話す → 話すことができる" }
     ]
   },
   {
-    id:"n5-koto-ga-suki",level:"N5",pattern:"～ことが好き",title:"Like doing something",short:"Uses a verb as a noun to say you like an activity.",
-    explanation:"～こと turns a verb phrase into a noun-like expression, allowing you to say that you like or dislike an activity. This is common with 好き and 嫌い.",
-    usages:[
-      {title:"Liking an activity",examples:[{japanese:"本を読むことが好きです。",furigana:"ほんをよむことがすきです。",english:"I like reading books."}]}
+    id: "n5-koto-ga-suki", level: "N5", pattern: "～ことが好き", title: "Like doing something", short: "Uses a verb as a noun to say you like an activity.",
+    explanation: "～こと turns a verb phrase into a noun-like expression, allowing you to say that you like or dislike an activity. This is common with 好き and 嫌い.",
+    usages: [
+      { title: "Liking an activity", examples: [
+        { japanese: "本を読むことが好きです。", furigana: "ほんをよむことがすきです。", english: "I like reading books." },
+        { japanese: "音楽を聞くことが好きです。", furigana: "おんがくをきくことがすきです。", english: "I like listening to music." }
+      ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary form + こと", example: "読む → 読むことが好き" }
     ]
   },
   {
-    id:"n5-ndesu",level:"N5",pattern:"～んです",title:"Explaining / adding context",short:"Adds an explanatory or contextual feeling to a statement or question.",
-    explanation:"～んです is used when explaining a situation, giving background, or asking for an explanation. It often makes the connection to the surrounding context clearer.",
-    usages:[
-      {title:"Giving an explanation",examples:[{japanese:"今日は休みなんです。",furigana:"きょうはやすみなんです。",english:"You see, today is a day off."}]},
-      {title:"Asking for context",examples:[{japanese:"どうしたんですか。",furigana:"どうしたんですか。",english:"What happened? / What's wrong?"}]}
-    ],notes:"In polite speech, nouns and な-adjectives commonly use なんです."
+    id: "n5-ndesu", level: "N5", pattern: "～んです", title: "Explaining / adding context", short: "Adds an explanatory or contextual feeling to a statement or question.",
+    explanation: "～んです is used when explaining a situation, giving background, or asking for an explanation. It often makes the connection to the surrounding context clearer.",
+    usages: [
+      { title: "Giving an explanation", examples: [
+        { japanese: "今日は休みなんです。", furigana: "きょうはやすみなんです。", english: "You see, today is a day off." }
+      ]},
+      { title: "Asking for context", examples: [
+        { japanese: "どうしたんですか。", furigana: "どうしたんですか。", english: "What happened? / What's wrong?" }
+      ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "plain form", example: "どうした → どうしたんですか" },
+      { pos: "Noun / な-Adjective", form: "stem + な", example: "休み → 休みなんです" }
+    ], notes: "In polite speech, nouns and な-adjectives commonly use なんです."
   },
   {
-    id:"n5-deshou",level:"N5",pattern:"でしょう",title:"Probably / I think / right?",short:"Expresses a guess, expectation, or request for agreement.",
-    explanation:"でしょう can show that the speaker thinks something is likely or can invite agreement. It is softer and less certain than a direct statement.",
-    usages:[
-      {title:"Probably / likely",examples:[{japanese:"明日は雨でしょう。",furigana:"あしたはあめでしょう。",english:"It will probably rain tomorrow."}]},
-      {title:"Seeking agreement",examples:[{japanese:"難しいでしょう？",furigana:"むずかしいでしょう？",english:"It's difficult, right?"}]}
+    id: "n5-deshou", level: "N5", pattern: "でしょう", title: "Probably / I think / right?", short: "Expresses a guess, expectation, or request for agreement.",
+    explanation: "でしょう can show that the speaker thinks something is likely or can invite agreement. It is softer and less certain than a direct statement.",
+    usages: [
+      { title: "Probably / likely", examples: [
+        { japanese: "明日は雨でしょう。", furigana: "あしたはあめでしょう。", english: "It will probably rain tomorrow." }
+      ]},
+      { title: "Seeking agreement", examples: [
+        { japanese: "難しいでしょう？", furigana: "むずかしいでしょう？", english: "It's difficult, right?" }
+      ]}
+    ],
+    conjugations: [
+      { pos: "Verb / い-Adjective", form: "plain form", example: "難しい → 難しいでしょう" },
+      { pos: "Noun / な-Adjective", form: "plain form (だ dropped)", example: "雨 → 雨でしょう" }
     ]
   },
   {
-    id:"n5-darou",level:"N5",pattern:"だろう",title:"Probably / I think",short:"A more casual form used for a guess or expectation.",
-    explanation:"だろう is a casual way to express a guess, expectation, or “probably”. It is related to the more polite でしょう.",
-    usages:[
-      {title:"Making a guess",examples:[{japanese:"明日は晴れるだろう。",furigana:"あしたははれるだろう。",english:"It will probably be sunny tomorrow."}]}
+    id: "n5-darou", level: "N5", pattern: "だろう", title: "Probably / I think", short: "A more casual form used for a guess or expectation.",
+    explanation: "だろう is a casual way to express a guess, expectation, or “probably”. It is related to the more polite でしょう.",
+    usages: [
+      { title: "Plain-form guess", examples: [
+        { japanese: "明日は晴れるだろう。", furigana: "あしたははれるだろう。", english: "It will probably be sunny tomorrow." },
+        { japanese: "彼はもうすぐ来るだろう。", furigana: "かれはもうすぐくるだろう。", english: "He'll probably come soon." }
+      ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "plain form", example: "晴れる → 晴れるだろう" }
     ]
   },
   {
-    id:"n5-donna",level:"N5",pattern:"どんな",title:"What kind of",short:"Asks what type or kind of thing something is.",
-    explanation:"どんな comes before a noun to ask what kind or type of thing it is. The answer normally describes the noun.",
-    usages:[
-      {title:"Asking about a type",examples:[{japanese:"どんな音楽が好きですか。",furigana:"どんなおんがくがすきですか。",english:"What kind of music do you like?"}]}
+    id: "n5-donna", level: "N5", pattern: "どんな", title: "What kind of", short: "Asks what type or kind of thing something is.",
+    explanation: "どんな comes before a noun to ask what kind or type of thing it is. The answer normally describes the noun.",
+    usages: [
+      { title: "Asking about a type", examples: [
+        { japanese: "どんな音楽が好きですか。", furigana: "どんなおんがくがすきですか。", english: "What kind of music do you like?" }
+      ]}
     ]
   },
   {
-    id:"n5-zenzen",level:"N5",pattern:"全然～ない",title:"Not at all",short:"Emphasizes that something is not true or does not happen at all.",
-    explanation:"全然 is commonly used with a negative expression to mean “not at all” or “not in the slightest”. It strongly emphasizes the negative.",
-    usages:[
-      {title:"Not at all",examples:[
-        {japanese:"日本語が全然分かりません。",furigana:"にほんごがぜんぜんわかりません。",english:"I do not understand Japanese at all."},
-        {japanese:"全然食べませんでした。",furigana:"ぜんぜんたべませんでした。",english:"I did not eat at all."}]}
+    id: "n5-zenzen", level: "N5", pattern: "全然～ない", title: "Not at all", short: "Emphasizes that something is not true or does not happen at all.",
+    explanation: "全然 is commonly used with a negative expression to mean “not at all” or “not in the slightest”. It strongly emphasizes the negative.",
+    usages: [
+      { title: "Not at all", examples: [
+        { japanese: "日本語が全然分かりません。", furigana: "にほんごがぜんぜんわかりません。", english: "I do not understand Japanese at all." },
+        { japanese: "全然食べませんでした。", furigana: "ぜんぜんたべませんでした。", english: "I did not eat at all." }
+      ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "negative form", example: "分かる → 全然分からない" }
     ]
   },
   {
-    id:"n5-amari",level:"N5",pattern:"あまり～ない",title:"Not very / not much",short:"Softens a negative statement to mean “not very” or “not much”.",
-    explanation:"あまり is commonly used with a negative expression to mean “not very” or “not much”. It makes a negative statement less absolute than 全然～ない.",
-    usages:[
-      {title:"Not very",examples:[{japanese:"日本語があまり上手ではありません。",furigana:"にほんごがあまりじょうずではありません。",english:"I am not very good at Japanese."}]}
+    id: "n5-amari", level: "N5", pattern: "あまり～ない", title: "Not very / not much", short: "Softens a negative statement to mean “not very” or “not much”.",
+    explanation: "あまり is commonly used with a negative expression to mean “not very” or “not much”. It makes a negative statement less absolute than 全然～ない.",
+    usages: [
+      { title: "Low degree", examples: [
+        { japanese: "日本語があまり上手ではありません。", furigana: "にほんごがあまりじょうずではありません。", english: "I am not very good at Japanese." },
+        { japanese: "この店はあまり有名ではありません。", furigana: "このみせはあまりゆうめいではありません。", english: "This shop isn't very well-known." }
+      ]}
+    ],
+    conjugations: [
+      { pos: "な-Adjective", form: "stem + ではありません", example: "上手 → あまり上手ではありません" }
     ]
   },
   {
-    id:"n5-soshite",level:"N5",pattern:"そして",title:"And / and then",short:"Connects related statements or events.",
-    explanation:"そして connects sentences or ideas and can mean “and” or “and then”. It is useful for describing a sequence or adding related information.",
-    usages:[
-      {title:"Connecting events",examples:[{japanese:"朝ご飯を食べました。そして、学校へ行きました。",furigana:"あさごはんをたべました。そして、がっこうへいきました。",english:"I ate breakfast. Then I went to school."}]}
+    id: "n5-soshite", level: "N5", pattern: "そして", title: "And / and then", short: "Connects related statements or events.",
+    explanation: "そして connects sentences or ideas and can mean “and” or “and then”. It is useful for describing a sequence or adding related information.",
+    usages: [
+      { title: "Connecting events", examples: [
+        { japanese: "朝ご飯を食べました。そして、学校へ行きました。", furigana: "あさごはんをたべました。そして、がっこうへいきました。", english: "I ate breakfast. Then I went to school." }
+      ]}
     ]
   },
   {
-    id:"n5-sorekara",level:"N5",pattern:"それから",title:"After that / and then",short:"Shows what happens next in a sequence.",
-    explanation:"それから means “after that” or “and then” and is commonly used to connect events in chronological order.",
-    usages:[
-      {title:"Sequence",examples:[{japanese:"昼ご飯を食べました。それから、買い物をしました。",furigana:"ひるごはんをたべました。それから、かいものをしました。",english:"I ate lunch. After that, I went shopping."}]}
+    id: "n5-sorekara", level: "N5", pattern: "それから", title: "After that / and then", short: "Shows what happens next in a sequence.",
+    explanation: "それから means “after that” or “and then” and is commonly used to connect events in chronological order.",
+    usages: [
+      { title: "Sequence", examples: [
+        { japanese: "昼ご飯を食べました。それから、買い物をしました。", furigana: "ひるごはんをたべました。それから、かいものをしました。", english: "I ate lunch. After that, I went shopping." }
+      ]}
     ]
   },
   {
-    id:"n5-ato-de",level:"N5",pattern:"～後で",title:"After",short:"Says that something happens after another action or time.",
-    explanation:"～後で means “after” and places one event later than another. It can follow a noun or the past form of a verb.",
-    usages:[
-      {title:"After an action",examples:[{japanese:"仕事の後で、映画を見ます。",furigana:"しごとのあとで、えいがをみます。",english:"I will watch a movie after work."}]},
-      {title:"After doing something",examples:[{japanese:"ご飯を食べた後で、勉強します。",furigana:"ごはんをたべたあとで、べんきょうします。",english:"I study after eating."}]}
+    id: "n5-ato-de", level: "N5", pattern: "～後で", title: "After", short: "Says that something happens after another action or time.",
+    explanation: "～後で means “after” and places one event later than another. It can follow a noun or the past form of a verb.",
+    usages: [
+      { title: "After an action", examples: [
+        { japanese: "仕事の後で、映画を見ます。", furigana: "しごとのあとで、えいがをみます。", english: "I will watch a movie after work." }
+      ]},
+      { title: "After doing something", examples: [
+        { japanese: "ご飯を食べた後で、勉強します。", furigana: "ごはんをたべたあとで、べんきょうします。", english: "I study after eating." }
+      ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "past (た) form", example: "食べる → 食べた後で" },
+      { pos: "Noun", form: "+ の", example: "仕事 → 仕事の後で" }
     ]
   },
   {
-    id:"n5-nagara",level:"N5",pattern:"～ながら",title:"While doing",short:"Describes two actions happening at the same time.",
-    explanation:"～ながら connects two actions done by the same person at the same time. It is attached to the verb stem of the secondary action.",
-    usages:[
-      {title:"Two actions at once",examples:[{japanese:"音楽を聞きながら勉強します。",furigana:"おんがくをききながらべんきょうします。",english:"I study while listening to music."}]}
+    id: "n5-nagara", level: "N5", pattern: "～ながら", title: "While doing", short: "Describes two actions happening at the same time.",
+    explanation: "～ながら connects two actions done by the same person at the same time. It is attached to the verb stem of the secondary action.",
+    usages: [
+      { title: "Simultaneous actions", examples: [
+        { japanese: "音楽を聞きながら勉強します。", furigana: "おんがくをききながらべんきょうします。", english: "I study while listening to music." },
+        { japanese: "テレビを見ながら、ご飯を食べます。", furigana: "テレビをみながら、ごはんをたべます。", english: "I eat while watching TV." }
+      ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "ます-stem", example: "聞く → 聞きながら" }
     ]
   },
   {
-    id:"n5-nara",level:"N5",pattern:"～なら",title:"If it is / if you're talking about",short:"Sets up a condition or topic based on information already mentioned.",
-    explanation:"～なら can mean “if it is...” or “if you're talking about...”. It is often used when responding to information or choosing something based on a condition.",
-    usages:[
-      {title:"If that is the case",examples:[{japanese:"明日なら大丈夫です。",furigana:"あしたならだいじょうぶです。",english:"If it is tomorrow, that's fine."}]}
+    id: "n5-nara", level: "N5", pattern: "～なら", title: "If it is / if you're talking about", short: "Sets up a condition or topic based on information already mentioned.",
+    explanation: "～なら can mean “if it is...” or “if you're talking about...”. It is often used when responding to information or choosing something based on a condition.",
+    usages: [
+      { title: "Conditional response", examples: [
+        { japanese: "明日なら大丈夫です。", furigana: "あしたならだいじょうぶです。", english: "If it is tomorrow, that's fine." },
+        { japanese: "日本語なら、少し話せます。", furigana: "にほんごなら、すこしはなせます。", english: "If it's Japanese, I can speak a little." }
+      ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ なら", example: "明日 → 明日なら" }
     ]
   },
   {
-    id:"n5-tara",level:"N5",pattern:"～たら",title:"If / when / after",short:"Introduces a condition or says what happens after something.",
-    explanation:"～たら can mean “if”, “when”, or “after”, depending on context. It is formed from the past form of a verb or adjective followed by ら.",
-    usages:[
-      {title:"If",examples:[{japanese:"時間があったら、行きます。",furigana:"じかんがあったら、いきます。",english:"If I have time, I will go."}]},
-      {title:"When / after",examples:[{japanese:"家に帰ったら、電話します。",furigana:"いえにかえったら、でんわします。",english:"When I get home, I will call."}]}
+    id: "n5-tara", level: "N5", pattern: "～たら", title: "If / when / after", short: "Introduces a condition or says what happens after something.",
+    explanation: "～たら can mean “if”, “when”, or “after”, depending on context. It is formed from the past form of a verb or adjective followed by ら.",
+    usages: [
+      { title: "If", examples: [
+        { japanese: "時間があったら、行きます。", furigana: "じかんがあったら、いきます。", english: "If I have time, I will go." }
+      ]},
+      { title: "When / after", examples: [
+        { japanese: "家に帰ったら、電話します。", furigana: "いえにかえったら、でんわします。", english: "When I get home, I will call." }
+      ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "past (た) form", example: "帰る → 帰ったら" }
     ]
   },
   {
-    id:"n5-plain-form",level:"N5",pattern:"普通形",title:"Plain / casual forms",short:"Basic non-polite verb and adjective forms used in casual speech and before many grammar patterns.",
-    explanation:"Plain forms are the basic casual forms of Japanese verbs and adjectives, such as 食べる, 食べない, 食べた, and 食べなかった. They are also used before many grammar patterns.",
-    usages:[
-      {title:"Casual statement",examples:[{japanese:"明日、学校に行く。",furigana:"あした、がっこうにいく。",english:"I am going to school tomorrow."}]},
-      {title:"Before another grammar pattern",examples:[{japanese:"日本語を話すことができます。",furigana:"にほんごをはなすことができます。",english:"I can speak Japanese."}]}
-    ],notes:"This is a foundation rather than a single suffix; the exact plain form depends on the verb or adjective."
+    id: "n5-plain-form", level: "N5", pattern: "普通形", title: "Plain / casual forms", short: "Basic non-polite verb and adjective forms used in casual speech and before many grammar patterns.",
+    explanation: "Plain forms are the basic casual forms of Japanese verbs and adjectives, such as 食べる, 食べない, 食べた, and 食べなかった. They are also used before many grammar patterns.",
+    usages: [
+      { title: "Casual statement", examples: [
+        { japanese: "明日、学校に行く。", furigana: "あした、がっこうにいく。", english: "I am going to school tomorrow." }
+      ]},
+      { title: "Before another grammar pattern", examples: [
+        { japanese: "日本語を話すことができます。", furigana: "にほんごをはなすことができます。", english: "I can speak Japanese." }
+      ]}
+    ], notes: "This is a foundation rather than a single suffix; the exact plain form depends on the verb or adjective."
   }
 ];
 
