@@ -484,7 +484,7 @@ html.furigana-off ruby rt { display: none; }
   color: var(--ink);
 }
 
-.example-jp mark.grammar-hl {
+mark.grammar-hl {
   background: none;
   color: var(--entry-color, var(--accent));
   font-weight: 700;

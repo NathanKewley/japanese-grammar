@@ -500,7 +500,7 @@
       ? '<span class="level-badge" style="--entry-color:' + color + '">' + entry.level + "</span>"
       : "";
     var usagesHtml = entry.usages.map(function (u) { return usageHtml(u, entry.pattern); }).join("");
-    var conjugationsHtml = conjugationTableHtml(entry.conjugations);
+    var conjugationsHtml = conjugationTableHtml(entry.conjugations, entry.pattern);
     var notesHtml = entry.notes
       ? '<div class="entry-note"><span class="entry-note-label">Note</span>' + escapeHtml(entry.notes) + "</div>"
       : "";
@@ -531,14 +531,16 @@
     );
   }
 
-  function conjugationTableHtml(conjugations) {
+  function conjugationTableHtml(conjugations, pattern) {
     if (!conjugations || !conjugations.length) return "";
     var rows = conjugations.map(function (row) {
+      var hl = findHighlightRange(row.example, null, pattern);
+      var exampleHtml = highlightSlice(row.example, 0, row.example.length, hl);
       return (
         "<tr>" +
           "<td>" + escapeHtml(row.pos) + "</td>" +
           "<td>" + escapeHtml(row.form) + "</td>" +
-          '<td class="jp-body">' + escapeHtml(row.example) + "</td>" +
+          '<td class="jp-body">' + exampleHtml + "</td>" +
         "</tr>"
       );
     }).join("");

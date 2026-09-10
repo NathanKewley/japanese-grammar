@@ -667,6 +667,9 @@ const N4_GRAMMAR = [
       { title: "Past action as favor", examples: [
         { japanese: "もうすぐ夏休みだから、子供にゲームを買ってあげるつもりです。", furigana: "もうすぐなつやすみだから、こどもにゲームをかってあげるつもりです。", english: "I'll buy a game for my child soon because summer vacation is coming." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "て-form", example: "教える → 教えてあげる" }
     ], notes: "Avoid using this directly to superiors or strangers as it can sound patronizing. Use ～て差し上げる for humble contexts."
   },
   {
@@ -684,6 +687,9 @@ const N4_GRAMMAR = [
       { title: "Gratitude for past action", examples: [
         { japanese: "本当に助けてくれてありがとう。", furigana: "ほんとうにたすけてくれてありがとう。", english: "Thank you so much for helping me." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "て-form", example: "送る → 送ってくれる" }
     ]
   },
   {
@@ -701,6 +707,9 @@ const N4_GRAMMAR = [
       { title: "Getting someone to do something for you", examples: [
         { japanese: "同僚に仕事を手伝ってもらった。", furigana: "どうりょうにしごとをてつだってもらった。", english: "I got my colleague to help me with my work." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "て-form", example: "直す → 直してもらう" }
     ]
   },
   {
@@ -718,6 +727,10 @@ const N4_GRAMMAR = [
       { title: "Indirect passive", examples: [
         { japanese: "隣の人にタバコを吸われて、眠れなかった。", furigana: "となりのひとにタバコをすわれて、ねむれなかった。", english: "The person next to me smoked, so I couldn't sleep." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb (godan)", form: "negative stem + れる", example: "読む → 読まれる" },
+      { pos: "Verb (ichidan)", form: "stem + られる", example: "好む → 好まれる" }
     ]
   },
   {
@@ -732,6 +745,10 @@ const N4_GRAMMAR = [
         { japanese: "子供に好きなものを食べさせます。", furigana: "こどもにすきなものをたべさせます。", english: "I let my child eat what they like." },
         { japanese: "弟にゲームをさせてあげた。", furigana: "おとうとにゲームをさせてあげた。", english: "I let my younger brother play games." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb (godan)", form: "negative stem + せる", example: "練習する → 練習させる" },
+      { pos: "Verb (する)", form: "irregular: させる", example: "する → させる" }
     ]
   },
   {
@@ -746,57 +763,77 @@ const N4_GRAMMAR = [
         { japanese: "嫌な薬を飲まされた。", furigana: "いやなくすりをのまされた。", english: "I was forced to take unpleasant medicine." },
         { japanese: "上司に無理な仕事をさせられた。", furigana: "じょうしにむりなしごとをさせられた。", english: "My boss made me do an unreasonable task." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "causative stem + られる", example: "掃除する → 掃除させられる" }
     ]
   },
   {
     id: "n4-sou-da-looks", level: "N4", pattern: "～そうだ（様態）", title: "Looks like / appears to be", short: "Expresses a visual impression or impression of likelihood.",
     explanation: "Attached to verb stems or adjective bases to express that something looks like it will happen or seems to possess a quality.",
     usages: [
-      { title: "Visual impression", examples: [
-        { japanese: "このケーキは美味しそうです。", furigana: "このケーキはおいしそうです。", english: "This cake looks delicious." },
-        { japanese: "彼は楽しそうに話している。", furigana: "かれはたのしそうにはなしている。", english: "He looks like he's enjoying the conversation." }
-      ]},
-      { title: "Imminent event", examples: [
+      { title: "With verbs", examples: [
         { japanese: "今にも雨が降りそうです。", furigana: "いまにもあめがふりそうです。", english: "It looks like it will rain at any moment." },
-        { japanese: "この仕事は時間がかかりそうだ。", furigana: "このしごとはじかんがかかりそうだ。", english: "This work looks like it will take time." }
-      ]},
-      { title: "Negative form", examples: [
-        { japanese: "この本は面白くなさそうだ。", furigana: "このほんはおもしろくなさそうだ。", english: "This book doesn't look interesting." },
+        { japanese: "この仕事は時間がかかりそうだ。", furigana: "このしごとはじかんがかかりそうだ。", english: "This work looks like it will take time." },
         { japanese: "明日は雨が降らなさそうだ。", furigana: "あしたはあめがふらなさそうだ。", english: "It doesn't look like it will rain tomorrow." }
       ]},
-      { title: "いい → よさそう", examples: [
+      { title: "With adjectives", examples: [
+        { japanese: "このケーキは美味しそうです。", furigana: "このケーキはおいしそうです。", english: "This cake looks delicious." },
+        { japanese: "彼は楽しそうに話している。", furigana: "かれはたのしそうにはなしている。", english: "He looks like he's enjoying the conversation." },
+        { japanese: "この本は面白くなさそうだ。", furigana: "このほんはおもしろくなさそうだ。", english: "This book doesn't look interesting." },
         { japanese: "この車はよさそうだ。", furigana: "このくるまはよさそうだ。", english: "This car looks good." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "ます-stem", example: "降る → 降りそうだ" },
+      { pos: "い-Adjective", form: "stem (drop い)", example: "美味しい → 美味しそうだ" }
     ], notes: "The negative for いい is よさそう, and for ない is なさそう."
   },
   {
     id: "n4-sou-da-hearsay", level: "N4", pattern: "～そうだ（伝聞）", title: "I heard that / rumor", short: "Used to report information you heard from another source.",
     explanation: "Attached to the plain form of verbs, adjectives, and nouns to state facts or news heard from somewhere else.",
     usages: [
-      { title: "Reporting news", examples: [
+      { title: "With verbs", examples: [
         { japanese: "天気予報によると、明日は雨が降るそうです。", furigana: "てんきよほうによると、あしたはあめがふるそうです。", english: "According to the weather forecast, I heard it will rain tomorrow." },
         { japanese: "田中さんは来月結婚するそうです。", furigana: "たなかさんはらいげつけっこんするそうです。", english: "I heard Tanaka is getting married next month." }
       ]},
-      { title: "Rumors", examples: [
+      { title: "With adjectives", examples: [
+        { japanese: "このレストランは美味しいそうですよ。", furigana: "このレストランはおいしいそうですよ。", english: "I hear this restaurant is delicious." },
+        { japanese: "その映画はとても感動的だそうです。", furigana: "そのえいがはとてもかんどうてきだそうです。", english: "I hear that movie is very moving." }
+      ]},
+      { title: "With nouns", examples: [
         { japanese: "彼は有名な学者だそうです。", furigana: "かれはゆうめいながくしゃだそうです。", english: "I heard he's a famous scholar." },
-        { japanese: "このレストランは美味しいそうですよ。", furigana: "このレストランはおいしいそうですよ。", english: "I hear this restaurant is delicious." }
+        { japanese: "あの二人は兄弟だそうです。", furigana: "あのふたりはきょうだいだそうです。", english: "I hear those two are brothers." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "plain form", example: "降る → 降るそうだ" },
+      { pos: "い-Adjective", form: "plain form", example: "美味しい → 美味しいそうだ" },
+      { pos: "Noun / な-Adjective", form: "+ だ", example: "学者 → 学者だそうだ" }
     ]
   },
   {
     id: "n4-youdes", level: "N4", pattern: "～ようだ / ～ようです", title: "It seems / looks like", short: "Expresses a logical conjecture based on sensory evidence.",
     explanation: "Used to state a soft judgment or observation based on what the speaker sees, hears, or senses.",
     usages: [
-      { title: "Conjecture", examples: [
-        { japanese: "外は寒いようです。", furigana: "そとはさむいようです。", english: "It seems like it is cold outside." },
-        { japanese: "誰かが来たようです。", furigana: "だれかがきたようです。", english: "It seems someone came." }
-      ]},
-      { title: "Based on sight", examples: [
+      { title: "With verbs", examples: [
+        { japanese: "誰かが来たようです。", furigana: "だれかがきたようです。", english: "It seems someone came." },
         { japanese: "彼は怒っているようです。", furigana: "かれはおこっているようです。", english: "He seems to be angry." }
       ]},
-      { title: "With な-adjectives", examples: [
+      { title: "With adjectives", examples: [
+        { japanese: "外は寒いようです。", furigana: "そとはさむいようです。", english: "It seems like it is cold outside." },
         { japanese: "彼は元気なようです。", furigana: "かれはげんきなようです。", english: "He seems to be well." }
+      ]},
+      { title: "With nouns", examples: [
+        { japanese: "隣の部屋は空もようです。", furigana: "となりのへやはあきもようです。", english: "It seems the room next door is vacant." },
+        { japanese: "彼は病気のようで、顔色が悪い。", furigana: "かれはびょうきのようで、かおいろがわるい。", english: "He seems to be sick — his complexion is bad." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "plain form", example: "来る → 来たようだ" },
+      { pos: "い-Adjective", form: "plain form", example: "寒い → 寒いようだ" },
+      { pos: "な-Adjective", form: "stem + な", example: "元気 → 元気なようだ" },
+      { pos: "Noun", form: "+ の", example: "病気 → 病気のようだ" }
     ]
   },
   {
@@ -805,12 +842,15 @@ const N4_GRAMMAR = [
     usages: [
       { title: "Resemblance", examples: [
         { japanese: "彼はまるでお金持ちみたいです。", furigana: "かれはまるでおかねもちみたいです。", english: "He acts just like a rich person." },
-        { japanese: "この料理は美味しみたいだね。", furigana: "このりょうりはおいしみたいだね。", english: "This dish looks delicious, right?" }
+        { japanese: "この料理は美味しいみたいだね。", furigana: "このりょうりはおいしいみたいだね。", english: "This dish looks delicious, right?" }
       ]},
       { title: "Conjecture", examples: [
         { japanese: "明日は雨が降るみたいだよ。", furigana: "あしたはあめがふるみたいだよ。", english: "It looks like it's going to rain tomorrow." },
         { japanese: "彼は病気みたいだ。", furigana: "かれはびょうきみたいだ。", english: "He seems to be sick." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun / plain form", form: "+ みたい", example: "病気 → 病気みたい" }
     ]
   },
   {
@@ -825,6 +865,9 @@ const N4_GRAMMAR = [
         { japanese: "海外で働こうと思っている。", furigana: "かいがいではたらこうとおもっている。", english: "I'm thinking about working overseas." },
         { japanese: "来年は日本へ行こうと決めた。", furigana: "らいねんはにほんへいこうときめた。", english: "I decided to go to Japan next year." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "volitional form", example: "行く → 行こう" }
     ]
   },
   {
@@ -835,19 +878,27 @@ const N4_GRAMMAR = [
         { japanese: "来年、日本へ留学しようと思っています。", furigana: "らいねん、にほんへりゅうがくしようとおもっています。", english: "I am thinking of studying abroad in Japan next year." },
         { japanese: "自分で会社を起こそうと思っています。", furigana: "じぶんでかいしゃをおこそうとおもっています。", english: "I'm thinking about starting my own company." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "volitional form", example: "留学する → 留学しようと思っています" }
     ]
   },
   {
     id: "n4-yotei", level: "N4", pattern: "～予定です", title: "Plan to / scheduled to", short: "States an official or firm plan/schedule.",
     explanation: "Used after a dictionary-form verb or a noun + の to express a set arrangement or schedule.",
     usages: [
-      { title: "Schedule", examples: [
+      { title: "With verbs", examples: [
         { japanese: "来月、新しい会社で働く予定です。", furigana: "らいげつ、あたらしいかいしゃではたらくよていです。", english: "I am scheduled to start working at a new company next month." },
-        { japanese: "旅行の予定です。", furigana: "りょこうのよていです。", english: "It's the plan for the trip." }
-      ]},
-      { title: "Past plan", examples: [
         { japanese: "昨日は出かける予定だった。", furigana: "きのうはでかけるよていだった。", english: "I had planned to go out yesterday." }
+      ]},
+      { title: "With nouns", examples: [
+        { japanese: "旅行の予定です。", furigana: "りょこうのよていです。", english: "It's the plan for the trip." },
+        { japanese: "来週は出張の予定です。", furigana: "らいしゅうはしゅっちょうのよていです。", english: "Next week, a business trip is planned." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary form", example: "働く → 働く予定です" },
+      { pos: "Noun", form: "+ の", example: "旅行 → 旅行の予定です" }
     ]
   },
   {
@@ -861,19 +912,27 @@ const N4_GRAMMAR = [
       { title: "Past intention", examples: [
         { japanese: "もっと早く起きるつもりだった。", furigana: "もっとはやくおきるつもりだった。", english: "I had intended to get up earlier." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "plain form", example: "出かける → 出かけないつもり" }
     ]
   },
   {
     id: "n4-tame-ni", level: "N4", pattern: "～ために", title: "In order to / for the purpose of", short: "States a purpose or goal driving an action.",
     explanation: "Connects a target goal (dictionary form verb or noun + の) to the deliberate effort made to achieve it.",
     usages: [
-      { title: "Purpose", examples: [
+      { title: "With verbs", examples: [
         { japanese: "車を買うために、お金をためています。", furigana: "くるまをかうために、おかねをためています。", english: "I am saving money in order to buy a car." },
-        { japanese: "健康のために、毎日運動しています。", furigana: "けんこうのために、まいにちうんどうしています。", english: "I exercise every day for my health." }
-      ]},
-      { title: "Negative purpose", examples: [
         { japanese: "遅刻しないために、早く出かけた。", furigana: "ちこくしないために、はやくでかけた。", english: "I left early so I wouldn't be late." }
+      ]},
+      { title: "With nouns", examples: [
+        { japanese: "健康のために、毎日運動しています。", furigana: "けんこうのために、まいにちうんどうしています。", english: "I exercise every day for my health." },
+        { japanese: "家族のために、もっと頑張りたい。", furigana: "かぞくのために、もっとがんばりたい。", english: "I want to work harder for the sake of my family." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary form", example: "買う → 買うために" },
+      { pos: "Noun", form: "+ の", example: "健康 → 健康のために" }
     ]
   },
   {
@@ -887,6 +946,9 @@ const N4_GRAMMAR = [
       { title: "Potential verb", examples: [
         { japanese: "日本語が話せるように毎日練習している。", furigana: "にほんごがはなせるようにまいにちれんしゅうしている。", english: "I practice every day so I can speak Japanese." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary or negative form", example: "聞こえる → 聞こえるように" }
     ]
   },
   {
@@ -900,22 +962,28 @@ const N4_GRAMMAR = [
       { title: "Negative change", examples: [
         { japanese: "最近、全然運動しなくなった。", furigana: "さいきん、ぜんぜんうんどうしなくなった。", english: "Lately, I've gotten to the point where I don't exercise at all." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary or negative form", example: "話せる → 話せるようになる" }
     ]
   },
   {
     id: "n4-ba-form", level: "N4", pattern: "～ば", title: "Conditional 'If'", short: "Expresses a general, logical, or hypothetical condition.",
     explanation: "The ～ば form sets up a conditional statement ('if X happens, then Y'). Often used for general truths and advice.",
     usages: [
-      { title: "Condition", examples: [
-        { japanese: "安ければ、買います。", furigana: "やすければ、かいます。", english: "If it is cheap, I will buy it." },
-        { japanese: "春になれば、花が咲く。", furigana: "はるになれば、はながさく。", english: "When spring comes, flowers bloom." }
-      ]},
-      { title: "Idiomatic advice", examples: [
-        { japanese: "どうすればいいですか。", furigana: "どうすればいいですか。", english: "What should I do?" }
-      ]},
-      { title: "Negative ば-form", examples: [
+      { title: "With verbs", examples: [
+        { japanese: "春になれば、花が咲く。", furigana: "はるになれば、はながさく。", english: "When spring comes, flowers bloom." },
+        { japanese: "どうすればいいですか。", furigana: "どうすればいいですか。", english: "What should I do?" },
         { japanese: "早く行かなければ、間に合わない。", furigana: "はやくいかなければ、まにあわない。", english: "If I don't go early, I won't make it." }
+      ]},
+      { title: "With adjectives", examples: [
+        { japanese: "安ければ、買います。", furigana: "やすければ、かいます。", english: "If it is cheap, I will buy it." },
+        { japanese: "天気がよければ、公園へ行きましょう。", furigana: "てんきがよければ、こうえんへいきましょう。", english: "If the weather is good, let's go to the park." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "ば-form", example: "行く → 行けば" },
+      { pos: "い-Adjective", form: "ば-form (stem + ければ)", example: "安い → 安ければ" }
     ]
   },
   {
@@ -932,6 +1000,9 @@ const N4_GRAMMAR = [
       { title: "Discoveries", examples: [
         { japanese: "窓を開けると、雨が降っていた。", furigana: "まどをあけると、あめがふっていた。", english: "When I opened the window, it was raining." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary form", example: "押す → 押すと" }
     ]
   },
   {
@@ -943,46 +1014,71 @@ const N4_GRAMMAR = [
         { japanese: "時間がないなら、タクシーで行きなさい。", furigana: "じかんがないなら、タクシーでいきなさい。", english: "If you don't have time, take a taxi." }
       ]},
       { title: "With nouns", examples: [
-        { japanese: "学生なら、割引があります。", furigana: "がくせいなら、わりびきがあります。", english: "If you're a student, there's a discount." }
+        { japanese: "学生なら、割引があります。", furigana: "がくせいなら、わりびきがあります。", english: "If you're a student, there's a discount." },
+        { japanese: "会員なら、無料で利用できます。", furigana: "かいいんなら、むりょうでりようできます。", english: "If you're a member, you can use it for free." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "plain form", example: "行く → 行くなら" },
+      { pos: "Noun", form: "+ なら", example: "学生 → 学生なら" }
     ]
   },
   {
     id: "n4-naru", level: "N4", pattern: "～になる", title: "To become", short: "Describes a change of state or transformation.",
     explanation: "Attaches to い-adjectives (～くなる), な-adjectives (～になる), and nouns (～になる) to mean 'to become'.",
     usages: [
-      { title: "Transformation", examples: [
+      { title: "With adjectives", examples: [
         { japanese: "暖かくなりました。", furigana: "あたたかくなりました。", english: "It has become warm." },
         { japanese: "部屋がきれいになりました。", furigana: "へやがきれいになりました。", english: "The room became clean." },
-        { japanese: "彼は医者になりました。", furigana: "かれはいしゃになりました。", english: "He became a doctor." }
+        { japanese: "空が急に暗くなった。", furigana: "そらがきゅうにくらくなった。", english: "The sky suddenly grew dark." },
+        { japanese: "この街はとても便利になった。", furigana: "このまちはとてもべんりになった。", english: "This town has become very convenient." }
+      ]},
+      { title: "With nouns", examples: [
+        { japanese: "彼は医者になりました。", furigana: "かれはいしゃになりました。", english: "He became a doctor." },
+        { japanese: "息子は来年、大学生になります。", furigana: "むすこはらいねん、だいがくせいになります。", english: "My son will become a university student next year." }
       ]}
+    ],
+    conjugations: [
+      { pos: "い-Adjective", form: "stem + く", example: "暖かい → 暖かくなる" },
+      { pos: "な-Adjective", form: "stem + に", example: "きれい → きれいになる" },
+      { pos: "Noun", form: "+ に", example: "医者 → 医者になる" }
     ]
   },
   {
     id: "n4-suru-change", level: "N4", pattern: "～にする", title: "To make something / decide on", short: "Describes intentionally changing a state or making a choice.",
     explanation: "Used to make something possess a quality (～くする / ～にする) or to state a selection/choice.",
     usages: [
-      { title: "Making a choice", examples: [
-        { japanese: "コーヒーにします。", furigana: "コーヒーにします。", english: "I will go with coffee." },
-        { japanese: "これに決めた。", furigana: "これにきめた。", english: "I decided on this one." }
-      ]},
-      { title: "Modifying a state", examples: [
+      { title: "With adjectives", examples: [
         { japanese: "部屋をきれいにしました。", furigana: "へやをきれいにしました。", english: "I cleaned (made clean) my room." },
         { japanese: "声を大きくしました。", furigana: "こえをおおきくしました。", english: "I made my voice louder." }
+      ]},
+      { title: "With nouns", examples: [
+        { japanese: "コーヒーにします。", furigana: "コーヒーにします。", english: "I will go with coffee." },
+        { japanese: "これに決めた。", furigana: "これにきめた。", english: "I decided on this one." }
       ]}
+    ],
+    conjugations: [
+      { pos: "い-Adjective", form: "stem + く", example: "大きい → 大きくする" },
+      { pos: "な-Adjective", form: "stem + に", example: "きれい → きれいにする" },
+      { pos: "Noun", form: "+ に", example: "コーヒー → コーヒーにする" }
     ]
   },
   {
     id: "n4-naku-te-mo-ii", level: "N4", pattern: "～なくてもいい", title: "Don't have to / optional", short: "States that performing an action is not required.",
     explanation: "Formed by converting a verb to negative, replacing い with く, and adding てもいい.",
     usages: [
-      { title: "Absence of obligation", examples: [
+      { title: "With verbs", examples: [
         { japanese: "明日は休みだから、早く起きなくてもいいです。", furigana: "あしたはやすみだから、はやくおきなくてもいいです。", english: "Tomorrow is a day off, so you don't have to get up early." },
         { japanese: "全部食べなくてもいいよ。", furigana: "ぜんぶたべなくてもいいよ。", english: "You don't have to eat it all." }
       ]},
-      { title: "With い-adjectives", examples: [
-        { japanese: "高くなくてもいいです。", furigana: "たかくなくてもいいです。", english: "It doesn't have to be expensive." }
+      { title: "With adjectives", examples: [
+        { japanese: "高くなくてもいいです。", furigana: "たかくなくてもいいです。", english: "It doesn't have to be expensive." },
+        { japanese: "急がなくてもいいですが、静かでなくてもいいというわけではありません。", furigana: "いそがなくてもいいですが、しずかでなくてもいいというわけではありません。", english: "You don't have to rush, but that doesn't mean it's fine to be loud." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "negative stem + なくてもいい", example: "起きる → 起きなくてもいい" },
+      { pos: "い-Adjective", form: "negative stem + なくてもいい", example: "高い → 高くなくてもいい" }
     ]
   },
   {
@@ -1000,6 +1096,9 @@ const N4_GRAMMAR = [
       { title: "Casual contraction", examples: [
         { japanese: "宿題をやっちゃった。", furigana: "しゅくだいをやっちゃった。", english: "I finished my homework. / I accidentally did it. (context-dependent)" }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "て-form", example: "落とす → 落としてしまう" }
     ]
   },
   {
@@ -1013,6 +1112,9 @@ const N4_GRAMMAR = [
       { title: "Leaving something as is", examples: [
         { japanese: "窓を開けておいてください。", furigana: "まどをあけておいてください。", english: "Please leave the window open." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "て-form", example: "予約する → 予約しておく" }
     ]
   },
   {
@@ -1026,6 +1128,9 @@ const N4_GRAMMAR = [
       { title: "Test attempt", examples: [
         { japanese: "この問題を解いてみてください。", furigana: "このもんだいをといてみてください。", english: "Please try solving this problem." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "て-form", example: "着る → 着てみる" }
     ]
   },
   {
@@ -1042,6 +1147,9 @@ const N4_GRAMMAR = [
         { japanese: "子供が走っていった。", furigana: "こどもがはしっていった。", english: "The child ran away." },
         { japanese: "友達が走ってきた。", furigana: "ともだちがはしってきた。", english: "My friend came running." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "て-form", example: "勉強する → 勉強していく／してくる" }
     ]
   },
   {
@@ -1055,6 +1163,9 @@ const N4_GRAMMAR = [
       { title: "Standard", examples: [
         { japanese: "手伝ってもらえますか。", furigana: "てつだってもらえますか。", english: "Could I get your help?" }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "て-form", example: "撮る → 撮っていただけますか" }
     ]
   },
   {
@@ -1068,6 +1179,9 @@ const N4_GRAMMAR = [
       { title: "お～になる", examples: [
         { japanese: "お客様はもうお着きになりました。", furigana: "おきゃくさまはもうおつきになりました。", english: "The customer has already arrived." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "irregular / お + ます-stem + になる", example: "帰る → お帰りになる" }
     ]
   },
   {
@@ -1081,6 +1195,9 @@ const N4_GRAMMAR = [
       { title: "お～する", examples: [
         { japanese: "お荷物をお持ちいたします。", furigana: "おにもつをおもちいたします。", english: "I will carry your luggage." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "irregular / お + ます-stem + する", example: "持つ → お持ちする" }
     ]
   },
   {
@@ -1094,6 +1211,9 @@ const N4_GRAMMAR = [
       { title: "Teacher to student", examples: [
         { japanese: "ここに書きなさい。", furigana: "ここにかきなさい。", english: "Write it here." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "ます-stem", example: "洗う → 洗いなさい" }
     ]
   },
   {
@@ -1107,6 +1227,9 @@ const N4_GRAMMAR = [
       { title: "With だけ contrast", examples: [
         { japanese: "これだけしかない。", furigana: "これだけしかない。", english: "There's only this much." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ しか ... ない", example: "百円 → 百円しかない" }
     ]
   },
   {
@@ -1122,6 +1245,9 @@ const N4_GRAMMAR = [
       { title: "In progress", examples: [
         { japanese: "今、調べているところです。", furigana: "いま、しらべているところです。", english: "I'm currently checking on it." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary / た / ている form", example: "出かける → 出かけるところだ" }
     ]
   },
   {
@@ -1135,22 +1261,28 @@ const N4_GRAMMAR = [
       { title: "Feminine", examples: [
         { japanese: "これでいいかしら。", furigana: "これでいいかしら。", english: "I wonder if this is okay." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb / い-Adjective", form: "plain form", example: "晴れる → 晴れるかな" }
     ]
   },
   {
     id: "n4-sugiru", level: "N4", pattern: "～すぎる", title: "Too much / excessively", short: "Expresses doing an action or possessing a quality to excess.",
     explanation: "Attached to verb stems and adjective bases to express going past desirable limits.",
     usages: [
-      { title: "Excessive quality", examples: [
+      { title: "With verbs", examples: [
         { japanese: "昨日、お酒を飲みすぎました。", furigana: "きのう、おさけをのみすぎました。", english: "I drank too much alcohol yesterday." },
-        { japanese: "この料理は辛すぎる。", furigana: "このりょうりはからすぎる。", english: "This dish is too spicy." }
+        { japanese: "彼は働きすぎて、体を壊してしまった。", furigana: "かれははたらきすぎて、からだをこわしてしまった。", english: "He worked too much and ended up ruining his health." }
       ]},
-      { title: "With な-adjectives", examples: [
-        { japanese: "この問題は簡単すぎる。", furigana: "このもんだいはかんたんすぎる。", english: "This problem is too easy." }
-      ]},
-      { title: "Negative", examples: [
+      { title: "With adjectives", examples: [
+        { japanese: "この料理は辛すぎる。", furigana: "このりょうりはからすぎる。", english: "This dish is too spicy." },
+        { japanese: "この問題は簡単すぎる。", furigana: "このもんだいはかんたんすぎる。", english: "This problem is too easy." },
         { japanese: "ちょっと高すぎない？", furigana: "ちょっとたかすぎない？", english: "Isn't it a bit too expensive?" }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "ます-stem", example: "飲む → 飲みすぎる" },
+      { pos: "い-Adjective / な-Adjective", form: "stem", example: "辛い → 辛すぎる" }
     ]
   },
   {
@@ -1165,6 +1297,9 @@ const N4_GRAMMAR = [
         { japanese: "この漢字は覚えにくいです。", furigana: "このかんじはおぼえにくいです。", english: "This kanji is difficult to memorize." },
         { japanese: "彼は話しにくい人だ。", furigana: "かれははなしにくいひとだ。", english: "He's a difficult person to talk to." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "ます-stem", example: "書く → 書きやすい／書きにくい" }
     ]
   },
   {
@@ -1178,6 +1313,9 @@ const N4_GRAMMAR = [
       { title: "Negative", examples: [
         { japanese: "そんなことはないはずだ。", furigana: "そんなことはないはずだ。", english: "That shouldn't be the case." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "plain form", example: "来る → 来るはずだ" }
     ]
   },
   {
@@ -1191,6 +1329,9 @@ const N4_GRAMMAR = [
       { title: "Past plan", examples: [
         { japanese: "留学することにしていた。", furigana: "りゅうがくすることにしていた。", english: "I had decided to study abroad." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary or negative form", example: "運動する → 運動することにする" }
     ]
   },
   {
@@ -1204,56 +1345,86 @@ const N4_GRAMMAR = [
       { title: "Result/conclusion", examples: [
         { japanese: "結局、行かないことになった。", furigana: "けっきょく、いかないことになった。", english: "It ended up being decided that I wouldn't go." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary or negative form", example: "転勤する → 転勤することになる" }
     ]
   },
   {
     id: "n4-no-ni", level: "N4", pattern: "～のに", title: "Although / despite", short: "Shows a contrast between what is expected and what actually happens.",
     explanation: "～のに connects two facts that are surprising or disappointing when seen together. The first part sets up an expectation, and the second part goes against it. It often carries a feeling of frustration or regret.",
     usages: [
-      { title: "Contrary to expectation", examples: [
+      { title: "With verbs", examples: [
+        { japanese: "お金がないのに、高い物を買いました。", furigana: "おかねがないのに、たかいものをかいました。", english: "Even though he has no money, he bought something expensive." },
+        { japanese: "練習したのに、試合に負けました。", furigana: "れんしゅうしたのに、しあいにまけました。", english: "Even though I practiced, I lost the match." }
+      ]},
+      { title: "With nouns", examples: [
         { japanese: "もう夜なのに、まだ働いています。", furigana: "もうよるなのに、まだはたらいています。", english: "Even though it's already night, I'm still working." },
         { japanese: "雨なのに、彼は傘を持っていきませんでした。", furigana: "あめなのに、かれはかさをもっていきませんでした。", english: "Even though it was raining, he didn't take an umbrella." }
-      ]},
-      { title: "With い-adjectives", examples: [
-        { japanese: "お金がないのに、高い物を買いました。", furigana: "おかねがないのに、たかいものをかいました。", english: "Even though he has no money, he bought something expensive." }
-      ]},
-      { title: "With verb plain form", examples: [
-        { japanese: "練習したのに、試合に負けました。", furigana: "れんしゅうしたのに、しあいにまけました。", english: "Even though I practiced, I lost the match." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "plain form", example: "練習した → 練習したのに" },
+      { pos: "Noun / な-Adjective", form: "+ な", example: "夜 → 夜なのに" }
     ], notes: "のに is more emotional than けど; it often implies 'and yet' with a touch of disappointment."
   },
   {
     id: "n4-temo", level: "N4", pattern: "～ても", title: "Even if / even though", short: "Presents a condition that does not change the outcome.",
     explanation: "～ても means that even if the first condition is true, the result in the second part stays the same. It works with verbs, adjectives and nouns.",
     usages: [
-      { title: "Verb + ても", examples: [
+      { title: "With verbs", examples: [
         { japanese: "明日は雨が降っても、試合をします。", furigana: "あしたはあめがふっても、しあいをします。", english: "Even if it rains tomorrow, we will hold the match." },
         { japanese: "何度失敗しても、諦めません。", furigana: "なんどしっぱいしても、あきらめません。", english: "No matter how many times I fail, I won't give up." }
       ]},
-      { title: "Adjective / noun + ても", examples: [
+      { title: "With adjectives", examples: [
         { japanese: "高くても、買いたいです。", furigana: "たかくても、かいたいです。", english: "Even if it's expensive, I want to buy it." },
-        { japanese: "休日でも、働かなければなりません。", furigana: "きゅうじつでも、はたらかなければなりません。", english: "Even on holidays, I have to work." }
+        { japanese: "忙しくても、毎日運動するようにしています。", furigana: "いそがしくても、まいにちうんどうするようにしています。", english: "Even when I'm busy, I try to exercise every day." }
+      ]},
+      { title: "With nouns", examples: [
+        { japanese: "休日でも、働かなければなりません。", furigana: "きゅうじつでも、はたらかなければなりません。", english: "Even on holidays, I have to work." },
+        { japanese: "子供でも、簡単に使える。", furigana: "こどもでも、かんたんにつかえる。", english: "Even a child can use it easily." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "て-form", example: "降る → 降っても" },
+      { pos: "い-Adjective", form: "て-form (くても)", example: "高い → 高くても" },
+      { pos: "Noun", form: "+ でも", example: "休日 → 休日でも" }
     ]
   },
   {
     id: "n4-tatoe-temo", level: "N4", pattern: "たとえ～ても", title: "Even if (strong concession)", short: "Stresses that the result holds no matter how extreme the condition.",
     explanation: "たとえ～ても is a stronger, more emphatic version of ～ても. It presents the most extreme or unlikely case first to emphasize that the result will not change.",
     usages: [
-      { title: "Emphatic concession", examples: [
+      { title: "With verbs", examples: [
         { japanese: "たとえ失敗しても、挑戦する価値はあります。", furigana: "たとえしっぱいしても、ちょうせんするかちはあります。", english: "Even if I fail, it is worth trying." },
-        { japanese: "たとえいくら忙しくても、家族の時間は作ります。", furigana: "たとえいくらいそがしくても、かぞくのじかんはつくります。", english: "No matter how busy I am, I will make time for my family." }
+        { japanese: "たとえ雨が降っても、試合は行われます。", furigana: "たとえあめがふっても、しあいはおこなわれます。", english: "Even if it rains, the match will be held." }
+      ]},
+      { title: "With adjectives", examples: [
+        { japanese: "たとえいくら忙しくても、家族の時間は作ります。", furigana: "たとえいくらいそがしくても、かぞくのじかんはつくります。", english: "No matter how busy I am, I will make time for my family." },
+        { japanese: "たとえ辛くても、最後までやり遂げるつもりだ。", furigana: "たとえつらくても、さいごまでやりとげるつもりだ。", english: "Even if it's tough, I intend to see it through to the end." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "て-form", example: "失敗する → 失敗しても" },
+      { pos: "い-Adjective", form: "て-form (くても)", example: "忙しい → 忙しくても" }
     ], notes: "たとえ is optional but very common with ても to mark hypothetical extremes."
   },
   {
     id: "n4-bakari-ni", level: "N4", pattern: "～ばかりに", title: "Just because / as a result of", short: "Gives a reason, often for an unfortunate outcome.",
     explanation: "～ばかりに attaches to the plain form of a verb or adjective and gives the reason for a result, usually a negative or unexpected one. The feeling is 'simply because of X, (something bad happened)'.",
     usages: [
-      { title: "Reason for a bad result", examples: [
+      { title: "With verbs", examples: [
         { japanese: "うるさくしゃべったばかりに、先生に叱られました。", furigana: "うるさくしゃべったばかりに、せんせいにしかられました。", english: "Just because I was talking loudly, I got scolded by the teacher." },
-        { japanese: "安いばかりに、品質が悪かった。", furigana: "やすいばかりに、ひんしつがわるかった。", english: "Just because it was cheap, the quality was bad." }
+        { japanese: "電車に乗り遅れたばかりに、会議に遅刻した。", furigana: "でんしゃにのりおくれたばかりに、かいぎにちこくした。", english: "Just because I missed the train, I ended up late for the meeting." }
+      ]},
+      { title: "With adjectives", examples: [
+        { japanese: "安いばかりに、品質が悪かった。", furigana: "やすいばかりに、ひんしつがわるかった。", english: "Just because it was cheap, the quality was bad." },
+        { japanese: "説明が不十分だったばかりに、誤解を招いてしまった。", furigana: "せつめいがふじゅうぶんだったばかりに、ごかいをまねいてしまった。", english: "Just because the explanation was insufficient, it led to a misunderstanding." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "past (た) form", example: "遅れる → 遅れたばかりに" },
+      { pos: "い-Adjective", form: "plain form", example: "安い → 安いばかりに" }
     ], notes: "Compare with のに: のに expresses the speaker's surprise at a contrast, while ばかりに focuses on the causal relationship."
   },
   {
@@ -1267,6 +1438,9 @@ const N4_GRAMMAR = [
       { title: "Occasional action (dictionary form)", examples: [
         { japanese: "疲れると、朝ご飯を食べないことがあります。", furigana: "つかれると、あさごはんをたべないことがあります。", english: "When I'm tired, I sometimes skip breakfast." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "past form / dictionary + negative", example: "登る → 登ったことがある" }
     ]
   },
   {
@@ -1280,6 +1454,9 @@ const N4_GRAMMAR = [
       { title: "Negative feelings", examples: [
         { japanese: "弟は野菜を嫌がります。", furigana: "おとうとはやさいをいやがります。", english: "My younger brother dislikes vegetables." }
       ]}
+    ],
+    conjugations: [
+      { pos: "い-Adjective (stem)", form: "stem + がる", example: "欲しい → 欲しがる" }
     ], notes: "Only use ～がる for other people or animals, not for your own feelings."
   },
   {
@@ -1293,16 +1470,27 @@ const N4_GRAMMAR = [
       { title: "About to happen", examples: [
         { japanese: "寝かけた時に、電話が鳴りました。", furigana: "ねかけたときに、でんわがなりました。", english: "Just as I was about to fall asleep, the phone rang." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "ます-stem", example: "食べる → 食べかけ" }
     ]
   },
   {
     id: "n4-kimi", level: "N4", pattern: "～気味", title: "Slightly / feel a bit", short: "Says that something is slightly true or that you feel a little of something.",
     explanation: "～気味 attaches to noun or verb stems to indicate a mild tendency or condition, usually one you would rather not have too much of.",
     usages: [
-      { title: "Mild condition", examples: [
+      { title: "With nouns", examples: [
         { japanese: "少し風邪気味です。", furigana: "すこしかぜぎみです。", english: "I have a bit of a cold." },
-        { japanese: "最近、太り気味なので運動しています。", furigana: "さいきん、ふとりぎみなのでうんどうしています。", english: "Lately I've been putting on a bit of weight, so I'm exercising." }
+        { japanese: "最近、疲れ気味だ。", furigana: "さいきん、つかれぎみだ。", english: "Lately, I've been feeling a bit tired." }
+      ]},
+      { title: "With verbs", examples: [
+        { japanese: "最近、太り気味なので運動しています。", furigana: "さいきん、ふとりぎみなのでうんどうしています。", english: "Lately I've been putting on a bit of weight, so I'm exercising." },
+        { japanese: "今日は少し寝坊気味に起きてしまった。", furigana: "きょうはすこしねぼうぎみにおきてしまった。", english: "Today I ended up waking up a bit later than usual." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ 気味", example: "風邪 → 風邪気味" },
+      { pos: "Verb", form: "ます-stem + 気味", example: "太る → 太り気味" }
     ]
   },
   {
@@ -1316,6 +1504,9 @@ const N4_GRAMMAR = [
       { title: "After verb plain form", examples: [
         { japanese: "財布を家に忘れたまま、買い物に行ってしまいました。", furigana: "さいふをいえにわすれたまま、かいものにいってしまいました。", english: "I went shopping having left my wallet at home." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "past (た) form", example: "つける → つけたまま" }
     ]
   },
   {
@@ -1326,6 +1517,9 @@ const N4_GRAMMAR = [
         { japanese: "知らないふりをしました。", furigana: "しらないふりをしました。", english: "I pretended not to know." },
         { japanese: "彼は聞こえないふりをしていました。", furigana: "かれはきこえないふりをしていました。", english: "He was pretending not to hear." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "plain form", example: "知る → 知らないふりをする" }
     ]
   },
   {
@@ -1336,6 +1530,9 @@ const N4_GRAMMAR = [
         { japanese: "間違えたので、もう一度書き直しました。", furigana: "まちがえたので、もういちどかきなおしました。", english: "Because I made a mistake, I rewrote it once more." },
         { japanese: "分からなかったところを説明し直してください。", furigana: "わからなかったところをせつめいしなおしてください。", english: "Please explain again the parts I didn't understand." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "ます-stem", example: "書く → 書き直す" }
     ]
   },
   {
@@ -1346,6 +1543,9 @@ const N4_GRAMMAR = [
         { japanese: "困った時はお互いに助け合いましょう。", furigana: "こまったときはおたがいにたすけあいましょう。", english: "When we are in trouble, let's help each other." },
         { japanese: "よく考えてから、意見を話し合います。", furigana: "よくかんがえてから、いけんをはなしあいます。", english: "Let's discuss our opinions after thinking carefully." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "ます-stem", example: "助ける → 助け合う" }
     ]
   },
   {
@@ -1359,6 +1559,9 @@ const N4_GRAMMAR = [
       { title: "Third person desire", examples: [
         { japanese: "息子には立派な大人になってほしいです。", furigana: "むすこにはりっぱなおとなになってほしいです。", english: "I want my son to grow up to be a fine adult." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "て-form", example: "来る → 来てほしい" }
     ]
   },
   {
@@ -1372,6 +1575,9 @@ const N4_GRAMMAR = [
       { title: "Hypothetical", examples: [
         { japanese: "100万円あったら、何をしますか。", furigana: "ひゃくまんえんあったら、なにをしますか。", english: "If you had a million yen, what would you do?" }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "た-form (たら)", example: "飲む → 飲んだらどうですか" }
     ]
   },
   {
@@ -1382,6 +1588,9 @@ const N4_GRAMMAR = [
         { japanese: "もっと早く起きればよかった。", furigana: "もっとはやくおきればよかった。", english: "I should have woken up earlier." },
         { japanese: "買わなければよかった。", furigana: "かわなければよかった。", english: "I shouldn't have bought it." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "ば-form", example: "起きる → 起きればよかった" }
     ]
   },
   {
@@ -1392,6 +1601,9 @@ const N4_GRAMMAR = [
         { japanese: "幸い、手術しなくて済みました。", furigana: "さいわい、しゅじゅつしなくてすみました。", english: "Fortunately, it ended without needing surgery." },
         { japanese: "ネットで予約すると、並ばなくて済みます。", furigana: "ネットでよやくすると、ならばなくてすみます。", english: "If you book online, you can avoid lining up." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "negative stem", example: "手術する → 手術しなくて済む" }
     ], notes: "The formal written variant is ～ずに済む."
   },
   {
@@ -1404,6 +1616,9 @@ const N4_GRAMMAR = [
       { title: "Casual hearsay", examples: [
         { japanese: "田中さん、来月結婚するんだとか。", furigana: "たなかさん、らいげつけっこんするんだとか。", english: "I heard Tanaka is getting married next month." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun / Verb", form: "+ とか", example: "映画を見る → 映画を見るとか" }
     ]
   },
   {
@@ -1414,6 +1629,9 @@ const N4_GRAMMAR = [
         { japanese: "毎日、少しずつ日本語を勉強します。", furigana: "まいにち、すこしずつにほんごをべんきょうします。", english: "I study Japanese a little bit every day." },
         { japanese: "りんごを3人に2個ずつ分けました。", furigana: "りんごをさんにんににこずつわけました。", english: "I divided the apples, two each among three people." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun (quantity/counter)", form: "+ ずつ", example: "2個 → 2個ずつ" }
     ]
   },
   {
@@ -1429,19 +1647,29 @@ const N4_GRAMMAR = [
       { title: "Continuing", examples: [
         { japanese: "体が疲れても、練習を続けました。", furigana: "からだがつかれても、れんしゅうをつづけました。", english: "Even though my body was tired, I continued practicing." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "ます-stem / dictionary form", example: "降る → 降り始める" }
     ]
   },
   {
     id: "n4-wake-dewa-nai", level: "N4", pattern: "～わけではない / ～わけじゃない", title: "It is not that / not necessarily", short: "Partially denies or softens a statement without rejecting it completely.",
     explanation: "～わけではない says that a statement is not entirely true, while leaving room for it to be partly true. It is softer than a straight negative and is very common in explanations.",
     usages: [
-      { title: "Partial denial", examples: [
+      { title: "With adjectives", examples: [
         { japanese: "日本語が嫌いなわけではありません。", furigana: "にほんごがきらいなわけではありません。", english: "It is not that I dislike Japanese." },
-        { japanese: "毎日来なければならないわけではありません。", furigana: "まいにちこなければならないわけではありません。", english: "It is not that you have to come every day." }
+        { japanese: "この仕事が嫌なわけではないが、少し疲れている。", furigana: "このしごとがいやなわけではないが、すこしつかれている。", english: "It's not that I dislike this job, but I'm a bit tired." }
+      ]},
+      { title: "With verbs", examples: [
+        { japanese: "毎日来なければならないわけではありません。", furigana: "まいにちこなければならないわけではありません。", english: "It is not that you have to come every day." },
+        { japanese: "全部一人でやったわけではない。", furigana: "ぜんぶひとりでやったわけではない。", english: "It's not that I did everything all by myself." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "plain form", example: "来ない → 来なければならないわけではない" },
+      { pos: "な-Adjective", form: "stem + な", example: "嫌い → 嫌いなわけではない" }
     ]
   },
-  // Additional N4 points
   {
     id: "n4-you-to-omou", level: "N4", pattern: "～ようと思う", title: "I think I'll / intend to", short: "Expresses a tentative intention or decision.",
     explanation: "Attaches the volitional form to と思う to express a tentative intention or decision.",
@@ -1450,6 +1678,9 @@ const N4_GRAMMAR = [
         { japanese: "明日は休もうと思います。", furigana: "あしたはやすもうとおもいます。", english: "I think I'll take a day off tomorrow." },
         { japanese: "留学しようと思っていた。", furigana: "りゅうがくしようとおもっていた。", english: "I was thinking about studying abroad." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "volitional form", example: "休む → 休もうと思う" }
     ]
   },
   {
@@ -1460,9 +1691,11 @@ const N4_GRAMMAR = [
         { japanese: "天気予報によると、明日は雨だそうです。", furigana: "てんきよほうによると、あしたはあめだそうです。", english: "According to the weather forecast, it's going to rain tomorrow." },
         { japanese: "新聞によれば、事故があったそうです。", furigana: "しんぶんによれば、じこがあったそうです。", english: "According to the newspaper, there was an accident." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ によると／によれば", example: "新聞 → 新聞によれば" }
     ]
   },
-  // Added: gaps checked against jlptgrammarlist.neocities.org
   {
     id: "n4-potential", level: "N4", pattern: "～られる / ～れる", title: "Potential form (can do)", short: "States that an action is possible for the subject to do.",
     explanation: "The potential form attaches to a verb stem to mean 'can do X'. It looks identical to the passive form for る-verbs, so context decides the meaning.",
@@ -1474,6 +1707,10 @@ const N4_GRAMMAR = [
       { title: "Negative inability", examples: [
         { japanese: "今日は行けません。", furigana: "きょうはいけません。", english: "I can't go today." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb (ichidan)", form: "stem + られる", example: "食べる → 食べられる" },
+      { pos: "Verb (godan)", form: "e-row stem + る", example: "読む → 読める" }
     ], notes: "For る-verbs, the potential form (食べられる) and the passive form (食べられる) are identical in writing; only context tells them apart. Casual speech often drops ら (ら抜き言葉): 食べれる."
   },
   {
@@ -1485,8 +1722,13 @@ const N4_GRAMMAR = [
         { japanese: "彼はもう帰ったらしいです。", furigana: "かれはもうかえったらしいです。", english: "I heard he already went home." }
       ]},
       { title: "Typical of", examples: [
-        { japanese: "今日は春らしい天気です。", furigana: "きょうははるらしいてんきです。", english: "Today's weather is typical of spring." }
+        { japanese: "今日は春らしい天気です。", furigana: "きょうははるらしいてんきです。", english: "Today's weather is typical of spring." },
+        { japanese: "彼らしい、思いやりのある行動だった。", furigana: "かれらしい、おもいやりのあるこうどうだった。", english: "It was a considerate act, very typical of him." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "plain form", example: "帰る → 帰ったらしい" },
+      { pos: "Noun", form: "+ らしい", example: "雪 → 雪らしい" }
     ], notes: "Compare with N4 ～そうだ（伝聞）: そうだ reports information exactly as heard, while らしい adds a slight sense of the speaker's own inference."
   },
   {
@@ -1497,9 +1739,11 @@ const N4_GRAMMAR = [
         { japanese: "毎日薬を飲む必要があります。", furigana: "まいにちくすりをのむひつようがあります。", english: "It is necessary to take the medicine every day." },
         { japanese: "この書類にサインする必要はありません。", furigana: "このしょるいにサインするひつようはありません。", english: "There's no need to sign this document." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary form", example: "飲む → 飲む必要がある" }
     ]
   },
-  // Added: gaps checked against jlptgrammarlist.neocities.org (N4 deep-dive pass)
   {
     id: "n4-okini", level: "N4", pattern: "～おきに", title: "Every / At intervals of", short: "Something happens repeatedly, with a fixed gap between occurrences.",
     explanation: "～おきに attaches to a number and counter to mean 'every X' or 'at intervals of X', describing regular repetition.",
@@ -1508,6 +1752,9 @@ const N4_GRAMMAR = [
         { japanese: "このバスは十分おきに来ます。", furigana: "このバスはじゅっぷんおきにきます。", english: "This bus comes every ten minutes." },
         { japanese: "一日おきに運動しています。", furigana: "いちにちおきにうんどうしています。", english: "I exercise every other day." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun (interval)", form: "+ おきに", example: "十分 → 十分おきに" }
     ], notes: "一日おきに means 'every other day' (with a day skipped between), not literally 'every day' — be careful with the counting."
   },
   {
@@ -1518,6 +1765,9 @@ const N4_GRAMMAR = [
         { japanese: "何か焦げた匂いがします。", furigana: "なにかこげたにおいがします。", english: "There's a smell of something burning." },
         { japanese: "隣の部屋から変な音がした。", furigana: "となりのへやからへんなおとがした。", english: "A strange sound came from the room next door." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ がする", example: "匂い → 匂いがする" }
     ]
   },
   {
@@ -1528,6 +1778,9 @@ const N4_GRAMMAR = [
         { japanese: "私の趣味は本を読むことです。", furigana: "わたしのしゅみはほんをよむことです。", english: "My hobby is reading books." },
         { japanese: "早起きすることは体にいいです。", furigana: "はやおきすることはからだにいいです。", english: "Getting up early is good for your health." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary form + こと", example: "読む → 読むこと" }
     ], notes: "の can often replace こと for this purpose (本を読むのが好きです), but こと is required before です and certain verbs like 決める and 伝える."
   },
   {
@@ -1538,6 +1791,9 @@ const N4_GRAMMAR = [
         { japanese: "七時ごろ、家に着きます。", furigana: "しちじごろ、いえにつきます。", english: "I'll get home around 7 o'clock." },
         { japanese: "三十歳ごろ、日本に住んでいました。", furigana: "さんじゅっさいごろ、にほんにすんでいました。", english: "Around the age of 30, I was living in Japan." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun (time)", form: "+ ごろ", example: "七時 → 七時ごろ" }
     ], notes: "ごろ is for a point in time (around 7 o'clock); くらい/ぐらい is for an amount or duration (about 7 minutes) — the two aren't interchangeable."
   },
   {
@@ -1548,6 +1804,9 @@ const N4_GRAMMAR = [
         { japanese: "この山の高さはどのくらいですか。", furigana: "このやまのたかさはどのくらいですか。", english: "How tall is this mountain?" },
         { japanese: "彼の優しさに感謝しています。", furigana: "かれのやさしさにかんしゃしています。", english: "I'm grateful for his kindness." }
       ]}
+    ],
+    conjugations: [
+      { pos: "い-Adjective / な-Adjective (stem)", form: "+ さ", example: "高い → 高さ" }
     ]
   },
   {
@@ -1556,8 +1815,13 @@ const N4_GRAMMAR = [
     usages: [
       { title: "Listing reasons", examples: [
         { japanese: "このアパートは駅から近いし、家賃も安いし、とても気に入っています。", furigana: "このアパートはえきからちかいし、やちんもやすいし、とてもきにいっています。", english: "This apartment is close to the station, and the rent is cheap too, so I really like it." },
-        { japanese: "今日は疲れたし、もう寝ます。", furigana: "きょうはつかれたし、もうねます。", english: "I'm tired today, so I'm going to bed now." }
+        { japanese: "今日は疲れたし、もう寝ます。", furigana: "きょうはつかれたし、もうねます。", english: "I'm tired today, so I'm going to bed now." },
+        { japanese: "彼は優しいし、頭もいいし、みんなに好かれている。", furigana: "かれはやさしいし、あたまもいいし、みんなにすかれている。", english: "He's kind, and he's smart too, so everyone likes him." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "plain form", example: "疲れる → 疲れたし" },
+      { pos: "い-Adjective", form: "plain form", example: "近い → 近いし" }
     ]
   },
   {
@@ -1568,6 +1832,9 @@ const N4_GRAMMAR = [
         { japanese: "あれ、電気がついているじゃないか。", furigana: "あれ、でんきがついているじゃないか。", english: "Hey, the light is on, isn't it!" },
         { japanese: "結構上手じゃないか。", furigana: "けっこうじょうずじゃないか。", english: "You're actually pretty good at this, aren't you?" }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb / い-Adjective / な-Adjective", form: "plain form", example: "できる → できるじゃないか" }
     ]
   },
   {
@@ -1587,6 +1854,10 @@ const N4_GRAMMAR = [
         { japanese: "彼の顔を見るだけで、元気になります。", furigana: "かれのかおをみるだけで、げんきになります。", english: "Just seeing his face is enough to cheer me up." },
         { japanese: "少し歩いただけで、疲れてしまった。", furigana: "すこしあるいただけで、つかれてしまった。", english: "Just from walking a little, I got tired." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary or past form", example: "見る → 見るだけで" },
+      { pos: "Noun", form: "+ だけで", example: "少し → 少し歩いただけで" }
     ]
   },
   {
@@ -1597,6 +1868,9 @@ const N4_GRAMMAR = [
         { japanese: "赤ちゃんが急に泣き出した。", furigana: "あかちゃんがきゅうになきだした。", english: "The baby suddenly started crying." },
         { japanese: "空が暗くなり、雨が降り出した。", furigana: "そらがくらくなり、あめがふりだした。", english: "The sky grew dark, and it started to rain." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "ます-stem", example: "泣く → 泣き出す" }
     ]
   },
   {
@@ -1607,6 +1881,9 @@ const N4_GRAMMAR = [
         { japanese: "窓が開けてあります。", furigana: "まどがあけてあります。", english: "The window has been left open (someone opened it on purpose)." },
         { japanese: "テーブルの上に料理が並べてある。", furigana: "テーブルのうえにりょうりがならべてある。", english: "The food has been laid out on the table." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb (transitive)", form: "て-form", example: "開ける → 開けてある" }
     ], notes: "Compare with ～ている: ドアが開いている just describes the door being open, with no focus on who opened it or why; ドアが開けてある implies someone opened it on purpose and it's still that way."
   },
   {
@@ -1617,6 +1894,9 @@ const N4_GRAMMAR = [
         { japanese: "遅くなってすみません。", furigana: "おそくなってすみません。", english: "Sorry for being late." },
         { japanese: "何も知らないで質問してすみません。", furigana: "なにもしらないでしつもんしてすみません。", english: "Sorry for asking without knowing anything." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "て-form", example: "遅くなる → 遅くなってすみません" }
     ]
   },
   {
@@ -1627,6 +1907,9 @@ const N4_GRAMMAR = [
         { japanese: "お茶でも飲みませんか。", furigana: "おちゃでものみませんか。", english: "Would you like some tea or something?" },
         { japanese: "疲れた時は、音楽でも聞いてリラックスします。", furigana: "つかれたときは、おんがくでもきいてリラックスします。", english: "When I'm tired, I relax by listening to music or something like that." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ でも", example: "お茶 → お茶でも" }
     ]
   },
   {
@@ -1637,6 +1920,9 @@ const N4_GRAMMAR = [
         { japanese: "無事に着いてよかったです。", furigana: "ぶじについてよかったです。", english: "I'm glad we arrived safely." },
         { japanese: "あなたに会えてよかった。", furigana: "あなたにあえてよかった。", english: "I'm glad I got to meet you." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "て-form", example: "会える → 会えてよかった" }
     ]
   },
   {
@@ -1647,6 +1933,9 @@ const N4_GRAMMAR = [
         { japanese: "朝ご飯を食べないで、学校に行きました。", furigana: "あさごはんをたべないで、がっこうにいきました。", english: "I went to school without eating breakfast." },
         { japanese: "傘を持たないで出かけて、雨に降られた。", furigana: "かさをもたないででかけて、あめにふられた。", english: "I went out without an umbrella and got caught in the rain." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "negative stem", example: "食べる → 食べないで" }
     ], notes: "Don't confuse with ～なくて, which gives a reason or simply connects a negative fact rather than describing an accompanying circumstance."
   },
   {
@@ -1657,6 +1946,9 @@ const N4_GRAMMAR = [
         { japanese: "もう帰らなくては。", furigana: "もうかえらなくては。", english: "I really have to get going now." },
         { japanese: "明日までにレポートを出さなくてはいけません。", furigana: "あしたまでにレポートをださなくてはいけません。", english: "I have to turn in the report by tomorrow." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "negative stem", example: "帰る → 帰らなくては" }
     ], notes: "In casual speech, なくては is often shortened further to なくちゃ."
   },
   {
@@ -1666,6 +1958,9 @@ const N4_GRAMMAR = [
       { title: "Giving examples", examples: [
         { japanese: "りんごやバナナなどの果物が好きです。", furigana: "りんごやバナナなどのくだものがすきです。", english: "I like fruits such as apples and bananas." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ など", example: "りんご → りんごなど" }
     ]
   },
   {
@@ -1675,6 +1970,9 @@ const N4_GRAMMAR = [
       { title: "Scope for comparison", examples: [
         { japanese: "この店の中で、これが一番人気です。", furigana: "このみせのなかで、これがいちばんにんきです。", english: "Among the items in this shop, this one is the most popular." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ の中で", example: "この店 → この店の中で" }
     ]
   },
   {
@@ -1685,6 +1983,10 @@ const N4_GRAMMAR = [
         { japanese: "雨の場合は、イベントは中止になります。", furigana: "あめのばあいは、イベントはちゅうしになります。", english: "In the case of rain, the event will be cancelled." },
         { japanese: "分からない場合は、係員にお尋ねください。", furigana: "わからないばあいは、かかりいんにおたずねください。", english: "If you don't understand, please ask a staff member." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "plain form", example: "分からない → 分からない場合は" },
+      { pos: "Noun", form: "+ の", example: "雨 → 雨の場合は" }
     ]
   },
   {
@@ -1695,6 +1997,9 @@ const N4_GRAMMAR = [
         { japanese: "金曜日までにレポートを提出してください。", furigana: "きんようびまでにレポートをていしゅつしてください。", english: "Please submit the report by Friday." },
         { japanese: "十時までに帰ってきます。", furigana: "じゅうじまでにかえってきます。", english: "I will be back by 10 o'clock." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun (time)", form: "+ までに", example: "金曜日 → 金曜日までに" }
     ], notes: "まで (without に) means 'until', describing a continuous action up to that point (十時まで働きます, 'I'll work until 10'); までに marks a one-time deadline before that point."
   },
   {
@@ -1705,6 +2010,9 @@ const N4_GRAMMAR = [
         { japanese: "毎日野菜を食べるようにしています。", furigana: "まいにちやさいをたべるようにしています。", english: "I make an effort to eat vegetables every day." },
         { japanese: "遅刻しないようにしてください。", furigana: "ちこくしないようにしてください。", english: "Please make an effort not to be late." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary or negative form", example: "食べる → 食べるようにする" }
     ], notes: "Compare with ようになる, which describes a change that happens naturally or as a result of ability, not a deliberate ongoing effort."
   }
 ];
@@ -1714,14 +2022,24 @@ const N3_GRAMMAR = [
     id: "n3-uuchi-ni", level: "N3", pattern: "～うちに", title: "While / before a change occurs", short: "Perform an action while a specific state continues, before it changes.",
     explanation: "～うちに attaches to a plain-form phrase and means 'while X is still the case' — the action described needs to happen before that window of opportunity closes. It's often used with states that won't last forever (being young, having free time, food being warm), giving a gentle sense of urgency.",
     usages: [
-      { title: "While a state holds", examples: [
+      { title: "With adjectives", examples: [
         { japanese: "温かいうちに食べてください。", furigana: "あたたかいうちにたべてください。", english: "Please eat while it is warm." },
         { japanese: "若いうちにいろいろな経験をしたほうがいい。", furigana: "わかいうちにいろいろなけいけんをしたほうがいい。", english: "You should have various experiences while you're young." },
         { japanese: "熱いうちに食べてください。", furigana: "あついうちにたべてください。", english: "Please eat it while it's still hot." }
       ]},
-      { title: "Before a change", examples: [
-        { japanese: "暗くならないうちに帰りましょう。", furigana: "くらくならないうちにかえりましょう。", english: "Let's go home before it gets dark." }
+      { title: "With verbs", examples: [
+        { japanese: "暗くならないうちに帰りましょう。", furigana: "くらくならないうちにかえりましょう。", english: "Let's go home before it gets dark." },
+        { japanese: "赤ちゃんが寝ているうちに、家事を済ませたい。", furigana: "あかちゃんがねているうちに、かじをすませたい。", english: "I want to get the housework done while the baby is sleeping." }
+      ]},
+      { title: "With nouns", examples: [
+        { japanese: "学生のうちに、一度海外へ行ってみたい。", furigana: "がくせいのうちに、いちどかいがいへいってみたい。", english: "While I'm still a student, I want to go abroad at least once." },
+        { japanese: "元気なうちに、やりたいことをやっておこう。", furigana: "げんきなうちに、やりたいことをやっておこう。", english: "While I'm still healthy, let's do the things I want to do." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "negative (ない) form", example: "暗くなる → 暗くならないうちに" },
+      { pos: "い-Adjective", form: "plain form", example: "熱い → 熱いうちに" },
+      { pos: "Noun", form: "+ の", example: "学生 → 学生のうちに" }
     ]
   },
   {
@@ -1739,6 +2057,10 @@ const N3_GRAMMAR = [
       { title: "Spatial \"between\"", examples: [
         { japanese: "木と木の間にロープを張った。", furigana: "きときのあいだにロープをはった。", english: "I stretched a rope between the trees." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "ている form", example: "話している → 話しているあいだ" },
+      { pos: "Noun", form: "+ の", example: "留守 → 留守のあいだに" }
     ]
   },
   {
@@ -1750,6 +2072,9 @@ const N3_GRAMMAR = [
         { japanese: "学生にとって、この辞書は役に立つ。", furigana: "がくせいにとって、このじしょはやくにたつ。", english: "For students, this dictionary is useful." },
         { japanese: "子供にとって、遊びはとても大切だ。", furigana: "こどもにとって、あそびはとてもたいせつだ。", english: "For children, play is very important." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ にとって", example: "学生 → 学生にとって" }
     ]
   },
   {
@@ -1761,6 +2086,9 @@ const N3_GRAMMAR = [
         { japanese: "このテーマについてレポートを書きます。", furigana: "このテーマについてレポートをかきます。", english: "I will write a report about this theme." },
         { japanese: "この本は日本の歴史について書かれている。", furigana: "このほんはにほんのれきしについてかかれている。", english: "This book is written about Japanese history." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ について", example: "文化 → 文化について" }
     ]
   },
   {
@@ -1772,6 +2100,9 @@ const N3_GRAMMAR = [
         { japanese: "今後の方針に関して話し合いたい。", furigana: "こんごのほうしんにかんしてはなしあいたい。", english: "I would like to discuss the future policy." },
         { japanese: "今後の予定に関して、詳しくご説明します。", furigana: "こんごのよていにかんして、くわしくごせつめいします。", english: "I will explain the upcoming schedule in detail." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ に関して", example: "方針 → 方針に関して" }
     ]
   },
   {
@@ -1788,6 +2119,9 @@ const N3_GRAMMAR = [
       { title: "Agent in passive", examples: [
         { japanese: "この絵は、有名な画家によって描かれた。", furigana: "このえは、ゆうめいながかによってえがかれた。", english: "This painting was painted by a famous artist." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ によって", example: "人 → 人によって" }
     ]
   },
   {
@@ -1799,61 +2133,111 @@ const N3_GRAMMAR = [
         { japanese: "代表として会議に出席した。", furigana: "だいひょうとしてかいぎにしゅっせきした。", english: "I attended the meeting as a representative." },
         { japanese: "彼は通訳として、会議に参加した。", furigana: "かれはつうやくとして、かいぎにさんかした。", english: "He participated in the meeting as an interpreter." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ として", example: "代表 → 代表として" }
     ]
   },
   {
     id: "n3-warini", level: "N3", pattern: "～わりに（は）", title: "Considering that / given that", short: "Expresses a outcome that unexpected given the premise.",
     explanation: "～わりに（は）connects a premise to a surprising reality that diverges from what the premise alone would predict — the outcome is disproportionately better or worse than expected, given the baseline. It's commonly used to comment on price, effort, or experience relative to results.",
     usages: [
-      { title: "Unexpected outcome", examples: [
-        { japanese: "この料理は値段のわりに美味しいです。", furigana: "このりょうりはねだんのわりにおいしいです。", english: "This dish is delicious considering the price." },
+      { title: "With verbs", examples: [
         { japanese: "たくさん食べたわりに、太っていない。", furigana: "たくさんたべたわりに、ふとっていない。", english: "Considering how much I ate, I haven't gained weight." },
-        { japanese: "値段が高いわりに、あまり美味しくなかった。", furigana: "ねだんがたかいわりに、あまりおいしくなかった。", english: "Considering how expensive it was, it wasn't very tasty." }
+        { japanese: "長時間練習したわりに、上手にならなかった。", furigana: "ちょうじかんれんしゅうしたわりに、じょうずにならなかった。", english: "Considering how long I practiced, I didn't get very good at it." }
+      ]},
+      { title: "With adjectives", examples: [
+        { japanese: "値段が高いわりに、あまり美味しくなかった。", furigana: "ねだんがたかいわりに、あまりおいしくなかった。", english: "Considering how expensive it was, it wasn't very tasty." },
+        { japanese: "簡単なわりに、意外と時間がかかった。", furigana: "かんたんなわりに、いがいとじかんがかかった。", english: "Considering how simple it was, it surprisingly took a lot of time." }
+      ]},
+      { title: "With nouns", examples: [
+        { japanese: "この料理は値段のわりに美味しいです。", furigana: "このりょうりはねだんのわりにおいしいです。", english: "This dish is delicious considering the price." },
+        { japanese: "彼は年齢のわりに、とても落ち着いている。", furigana: "かれはねんれいのわりに、とてもおちついている。", english: "For his age, he's very composed." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "plain form", example: "食べた → 食べたわりに" },
+      { pos: "い-Adjective", form: "plain form", example: "高い → 高いわりに" },
+      { pos: "Noun", form: "+ の", example: "値段 → 値段のわりに" }
     ]
   },
   {
     id: "n3-kuse-ni", level: "N3", pattern: "～くせに", title: "Even though / and yet (blame)", short: "Expresses criticism or annoyance that something occurs despite a fact.",
     explanation: "～くせに attaches to a plain-form phrase and criticizes a contradiction between a fact and someone's behavior — 'even though X, they act like Y', with a clearly disapproving, sometimes contemptuous tone. It's always critical; unlike のに, it can never be used sympathetically.",
     usages: [
-      { title: "Criticism", examples: [
+      { title: "With verbs", examples: [
         { japanese: "知っているくせに、教えてくれません。", furigana: "しっているくせに、おしえてくれません。", english: "Even though he knows, he won't tell me." },
+        { japanese: "自分でもできないくせに、人には厳しく言う。", furigana: "じぶんでもできないくせに、ひとにはきびしくいう。", english: "Even though he can't do it himself, he's harsh with others about it." }
+      ]},
+      { title: "With adjectives", examples: [
+        { japanese: "下手なくせに、彼はいつも自信満々だ。", furigana: "へたなくせに、かれはいつもじしんまんまんだ。", english: "Even though he's bad at it, he's always brimming with confidence." },
+        { japanese: "苦手なくせに、いつも引き受けてしまう。", furigana: "にがてなくせに、いつもひきうけてしまう。", english: "Even though I'm bad at it, I always end up taking it on." }
+      ]},
+      { title: "With nouns", examples: [
         { japanese: "子供のくせに、大人のような口調で話す。", furigana: "こどものくせに、おとなのようなくちょうではなす。", english: "Despite being a child, he speaks in an adult tone." },
-        { japanese: "下手なくせに、彼はいつも自信満々だ。", furigana: "へたなくせに、かれはいつもじしんまんまんだ。", english: "Even though he's bad at it, he's always brimming with confidence." }
+        { japanese: "新人のくせに、態度が大きい。", furigana: "しんじんのくせに、たいどがおおきい。", english: "Even though he's a newcomer, he has a big attitude." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "plain form", example: "知っている → 知っているくせに" },
+      { pos: "な-Adjective", form: "stem + な", example: "下手 → 下手なくせに" },
+      { pos: "Noun", form: "+ の", example: "子供 → 子供のくせに" }
     ]
   },
   {
     id: "n3-sei-de", level: "N3", pattern: "～せいで / ～せいか", title: "Because of / fault of", short: "Assigns blame to something for a negative outcome.",
     explanation: "～せいで attributes a negative outcome to a specific cause or person's fault — 'because of X (which is to blame)'. ～せいか softens this into a guess: 'maybe because of X' — the speaker isn't fully certain X is really the cause, just suspects it might be.",
     usages: [
-      { title: "Assigning blame", examples: [
+      { title: "With nouns", examples: [
         { japanese: "事故のせいで遅刻しました。", furigana: "じこのせいでちこくしました。", english: "I was late because of an accident." },
         { japanese: "疲れのせいか、頭が痛い。", furigana: "つかれのせいか、あたまがいたい。", english: "Perhaps because of fatigue, I have a headache." },
         { japanese: "寝不足のせいか、頭がぼんやりする。", furigana: "ねぶそくのせいか、あたまがぼんやりする。", english: "Maybe because of lack of sleep, my head feels foggy." }
+      ]},
+      { title: "With verbs", examples: [
+        { japanese: "道が混んでいたせいで、約束の時間に遅れた。", furigana: "みちがこんでいたせいで、やくそくのじかんにおくれた。", english: "Because the roads were crowded, I was late for the appointment." },
+        { japanese: "準備を怠ったせいで、うまくいかなかった。", furigana: "じゅんびをおこたったせいで、うまくいかなかった。", english: "Because I neglected to prepare, it didn't go well." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "plain form", example: "遅れた → 遅れたせいで" },
+      { pos: "Noun", form: "+ の", example: "事故 → 事故のせいで" }
     ]
   },
   {
     id: "n3-okage-de", level: "N3", pattern: "～おかげで", title: "Thanks to / because of", short: "Gives credit to something for a positive outcome.",
     explanation: "～おかげで attributes a positive outcome to a helpful cause or person — 'thanks to X'. It can also be used sarcastically for a negative outcome, implying mock gratitude for something that actually caused trouble.",
     usages: [
-      { title: "Expressing gratitude", examples: [
+      { title: "With nouns", examples: [
         { japanese: "先生のおかげで試験に合格しました。", furigana: "せんせいのおかげでしけんにごうかくしました。", english: "Thanks to my teacher, I passed the exam." },
         { japanese: "雨のおかげで、作物がよく育った。", furigana: "あめのおかげで、さくもつがよくそだった。", english: "Thanks to the rain, the crops grew well." },
         { japanese: "先生のおかげで、試験に合格できました。", furigana: "せんせいのおかげで、しけんにごうかくできました。", english: "Thanks to my teacher, I was able to pass the exam." }
+      ]},
+      { title: "With verbs", examples: [
+        { japanese: "友人が助けてくれたおかげで、無事に終わらせることができた。", furigana: "ゆうじんがたすけてくれたおかげで、ぶじにおわらせることができた。", english: "Thanks to my friend helping me, I was able to finish it safely." },
+        { japanese: "早めに出発したおかげで、渋滞に巻き込まれずに済んだ。", furigana: "はやめにしゅっぱつしたおかげで、じゅうたいにまきこまれずにすんだ。", english: "Thanks to leaving early, I avoided getting caught in traffic." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "plain form", example: "手伝ってくれた → 手伝ってくれたおかげで" },
+      { pos: "Noun", form: "+ の", example: "先生 → 先生のおかげで" }
     ]
   },
   {
     id: "n3-touri-ni", level: "N3", pattern: "～とおりに / ～通りに", title: "Just as / in accordance with", short: "Shows doing an action exactly as instructed, planned, or seen.",
     explanation: "～とおりに follows a noun + の or the dictionary/past form of a verb, meaning 'exactly as X' or 'in the way that X' — the outcome matches a plan, instruction, or expectation precisely, with no deviation.",
     usages: [
-      { title: "Following instructions", examples: [
-        { japanese: "私が言う通りに書いてください。", furigana: "わたしがいうとおりにかいてください。", english: "Please write it down exactly as I say." },
+      { title: "With nouns", examples: [
         { japanese: "予定通りに進んでいます。", furigana: "よていどおりにすすんでいます。", english: "It's progressing as planned." },
         { japanese: "レシピのとおりに作ったら、美味しくできた。", furigana: "レシピのとおりにつくったら、おいしくできた。", english: "When I made it exactly as the recipe said, it turned out delicious." }
+      ]},
+      { title: "With verbs", examples: [
+        { japanese: "私が言う通りに書いてください。", furigana: "わたしがいうとおりにかいてください。", english: "Please write it down exactly as I say." },
+        { japanese: "先生に教わった通りに練習した。", furigana: "せんせいにおそわったとおりにれんしゅうした。", english: "I practiced exactly as I was taught by the teacher." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary or plain form", example: "言う → 言う通りに" },
+      { pos: "Noun", form: "+ の", example: "予定 → 予定通りに" }
     ]
   },
   {
@@ -1865,6 +2249,9 @@ const N3_GRAMMAR = [
         { japanese: "ドアを開けたとたん、猫が飛び出した。", furigana: "ドアをあけたとたん、ねこがとびだした。", english: "The moment I opened the door, the cat jumped out." },
         { japanese: "家を出たとたん、雨が降り出した。", furigana: "いえをでたとたん、あめがふりだした。", english: "The moment I left the house, it started raining." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "past (た) form", example: "出た → 出たとたん（に）" }
     ]
   },
   {
@@ -1876,6 +2263,9 @@ const N3_GRAMMAR = [
         { japanese: "食べたばかりなのに、もうお腹が空いた。", furigana: "たべたばかりなのに、もうおなかがすいた。", english: "I just ate, but I'm already hungry." },
         { japanese: "この店は先月オープンしたばかりだ。", furigana: "このみせはせんげつオープンしたばかりだ。", english: "This shop just opened last month." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "past (た) form", example: "来た → 来たばかり" }
     ]
   },
   {
@@ -1887,6 +2277,9 @@ const N3_GRAMMAR = [
         { japanese: "彼は文句ばかり言っている。", furigana: "かれはもんくばかりいっている。", english: "He's always complaining." },
         { japanese: "妹は最近、甘いものばかり食べている。", furigana: "いもうとはさいきん、あまいものばかりたべている。", english: "My younger sister has been eating nothing but sweets lately." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ ばかり", example: "ゲーム → ゲームばかり" }
     ]
   },
   {
@@ -1905,44 +2298,79 @@ const N3_GRAMMAR = [
     id: "n3-ka-dou-ka", level: "N3", pattern: "～かどうか", title: "Whether or not", short: "Embeds a yes/no question into a longer sentence.",
     explanation: "～かどうか attaches to a plain-form phrase and turns it into an embedded yes/no question, meaning 'whether or not X' — used when the truth of something is uncertain and needs to be checked, decided, or reported on.",
     usages: [
-      { title: "Embedded question", examples: [
+      { title: "With verbs", examples: [
         { japanese: "明日行けるかどうか分かりません。", furigana: "あしたいけるかどうかわかりません。", english: "I don't know whether or not I can go tomorrow." },
-        { japanese: "これでいいかどうか確かめてください。", furigana: "これでいいかどうかたしかめてください。", english: "Please check whether this is okay." },
         { japanese: "彼が来るかどうか、まだ分からない。", furigana: "かれがくるかどうか、まだわからない。", english: "I still don't know whether he's coming or not." }
+      ]},
+      { title: "With adjectives", examples: [
+        { japanese: "これでいいかどうか確かめてください。", furigana: "これでいいかどうかたしかめてください。", english: "Please check whether this is okay." },
+        { japanese: "この方法が正しいかどうか、専門家に聞いてみよう。", furigana: "このほうほうがただしいかどうか、せんもんかにきいてみよう。", english: "Let's ask an expert whether or not this method is correct." }
+      ]},
+      { title: "With nouns", examples: [
+        { japanese: "彼の話が本当かどうか、確認する必要がある。", furigana: "かれのはなしがほんとうかどうか、かくにんするひつようがある。", english: "We need to confirm whether or not his story is true." },
+        { japanese: "その情報が正確かどうか、まだ分からない。", furigana: "そのじょうほうがせいかくかどうか、まだわからない。", english: "It's still unclear whether or not that information is accurate." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "plain form", example: "行ける → 行けるかどうか" },
+      { pos: "い-Adjective", form: "plain form", example: "いい → いいかどうか" },
+      { pos: "Noun / な-Adjective", form: "plain form (+だ dropped)", example: "本当 → 本当かどうか" }
     ]
   },
   {
     id: "n3-tame-reason", level: "N3", pattern: "～ために（原因）", title: "Because of / due to", short: "States a formal cause or reason for a result.",
     explanation: "～ため（に）can mark a reason as well as a purpose. When following a state or fact rather than an intentional action, it means 'because of X' — a formal, slightly written-register equivalent of から or ので, common in explanations and news reports.",
     usages: [
-      { title: "Formal reason", examples: [
+      { title: "With nouns", examples: [
         { japanese: "大雨のために、試合は中止になりました。", furigana: "おおあめのために、しあいはちゅうしになりました。", english: "Due to heavy rain, the match was canceled." },
         { japanese: "病気のために学校を休んだ。", furigana: "びょうきのためにがっこうをやすんだ。", english: "I was absent from school due to illness." },
         { japanese: "大雪のため、電車が運休している。", furigana: "おおゆきのため、でんしゃがうんきゅうしている。", english: "Trains are suspended because of the heavy snow." }
+      ]},
+      { title: "With verbs", examples: [
+        { japanese: "道路が工事中のため、遠回りをしなければならなかった。", furigana: "どうろがこうじちゅうのため、とおまわりをしなければならなかった。", english: "Because the road was under construction, I had to take a detour." },
+        { japanese: "電車が遅れたため、会議に間に合わなかった。", furigana: "でんしゃがおくれたため、かいぎにまにあわなかった。", english: "Because the train was late, I didn't make it to the meeting in time." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "plain form", example: "遅れた → 遅れたため" },
+      { pos: "Noun", form: "+ の", example: "大雨 → 大雨のため" }
     ]
   },
   {
     id: "n3-osore-ga-aru", level: "N3", pattern: "～おそれがある", title: "There is a risk that / fear that", short: "Used in news or formal warnings for potential negative events.",
     explanation: "～おそれがある follows a noun or dictionary-form verb and warns of a possible negative outcome — 'there is a risk that X'. It's a formal expression common in weather warnings, safety notices, and news reports about potential dangers.",
     usages: [
-      { title: "Formal warning", examples: [
+      { title: "With verbs", examples: [
         { japanese: "台風が上陸するおそれがあります。", furigana: "たいふうがじょうりくするおそれがあります。", english: "There is a danger that the typhoon will make landfall." },
-        { japanese: "火災が発生するおそれがある。", furigana: "かさいがはっせいするおそれがある。", english: "There is a risk of fire breaking out." },
-        { japanese: "この薬には副作用のおそれがある。", furigana: "このくすりにはふくさようのおそれがある。", english: "There is a risk of side effects with this medicine." }
+        { japanese: "火災が発生するおそれがある。", furigana: "かさいがはっせいするおそれがある。", english: "There is a risk of fire breaking out." }
+      ]},
+      { title: "With nouns", examples: [
+        { japanese: "この薬には副作用のおそれがある。", furigana: "このくすりにはふくさようのおそれがある。", english: "There is a risk of side effects with this medicine." },
+        { japanese: "この地域は土砂崩れのおそれがある。", furigana: "このちいきはどしゃくずれのおそれがある。", english: "This area has a risk of landslides." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary form", example: "発生する → 発生するおそれがある" },
+      { pos: "Noun", form: "+ の", example: "副作用 → 副作用のおそれがある" }
     ]
   },
   {
     id: "n3-ni-chigainai", level: "N3", pattern: "～に違いない", title: "Must be / bound to be", short: "Expresses strong logical certainty or conviction by the speaker.",
     explanation: "～に違いない attaches to a plain-form phrase and expresses strong personal conviction, based on available evidence, that something must be true — 'it must be X'. It's more confident than かもしれない but still short of stating something as an established fact.",
     usages: [
-      { title: "Strong deduction", examples: [
+      { title: "With nouns", examples: [
         { japanese: "犯人は彼に違いない。", furigana: "はんにんはかれにちがいない。", english: "The culprit must be him." },
         { japanese: "彼女は美人に違いない。", furigana: "かのじょはびじんにちがいない。", english: "She must be beautiful." },
         { japanese: "この写真の様子から見て、楽しいパーティーだったに違いない。", furigana: "このしゃしんのようすからみて、たのしいパーティーだったにちがいない。", english: "Judging from what's in this photo, it must have been a fun party." }
+      ]},
+      { title: "With verbs", examples: [
+        { japanese: "この静けさから見て、彼はもう帰ったに違いない。", furigana: "このしずけさからみて、かれはもうかえったにちがいない。", english: "Judging from this quietness, he must have already gone home." },
+        { japanese: "この汚れ方から見て、誰かがここで料理をしたに違いない。", furigana: "このよごれかたからみて、だれかがここでりょうりをしたにちがいない。", english: "Judging from how dirty this is, someone must have cooked here." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "plain form", example: "帰った → 帰ったに違いない" },
+      { pos: "Noun", form: "+ に違いない", example: "犯人 → 犯人に違いない" }
     ]
   },
   {
@@ -1954,6 +2382,9 @@ const N3_GRAMMAR = [
         { japanese: "彼はもう来ないかもしれない。", furigana: "かれはもうこないかもしれない。", english: "He might not come anymore." },
         { japanese: "彼は今日、会社を休むかもしれない。", furigana: "かれはきょう、かいしゃをやすむかもしれない。", english: "He might take the day off work today." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "plain form", example: "降る → 降るかもしれない" }
     ]
   },
   {
@@ -1965,6 +2396,9 @@ const N3_GRAMMAR = [
         { japanese: "こんな難しい問題が解けるはずがない。", furigana: "こんなむずかしいもんだいがとけるはずがない。", english: "There's no way I can solve such a difficult problem." },
         { japanese: "彼がそんなひどいことを言うはずがない。", furigana: "かれがそんなひどいことをいうはずがない。", english: "There's no way he would say something that awful." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "plain form", example: "解ける → 解けるはずがない" }
     ]
   },
   {
@@ -1974,8 +2408,13 @@ const N3_GRAMMAR = [
       { title: "Goal", examples: [
         { japanese: "家を買うために貯金しています。", furigana: "いえをかうためにちょきんしています。", english: "I am saving money to buy a house." },
         { japanese: "夢を実現するために、留学を決めた。", furigana: "ゆめをじつげんするために、りゅうがくをきめた。", english: "I decided to study abroad in order to make my dream come true." },
-        { japanese: "健康のために、毎朝走っています。", furigana: "けんこうのために、まいあさはしっています。", english: "I run every morning for the sake of my health." }
+        { japanese: "健康のために、毎朝走っています。", furigana: "けんこうのために、まいあさはしっています。", english: "I run every morning for the sake of my health." },
+        { japanese: "家族のために、もっと稼ぎたいと思っている。", furigana: "かぞくのために、もっとかせぎたいとおもっている。", english: "For my family's sake, I want to earn more." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary form", example: "買う → 買うために" },
+      { pos: "Noun", form: "+ の", example: "健康 → 健康のために" }
     ]
   },
   {
@@ -1987,6 +2426,9 @@ const N3_GRAMMAR = [
         { japanese: "一言も言わずに去った。", furigana: "ひとこともいわずにさった。", english: "He left without saying a word." },
         { japanese: "彼は一言も言わずに、部屋を出て行った。", furigana: "かれはひとこともいわずに、へやをでていった。", english: "He left the room without saying a single word." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "negative stem (ない → ず)", example: "食べる → 食べずに" }
     ]
   },
   {
@@ -2009,6 +2451,10 @@ const N3_GRAMMAR = [
         { japanese: "彼は遅刻しがちだ。", furigana: "かれはちこくしがちだ。", english: "He tends to be late." },
         { japanese: "最近、曇りがちな天気が続いている。", furigana: "さいきん、くもりがちなてんきがつづいている。", english: "Lately, the weather has been tending toward cloudy." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "ます-stem", example: "遅刻する → 遅刻しがち" },
+      { pos: "Noun", form: "+ がち", example: "曇り → 曇りがち" }
     ]
   },
   {
@@ -2020,6 +2466,9 @@ const N3_GRAMMAR = [
         { japanese: "この色は赤っぽいです。", furigana: "このいろはあかっぽいです。", english: "This color is reddish." },
         { japanese: "彼の話し方は少し女っぽい。", furigana: "かれのはなしかたはすこしおんなっぽい。", english: "His way of speaking is a bit feminine." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ っぽい", example: "子供 → 子供っぽい" }
     ]
   },
   {
@@ -2031,6 +2480,9 @@ const N3_GRAMMAR = [
         { japanese: "これは初心者向けのアプリです。", furigana: "これはしょしんしゃむけのアプリです。", english: "This is an app for beginners." },
         { japanese: "この教材は初心者向けに作られている。", furigana: "このきょうざいはしょしんしゃむけにつくられている。", english: "This teaching material is made for beginners." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ 向け", example: "子供 → 子供向け" }
     ]
   },
   {
@@ -2042,17 +2494,32 @@ const N3_GRAMMAR = [
         { japanese: "この靴は歩き向きだ。", furigana: "このくつはあるきむきだ。", english: "These shoes are good for walking." },
         { japanese: "この仕事は細かい作業が得意な人向きだ。", furigana: "このしごとはこまかいさぎょうがとくいなひとむきだ。", english: "This job is well-suited to people who are good at detailed work." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ 向き", example: "初心者 → 初心者向き" }
     ]
   },
   {
     id: "n3-dake-de-naku", level: "N3", pattern: "～だけでなく", title: "Not only... but also...", short: "Extends a statement to include additional elements.",
     explanation: "～だけでなく connects two clauses to say that something isn't limited to the first point mentioned but extends to a second one as well — 'not only X but also Y'. It's the standard, everyday version of this idea, with more formal cousins like のみならず reserved for written Japanese.",
     usages: [
-      { title: "Addition", examples: [
+      { title: "With nouns", examples: [
         { japanese: "日本語だけでなく、英語も話せます。", furigana: "にほんごだけでなく、えいごもはなせます。", english: "I can speak not only Japanese, but also English." },
+        { japanese: "野菜だけでなく、果物もたくさん食べましょう。", furigana: "やさいだけでなく、くだものもたくさんたべましょう。", english: "Let's eat plenty of fruit as well, not just vegetables." }
+      ]},
+      { title: "With adjectives", examples: [
         { japanese: "この店は安いだけでなく、サービスも良い。", furigana: "このみせはやすいだけでなく、サービスもよい。", english: "This shop is not only cheap, but the service is also good." },
         { japanese: "彼女は歌が上手なだけでなく、ダンスも得意だ。", furigana: "かのじょはうたがじょうずなだけでなく、ダンスもとくいだ。", english: "Not only is she good at singing, she's also skilled at dancing." }
+      ]},
+      { title: "With verbs", examples: [
+        { japanese: "彼は英語が話せるだけでなく、書くこともできる。", furigana: "かれはえいごがはなせるだけでなく、かくこともできる。", english: "He can not only speak English but write it as well." },
+        { japanese: "この機械は動くだけでなく、静音性にも優れている。", furigana: "このきかいはうごくだけでなく、せいおんせいにもすぐれている。", english: "This machine doesn't just run — it's also excellent in quietness." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "plain form", example: "話せる → 話せるだけでなく" },
+      { pos: "い-Adjective / な-Adjective", form: "plain form", example: "安い → 安いだけでなく" },
+      { pos: "Noun", form: "+ だけでなく", example: "日本語 → 日本語だけでなく" }
     ]
   },
   {
@@ -2064,6 +2531,9 @@ const N3_GRAMMAR = [
         { japanese: "彼を信じるしかない。", furigana: "かれをしんじるしかない。", english: "I have no choice but to trust him." },
         { japanese: "電車がないので、歩いて帰るしかない。", furigana: "でんしゃがないので、あるいてかえるしかない。", english: "There's no train, so I have no choice but to walk home." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary form", example: "歩く → 歩くしかない" }
     ]
   },
   {
@@ -2075,6 +2545,9 @@ const N3_GRAMMAR = [
         { japanese: "彼の言うことが必ずしも正しいとは限らない。", furigana: "かれのいうことがかならずしもただしいとはかぎらない。", english: "What he says is not necessarily correct." },
         { japanese: "高いものが必ずしも品質がいいとは限らない。", furigana: "たかいものがかならずしもひんしつがいいとはかぎらない。", english: "Expensive things aren't necessarily always good quality." }
       ]}
+    ],
+    conjugations: [
+      { pos: "い-Adjective / な-Adjective", form: "plain form + とは限らない", example: "正しい → 正しいとは限らない" }
     ]
   },
   {
@@ -2086,6 +2559,9 @@ const N3_GRAMMAR = [
         { japanese: "明日、会議があることになっている。", furigana: "あした、かいぎがあることになっている。", english: "It's scheduled that there will be a meeting tomorrow." },
         { japanese: "この学校では、制服を着ることになっている。", furigana: "このがっこうでは、せいふくをきることになっている。", english: "At this school, the rule is that you wear a uniform." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary form", example: "着る → 着ることになっている" }
     ]
   },
   {
@@ -2097,17 +2573,27 @@ const N3_GRAMMAR = [
         { japanese: "そんな時は、慌てないことだ。", furigana: "そんなときは、あわてないことだ。", english: "In such times, you shouldn't panic." },
         { japanese: "疲れた時は、無理せず休むことだ。", furigana: "つかれたときは、むりせずやすむことだ。", english: "When you're tired, the thing to do is rest without overdoing it." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary or negative form", example: "休む → 休むことだ" }
     ]
   },
   {
     id: "n3-tsuide-ni", level: "N3", pattern: "～ついでに", title: "While you're at it / incidentally", short: "Perform a secondary action while taking opportunity of a primary action.",
     explanation: "～ついでに attaches to a noun + の or the dictionary form of a verb and means 'while doing X (as a convenient extra), also do Y' — the second action is a bonus made possible by already being in the middle of the first, saving the effort of a separate trip or task.",
     usages: [
-      { title: "Secondary action", examples: [
+      { title: "With nouns", examples: [
         { japanese: "散歩のついでに、手紙を出してきました。", furigana: "さんぽのついでに、てがみをだしてきました。", english: "While out for a walk, I mailed the letter." },
-        { japanese: "買い物のついでに、本屋に寄った。", furigana: "かいもののついでに、ほんやによった。", english: "While shopping, I stopped by the bookstore." },
-        { japanese: "郵便局に行くついでに、コンビニにも寄った。", furigana: "ゆうびんきょくにいくついでに、コンビニにもよった。", english: "While going to the post office, I also stopped by the convenience store." }
+        { japanese: "買い物のついでに、本屋に寄った。", furigana: "かいもののついでに、ほんやによった。", english: "While shopping, I stopped by the bookstore." }
+      ]},
+      { title: "With verbs", examples: [
+        { japanese: "郵便局に行くついでに、コンビニにも寄った。", furigana: "ゆうびんきょくにいくついでに、コンビニにもよった。", english: "While going to the post office, I also stopped by the convenience store." },
+        { japanese: "犬の散歩に行くついでに、ゴミを出してきた。", furigana: "いぬのさんぽにいくついでに、ゴミをだしてきた。", english: "While going to walk the dog, I also took out the trash." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary form", example: "行く → 行くついでに" },
+      { pos: "Noun", form: "+ の", example: "散歩 → 散歩のついでに" }
     ]
   },
   {
@@ -2119,17 +2605,27 @@ const N3_GRAMMAR = [
         { japanese: "旅行するたびに、お土産を買う。", furigana: "りょこうするたびに、おみやげをかう。", english: "Every time I travel, I buy souvenirs." },
         { japanese: "彼女に会うたびに、元気をもらえる。", furigana: "かのじょにあうたびに、げんきをもらえる。", english: "Every time I see her, I feel energized." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary form", example: "会う → 会うたびに" }
     ]
   },
   {
     id: "n3-sora-mou", level: "N3", pattern: "まるで～のようだ / みたいだ", title: "Just like / as if", short: "Creates a vivid figurative comparison.",
     explanation: "まるで pairs with のようだ or みたいだ at the end of the sentence to make a vivid, sometimes exaggerated comparison — 'just like X' or 'as if it were X'. まるで itself signals that a striking simile is coming, making the comparison feel more emphatic than のようだ alone would.",
     usages: [
-      { title: "Simile", examples: [
+      { title: "With nouns", examples: [
         { japanese: "今日はまるで春のような暖かさです。", furigana: "きょうはまるではるのようなあたたかさです。", english: "Today is warm, just as if it were spring." },
-        { japanese: "彼はまるでロボットのように働く。", furigana: "かれはまるでロボットのようにはたらく。", english: "He works just like a robot." },
-        { japanese: "この人形はまるで生きているみたいだ。", furigana: "このにんぎょうはまるでいきているみたいだ。", english: "This doll looks just like it's alive." }
+        { japanese: "彼はまるでロボットのように働く。", furigana: "かれはまるでロボットのようにはたらく。", english: "He works just like a robot." }
+      ]},
+      { title: "With verbs", examples: [
+        { japanese: "この人形はまるで生きているみたいだ。", furigana: "このにんぎょうはまるでいきているみたいだ。", english: "This doll looks just like it's alive." },
+        { japanese: "彼女はまるで何も知らないみたいに振る舞った。", furigana: "かのじょはまるでなにもしらないみたいにふるまった。", english: "She acted as if she knew nothing at all." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ の + ようだ／みたいだ", example: "春 → 春のようだ" },
+      { pos: "Verb", form: "ている form + みたいだ", example: "生きている → 生きているみたいだ" }
     ]
   },
   {
@@ -2141,6 +2637,9 @@ const N3_GRAMMAR = [
         { japanese: "海外に行ってはじめて日本の良さが分かった。", furigana: "かいがいにいってはじめてにほんのよさがわかった。", english: "Only after going abroad did I understand Japan's good points." },
         { japanese: "自分で会社を経営してはじめて、社長の大変さが分かった。", furigana: "じぶんでかいしゃをけいえいしてはじめて、しゃちょうのたいへんさがわかった。", english: "It was only after running my own company that I understood how hard being a president is." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "て-form", example: "経営する → 経営してはじめて" }
     ]
   },
   {
@@ -2152,39 +2651,60 @@ const N3_GRAMMAR = [
         { japanese: "ご飯を食べてからでないと、薬が飲めない。", furigana: "ごはんをたべてからでないと、くすりがのめない。", english: "Unless I eat, I can't take the medicine." },
         { japanese: "予約してからでないと、この店には入れません。", furigana: "よやくしてからでないと、このみせにははいれません。", english: "You can't get into this restaurant without making a reservation first." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "て-form", example: "予約する → 予約してからでないと" }
     ]
   },
   {
     id: "n3-saie-ba", level: "N3", pattern: "～さえ～ば", title: "If only / as long as", short: "States the sole necessary condition required for an outcome.",
     explanation: "～さえ～ば attaches さえ to a noun (or verb stem) and combines with the ば-conditional to mean 'if only X, then everything else follows' — this one condition is presented as sufficient on its own, with nothing else needed.",
     usages: [
-      { title: "Sole condition", examples: [
-        { japanese: "薬を飲みさえすれば、治ります。", furigana: "くすりをのみさえすれば、なおります。", english: "As long as you take the medicine, you will get better." },
+      { title: "With nouns", examples: [
         { japanese: "時間さえあれば、読めるのに。", furigana: "じかんさえあれば、よめるのに。", english: "If only I had time, I could read it." },
         { japanese: "お金さえあれば、何でも買えるわけではない。", furigana: "おかねさえあれば、なんでもかえるわけではない。", english: "It's not the case that if you just have money, you can buy anything." }
+      ]},
+      { title: "With verbs", examples: [
+        { japanese: "薬を飲みさえすれば、治ります。", furigana: "くすりをのみさえすれば、なおります。", english: "As long as you take the medicine, you will get better." },
+        { japanese: "静かにしさえすれば、一緒に来てもいいですよ。", furigana: "しずかにしさえすれば、いっしょにきてもいいですよ。", english: "As long as you stay quiet, you can come along too." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "ます-stem", example: "飲む → 飲みさえすれば" },
+      { pos: "Noun", form: "+ さえ", example: "時間 → 時間さえあれば" }
     ]
   },
   {
     id: "n3-ageku", level: "N3", pattern: "～あげく（に）", title: "After much trouble, in the end", short: "After a long process of deliberation or struggle, a (usually disappointing) result.",
     explanation: "～あげく（に）attaches to the past-tense form of a verb or a noun + の and means 'after a long, drawn-out process of X, the outcome was Y' — almost always a disappointing or exhausting result following extended effort, hesitation, or struggle.",
     usages: [
-      { title: "Troubled process ending badly", examples: [
+      { title: "Drawn-out negative result", examples: [
         { japanese: "迷ったあげく、結局何も買わなかった。", furigana: "まよったあげく、けっきょくなにもかわなかった。", english: "After much deliberation, I ended up buying nothing." },
         { japanese: "議論のあげく、結論は出なかった。", furigana: "ぎろんのあげく、けつろんはでなかった。", english: "After all that discussion, no conclusion was reached." },
-        { japanese: "さんざん迷ったあげく、結局何も買わなかった。", furigana: "さんざんまよったあげく、けっきょくなにもかわなかった。", english: "After agonizing over it for ages, I ended up not buying anything at all." }
+        { japanese: "さんざん迷ったあげく、結局何も買わなかった。", furigana: "さんざんまよったあげく、けっきょくなにもかわなかった。", english: "After agonizing over it for ages, I ended up not buying anything at all." },
+        { japanese: "長い交渉のあげく、契約は白紙になった。", furigana: "ながいこうしょうのあげく、けいやくははくしになった。", english: "After lengthy negotiations, the contract ended up being scrapped." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "past (た) form", example: "迷った → 迷ったあげく" },
+      { pos: "Noun", form: "+ の", example: "議論 → 議論のあげく" }
     ], notes: "A common related pattern is ～た末（すえ）に, which is similar but more neutral in tone."
   },
   {
     id: "n3-bakari-ka", level: "N3", pattern: "～ばかりか", title: "Not only... but also", short: "Adds information on top of what was said, often with a surprising or critical nuance.",
     explanation: "～ばかりか connects two clauses to say that something isn't limited to the first, often already surprising, fact — an even more striking second fact follows too. It's similar to だけでなく but carries a stronger sense of escalating surprise.",
     usages: [
-      { title: "Adding to an already strong case", examples: [
+      { title: "Escalating surprise", examples: [
         { japanese: "彼は日本語ばかりか、中国語も話せます。", furigana: "かれはにほんごばかりか、ちゅうごくごもはなせます。", english: "He speaks not only Japanese but also Chinese." },
         { japanese: "この店は高いばかりか、量も少ない。", furigana: "このみせはたかいばかりか、りょうもすくない。", english: "This restaurant is not only expensive, the portions are small too." },
-        { japanese: "彼は宿題を忘れたばかりか、教科書も持ってこなかった。", furigana: "かれはしゅくだいをわすれたばかりか、きょうかしょももってこなかった。", english: "Not only did he forget his homework, he didn't even bring his textbook." }
+        { japanese: "彼は宿題を忘れたばかりか、教科書も持ってこなかった。", furigana: "かれはしゅくだいをわすれたばかりか、きょうかしょももってこなかった。", english: "Not only did he forget his homework, he didn't even bring his textbook." },
+        { japanese: "彼女は歌が上手なばかりか、作詞作曲もこなす。", furigana: "かのじょはうたがじょうずなばかりか、さくしさっきょくもこなす。", english: "Not only is she good at singing, she also handles songwriting and composition." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "plain form", example: "忘れた → 忘れたばかりか" },
+      { pos: "い-Adjective", form: "plain form", example: "高い → 高いばかりか" },
+      { pos: "Noun", form: "+ ばかりか", example: "日本語 → 日本語ばかりか" }
     ]
   },
   {
@@ -2199,6 +2719,9 @@ const N3_GRAMMAR = [
         { japanese: "部屋はゴミだらけです。", furigana: "へやはゴミだらけです。", english: "The room is full of rubbish." },
         { japanese: "試験の答案は間違いだらけだった。", furigana: "しけんのとうあんはまちがいだらけだった。", english: "My exam paper was full of mistakes." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ だらけ", example: "泥 → 泥だらけ" }
     ], notes: "Compare with N1 ～まみれ: だらけ can be abstract (mistakes, lies), while まみれ is mostly physical substances."
   },
   {
@@ -2210,6 +2733,9 @@ const N3_GRAMMAR = [
         { japanese: "無理だと思いつつ、もう一度挑戦した。", furigana: "むりだとおもいつつ、もういちどちょうせんした。", english: "Although I thought it was impossible, I tried once more." },
         { japanese: "テレビを見つつ、夕食を食べた。", furigana: "テレビをみつつ、ゆうしょくをたべた。", english: "I ate dinner while watching TV." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "ます-stem", example: "見る → 見つつ" }
     ], notes: "Do not confuse with ～つつある below, which describes gradual ongoing change."
   },
   {
@@ -2221,22 +2747,26 @@ const N3_GRAMMAR = [
         { japanese: "事態は好転しつつある。", furigana: "じたいはこうてんしつつある。", english: "The situation is in the process of improving." },
         { japanese: "この町の人口は年々減りつつある。", furigana: "このまちのじんこうはねんねんへりつつある。", english: "This town's population is gradually decreasing year by year." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "ます-stem", example: "変わる → 変わりつつある" }
     ]
   },
   {
     id: "n3-mono-da", level: "N3", pattern: "～ものだ", title: "General truths / nostalgia / how things should be", short: "States universal truths, reminisces about the past, or states proper behavior.",
     explanation: "～ものだ attaches to a plain-form phrase and states something as general common sense or a widely accepted truth — 'that's just how things are' or 'people naturally do X'. It can also express nostalgic reminiscence about the past (よく〜したものだ, 'I used to X a lot').",
     usages: [
-      { title: "General truth", examples: [
+      { title: "General truth or nostalgia", examples: [
         { japanese: "月は神秘的なものだ。", furigana: "つきはしんぴてきなものだ。", english: "The moon is a mysterious thing." },
-        { japanese: "子供は親の背中を見て育つものだ。", furigana: "こどもはおやのせなかをみてそだつものだ。", english: "Children naturally grow up watching their parents' example." }
-      ]},
-      { title: "Nostalgic past", examples: [
-        { japanese: "子供のころは、よく川で泳いだものだ。", furigana: "こどものころは、よくかわでおよいだものだ。", english: "When I was a child, I used to swim in the river all the time." }
-      ]},
-      { title: "Proper behavior", examples: [
-        { japanese: "人の気持ちを尊重するものだ。", furigana: "ひとのきもちをそんちょうするものだ。", english: "One should respect other people's feelings." }
+        { japanese: "子供は親の背中を見て育つものだ。", furigana: "こどもはおやのせなかをみてそだつものだ。", english: "Children naturally grow up watching their parents' example." },
+        { japanese: "子供のころは、よく川で泳いだものだ。", furigana: "こどものころは、よくかわでおよいだものだ。", english: "When I was a child, I used to swim in the river all the time." },
+        { japanese: "人の気持ちを尊重するものだ。", furigana: "ひとのきもちをそんちょうするものだ。", english: "One should respect other people's feelings." },
+        { japanese: "年を取ると涙もろくなるものだ。", furigana: "としをとるとなみだもろくなるものだ。", english: "As people get older, they naturally become more prone to tears." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "plain form", example: "育つ → 育つものだ" },
+      { pos: "な-Adjective", form: "stem + な", example: "神秘的 → 神秘的なものだ" }
     ]
   },
   {
@@ -2248,17 +2778,27 @@ const N3_GRAMMAR = [
         { japanese: "友達の悪口を言うものではない。", furigana: "ともだちのわるぐちをいうものではない。", english: "One shouldn't speak ill of one's friends." },
         { japanese: "他人の物を勝手に使うものではない。", furigana: "たにんのものをかってにつかうものではない。", english: "One shouldn't use other people's things without asking." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary form", example: "使う → 使うものではない" }
     ]
   },
   {
     id: "n3-doko-ro-ka", level: "N3", pattern: "～どころか", title: "Far from / anything but", short: "The reality is completely opposite to what was expected.",
     explanation: "～どころか attaches to a noun or plain-form phrase and rejects it in favor of something at the opposite extreme — 'far from X, it's actually Y' — the reality turns out to be the complete reverse of what was expected or stated.",
     usages: [
-      { title: "Reversed reality", examples: [
+      { title: "With verbs", examples: [
         { japanese: "休むどころか、週末も働いています。", furigana: "やすむどころか、しゅうまつもはたらいています。", english: "Far from getting a rest, I'm working weekends too." },
-        { japanese: "上手になるどころか、どんどん下手になった。", furigana: "じょうずになるどころか、どんどんへたになった。", english: "Far from improving, I'm getting worse and worse." },
-        { japanese: "彼は忙しいどころか、毎日暇そうにしている。", furigana: "かれはいそがしいどころか、まいにちひまそうにしている。", english: "Far from being busy, he looks bored every single day." }
+        { japanese: "上手になるどころか、どんどん下手になった。", furigana: "じょうずになるどころか、どんどんへたになった。", english: "Far from improving, I'm getting worse and worse." }
+      ]},
+      { title: "With adjectives", examples: [
+        { japanese: "彼は忙しいどころか、毎日暇そうにしている。", furigana: "かれはいそがしいどころか、まいにちひまそうにしている。", english: "Far from being busy, he looks bored every single day." },
+        { japanese: "涼しいどころか、真夏のように暑い。", furigana: "すずしいどころか、まなつのようにあつい。", english: "Far from cool, it's as hot as midsummer." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary form", example: "なる → なるどころか" },
+      { pos: "い-Adjective", form: "plain form", example: "忙しい → 忙しいどころか" }
     ]
   },
   {
@@ -2272,6 +2812,9 @@ const N3_GRAMMAR = [
       { title: "Comparison", examples: [
         { japanese: "去年に対して、今年の売り上げは二割増えた。", furigana: "きょねんにたいして、ことしのうりあげはにわりふえた。", english: "Compared with last year, sales are up twenty percent." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ に対して", example: "先生 → 先生に対して" }
     ]
   },
   {
@@ -2283,6 +2826,9 @@ const N3_GRAMMAR = [
         { japanese: "ファンの期待に応えて、もう一曲歌った。", furigana: "ファンのきたいにこたえて、もういっきょくうたった。", english: "In response to the fans' expectations, I sang one more song." },
         { japanese: "地域住民の声に応えて、公園が新設された。", furigana: "ちいきじゅうみんのこえにこたえて、こうえんがしんせつされた。", english: "In response to local residents' voices, a new park was built." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ に応えて", example: "期待 → 期待に応えて" }
     ]
   },
   {
@@ -2294,6 +2840,9 @@ const N3_GRAMMAR = [
         { japanese: "経験に加えて、資格も必要だ。", furigana: "けいけんにくわえて、しかくもひつようだ。", english: "In addition to experience, qualifications are also necessary." },
         { japanese: "経験に加えて、資格も必要です。", furigana: "けいけんにくわえて、しかくもひつようです。", english: "In addition to experience, a qualification is also necessary." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ に加えて", example: "経験 → 経験に加えて" }
     ]
   },
   {
@@ -2305,19 +2854,27 @@ const N3_GRAMMAR = [
         { japanese: "男性に比べて、女性の方が長生きする。", furigana: "だんせいにくらべて、じょせいのほうがながいきする。", english: "Compared to men, women live longer." },
         { japanese: "去年に比べて、今年の夏は暑い。", furigana: "きょねんにくらべて、ことしのなつはあつい。", english: "Compared to last year, this summer is hot." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ に比べて", example: "去年 → 去年に比べて" }
     ]
   },
   {
     id: "n3-ni-shitagatte", level: "N3", pattern: "～に従って", title: "According to / in proportion to", short: "Following rules, or changing in step with something else.",
     explanation: "～に従って follows a noun and means 'in accordance with X' or 'following X' — obeying a rule, instruction, or set of guidelines. It shares a meaning with にしたがって (using the same kanji, different but related grammatical role) — one describes following a rule, the other a gradual change happening in step with something.",
     usages: [
-      { title: "Following rules", examples: [
+      { title: "With nouns", examples: [
         { japanese: "説明書に従って組み立ててください。", furigana: "せつめいしょにしたがってくみたててください。", english: "Please assemble it according to the instructions." },
         { japanese: "指示に従って、避難してください。", furigana: "しじにしたがって、ひなんしてください。", english: "Please evacuate in accordance with the instructions." }
       ]},
-      { title: "Proportional change", examples: [
-        { japanese: "年を取るに従って、体力が落ちる。", furigana: "としをとるにしたがって、たいりょくがおちる。", english: "As you get older, your physical strength declines." }
+      { title: "With verbs", examples: [
+        { japanese: "年を取るに従って、体力が落ちる。", furigana: "としをとるにしたがって、たいりょくがおちる。", english: "As you get older, your physical strength declines." },
+        { japanese: "話を聞くに従って、事情が分かってきた。", furigana: "はなしをきくにしたがって、じじょうがわかってきた。", english: "As I listened to the story, I started to understand the circumstances." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary form", example: "取る → 取るに従って" },
+      { pos: "Noun", form: "+ に従って", example: "指示 → 指示に従って" }
     ], notes: "The change meaning overlaps with N2 ～につれて; 従って emphasizes compliance or direct correlation."
   },
   {
@@ -2329,17 +2886,32 @@ const N3_GRAMMAR = [
         { japanese: "彼にしてみれば、当然の行動だった。", furigana: "かれにしてみれば、とうぜんのこうどうだった。", english: "From his perspective, it was a natural action." },
         { japanese: "親にしてみれば、子供の結婚は複雑な気持ちだ。", furigana: "おやにしてみれば、こどものけっこんはふくざつなきもちだ。", english: "From a parent's perspective, a child's marriage brings complicated feelings." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ にしたら／にしてみれば", example: "親 → 親にしたら" }
     ]
   },
   {
     id: "n3-ni-shitemo", level: "N3", pattern: "～にしても", title: "Even if / even for", short: "Concedes a point while still holding the main opinion.",
     explanation: "～にしても attaches to nouns, adjectives, or verb plain forms and means 'even considering X' or 'even if X is true' — it softens disagreement by partially accepting the other side's point before adding a qualification.",
     usages: [
-      { title: "Concession", examples: [
+      { title: "With adjectives", examples: [
         { japanese: "いくら忙しいにしても、寝る時間ぐらいは欲しい。", furigana: "いくらいそがしいにしても、ねるじかんぐらいはほしい。", english: "No matter how busy you are, you must want at least time to sleep." },
-        { japanese: "冗談にしても、あの言い方はひどい。", furigana: "じょうだんにしても、あのいいかたはひどい。", english: "Even granting it was a joke, that way of putting it was harsh." },
         { japanese: "安いにしても、こんな質の悪い物は買いたくない。", furigana: "やすいにしても、こんなしつのわるいものはかいたくない。", english: "Even if it's cheap, I don't want to buy something this poor in quality." }
+      ]},
+      { title: "With nouns", examples: [
+        { japanese: "冗談にしても、あの言い方はひどい。", furigana: "じょうだんにしても、あのいいかたはひどい。", english: "Even granting it was a joke, that way of putting it was harsh." },
+        { japanese: "初心者にしても、この間違いは考えられない。", furigana: "しょしんしゃにしても、このまちがいはかんがえられない。", english: "Even granting that they're a beginner, this mistake is unthinkable." }
+      ]},
+      { title: "With verbs", examples: [
+        { japanese: "行くにしても、もう少し準備が必要だ。", furigana: "いくにしても、もうすこしじゅんびがひつようだ。", english: "Even if we do go, we need a bit more preparation." },
+        { japanese: "断るにしても、失礼のない言い方を考えたい。", furigana: "ことわるにしても、しつれいのないいいかたをかんがえたい。", english: "Even if I decline, I want to think of a polite way to say it." }
       ]}
+    ],
+    conjugations: [
+      { pos: "い-Adjective", form: "plain form", example: "忙しい → 忙しいにしても" },
+      { pos: "Noun", form: "+ にしても", example: "冗談 → 冗談にしても" },
+      { pos: "Verb", form: "dictionary form", example: "行く → 行くにしても" }
     ]
   },
   {
@@ -2351,17 +2923,27 @@ const N3_GRAMMAR = [
         { japanese: "経済発展に伴って、生活水準が向上した。", furigana: "けいざいはってんにともなって、せいかつすいじゅんがこうじょうした。", english: "Along with economic development, living standards have improved." },
         { japanese: "少子化に伴って、学校の数も減っている。", furigana: "しょうしかにともなって、がっこうのかずもへっている。", english: "Along with the declining birthrate, the number of schools is also decreasing." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ に伴って", example: "増加 → 増加に伴って" }
     ]
   },
   {
     id: "n3-ni-mo-kakawarazu", level: "N3", pattern: "～にもかかわらず", title: "Despite / in spite of", short: "A formal contrast: the result holds even though the condition was unfavorable.",
     explanation: "～にもかかわらず follows a noun or plain-form phrase and means 'despite X' or 'in spite of X' — the outcome runs contrary to what the stated circumstance would normally lead you to expect, similar in force to のに but more formal.",
     usages: [
-      { title: "Formal contrast", examples: [
+      { title: "With nouns", examples: [
         { japanese: "大雨にもかかわらず、試合は行われた。", furigana: "おおあめにもかかわらず、しあいはおこなわれた。", english: "Despite the heavy rain, the match was held." },
-        { japanese: "反対が多いにもかかわらず、計画は進められた。", furigana: "はんたいがおおいにもかかわらず、けいかくはすすめられた。", english: "Despite much opposition, the plan went ahead." },
         { japanese: "雨にもかかわらず、大勢の人が集まった。", furigana: "あめにもかかわらず、おおぜいのひとがあつまった。", english: "Despite the rain, a large crowd gathered." }
+      ]},
+      { title: "With adjectives", examples: [
+        { japanese: "反対が多いにもかかわらず、計画は進められた。", furigana: "はんたいがおおいにもかかわらず、けいかくはすすめられた。", english: "Despite much opposition, the plan went ahead." },
+        { japanese: "難しいにもかかわらず、彼は最後までやり遂げた。", furigana: "むずかしいにもかかわらず、かれはさいごまでやりとげた。", english: "Despite it being difficult, he saw it through to the end." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ にもかかわらず", example: "大雨 → 大雨にもかかわらず" },
+      { pos: "い-Adjective", form: "plain form", example: "多い → 多いにもかかわらず" }
     ], notes: "Synonymous with のに in meaning, but more formal and objective."
   },
   {
@@ -2373,6 +2955,9 @@ const N3_GRAMMAR = [
         { japanese: "冗談抜きで、本気で言っています。", furigana: "じょうだんぬきで、ほんきでいっています。", english: "I'm saying this seriously, no joking." },
         { japanese: "今日は冗談抜きで、真剣な話がある。", furigana: "きょうはじょうだんぬきで、しんけんなはなしがある。", english: "Today, joking aside, I have something serious to talk about." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ 抜きで／抜きの", example: "砂糖 → 砂糖抜き" }
     ]
   },
   {
@@ -2384,6 +2969,9 @@ const N3_GRAMMAR = [
         { japanese: "痛みを我慢し抜いた。", furigana: "いたみをがまんしぬいた。", english: "I endured the pain to the end." },
         { japanese: "厳しい練習を最後までやり抜いた。", furigana: "きびしいれんしゅうをさいごまでやりぬいた。", english: "I saw the tough training through to the very end." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "ます-stem", example: "やる → やり抜く" }
     ]
   },
   {
@@ -2397,17 +2985,25 @@ const N3_GRAMMAR = [
       { title: "Noun version", examples: [
         { japanese: "今の解決策は待つことほかならない。", furigana: "いまのかいけつさくはまつことほかならない。", english: "The only solution now is to wait." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary form", example: "謝る → 謝るほかない" }
     ], notes: "Overlaps with N3 ～しかない; ほかない feels slightly more formal and conclusive."
   },
   {
     id: "n3-ba-hodo", level: "N3", pattern: "～ば～ほど", title: "The more... the more...", short: "One degree increases in direct proportion to another.",
     explanation: "～ば～ほど repeats the same verb or adjective in its ば-form and its plain form, meaning 'the more X, the more Y' — a proportional relationship where increasing one thing correspondingly increases the other.",
     usages: [
-      { title: "Proportional degree", examples: [
+      { title: "Proportional relationship", examples: [
         { japanese: "この本は読めば読むほどおもしろい。", furigana: "このほんはよめばよむほどおもしろい。", english: "The more I read this book, the more interesting it gets." },
         { japanese: "考えれば考えるほど、分からなくなる。", furigana: "かんがえればかんがえるほど、わからなくなる。", english: "The more I think about it, the less I understand." },
-        { japanese: "早ければ早いほど、いい結果につながる。", furigana: "はやければはやいほど、いいけっかにつながる。", english: "The earlier it is, the better the results will be." }
+        { japanese: "早ければ早いほど、いい結果につながる。", furigana: "はやければはやいほど、いいけっかにつながる。", english: "The earlier it is, the better the results will be." },
+        { japanese: "この薬は高ければ高いほど、効果があるとは限らない。", furigana: "このくすりはたかければたかいほど、こうかがあるとはかぎらない。", english: "It's not necessarily true that the more expensive this medicine is, the more effective it is." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "ば-form + dictionary form", example: "読む → 読めば読むほど" },
+      { pos: "い-Adjective", form: "ば-form + plain form", example: "早い → 早ければ早いほど" }
     ]
   },
   {
@@ -2422,39 +3018,62 @@ const N3_GRAMMAR = [
       { title: "Continuous action", examples: [
         { japanese: "昨日は一日中泣きっぱなしだった。", furigana: "きのうはいちにちじゅうなきっぱなしだった。", english: "Yesterday I cried nonstop all day." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "ます-stem", example: "開ける → 開けっぱなし" }
     ]
   },
   {
     id: "n3-sue-ni", level: "N3", pattern: "～末に / ～末の", title: "After a long process, finally", short: "A result reached at the end of prolonged effort or discussion.",
     explanation: "～末に attaches to the past-tense form of a verb or a noun + の and means 'after a long process of X, finally...' — similar to あげく, but sue-ni doesn't carry the same negative connotation; it can lead to either a positive or negative final outcome.",
     usages: [
-      { title: "Long process, final result", examples: [
+      { title: "With nouns", examples: [
         { japanese: "長い議論の末に、ようやく結論が出た。", furigana: "ながいぎろんのすえに、ようやくけつろんがでた。", english: "After long discussion, a conclusion was finally reached." },
         { japanese: "苦労の末、成功した。", furigana: "くろうのすえ、せいこうした。", english: "After much effort, I succeeded." },
         { japanese: "何年もの努力の末に、ついに夢を叶えた。", furigana: "なんねんものどりょくのすえに、ついにゆめをかなえた。", english: "After years of effort, I finally made my dream come true." }
+      ]},
+      { title: "With verbs", examples: [
+        { japanese: "さんざん悩んだ末に、留学を決意した。", furigana: "さんざんなやんだすえに、りゅうがくをけついした。", english: "After agonizing over it for a long time, I decided to study abroad." },
+        { japanese: "何度も話し合った末に、ようやく合意に至った。", furigana: "なんどもはなしあったすえに、ようやくごういにいたった。", english: "After discussing it many times, we finally reached an agreement." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "past (た) form", example: "悩んだ → 悩んだ末に" },
+      { pos: "Noun", form: "+ の", example: "議論 → 議論の末に" }
     ]
   },
   {
     id: "n3-yara", level: "N3", pattern: "～やら～やら", title: "This and that / and so on", short: "Lists multiple things in a scattered, overwhelmed, or emotional way.",
     explanation: "～やら～やら lists two or more things (often chaotic, mixed emotions or a jumble of activities) with a sense of disorder or overwhelm — 'what with X and Y (and who knows what else)'. It's more expressive and less neutral than や, which is a plain, calm listing particle.",
     usages: [
-      { title: "Overwhelmed listing", examples: [
-        { japanese: "泣くやら笑うやら、大騒ぎでした。", furigana: "なくやらわらうやら、おおさわぎでした。", english: "There was a huge commotion — crying, laughing, and everything in between." },
+      { title: "With nouns", examples: [
         { japanese: "荷物やら書類やらで部屋が散らかっている。", furigana: "にもつやらしょるいやらでへやがちらかっている。", english: "The room is messy with luggage and documents and things." },
         { japanese: "引っ越しの準備で、荷造りやら掃除やらで忙しい。", furigana: "ひっこしのじゅんびで、にづくりやらそうじやらでいそがしい。", english: "I'm busy with moving preparations — packing, cleaning, and everything else." }
+      ]},
+      { title: "With verbs", examples: [
+        { japanese: "泣くやら笑うやら、大騒ぎでした。", furigana: "なくやらわらうやら、おおさわぎでした。", english: "There was a huge commotion — crying, laughing, and everything in between." },
+        { japanese: "驚くやら呆れるやらで、何も言えなかった。", furigana: "おどろくやらあきれるやらで、なにもいえなかった。", english: "Between being shocked and exasperated, I couldn't say anything." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary form (repeated)", example: "泣く → 泣くやら笑うやら" },
+      { pos: "Noun", form: "+ やら (repeated)", example: "荷物 → 荷物やら書類やら" }
     ]
   },
   {
     id: "n3-sae-mo", level: "N3", pattern: "～さえも", title: "Even (emphatic)", short: "A stronger version of さえ: not even the minimum was possible.",
     explanation: "～さえも is a stronger, more emphatic version of さえ — naming an extreme example to underscore just how far a statement extends, similar to ですら but usable in less formal contexts as well.",
     usages: [
-      { title: "Strong emphasis", examples: [
+      { title: "Extreme example", examples: [
         { japanese: "忙しすぎて、飯を食べる時間さえもない。", furigana: "いそがしすぎて、めしをたべるじかんさえもない。", english: "I'm so busy I don't even have time to eat." },
         { japanese: "漢字どころか、ひらがなさえも読めません。", furigana: "かんじどころか、ひらがなさえもよめません。", english: "Far from kanji, I can't even read hiragana." },
-        { japanese: "疲れすぎて、お風呂に入る元気さえもなかった。", furigana: "つかれすぎて、おふろにはいるげんきさえもなかった。", english: "I was so tired I didn't even have the energy to take a bath." }
+        { japanese: "疲れすぎて、お風呂に入る元気さえもなかった。", furigana: "つかれすぎて、おふろにはいるげんきさえもなかった。", english: "I was so tired I didn't even have the energy to take a bath." },
+        { japanese: "怖くて、その方向を見さえもできなかった。", furigana: "こわくて、そのほうこうをみさえもできなかった。", english: "I was so scared I couldn't even bring myself to look in that direction." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ さえも", example: "時間 → 時間さえも" },
+      { pos: "Verb", form: "ます-stem", example: "考える → 考えさえもしない" }
     ]
   },
   {
@@ -2466,6 +3085,9 @@ const N3_GRAMMAR = [
         { japanese: "あの日のことは忘れがたい。", furigana: "あのひのことはわすれがたい。", english: "That day is hard to forget." },
         { japanese: "あの日の悲しみは忘れがたい。", furigana: "あのひのかなしみはわすれがたい。", english: "The sorrow of that day is hard to forget." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "ます-stem", example: "信じる → 信じがたい" }
     ], notes: "Compare with N4 ～にくい: にくい is about physical or practical difficulty (this pen is hard to write with), while がたい is about emotional or moral difficulty and only pairs with a small set of verbs."
   },
   {
@@ -2480,6 +3102,9 @@ const N3_GRAMMAR = [
       { title: "Negative obligation", examples: [
         { japanese: "他人の悪口を言うべきではない。", furigana: "たにんのわるぐちをいうべきではない。", english: "You shouldn't speak ill of others." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary form (する → すべき)", example: "運動する → 運動するべき" }
     ], notes: "する attaches irregularly as すべき (the older, more formal form) alongside the regular するべき; both are common today."
   },
   {
@@ -2494,6 +3119,9 @@ const N3_GRAMMAR = [
       { title: "Reporting content", examples: [
         { japanese: "来月、新しい店ができるという話を聞きました。", furigana: "らいげつ、あたらしいみせができるというはなしをききました。", english: "I heard that a new shop is opening next month." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ という", example: "桜 → 桜という花" }
     ]
   },
   {
@@ -2507,6 +3135,9 @@ const N3_GRAMMAR = [
       { title: "Restating / summary", examples: [
         { japanese: "つまり、彼は来ないということですね。", furigana: "つまり、かれはこないということですね。", english: "So basically, you're saying he's not coming, right?" }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "plain form", example: "続く → 続くということだ" }
     ]
   },
   {
@@ -2549,6 +3180,9 @@ const N3_GRAMMAR = [
         { japanese: "こちらこそ、よろしくお願いします。", furigana: "こちらこそ、よろしくおねがいします。", english: "The pleasure is mine. (set greeting)" },
         { japanese: "今度こそ、諦めずに最後までやります。", furigana: "こんどこそ、あきらめずにさいごまでやります。", english: "This time for sure, I'll see it through without giving up." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ こそ", example: "今年 → 今年こそ" }
     ]
   },
   {
@@ -2560,6 +3194,9 @@ const N3_GRAMMAR = [
         { japanese: "一人で全部やることはありません。", furigana: "ひとりでぜんぶやることはありません。", english: "You don't have to do everything by yourself." },
         { japanese: "急ぐことはないから、ゆっくりでいいよ。", furigana: "いそぐことはないから、ゆっくりでいいよ。", english: "There's no need to rush, so take your time." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary form", example: "急ぐ → 急ぐことはない" }
     ]
   },
   {
@@ -2571,6 +3208,9 @@ const N3_GRAMMAR = [
         { japanese: "彼が嘘をつくことは決してない。", furigana: "かれがうそをつくことはけっしてない。", english: "He would never lie." },
         { japanese: "彼女は決して弱音を吐かない。", furigana: "かのじょはけっしてよわねをはかない。", english: "She never complains or shows weakness." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "negative form", example: "つく → 嘘をつかない（決して）" }
     ]
   },
   {
@@ -2582,43 +3222,63 @@ const N3_GRAMMAR = [
         { japanese: "現代社会における問題について話し合う。", furigana: "げんだいしゃかいにおけるもんだいについてはなしあう。", english: "We will discuss issues in modern society." },
         { japanese: "スポーツにおいて、努力は必ず結果に表れるとは限らない。", furigana: "スポーツにおいて、どりょくはかならずけっかにあらわれるとはかぎらない。", english: "In sports, effort doesn't necessarily always show up in the results." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ において／における", example: "社会 → 社会における" }
     ]
   },
   {
     id: "n3-to-tomoni", level: "N3", pattern: "～と共に", title: "Together with / As X happens", short: "Doing something alongside someone, or one change accompanying another.",
     explanation: "～と共に means 'together with' when following a person, and 'as X happens, Y happens too' when following an event or change — a single expression covering both a literal companionship sense and a more abstract sense of parallel change.",
     usages: [
-      { title: "Together with", examples: [
+      { title: "With nouns", examples: [
         { japanese: "家族と共に、新しい生活を始めた。", furigana: "かぞくとともに、あたらしいせいかつをはじめた。", english: "I started a new life together with my family." },
         { japanese: "時代の変化と共に、人々の価値観も変わってきた。", furigana: "じだいのへんかとともに、ひとびとのかちかんもかわってきた。", english: "As the times have changed, people's values have changed along with them." }
       ]},
-      { title: "Accompanying change", examples: [
-        { japanese: "年を取ると共に、体力が落ちてきた。", furigana: "としをとるとともに、たいりょくがおちてきた。", english: "As I've aged, my physical strength has declined." }
+      { title: "With verbs", examples: [
+        { japanese: "年を取ると共に、体力が落ちてきた。", furigana: "としをとるとともに、たいりょくがおちてきた。", english: "As I've aged, my physical strength has declined." },
+        { japanese: "経済が発展すると共に、人々の暮らしも豊かになった。", furigana: "けいざいがはってんするとともに、ひとびとのくらしもゆたかになった。", english: "As the economy developed, people's lives also became more prosperous." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ と共に", example: "家族 → 家族と共に" },
+      { pos: "Verb", form: "dictionary form + と共に", example: "変わる → 変わると共に" }
     ]
   },
   {
     id: "n3-tochu", level: "N3", pattern: "～途中に / ～途中で", title: "On the way / In the middle of", short: "An action or event happens partway through another activity.",
     explanation: "～途中に／～途中で attaches to a noun + の or dictionary-form verb to describe something happening while an activity or journey is still in progress — the interruption or event occurs partway through, not at the beginning or end.",
     usages: [
-      { title: "Midway through", examples: [
+      { title: "With verbs", examples: [
         { japanese: "学校へ行く途中で、財布を落としてしまった。", furigana: "がっこうへいくとちゅうで、さいふをおとしてしまった。", english: "I dropped my wallet on the way to school." },
+        { japanese: "帰る途中で、旧友にばったり会った。", furigana: "かえるとちゅうで、きゅうゆうにばったりあった。", english: "On my way home, I ran into an old friend by chance." }
+      ]},
+      { title: "With nouns", examples: [
         { japanese: "仕事の途中に、電話がかかってきた。", furigana: "しごとのとちゅうに、でんわがかかってきた。", english: "A call came in while I was in the middle of work." },
         { japanese: "映画の途中で、電話が鳴ってしまった。", furigana: "えいがのとちゅうで、でんわがなってしまった。", english: "The phone rang partway through the movie." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary form", example: "行く → 行く途中で" },
+      { pos: "Noun", form: "+ の", example: "仕事 → 仕事の途中に" }
     ]
   },
   {
     id: "n3-kawari-ni", level: "N3", pattern: "～代わりに", title: "Instead of / In exchange for", short: "One thing substitutes for or compensates for another.",
     explanation: "～代わりに follows a noun or a plain-form verb and means 'instead of X' or 'in exchange for X, Y happens' — one thing substitutes for or compensates for another, whether that's a person filling in for someone or a fair trade-off.",
     usages: [
-      { title: "Substitution", examples: [
+      { title: "With nouns", examples: [
         { japanese: "今日は父の代わりに、私が会議に出ます。", furigana: "きょうはちちのかわりに、わたしがかいぎにでます。", english: "Today I will attend the meeting in place of my father." },
         { japanese: "肉の代わりに、豆腐を使って料理を作った。", furigana: "にくのかわりに、とうふをつかってりょうりをつくった。", english: "I made the dish using tofu instead of meat." }
       ]},
-      { title: "In exchange", examples: [
-        { japanese: "家事を手伝う代わりに、お小遣いをもらった。", furigana: "かじをてつだうかわりに、おこづかいをもらった。", english: "I got an allowance in exchange for helping with housework." }
+      { title: "With verbs", examples: [
+        { japanese: "家事を手伝う代わりに、お小遣いをもらった。", furigana: "かじをてつだうかわりに、おこづかいをもらった。", english: "I got an allowance in exchange for helping with housework." },
+        { japanese: "旅行に行く代わりに、家で映画を見ることにした。", furigana: "りょこうにいくかわりに、いえでえいがをみることにした。", english: "Instead of going on a trip, I decided to watch a movie at home." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary form", example: "手伝う → 手伝う代わりに" },
+      { pos: "Noun", form: "+ の", example: "父 → 父の代わりに" }
     ]
   },
   {
@@ -2646,6 +3306,9 @@ const N3_GRAMMAR = [
       { title: "Wishing for something nice", examples: [
         { japanese: "早く風邪が治るといいなあ。", furigana: "はやくかぜがなおるといいなあ。", english: "I really hope my cold gets better soon." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "conditional (たら/と) form", example: "聞く → 聞いたらいい" }
     ], notes: "Compare with N4 ～たらどうですか, which is a more direct 'why don't you' suggestion; たらいい is softer and can also express personal hopes, which たらどうですか cannot."
   },
   {
@@ -2657,6 +3320,9 @@ const N3_GRAMMAR = [
         { japanese: "どこに座ればいいですか。", furigana: "どこにすわればいいですか。", english: "Where should I sit?" },
         { japanese: "分からなければ、先生に聞けばいい。", furigana: "わからなければ、せんせいにきけばいい。", english: "If you don't understand, you can just ask the teacher." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "ば-form", example: "調べる → 調べればいい" }
     ]
   },
   {
@@ -2668,6 +3334,9 @@ const N3_GRAMMAR = [
         { japanese: "高いけど、買えないことはない。", furigana: "たかいけど、かえないことはない。", english: "It's expensive, but it's not impossible to buy." },
         { japanese: "難しいけど、時間があればできないことはない。", furigana: "むずかしいけど、じかんがあればできないことはない。", english: "It's difficult, but if I had time, it's not that I couldn't do it." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "negative potential form", example: "買う → 買えないことはない" }
     ]
   },
   {
@@ -2681,6 +3350,9 @@ const N3_GRAMMAR = [
       { title: "No matter the degree", examples: [
         { japanese: "どんなに疲れていても、毎日日記を書く。", furigana: "どんなにつかれていても、まいにちにっきをかく。", english: "No matter how tired I am, I write in my diary every day." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "て-form", example: "頑張る → 頑張っても" }
     ]
   },
   {
@@ -2689,21 +3361,35 @@ const N3_GRAMMAR = [
     usages: [
       { title: "Degree comparison", examples: [
         { japanese: "涙が出るほど嬉しかった。", furigana: "なみだがでるほどうれしかった。", english: "I was so happy I nearly cried." },
-        { japanese: "彼のスピーチは会場が静まり返るほど感動的だった。", furigana: "かれのスピーチはかいじょうがしずまりかえるほどかんどうてきだった。", english: "His speech was so moving that the whole venue fell completely silent." }
+        { japanese: "彼のスピーチは会場が静まり返るほど感動的だった。", furigana: "かれのスピーチはかいじょうがしずまりかえるほどかんどうてきだった。", english: "His speech was so moving that the whole venue fell completely silent." },
+        { japanese: "手が震えるほど緊張した。", furigana: "てがふるえるほどきんちょうした。", english: "I was so nervous my hands were trembling." }
       ]},
       { title: "Negative comparison (not as ... as)", examples: [
-        { japanese: "今年の冬は去年ほど寒くない。", furigana: "ことしのふゆはきょねんほどさむくない。", english: "This winter isn't as cold as last year." }
+        { japanese: "今年の冬は去年ほど寒くない。", furigana: "ことしのふゆはきょねんほどさむくない。", english: "This winter isn't as cold as last year." },
+        { japanese: "このレストランは評判ほど美味しくなかった。", furigana: "このレストランはひょうばんほどおいしくなかった。", english: "This restaurant wasn't as delicious as its reputation suggested." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "plain form", example: "出る → 出るほど" },
+      { pos: "い-Adjective", form: "negative form", example: "寒い → 寒くないほど" }
     ]
   },
   {
     id: "n3-toiuyori", level: "N3", pattern: "～というより", title: "Rather than", short: "Corrects or refines a description by offering a more accurate alternative.",
     explanation: "～というより attaches to a plain-form phrase and says that a different description fits better than the one just mentioned, similar to 'rather than X, it's more like Y' — often used to gently correct a first impression with a more accurate one.",
     usages: [
-      { title: "Correcting a description", examples: [
+      { title: "With adjectives", examples: [
         { japanese: "彼は厳しいというより、真面目なんだと思う。", furigana: "かれはきびしいというより、まじめなんだとおもう。", english: "I think he's not so much strict as he is serious." },
-        { japanese: "これは料理というより、芸術作品だ。", furigana: "これはりょうりというより、げいじゅつさくひんだ。", english: "This isn't so much a dish as it is a work of art." }
+        { japanese: "それは難しいというより、面倒なだけだ。", furigana: "それはむずかしいというより、めんどうなだけだ。", english: "That's not so much difficult as it is just a hassle." }
+      ]},
+      { title: "With nouns", examples: [
+        { japanese: "これは料理というより、芸術作品だ。", furigana: "これはりょうりというより、げいじゅつさくひんだ。", english: "This isn't so much a dish as it is a work of art." },
+        { japanese: "彼は先生というより、友達のような存在だ。", furigana: "かれはせんせいというより、ともだちのようなそんざいだ。", english: "He's less a teacher and more like a friend to me." }
       ]}
+    ],
+    conjugations: [
+      { pos: "い-Adjective", form: "plain form", example: "厳しい → 厳しいというより" },
+      { pos: "Noun", form: "+ というより", example: "料理 → 料理というより" }
     ]
   },
   {
@@ -2714,6 +3400,9 @@ const N3_GRAMMAR = [
         { japanese: "日本語が話せるといっても、簡単な会話だけです。", furigana: "にほんごがはなせるといっても、かんたんなかいわだけです。", english: "Although I say I can speak Japanese, it's only simple conversation." },
         { japanese: "料理ができるといっても、簡単なものだけです。", furigana: "りょうりができるといっても、かんたんなものだけです。", english: "Although I say I can cook, it's only simple dishes." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "potential form", example: "話す → 話せるといっても" }
     ]
   },
   {
@@ -2722,11 +3411,16 @@ const N3_GRAMMAR = [
     usages: [
       { title: "Defining a term", examples: [
         { japanese: "「もったいない」というのは、物を無駄にしないという意味です。", furigana: "「もったいない」というのは、ものをむだにしないといういみです。", english: "'Mottainai' means not wasting things." },
-        { japanese: "彼が休んだというのは、体調が悪かったからだ。", furigana: "かれがやすんだというのは、たいちょうがわるかったからだ。", english: "The reason he was absent is that he wasn't feeling well." }
+        { japanese: "「几帳面」というのは、細かいところまで丁寧だという意味です。", furigana: "「きちょうめん」というのは、こまかいところまでていねいだといういみです。", english: "'Kichoumen' means being careful and precise down to the smallest detail." }
       ]},
       { title: "Explaining a reason", examples: [
+        { japanese: "彼が休んだというのは、体調が悪かったからだ。", furigana: "かれがやすんだというのは、たいちょうがわるかったからだ。", english: "The reason he was absent is that he wasn't feeling well." },
         { japanese: "今日は休みます。というのは、熱があるからです。", furigana: "きょうはやすみます。というのは、ねつがあるからです。", english: "I'll take today off. The thing is, I have a fever." }
       ]}
+    ],
+    conjugations: [
+      { pos: "い-Adjective", form: "plain form", example: "もったいない → もったいないというのは" },
+      { pos: "Verb", form: "plain form", example: "休む → 休んだというのは" }
     ]
   },
   {
@@ -2735,8 +3429,14 @@ const N3_GRAMMAR = [
     usages: [
       { title: "Hypothetical assumption", examples: [
         { japanese: "宝くじで一億円当たったとしたら、何がしたいですか。", furigana: "たからくじでいちおくえんあたったとしたら、なにがしたいですか。", english: "If you won 100 million yen in the lottery, what would you want to do?" },
-        { japanese: "もし今日が最後の日だとしたら、何をしますか。", furigana: "もしきょうがさいごのひだとしたら、なにをしますか。", english: "If today were your last day, what would you do?" }
+        { japanese: "もし今日が最後の日だとしたら、何をしますか。", furigana: "もしきょうがさいごのひだとしたら、なにをしますか。", english: "If today were your last day, what would you do?" },
+        { japanese: "生まれ変わるとしたら、何になりたいですか。", furigana: "うまれかわるとしたら、なにになりたいですか。", english: "If you were reborn, what would you want to become?" },
+        { japanese: "彼の話が本当だとしたら、大変なことになる。", furigana: "かれのはなしがほんとうだとしたら、たいへんなことになる。", english: "If his story is true, that would be a serious problem." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "past (た) form", example: "当たった → 当たったとしたら" },
+      { pos: "Noun", form: "+ だ + としたら", example: "最後の日 → 最後の日だとしたら" }
     ]
   },
   {
@@ -2750,6 +3450,9 @@ const N3_GRAMMAR = [
       { title: "About to happen", examples: [
         { japanese: "ちょうど家を出ようとした時、雨が降り始めた。", furigana: "ちょうどいえをでようとしたとき、あめがふりはじめた。", english: "Just as I was about to leave the house, it started raining." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "volitional form", example: "開ける → 開けようとする" }
     ]
   },
   {
@@ -2758,11 +3461,17 @@ const N3_GRAMMAR = [
     usages: [
       { title: "Dismissive example", examples: [
         { japanese: "お金なんか、いらない。", furigana: "おかねなんか、いらない。", english: "I don't need something like money." },
-        { japanese: "彼が引っ越すなんて、知らなかった。", furigana: "かれがひっこすなんて、しらなかった。", english: "I had no idea he was moving!" }
+        { japanese: "テストの点数なんか、気にしなくていい。", furigana: "テストのてんすうなんか、きにしなくていい。", english: "You don't need to worry about something like your test score." }
       ]},
       { title: "Surprised exclamation", examples: [
+        { japanese: "彼が引っ越すなんて、知らなかった。", furigana: "かれがひっこすなんて、しらなかった。", english: "I had no idea he was moving!" },
         { japanese: "こんなに難しいなんて、思わなかった。", furigana: "こんなにむずかしいなんて、おもわなかった。", english: "I didn't think it would be this difficult!" }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ なんか", example: "お金 → お金なんか" },
+      { pos: "Verb", form: "plain form", example: "引っ越す → 引っ越すなんて" },
+      { pos: "い-Adjective", form: "plain form", example: "難しい → 難しいなんて" }
     ]
   },
   {
@@ -2805,6 +3514,9 @@ const N3_GRAMMAR = [
         { japanese: "「なんで食べないの？」「だって、嫌いなんだもの。」", furigana: "「なんでたべないの？」「だって、きらいなんだもの。」", english: "\"Why aren't you eating it?\" \"Because I don't like it!\"" },
         { japanese: "「なぜ来なかったの？」「だって、忙しかったんだもの。」", furigana: "「なぜこなかったの？」「だって、いそがしかったんだもの。」", english: "\"Why didn't you come?\" \"Because I was busy!\"" }
       ]}
+    ],
+    conjugations: [
+      { pos: "い-Adjective / な-Adjective", form: "plain form + もの", example: "忙しい → 忙しいんだもの" }
     ]
   },
   {
@@ -2815,6 +3527,9 @@ const N3_GRAMMAR = [
         { japanese: "前にどこかで会ったような気がする。", furigana: "まえにどこかであったようなきがする。", english: "I have a feeling we've met somewhere before." },
         { japanese: "何か忘れ物をしたような気がする。", furigana: "なにかわすれものをしたようなきがする。", english: "I have a feeling I forgot something." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "plain form", example: "会う → 会ったような気がする" }
     ]
   },
   {
@@ -2825,6 +3540,9 @@ const N3_GRAMMAR = [
         { japanese: "この店はケーキばかりでなく、パンも美味しい。", furigana: "このみせはケーキばかりでなく、パンもおいしい。", english: "This shop's cakes aren't the only good thing — the bread is delicious too." },
         { japanese: "この薬は風邪ばかりでなく、頭痛にも効く。", furigana: "このくすりはかぜばかりでなく、ずつうにもきく。", english: "This medicine works not only for colds but for headaches too." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ ばかりでなく", example: "ケーキ → ケーキばかりでなく" }
     ]
   },
   {
@@ -2846,6 +3564,9 @@ const N3_GRAMMAR = [
         { japanese: "九月から十月にかけて、台風が多い。", furigana: "くがつからじゅうがつにかけて、たいふうがおおい。", english: "There are many typhoons from September through October." },
         { japanese: "この地方は春から夏にかけて、雨が多い。", furigana: "このちほうははるからなつにかけて、あめがおおい。", english: "This region gets a lot of rain from spring through summer." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun (time/place span)", form: "+ にかけて", example: "九月 → 九月から十月にかけて" }
     ]
   },
   {
@@ -2856,6 +3577,9 @@ const N3_GRAMMAR = [
         { japanese: "社長にかわって、私がご挨拶いたします。", furigana: "しゃちょうにかわって、わたしがごあいさついたします。", english: "I will give the greeting on behalf of the president." },
         { japanese: "入院した父にかわって、私が店を手伝っている。", furigana: "にゅういんしたちちにかわって、わたしがみせをてつだっている。", english: "In place of my hospitalized father, I'm helping run the shop." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ にかわって", example: "社長 → 社長にかわって" }
     ]
   },
   {
@@ -2869,6 +3593,9 @@ const N3_GRAMMAR = [
       { title: "Too much to finish", examples: [
         { japanese: "こんなにたくさん食べきれません。", furigana: "こんなにたくさんたべきれません。", english: "I can't possibly eat all of this." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "ます-stem", example: "走る → 走りきる" }
     ]
   },
   {
@@ -2879,16 +3606,24 @@ const N3_GRAMMAR = [
         { japanese: "若者の人口は減る一方だ。", furigana: "わかもののじんこうはへるいっぽうだ。", english: "The young population just keeps decreasing." },
         { japanese: "物価は上がる一方だ。", furigana: "ぶっかはあがるいっぽうだ。", english: "Prices just keep rising." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary form", example: "減る → 減る一方だ" }
     ]
   },
   {
     id: "n3-ippoude", level: "N3", pattern: "～一方で", title: "On the other hand / While also", short: "Presents a second, contrasting fact alongside the first.",
     explanation: "～一方で connects two clauses to show two different or contrasting sides of the same subject — often used to give a balanced view, acknowledging both an upside and a downside within a single statement.",
     usages: [
-      { title: "Contrasting sides", examples: [
+      { title: "Two sides of one thing", examples: [
         { japanese: "この薬はよく効く一方で、副作用も強い。", furigana: "このくすりはよくきくいっぽうで、ふくさようもつよい。", english: "This medicine works well, but on the other hand, its side effects are also strong." },
-        { japanese: "都会は便利な一方で、生活費が高い。", furigana: "とかいはべんりないっぽうで、せいかつひがたかい。", english: "The city is convenient, but on the other hand, the cost of living is high." }
+        { japanese: "都会は便利な一方で、生活費が高い。", furigana: "とかいはべんりないっぽうで、せいかつひがたかい。", english: "The city is convenient, but on the other hand, the cost of living is high." },
+        { japanese: "在宅勤務は自由な一方で、孤独を感じやすい。", furigana: "ざいたくきんむはじゆうないっぽうで、こどくをかんじやすい。", english: "Working from home offers freedom, but on the other hand, it's easy to feel lonely." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary form", example: "効く → 効く一方で" },
+      { pos: "な-Adjective", form: "stem + な", example: "便利 → 便利な一方で" }
     ]
   },
   {
@@ -2897,19 +3632,34 @@ const N3_GRAMMAR = [
     usages: [
       { title: "Stating an outcome", examples: [
         { japanese: "毎日練習した。その結果、大会で優勝した。", furigana: "まいにちれんしゅうした。そのけっか、たいかいでゆうしょうした。", english: "I practiced every day. As a result, I won the tournament." },
-        { japanese: "話し合った結果、旅行は中止することにした。", furigana: "はなしあったけっか、りょこうはちゅうしすることにした。", english: "As a result of discussing it, we decided to cancel the trip." },
-        { japanese: "長年の努力の結果、ついに目標を達成した。", furigana: "ながねんのどりょくのけっか、ついにもくひょうをたっせいした。", english: "As a result of years of effort, I finally achieved my goal." }
+        { japanese: "話し合った結果、旅行は中止することにした。", furigana: "はなしあったけっか、りょこうはちゅうしすることにした。", english: "As a result of discussing it, we decided to cancel the trip." }
+      ]},
+      { title: "With nouns", examples: [
+        { japanese: "長年の努力の結果、ついに目標を達成した。", furigana: "ながねんのどりょくのけっか、ついにもくひょうをたっせいした。", english: "As a result of years of effort, I finally achieved my goal." },
+        { japanese: "長い交渉の結果、ようやく契約が成立した。", furigana: "ながいこうしょうのけっか、ようやくけいやくがせいりつした。", english: "As a result of lengthy negotiations, the contract was finally concluded." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "past (た) form + 結果", example: "話し合った → 話し合った結果" },
+      { pos: "Noun", form: "+ の + 結果", example: "努力 → 努力の結果" }
     ]
   },
   {
     id: "n3-koto-ka", level: "N3", pattern: "～ことか", title: "How ...! / What a ...!", short: "An exclamation expressing strong emotion about the extent of something.",
     explanation: "～ことか attaches to a な-adjective/い-adjective or plain verb to make an emotional exclamation about the degree of something, similar to 'how X it is!' — it's rhetorical, not a real question, and always carries strong feeling.",
     usages: [
-      { title: "Emotional exclamation", examples: [
+      { title: "With verbs", examples: [
         { japanese: "あの日から、どんなに心配したことか。", furigana: "あのひから、どんなにしんぱいしたことか。", english: "You have no idea how worried I've been since that day." },
-        { japanese: "この景色は何と美しいことか。", furigana: "このけしきはなんとうつくしいことか。", english: "How beautiful this scenery is!" }
+        { japanese: "この日をどれほど待ちわびたことか。", furigana: "このひをどれほどまちわびたことか。", english: "You have no idea how long I've been waiting for this day." }
+      ]},
+      { title: "With adjectives", examples: [
+        { japanese: "この景色は何と美しいことか。", furigana: "このけしきはなんとうつくしいことか。", english: "How beautiful this scenery is!" },
+        { japanese: "この料理は何とおいしいことか。", furigana: "このりょうりはなんとおいしいことか。", english: "How delicious this dish is!" }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "plain form", example: "心配する → 心配したことか" },
+      { pos: "い-Adjective", form: "plain form", example: "美しい → 美しいことか" }
     ]
   },
   {
@@ -2921,17 +3671,27 @@ const N3_GRAMMAR = [
         { japanese: "忘れ物をしないこと。", furigana: "わすれものをしないこと。", english: "Do not forget your belongings." },
         { japanese: "使用後は、必ず電源を切ること。", furigana: "しようごは、かならずでんげんをきること。", english: "Be sure to turn off the power after use." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary or negative form", example: "静かにする → 静かにすること" }
     ]
   },
   {
     id: "n3-kotoni", level: "N3", pattern: "～ことに", title: "To my (surprise / relief / etc.)", short: "Expresses the speaker's emotional reaction before stating the fact.",
     explanation: "～ことに attaches to an emotional な-adjective or verb (驚いた, 嬉しい, 残念な) at the start of a sentence to color the fact that follows with that feeling — the emotional word comes first, framing how the reader or listener should feel about what's coming.",
     usages: [
-      { title: "Emotional framing", examples: [
+      { title: "With verbs", examples: [
         { japanese: "驚いたことに、彼は一日で終わらせた。", furigana: "おどろいたことに、かれはいちにちでおわらせた。", english: "To my surprise, he finished it in one day." },
+        { japanese: "困ったことに、財布をどこかで落としてしまった。", furigana: "こまったことに、さいふをどこかでおとしてしまった。", english: "To my trouble, I dropped my wallet somewhere." }
+      ]},
+      { title: "With adjectives", examples: [
         { japanese: "残念なことに、旅行は中止になった。", furigana: "ざんねんなことに、りょこうはちゅうしになった。", english: "Unfortunately, the trip was cancelled." },
         { japanese: "嬉しいことに、探していた本が見つかった。", furigana: "うれしいことに、さがしていたほんがみつかった。", english: "To my delight, I found the book I'd been looking for." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "past (た) form", example: "驚く → 驚いたことに" },
+      { pos: "な-Adjective / い-Adjective", form: "plain form", example: "残念 → 残念なことに" }
     ]
   },
   {
@@ -2943,6 +3703,9 @@ const N3_GRAMMAR = [
         { japanese: "ここに座ってもかまいませんか。", furigana: "ここにすわってもかまいませんか。", english: "Would it be alright if I sat here?" },
         { japanese: "写真を撮ってもかまいませんか。", furigana: "しゃしんをとってもかまいませんか。", english: "Would it be alright if I took a photo?" }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "て-form", example: "座る → 座ってもかまわない" }
     ]
   }
 ];
@@ -2952,12 +3715,24 @@ const N2_GRAMMAR = [
     id: "n2-koto-kara", level: "N2", pattern: "～ことから", title: "From the fact that / because", short: "States the reason or origin for a judgment, name, or situation.",
     explanation: "～ことから attaches to a plain-form clause and gives the specific fact, detail, or clue that led to a conclusion or naming — 'from the fact that X, ...'. It's often used to explain where a nickname, name, or judgment originally came from.",
     usages: [
-      { title: "Origin of a name or fact", examples: [
+      { title: "With verbs", examples: [
         { japanese: "富士山が見えることから、この町は富士見町と呼ばれる。", furigana: "ふじさんがみえることから、このまちはふじみちょうとよばれる。", english: "Because Mt. Fuji can be seen from here, this town is called Fujimi-cho." },
-        { japanese: "彼が疲れていることから、無理をさせないほうがいい。", furigana: "かれがつかれていることから、むりをさせないほうがいい。", english: "From the fact that he's tired, it's better not to push him." },
+        { japanese: "彼が疲れていることから、無理をさせないほうがいい。", furigana: "かれがつかれていることから、むりをさせないほうがいい。", english: "From the fact that he's tired, it's better not to push him." }
+      ]},
+      { title: "With adjectives", examples: [
         { japanese: "顔が赤いことから、酒を飲んだのだと分かった。", furigana: "かおがあかいことから、さけをのんだのだとわかった。", english: "From the fact that his face was red, I could tell he'd been drinking." },
         { japanese: "話し方が丁寧なことから、育ちの良さがうかがえる。", furigana: "はなしかたがていねいなことから、そだちのよさがうかがえる。", english: "From the way he speaks politely, you can tell he was raised well." }
+      ]},
+      { title: "With nouns", examples: [
+        { japanese: "彼は経験者であることから、仕事を任された。", furigana: "かれはけいけんしゃであることから、しごとをまかされた。", english: "Since he's an experienced person, he was entrusted with the job." },
+        { japanese: "犯人は内部の人間であることから、捜査は難航している。", furigana: "はんにんはないぶのにんげんであることから、そうさはなんこうしている。", english: "Since the culprit is someone from the inside, the investigation is struggling." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "plain form", example: "見える → 見えることから" },
+      { pos: "い-Adjective", form: "plain form", example: "赤い → 赤いことから" },
+      { pos: "な-Adjective", form: "stem + な", example: "丁寧 → 丁寧なことから" },
+      { pos: "Noun", form: "+ である", example: "学生 → 学生であることから" }
     ]
   },
   {
@@ -2970,6 +3745,9 @@ const N2_GRAMMAR = [
         { japanese: "お客様のご希望に沿って、プランを作成いたします。", furigana: "おきゃくさまのごきぼうにそって、プランをさくせいいたします。", english: "We will create the plan in line with the customer's wishes." },
         { japanese: "この道は川に沿って続いている。", furigana: "このみちはかわにそってつづいている。", english: "This road continues along the river." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ に沿って", example: "計画 → 計画に沿って" }
     ]
   },
   {
@@ -2982,6 +3760,9 @@ const N2_GRAMMAR = [
         { japanese: "この映画は実話に基づいて作られている。", furigana: "このえいがはじつわにもとづいてつくられている。", english: "This movie is made based on a true story." },
         { japanese: "調査結果に基づき、新しい方針が発表された。", furigana: "ちょうさけっかにもとづき、あたらしいほうしんがはっぴょうされた。", english: "A new policy was announced based on the survey results." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ に基づいて", example: "事実 → 事実に基づいて" }
     ]
   },
   {
@@ -2994,6 +3775,9 @@ const N2_GRAMMAR = [
         { japanese: "両者は合意のもとに契約を結んだ。", furigana: "りょうしゃはごういのもとにけいやくをむすんだ。", english: "The two parties signed the contract under a mutual agreement." },
         { japanese: "指導教員のもとで、彼は論文を書き上げた。", furigana: "しどうきょういんのもとで、かれはろんぶんをかきあげた。", english: "Under his supervising professor, he completed writing his thesis." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ のもとで／のもとに", example: "指導 → 指導のもとで" }
     ]
   },
   {
@@ -3006,32 +3790,60 @@ const N2_GRAMMAR = [
         { japanese: "そのニュースを最後に聞いたきり、続報がない。", furigana: "そのニュースをさいごにきいたきり、ぞくほうがない。", english: "I haven't heard any follow-up since I first heard that news." }
       ]},
       { title: "Only", examples: [
-        { japanese: "二人きりで話し合った。", furigana: "ふたりきりではなしあった。", english: "We talked alone, just the two of us." }
+        { japanese: "二人きりで話し合った。", furigana: "ふたりきりではなしあった。", english: "We talked alone, just the two of us." },
+        { japanese: "会場には親子二人きりで来ていた。", furigana: "かいじょうにはおやこふたりきりできていた。", english: "Only the parent and child had come to the venue, just the two of them." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "past (た) form + きり", example: "会う → 会ったきり" },
+      { pos: "Noun", form: "+ きり", example: "二人 → 二人きり" }
     ]
   },
   {
     id: "n2-pukari-ni", level: "N2", pattern: "～あまり（に）", title: "So much that / excessive", short: "An extreme degree of emotion or state causes an unintended or negative result.",
     explanation: "～あまり（に）follows a noun or the plain form of a verb/adjective and means that something happened as a result of a feeling or state being so extreme that it led to an excessive or unusual outcome — 'from too much X, ...'. It differs from あまり～ない (which just means 'not very'); this あまり is a noun meaning 'excess' and always points to a consequence.",
     usages: [
-      { title: "Excessive emotion", examples: [
+      { title: "With nouns", examples: [
         { japanese: "嬉しさのあまり、涙が出てしまった。", furigana: "うれしさのあまり、なみだがでてしまった。", english: "In my overwhelming joy, tears came to my eyes." },
         { japanese: "驚きのあまり、言葉が出なかった。", furigana: "おどろきのあまり、ことばがでなかった。", english: "I was so surprised that I couldn't speak." },
         { japanese: "驚きのあまり、声も出なかった。", furigana: "おどろきのあまり、こえもでなかった。", english: "I was so surprised that I couldn't even make a sound." },
         { japanese: "悲しみのあまり、彼は何も手につかなかった。", furigana: "かなしみのあまり、かれはなにもてにつかなかった。", english: "He was so overcome with sadness that he couldn't focus on anything." }
+      ]},
+      { title: "With adjectives", examples: [
+        { japanese: "恥ずかしいあまり、顔が真っ赤になった。", furigana: "はずかしいあまり、かおがまっかになった。", english: "I was so embarrassed that my face turned bright red." },
+        { japanese: "不安なあまり、夜も眠れなかった。", furigana: "ふあんなあまり、よるもねむれなかった。", english: "I was so anxious that I couldn't even sleep at night." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ の", example: "驚き → 驚きのあまり" },
+      { pos: "い-Adjective", form: "plain form", example: "悲しい → 悲しいあまり" },
+      { pos: "な-Adjective", form: "stem + な", example: "心配 → 心配なあまり" }
     ]
   },
   {
     id: "n2-upon-tatanai", level: "N2", pattern: "～わけがない", title: "There is no reason why / impossible that", short: "Strong logical denial based on objective conviction.",
     explanation: "～わけがない attaches to a plain-form phrase and firmly denies that something is possible, based on the speaker's confident reasoning — 'there's no way X could be true'. It's a stronger, more assertive denial than 〜ないだろう or 〜はずがない's milder cousin.",
     usages: [
-      { title: "Strong logical denial", examples: [
+      { title: "With verbs", examples: [
         { japanese: "そんな難しい問題が一人で解けるわけがない。", furigana: "そんなむずかしいもんだいがひとりでとけるわけがない。", english: "There is no way you can solve such a difficult problem alone." },
         { japanese: "彼がそんなことをするわけがない。", furigana: "かれがそんなことをするわけがない。", english: "There's no way he would do such a thing." },
         { japanese: "こんな複雑な問題、子供に解けるわけがない。", furigana: "こんなふくざつなもんだい、こどもにとけるわけがない。", english: "There's no way a child could solve a problem this complicated." },
         { japanese: "彼女が故意に嘘をつくわけがない。", furigana: "かのじょがこいにうそをつくわけがない。", english: "There's no way she would lie on purpose." }
+      ]},
+      { title: "With adjectives", examples: [
+        { japanese: "この程度の量で、そんなに高いわけがない。", furigana: "このていどのりょうで、そんなにたかいわけがない。", english: "For this amount, there's no way it could be that expensive." },
+        { japanese: "初めての挑戦で、簡単なわけがない。", furigana: "はじめてのちょうせんで、かんたんなわけがない。", english: "Since it's a first attempt, there's no way it could be easy." }
+      ]},
+      { title: "With nouns", examples: [
+        { japanese: "彼が犯人なわけがない。ずっと一緒にいたのだから。", furigana: "かれがはんにんなわけがない。ずっといっしょにいたのだから。", english: "There's no way he's the culprit — we were together the whole time." },
+        { japanese: "こんな安物が本物のダイヤなわけがない。", furigana: "こんなやすものがほんもののダイヤなわけがない。", english: "There's no way a cheap thing like this is a real diamond." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "plain form", example: "解ける → 解けるわけがない" },
+      { pos: "い-Adjective", form: "plain form", example: "難しい → 難しいわけがない" },
+      { pos: "な-Adjective", form: "stem + な", example: "簡単 → 簡単なわけがない" },
+      { pos: "Noun", form: "+ な", example: "嘘 → 嘘なわけがない" }
     ]
   },
   {
@@ -3044,6 +3856,10 @@ const N2_GRAMMAR = [
         { japanese: "約束したのだから、行かないわけにはいかない。", furigana: "やくそくしたのだから、いかないわけにはいかない。", english: "I promised, so I have no choice but to go." },
         { japanese: "みんなが頑張っているのに、自分だけ休むわけにはいかない。", furigana: "みんながんばっているのに、じぶんだけやすむわけにはいかない。", english: "Everyone else is working hard, so I can't just be the only one taking a break." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary form", example: "休む → 休むわけにはいかない" },
+      { pos: "Verb", form: "negative (ない) form", example: "行く → 行かないわけにはいかない" }
     ]
   },
   {
@@ -3056,6 +3872,10 @@ const N2_GRAMMAR = [
         { japanese: "台風のため、旅行を中止せざるを得なかった。", furigana: "たいふうのため、りょこうをちゅうしせざるをえなかった。", english: "Because of the typhoon, we had no choice but to cancel the trip." },
         { japanese: "証拠を突きつけられ、彼は事実を認めざるを得なかった。", furigana: "しょうこをつきつけられ、かれはじじつをみとめざるをえなかった。", english: "Confronted with the evidence, he had no choice but to admit the truth." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb (godan)", form: "negative stem + ざるを得ない", example: "認める → 認めざるを得ない" },
+      { pos: "Verb (する)", form: "irregular: せざるを得ない", example: "中止する → 中止せざるを得ない" }
     ]
   },
   {
@@ -3068,6 +3888,9 @@ const N2_GRAMMAR = [
         { japanese: "その件については、私からはお答えしかねます。", furigana: "そのけんについては、わたしからはおこたえしかねます。", english: "I'm afraid I'm not in a position to answer that matter." },
         { japanese: "個人的な事情については、申し上げかねます。", furigana: "こじんてきなじじょうについては、もうしあげかねます。", english: "I'm afraid I can't speak about personal matters." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "ます-stem", example: "答える → お答えかねます" }
     ]
   },
   {
@@ -3080,6 +3903,9 @@ const N2_GRAMMAR = [
         { japanese: "そんな運転をしていたら、事故を起こしかねない。", furigana: "そんなうんてんをしていたら、じこをおこしかねない。", english: "Driving like that, you could well end up causing an accident." },
         { japanese: "その発言は、誤解を招きかねない。", furigana: "そのはつげんは、ごかいをまねきかねない。", english: "That remark could well lead to misunderstanding." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "ます-stem", example: "招く → 招きかねない" }
     ]
   },
   {
@@ -3092,6 +3918,9 @@ const N2_GRAMMAR = [
         { japanese: "この問題は日本に限らず、世界中で起きている。", furigana: "このもんだいはにほんにかぎらず、せかいじゅうでおきている。", english: "This problem isn't limited to Japan — it's happening around the world." },
         { japanese: "この割引は会員に限らず、どなたでもご利用いただけます。", furigana: "このわりびきはかいいんにかぎらず、どなたでもごりよういただけます。", english: "This discount isn't limited to members — anyone can use it." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ に限らず", example: "学生 → 学生に限らず" }
     ]
   },
   {
@@ -3106,18 +3935,28 @@ const N2_GRAMMAR = [
       { title: "Special case", examples: [
         { japanese: "彼に限ってそんなことはしない。", furigana: "かれにかぎってそんなことはしない。", english: "He, of all people, wouldn't do such a thing." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ に限って", example: "彼 → 彼に限って" }
     ]
   },
   {
     id: "n2-ni-kagirareta", level: "N2", pattern: "～に限る", title: "X is the best / nothing beats X", short: "Expresses a subjective opinion that a certain choice is the absolute best option.",
     explanation: "～に限る follows a noun or verb and means 'X is the best' or 'nothing beats X' — a casual, confident recommendation, often used about food, activities, or ways to spend time (夏はビールに限る, 'summer calls for beer').",
     usages: [
-      { title: "Best option", examples: [
+      { title: "With verbs", examples: [
         { japanese: "寒い日は温かい鍋を食べるに限る。", furigana: "さむいひはあたたかいなべをたべるにかぎる。", english: "On cold days, nothing beats eating hot pot." },
         { japanese: "疲れた時は寝るに限る。", furigana: "つかれたときはねるにかぎる。", english: "When you're tired, sleeping is the best." },
-        { japanese: "疲れた時は、温泉に入るに限る。", furigana: "つかれたときは、おんせんにはいるにかぎる。", english: "When you're tired, nothing beats soaking in a hot spring." },
-        { japanese: "考え事をするなら、静かな場所に限る。", furigana: "かんがえごとをするなら、しずかなばしょにかぎる。", english: "For thinking things over, nothing beats a quiet place." }
+        { japanese: "疲れた時は、温泉に入るに限る。", furigana: "つかれたときは、おんせんにはいるにかぎる。", english: "When you're tired, nothing beats soaking in a hot spring." }
+      ]},
+      { title: "With nouns", examples: [
+        { japanese: "考え事をするなら、静かな場所に限る。", furigana: "かんがえごとをするなら、しずかなばしょにかぎる。", english: "For thinking things over, nothing beats a quiet place." },
+        { japanese: "初心者には、この教材に限る。", furigana: "しょしんしゃには、このきょうざいにかぎる。", english: "For beginners, nothing beats this teaching material." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary form", example: "寝る → 寝るに限る" },
+      { pos: "Noun", form: "+ に限る", example: "静かな場所 → 静かな場所に限る" }
     ]
   },
   {
@@ -3130,6 +3969,9 @@ const N2_GRAMMAR = [
         { japanese: "規則に反して、無断で欠席した。", furigana: "きそくにはんして、むだんでけっせきした。", english: "In violation of the rules, he was absent without notice." },
         { japanese: "事前の予想に反して、試合は大差で終わった。", furigana: "じぜんのよそうにはんして、しあいはたいさでおわった。", english: "Contrary to prior predictions, the match ended in a lopsided result." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ に反して", example: "予想 → 予想に反して" }
     ]
   },
   {
@@ -3142,18 +3984,29 @@ const N2_GRAMMAR = [
         { japanese: "こんな量、一人で食べられっこない。", furigana: "こんなりょう、ひとりでたべられっこない。", english: "There's no way I could eat this much by myself." },
         { japanese: "彼が時間通りに来るなんて、あり得っこない。", furigana: "かれがじかんどおりにくるなんて、ありえっこない。", english: "There's no way he'll show up on time." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "ます-stem", example: "読み切る → 読み切れっこない" }
     ]
   },
   {
     id: "n2-saichuu", level: "N2", pattern: "～最中に / ～最中だ", title: "Right in the middle of", short: "An unexpected disruption occurs exactly during the peak of an action.",
     explanation: "～最中に marks the exact moment something else happens right in the middle of an ongoing action — an interruption arriving at the peak or busiest point of another activity. ～最中だ, without に, simply states that something is currently at its peak or in full swing.",
     usages: [
-      { title: "Interrupted action", examples: [
+      { title: "With nouns", examples: [
         { japanese: "食事の最中に電話がかかってきた。", furigana: "しょくじのさいちゅうにでんわがかかってきた。", english: "A phone call came right in the middle of my meal." },
         { japanese: "会議の最中で、出られなかった。", furigana: "かいぎのさいちゅうで、でられなかった。", english: "I was in the middle of a meeting and couldn't leave." },
         { japanese: "今、会議の最中です。後でかけ直します。", furigana: "いま、かいぎのさいちゅうです。あとでかけなおします。", english: "I'm right in the middle of a meeting right now. I'll call you back later." },
         { japanese: "食事の最中に、電話が何度もかかってきた。", furigana: "しょくじのさいちゅうに、でんわがなんどもかかってきた。", english: "The phone rang several times right in the middle of my meal." }
+      ]},
+      { title: "With verbs", examples: [
+        { japanese: "資料を作成している最中に、システムが落ちてしまった。", furigana: "しりょうをさくせいしているさいちゅうに、システムがおちてしまった。", english: "The system crashed right in the middle of me preparing the materials." },
+        { japanese: "皆で話し合っている最中に、彼が入ってきた。", furigana: "みんなではなしあっているさいちゅうに、かれがはいってきた。", english: "He walked in right in the middle of everyone discussing things." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ の + 最中に", example: "会議 → 会議の最中に" },
+      { pos: "Verb", form: "ている form + 最中に", example: "話している → 話している最中に" }
     ]
   },
   {
@@ -3166,6 +4019,9 @@ const N2_GRAMMAR = [
         { japanese: "この様子では、締め切りまでに終わりそうにない。", furigana: "このようすでは、しめきりまでにおわりそうにない。", english: "At this rate, it doesn't look like we'll finish by the deadline." },
         { japanese: "空模様からすると、今日は晴れそうにない。", furigana: "そらもようからすると、きょうははれそうにない。", english: "Judging from the sky, it doesn't look like it'll clear up today." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "ます-stem", example: "晴れる → 晴れそうにない" }
     ]
   },
   {
@@ -3178,6 +4034,9 @@ const N2_GRAMMAR = [
         { japanese: "彼と別れて以来、一度も連絡を取っていない。", furigana: "かれとわかれていらい、いちどもれんらくをとっていない。", english: "I haven't contacted him even once since we broke up." },
         { japanese: "大学を卒業して以来、故郷には帰っていない。", furigana: "だいがくをそつぎょうしていらい、こきょうにはかえっていない。", english: "I haven't been back to my hometown since graduating from university." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "て-form", example: "卒業する → 卒業して以来" }
     ]
   },
   {
@@ -3188,44 +4047,71 @@ const N2_GRAMMAR = [
         { japanese: "合格したかどうか気になってたまらない。", furigana: "ごうかくしたかどうかきになってたまらない。", english: "I am dying to know whether I passed or not." },
         { japanese: "その映画がどうしても見たくてたまらない。", furigana: "そのえいががどうしてもみたくてたまらない。", english: "I can't help wanting to see that movie." },
         { japanese: "彼の態度が気になって仕方がない。", furigana: "かれのたいどがきになってしかたがない。", english: "I can't stop worrying about his attitude." },
-        { japanese: "結果が気になってたまらない。", furigana: "けっかがきになってたまらない。", english: "I'm dying of curiosity about the results." }
+        { japanese: "結果が気になってたまらない。", furigana: "けっかがきになってたまらない。", english: "I'm dying of curiosity about the results." },
+        { japanese: "試験の結果が不安で仕方がない。", furigana: "しけんのけっかがふあんでしかたがない。", english: "I can't stop worrying about the exam results." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "て-form", example: "気になる → 気になってたまらない" },
+      { pos: "い-Adjective", form: "て-form (くて)", example: "見たい → 見たくてたまらない" },
+      { pos: "な-Adjective", form: "て-form (で)", example: "心配 → 心配でたまらない" }
     ]
   },
   {
     id: "n2-to-dou-shi", level: "N2", pattern: "～と同時に", title: "At the same time as / simultaneously", short: "Two actions or states exist or occur at the exact same moment.",
     explanation: "～と同時に follows a noun or the dictionary form of a verb and means 'at the same time as X' — describing two events that happen simultaneously, or, more abstractly, two facts or qualities that are both true of the same thing at once.",
     usages: [
-      { title: "Simultaneous events", examples: [
+      { title: "With verbs", examples: [
         { japanese: "ドアが開くと同時に、客が雪崩れ込んだ。", furigana: "ドアがあくとどうじに、きゃくがなだれこんだ。", english: "As soon as the door opened, customers rushed in." },
-        { japanese: "彼は学生であると同時に、会社の社長でもある。", furigana: "かれはがくせいであるとどうじに、かいしゃのしゃちょうでもある。", english: "He is at once a student and a company president." },
-        { japanese: "彼は医者であると同時に、大学で教えてもいる。", furigana: "かれはいしゃであるとどうじに、だいがくでおしえてもいる。", english: "He is a doctor, and at the same time, he also teaches at a university." },
         { japanese: "ドアを開けると同時に、猫が飛び出してきた。", furigana: "ドアをあけるとどうじに、ねこがとびだしてきた。", english: "The moment I opened the door, the cat darted out." }
+      ]},
+      { title: "With nouns", examples: [
+        { japanese: "彼は学生であると同時に、会社の社長でもある。", furigana: "かれはがくせいであるとどうじに、かいしゃのしゃちょうでもある。", english: "He is at once a student and a company president." },
+        { japanese: "彼は医者であると同時に、大学で教えてもいる。", furigana: "かれはいしゃであるとどうじに、だいがくでおしえてもいる。", english: "He is a doctor, and at the same time, he also teaches at a university." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary form", example: "開く → 開くと同時に" },
+      { pos: "Noun", form: "+ である + と同時に", example: "学生 → 学生であると同時に" }
     ]
   },
   {
     id: "n2-to-tomo-ni", level: "N2", pattern: "～とともに", title: "Together with / as X changes, Y changes", short: "Describes companion actions or parallel gradual transformations.",
     explanation: "～とともに means 'together with X' when following a person, and 'as X happens, Y happens too' when following an event or change — the same core dual meaning as N3's と共に, but at a slightly more formal register common in written Japanese.",
     usages: [
-      { title: "Parallel change", examples: [
+      { title: "With nouns", examples: [
         { japanese: "時代の変化とともに、言葉の意味も変わる。", furigana: "じだいのへんかとともに、ことばのいみもかわる。", english: "As times change, the meanings of words change as well." },
         { japanese: "友達とともに、そのプロジェクトを始めた。", furigana: "ともだちとともに、そのプロジェクトをはじめた。", english: "I started that project together with my friend." },
         { japanese: "技術の発展とともに、生活は便利になった。", furigana: "ぎじゅつのはってんとともに、せいかつはべんりになった。", english: "As technology developed, life became more convenient." },
         { japanese: "この製品は、時代とともに進化を続けている。", furigana: "このせいひんは、じだいとともにしんかをつづけている。", english: "This product continues to evolve along with the times." }
+      ]},
+      { title: "With verbs", examples: [
+        { japanese: "会社が成長するとともに、社員数も増えた。", furigana: "かいしゃがせいちょうするとともに、しゃいんすうもふえた。", english: "As the company grew, the number of employees also increased." },
+        { japanese: "子供が大きくなるとともに、悩みの種類も変わってきた。", furigana: "こどもがおおきくなるとともに、なやみのしゅるいもかわってきた。", english: "As the child grew up, the type of worries also changed." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ とともに", example: "時代 → 時代とともに" },
+      { pos: "Verb", form: "dictionary form + とともに", example: "変化する → 変化するとともに" }
     ]
   },
   {
     id: "n2-toshite-mo", level: "N2", pattern: "～としても / ～としたら", title: "Even assuming that / if we suppose", short: "Sets up a hypothetical scenario or concession.",
     explanation: "～としても attaches to a plain-form phrase and means 'even granting that X is true, ...' — a concessive that acknowledges a hypothetical or actual fact before showing it doesn't change the conclusion. ～としたら sets up a more open hypothetical, closer to 'if we assume that X, ...'.",
     usages: [
-      { title: "Hypothetical scenario", examples: [
-        { japanese: "本当だとしても、信じられない。", furigana: "ほんとうだとしても、しんじられない。", english: "Even assuming that's true, I can't believe it." },
+      { title: "With verbs", examples: [
         { japanese: "彼が来たとしたら、どうする？", furigana: "かれがきたとしたら、どうする？", english: "What would you do if he came?" },
         { japanese: "たとえ許可を得たとしても、危険な作業には変わりない。", furigana: "たとえきょかをえたとしても、きけんなさぎょうにはかわりない。", english: "Even granting that permission was obtained, it's still a dangerous task." },
         { japanese: "全員が反対したとしても、私は計画を進めるつもりだ。", furigana: "ぜんいんがはんたいしたとしても、わたしはけいかくをすすめるつもりだ。", english: "Even if everyone were to oppose it, I intend to move forward with the plan." }
+      ]},
+      { title: "With nouns", examples: [
+        { japanese: "本当だとしても、信じられない。", furigana: "ほんとうだとしても、しんじられない。", english: "Even assuming that's true, I can't believe it." },
+        { japanese: "たとえ社長だとしても、規則は守るべきだ。", furigana: "たとえしゃちょうだとしても、きそくはまもるべきだ。", english: "Even if he's the president, he should follow the rules." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "past (た) form + としても", example: "得た → 得たとしても" },
+      { pos: "Noun", form: "+ だ + としても", example: "本当 → 本当だとしても" }
     ]
   },
   {
@@ -3238,42 +4124,67 @@ const N2_GRAMMAR = [
         { japanese: "この工事は三年にわたって行われる予定だ。", furigana: "このこうじはさんねんにわたっておこなわれるよていだ。", english: "This construction is scheduled to take place over the span of three years." },
         { japanese: "会議は五時間にわたって続いた。", furigana: "かいぎはごじかんにわたってつづいた。", english: "The meeting continued for a span of five hours." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun (duration/count)", form: "+ にわたって", example: "三年 → 三年にわたって" }
     ]
   },
   {
     id: "n2-ni-tsurete", level: "N2", pattern: "～につれて / ～にしたがって", title: "As... then... / in step with", short: "A gradual change in one factor triggers a proportional change in another.",
     explanation: "～につれて and ～にしたがって both describe one change happening in step with another — as one thing progresses, so does the other. につれて leans toward describing gradual, natural changes (aging, seasons); にしたがって can also describe following a rule, instruction, or set of directions, a meaning につれて doesn't share.",
     usages: [
-      { title: "Proportional change", examples: [
+      { title: "With verbs", examples: [
         { japanese: "標高が高くなるにつれて、気温が下がる。", furigana: "ひょうこうがたかくなるにつれて、きおんがさがる。", english: "As elevation increases, the temperature decreases." },
         { japanese: "年を取るにつれて、体が弱くなる。", furigana: "としをとるにつれて、からだがよわくなる。", english: "As I get older, my body gets weaker." },
-        { japanese: "説明書にしたがって、組み立ててください。", furigana: "せつめいしょにしたがって、くみたててください。", english: "Please assemble it according to the instructions." },
         { japanese: "経験を積むにつれて、仕事が楽しくなってきた。", furigana: "けいけんをつむにつれて、しごとがたのしくなってきた。", english: "As I gained more experience, work started becoming more enjoyable." }
+      ]},
+      { title: "With nouns", examples: [
+        { japanese: "説明書にしたがって、組み立ててください。", furigana: "せつめいしょにしたがって、くみたててください。", english: "Please assemble it according to the instructions." },
+        { japanese: "上司の指示にしたがって、作業を進めた。", furigana: "じょうしのしじにしたがって、さぎょうをすすめた。", english: "I proceeded with the work following my boss's instructions." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary form + につれて", example: "高くなる → 高くなるにつれて" },
+      { pos: "Noun", form: "+ にしたがって", example: "説明書 → 説明書にしたがって" }
     ]
   },
   {
     id: "n2-ni-suginai", level: "N2", pattern: "～に過ぎない", title: "Nothing more than / merely", short: "Downplays the importance, scale, or status of something.",
     explanation: "～に過ぎない follows a noun and firmly downplays it as being nothing more than that one, often unimpressive, thing — 'is merely X' or 'is nothing but X'. It's frequently used to correct an overestimation others might have of something's importance or scale.",
     usages: [
-      { title: "Minimizing status", examples: [
+      { title: "With nouns", examples: [
         { japanese: "それは単なる言い訳に過ぎない。", furigana: "それはたんなるいいわけにすぎない。", english: "That is nothing more than a simple excuse." },
         { japanese: "私の意見は一つの提案に過ぎない。", furigana: "わたしのいけんはひとつのていあんにすぎない。", english: "My opinion is merely one suggestion." },
         { japanese: "これはほんの一例に過ぎない。", furigana: "これはほんのいちれいにすぎない。", english: "This is merely one example, nothing more." },
         { japanese: "彼の発言は個人的な意見に過ぎない。", furigana: "かれのはつげんはこじんてきないけんにすぎない。", english: "His remark is nothing more than a personal opinion." }
+      ]},
+      { title: "With verbs", examples: [
+        { japanese: "彼はただ命令に従ったに過ぎない。", furigana: "かれはただめいれいにしたがったにすぎない。", english: "He merely followed orders, nothing more." },
+        { japanese: "少し体調を崩したに過ぎないので、心配しないでください。", furigana: "すこしたいちょうをくずしたにすぎないので、しんぱいしないでください。", english: "I've merely felt a bit under the weather, so please don't worry." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ に過ぎない", example: "冗談 → 冗談に過ぎない" },
+      { pos: "Verb", form: "plain form + に過ぎない", example: "言った → 言ったに過ぎない" }
     ]
   },
   {
     id: "n2-ni-shite-wa", level: "N2", pattern: "～にしては", title: "For a / considering that it's", short: "The result is surprising given the specific identity or standard named.",
     explanation: "～にしては follows a noun and points out that something doesn't quite match the expectations that noun would normally set — 'for a X, this is surprisingly...'. It often carries a note of pleasant or unpleasant surprise, since the outcome deviates from the norm.",
     usages: [
-      { title: "Surprising standard", examples: [
+      { title: "With nouns", examples: [
         { japanese: "彼は外国人にしては日本語がとても上手だ。", furigana: "かれはがいこくじんにしてはにほんごがとてもじょうずだ。", english: "For a foreigner, his Japanese is extremely good." },
         { japanese: "この料理は値段にしては美味しい。", furigana: "このりょうりはねだんにしてはおいしい。", english: "This dish is delicious for its price." },
-        { japanese: "初めて作ったにしては、よくできている。", furigana: "はじめてつくったにしては、よくできている。", english: "For a first attempt, this turned out really well." },
         { japanese: "外国人にしては、彼は箸の使い方がとても上手だ。", furigana: "がいこくじんにしては、かれははしのつかいかたがとてもじょうずだ。", english: "For a foreigner, he's really skilled at using chopsticks." }
+      ]},
+      { title: "With verbs", examples: [
+        { japanese: "初めて作ったにしては、よくできている。", furigana: "はじめてつくったにしては、よくできている。", english: "For a first attempt, this turned out really well." },
+        { japanese: "急いで用意したにしては、料理がとても凝っている。", furigana: "いそいでよういしたにしては、りょうりがとてもこっている。", english: "For something prepared in a hurry, this dish is quite elaborate." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ にしては", example: "外国人 → 外国人にしては" },
+      { pos: "Verb", form: "plain form + にしては", example: "作った → 作ったにしては" }
     ]
   },
   {
@@ -3286,6 +4197,9 @@ const N2_GRAMMAR = [
         { japanese: "感謝を込めて、手紙を書いた。", furigana: "かんしゃをこめて、てがみをかいた。", english: "I wrote the letter filled with gratitude." },
         { japanese: "選手たちは思いを込めて、国歌を歌った。", furigana: "せんしゅたちはおもいをこめて、こっかをうたった。", english: "The athletes sang the national anthem, putting their whole hearts into it." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ を込めて", example: "感謝 → 感謝を込めて" }
     ]
   },
   {
@@ -3298,6 +4212,9 @@ const N2_GRAMMAR = [
         { japanese: "この地域は農業を中心に発展してきた。", furigana: "このちいきはのうぎょうをちゅうしんにはってんしてきた。", english: "This region has developed with agriculture at its center." },
         { japanese: "この番組は若者を中心とする視聴者に人気がある。", furigana: "このばんぐみはわかものをちゅうしんとするしちょうしゃにんきがある。", english: "This program is popular mainly among young viewers." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ を中心に", example: "若者 → 若者を中心に" }
     ]
   },
   {
@@ -3312,6 +4229,9 @@ const N2_GRAMMAR = [
       { title: "Unbroken span", examples: [
         { japanese: "この地域は年間を通じて暖かい。", furigana: "このちいきはねんかんをつうじてあたたかい。", english: "This region is warm throughout the year." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ を通じて／を通して", example: "友人 → 友人を通じて" }
     ]
   },
   {
@@ -3324,18 +4244,28 @@ const N2_GRAMMAR = [
         { japanese: "この講座は初心者を対象に開かれています。", furigana: "このこうざはしょしんしゃをたいしょうにひらかれています。", english: "This course is being held targeted at beginners." },
         { japanese: "この調査は二十代の女性を対象として行われた。", furigana: "このちょうさはにじゅうだいのじょせいをたいしょうとしておこなわれた。", english: "This survey was conducted targeting women in their twenties." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ を対象に", example: "初心者 → 初心者を対象に" }
     ]
   },
   {
     id: "n2-wo-keiki-ni", level: "N2", pattern: "～をきっかけに / ～を契機に", title: "As a result of / triggered by", short: "An event acts as the turning point or catalyst for a new development.",
     explanation: "～をきっかけに and ～を契機に both follow a noun describing an event and mean 'triggered by X' or 'as a result of X' — the named event was the spark that set a subsequent change into motion. を契機に is slightly more formal than をきっかけに, which is common in everyday speech as well as writing.",
     usages: [
-      { title: "Catalyst for change", examples: [
+      { title: "With nouns", examples: [
         { japanese: "病気をきっかけに、酒をやめることにした。", furigana: "びょうきをきっかけに、さけをやめることにした。", english: "Triggered by my illness, I decided to quit alcohol." },
         { japanese: "この出会いをきっかけに、人生が変わった。", furigana: "このであいをきっかけに、じんせいがかわった。", english: "This encounter was the trigger that changed my life." },
-        { japanese: "友人の紹介をきっかけに、この仕事を始めました。", furigana: "ゆうじんのしょうかいをきっかけに、このしごとをはじめました。", english: "I started this job as a result of a friend's introduction." },
-        { japanese: "健康を害したことを契機に、彼は禁煙を決意した。", furigana: "けんこうをがいしたことをけいきに、かれはきんえんをけついした。", english: "Prompted by damaging his health, he resolved to quit smoking." }
+        { japanese: "友人の紹介をきっかけに、この仕事を始めました。", furigana: "ゆうじんのしょうかいをきっかけに、このしごとをはじめました。", english: "I started this job as a result of a friend's introduction." }
+      ]},
+      { title: "With verbs", examples: [
+        { japanese: "健康を害したことを契機に、彼は禁煙を決意した。", furigana: "けんこうをがいしたことをけいきに、かれはきんえんをけついした。", english: "Prompted by damaging his health, he resolved to quit smoking." },
+        { japanese: "留学したことをきっかけに、語学の勉強を続けている。", furigana: "りゅうがくしたことをきっかけに、ごがくのべんきょうをつづけている。", english: "Prompted by having studied abroad, I've continued studying languages." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ をきっかけに", example: "病気 → 病気をきっかけに" },
+      { pos: "Verb", form: "past (た) form + ことをきっかけに", example: "害した → 害したことを契機に" }
     ]
   },
   {
@@ -3348,6 +4278,9 @@ const N2_GRAMMAR = [
         { japanese: "社長をはじめ、社員全員がその会議に出席した。", furigana: "しゃちょうをはじめ、しゃいんぜんいんがそのかいぎにしゅっせきした。", english: "Starting with the president, all the employees attended that meeting." },
         { japanese: "この地域は米をはじめとする農作物の産地として知られる。", furigana: "このちいきはこめをはじめとするのうさくぶつのさんちとしてしられる。", english: "This region is known as a production area for crops, starting with rice." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ をはじめ（として）", example: "社長 → 社長をはじめ" }
     ]
   },
   {
@@ -3360,30 +4293,54 @@ const N2_GRAMMAR = [
         { japanese: "経験の有無を問わず、応募できます。", furigana: "けいけんのうむをとわず、おうぼできます。", english: "You can apply regardless of whether you have experience or not." },
         { japanese: "このイベントは国籍を問わず、誰でも参加できます。", furigana: "このイベントはこくせきをとわず、だれでもさんかできます。", english: "This event is open to anyone, regardless of nationality." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ を問わず", example: "国籍 → 国籍を問わず" }
     ]
   },
   {
     id: "n2-page-wakenai", level: "N2", pattern: "～わけだ", title: "That explains why / no wonder", short: "Reaches a logical conclusion or realizes why a state exists.",
     explanation: "～わけだ attaches to a plain-form phrase and states a conclusion that naturally follows from information already given — 'so that means X' or 'no wonder X'. It signals the speaker has just connected the dots, rather than introducing something new.",
     usages: [
-      { title: "Logical realization", examples: [
+      { title: "With adjectives", examples: [
         { japanese: "暑いわけだ。気温が35度もある。", furigana: "あついわけだ。きおんがさんじゅうごどもある。", english: "No wonder it's hot. The temperature is 35 degrees!" },
         { japanese: "彼は有名な学者だから、こんなに詳しいわけだ。", furigana: "かれはゆうめいながくしゃだから、こんなにくわしいわけだ。", english: "He's a famous scholar, so it makes sense that he's this knowledgeable." },
-        { japanese: "彼は十年も日本に住んでいる。日本語が上手なわけだ。", furigana: "かれはじゅうねんもにほんにすんでいる。にほんごがじょうずなわけだ。", english: "He's lived in Japan for ten years. No wonder his Japanese is good." },
-        { japanese: "道が混んでいる。今日は祝日なわけだ。", furigana: "みちがこんでいる。きょうはしゅくじつなわけだ。", english: "The roads are crowded. That explains it — today's a national holiday." }
+        { japanese: "彼は十年も日本に住んでいる。日本語が上手なわけだ。", furigana: "かれはじゅうねんもにほんにすんでいる。にほんごがじょうずなわけだ。", english: "He's lived in Japan for ten years. No wonder his Japanese is good." }
+      ]},
+      { title: "With nouns", examples: [
+        { japanese: "道が混んでいる。今日は祝日なわけだ。", furigana: "みちがこんでいる。きょうはしゅくじつなわけだ。", english: "The roads are crowded. That explains it — today's a national holiday." },
+        { japanese: "電話が通じない。電源が切れているわけだ。", furigana: "でんわがつうじない。でんげんがきれているわけだ。", english: "The call won't connect. That explains it — the phone must be turned off." }
       ]}
+    ],
+    conjugations: [
+      { pos: "い-Adjective", form: "plain form", example: "暑い → 暑いわけだ" },
+      { pos: "な-Adjective", form: "stem + な", example: "上手 → 上手なわけだ" },
+      { pos: "Noun", form: "+ な", example: "祝日 → 祝日なわけだ" },
+      { pos: "Verb", form: "plain form", example: "住んでいる → 住んでいるわけだ" }
     ]
   },
   {
     id: "n2-warii-niwa", level: "N2", pattern: "～わりに（は）", title: "Considering / given that", short: "An outcome is unexpected relative to the baseline standard.",
     explanation: "～わりに（は）connects a premise to a result that's unexpectedly disproportionate to it — either better or worse than the premise alone would predict. It's often used to gently praise or critique something by comparing it against a baseline expectation (price, effort, experience).",
     usages: [
-      { title: "Disproportionate result", examples: [
+      { title: "With verbs", examples: [
         { japanese: "勉強したわりに、テストの点が良くなかった。", furigana: "べんきょうしたわりに、テストのてんがよくなかった。", english: "Considering how much I studied, my test score wasn't good." },
+        { japanese: "毎日練習したわりに、上達しなかった。", furigana: "まいにちれんしゅうしたわりに、じょうたつしなかった。", english: "Considering I practiced every day, I didn't improve much." }
+      ]},
+      { title: "With adjectives", examples: [
         { japanese: "この店は安いわりに、料理が美味しい。", furigana: "このみせはやすいわりに、りょうりがおいしい。", english: "This restaurant's food is tasty, considering how cheap it is." },
-        { japanese: "十二月にしては、今日はわりに暖かい。", furigana: "じゅうにがつにしては、きょうはわりにあたたかい。", english: "For December, it's relatively warm today." },
         { japanese: "経験が浅いわりに、彼の仕事は丁寧だ。", furigana: "けいけんがあさいわりに、かれのしごとはていねいだ。", english: "Considering how little experience he has, his work is quite careful." }
+      ]},
+      { title: "With nouns", examples: [
+        { japanese: "彼は学生のわりに、大人びている。", furigana: "かれはがくせいのわりに、おとなびている。", english: "For a student, he's quite mature." },
+        { japanese: "新人のわりに、落ち着いて対応していた。", furigana: "しんじんのわりに、おちついてたいおうしていた。", english: "For a newcomer, he handled it quite calmly." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "plain form", example: "勉強した → 勉強したわりに" },
+      { pos: "い-Adjective", form: "plain form", example: "安い → 安いわりに" },
+      { pos: "な-Adjective", form: "stem + な", example: "簡単 → 簡単なわりに" },
+      { pos: "Noun", form: "+ の", example: "学生 → 学生のわりに" }
     ]
   },
   {
@@ -3402,12 +4359,18 @@ const N2_GRAMMAR = [
     id: "n2-ni-shite-kara", level: "N2", pattern: "～にしろ / ～にせよ", title: "Even if / whether... or...", short: "States that a conclusion holds regardless of which condition applies.",
     explanation: "～にしろ and ～にせよ both attach to a plain-form phrase (or are paired, AにしろBにしろ) and mean 'whether it's A or B, the conclusion stays the same' — a formal concessive very close in meaning to としても, but with a stronger sense of listing out possibilities before dismissing their relevance.",
     usages: [
-      { title: "Regardless of options", examples: [
+      { title: "With verbs", examples: [
         { japanese: "行くにせよ行かないにせよ、連絡してください。", furigana: "いくにせよいかないにせよ、れんらくしてください。", english: "Whether you go or not, please contact me." },
-        { japanese: "冗談にしろ、言っていいことと悪いことがある。", furigana: "じょうだんにしろ、いっていいこととわるいことがある。", english: "Even if it's a joke, there are things you should and shouldn't say." },
-        { japanese: "賛成にせよ反対にせよ、意見はきちんと述べるべきだ。", furigana: "さんせいにせよはんたいにせよ、いけんはきちんとのべるべきだ。", english: "Whether you're for it or against it, you should state your opinion clearly." },
         { japanese: "参加するにしろしないにしろ、早めに連絡してください。", furigana: "さんかするにしろしないにしろ、はやめにれんらくしてください。", english: "Whether you're participating or not, please let us know soon." }
+      ]},
+      { title: "With nouns", examples: [
+        { japanese: "冗談にしろ、言っていいことと悪いことがある。", furigana: "じょうだんにしろ、いっていいこととわるいことがある。", english: "Even if it's a joke, there are things you should and shouldn't say." },
+        { japanese: "賛成にせよ反対にせよ、意見はきちんと述べるべきだ。", furigana: "さんせいにせよはんたいにせよ、いけんはきちんとのべるべきだ。", english: "Whether you're for it or against it, you should state your opinion clearly." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary form", example: "行く → 行くにしろ／にせよ" },
+      { pos: "Noun", form: "+ にしろ／にせよ", example: "冗談 → 冗談にしろ" }
     ]
   },
   {
@@ -3422,18 +4385,35 @@ const N2_GRAMMAR = [
       { title: "Wishful hypothetical", examples: [
         { japanese: "できるものなら、一度でいいから会いたい。", furigana: "できるものなら、いちどでいいからあいたい。", english: "If it were at all possible, I would want to meet him just once." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "potential form", example: "戻れる → 戻れるものなら" }
     ]
   },
   {
     id: "n2-mono-no", level: "N2", pattern: "～ものの", title: "Although / but", short: "Concedes a fact, then notes that the expected result did not follow.",
     explanation: "～ものの attaches to the plain form of verbs and adjectives, or nouns + な, and means 'although' — it implies that the first fact should logically have led somewhere, but the expected result didn't follow. It reads as more detached and narrative than のに or けれども.",
     usages: [
-      { title: "Unfulfilled expectation", examples: [
+      { title: "With verbs", examples: [
         { japanese: "計画は立てたものの、実行できない。", furigana: "けいかくはたてたものの、じっこうできない。", english: "I made a plan, but I can't put it into action." },
         { japanese: "薬を飲んだものの、熱はまだ下がらない。", furigana: "くすりをのんだものの、ねつはまださがらない。", english: "I took the medicine, but my fever still hasn't gone down." },
         { japanese: "留学を決意したものの、まだ両親には話していない。", furigana: "りゅうがくをけついしたものの、まだりょうしんにははなしていない。", english: "Although I've decided to study abroad, I haven't told my parents yet." },
         { japanese: "謝罪はしたものの、心からの反省は感じられなかった。", furigana: "しゃざいはしたものの、こころからのはんせいはかんじられなかった。", english: "He did apologize, but I couldn't sense any real remorse." }
+      ]},
+      { title: "With adjectives", examples: [
+        { japanese: "値段は高いものの、それだけの価値はある。", furigana: "ねだんはたかいものの、それだけのかちはある。", english: "It's expensive, but it's worth that much." },
+        { japanese: "この部屋は静かなものの、少し狭い。", furigana: "このへやはしずかなものの、すこしせまい。", english: "This room is quiet, but it's a bit small." }
+      ]},
+      { title: "With nouns", examples: [
+        { japanese: "彼はプロであるものの、まだ実績は少ない。", furigana: "かれはプロであるものの、まだじっせきはすくない。", english: "He's a professional, but he still has few achievements." },
+        { japanese: "有名な店であるものの、味は普通だった。", furigana: "ゆうめいなみせであるものの、あじはふつうだった。", english: "It's a famous shop, but the taste was ordinary." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "plain form", example: "決意した → 決意したものの" },
+      { pos: "い-Adjective", form: "plain form", example: "高い → 高いものの" },
+      { pos: "な-Adjective", form: "stem + な", example: "便利 → 便利なものの" },
+      { pos: "Noun", form: "+ である", example: "プロ → プロであるものの" }
     ], notes: "Very close to のに and けれども, but with a more detached, narrative tone."
   },
   {
@@ -3448,6 +4428,10 @@ const N2_GRAMMAR = [
       { title: "Negative conjecture", examples: [
         { japanese: "彼は来るまい。", furigana: "かれはくるまい。", english: "He probably won't come." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb (godan/irregular)", form: "dictionary form + まい", example: "行く → 行くまい" },
+      { pos: "Verb (ichidan)", form: "stem or dictionary form + まい", example: "する → するまい" }
     ], notes: "The modern spoken negative volition is usually ～ないつもりだ; ～まい sounds firmer and more literary."
   },
   {
@@ -3460,18 +4444,28 @@ const N2_GRAMMAR = [
         { japanese: "連絡先を知らないので、彼には連絡のしようがない。", furigana: "れんらくさきをしらないので、かれにはれんらくのしようがない。", english: "I don't know his contact information, so there's no way for me to reach him." },
         { japanese: "壊れた原因が分からず、直しようがない。", furigana: "こわれたげんいんがわからず、なおしようがない。", english: "Since we don't know why it broke, there's no way to fix it." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "ます-stem", example: "直す → 直しようがない" }
     ], notes: "Do not confuse with ～ないわけではない (partial denial) — the meanings are unrelated."
   },
   {
     id: "n2-yue-ni", level: "N2", pattern: "～ゆえに / ～がゆえ（に）", title: "Therefore / because of (formal)", short: "A formal, literary reason or cause.",
     explanation: "～ゆえに attaches to a noun + の or the plain form of a verb/adjective and presents a cause in a formal, literary register — a heavier, more written alternative to から or ので. The related ～がゆえに (often ～であるがゆえに) emphasizes that a particular quality or state is precisely what leads to the consequence, frequently used for bittersweet or paradoxical outcomes.",
     usages: [
-      { title: "Formal cause", examples: [
+      { title: "With verbs", examples: [
         { japanese: "努力したゆえに、成功した。", furigana: "どりょくしたゆえに、せいこうした。", english: "It was because I worked hard that I succeeded." },
+        { japanese: "急いでいたゆえに、大事な書類を忘れてしまった。", furigana: "いそいでいたゆえに、だいじなしょるいをわすれてしまった。", english: "Because I was in a hurry, I forgot an important document." }
+      ]},
+      { title: "With nouns", examples: [
         { japanese: "貧しさゆえに、学校をやめざるを得なかった。", furigana: "まずしさゆえに、がっこうをやめざるをえなかった。", english: "Because of poverty, he had no choice but to leave school." },
         { japanese: "経験不足ゆえに、判断を誤ってしまった。", furigana: "けいけんぶそくゆえに、はんだんをあやまってしまった。", english: "Because of a lack of experience, I made a wrong judgment." },
         { japanese: "資金不足ゆえに、計画は延期された。", furigana: "しきんぶそくゆえに、けいかくはえんきされた。", english: "The plan was postponed due to a lack of funds." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "plain form", example: "努力した → 努力したゆえに" },
+      { pos: "Noun", form: "+ ゆえに", example: "資金不足 → 資金不足ゆえに" }
     ]
   },
   {
@@ -3484,6 +4478,9 @@ const N2_GRAMMAR = [
         { japanese: "彼のユーモアには、笑わずにはいられない。", furigana: "かれのユーモアには、わらわずにはいられない。", english: "I can't help but laugh at his sense of humor." },
         { japanese: "こんな悲しい話を聞くと、涙を流さずにはいられない。", furigana: "こんなかなしいはなしをきくと、なみだをながさずにはいられない。", english: "Hearing such a sad story, I can't help but cry." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "negative stem (ない → ず)", example: "笑う → 笑わずにはいられない" }
     ], notes: "～してはいられない ('cannot afford to keep doing') is related but distinct."
   },
   {
@@ -3496,18 +4493,29 @@ const N2_GRAMMAR = [
         { japanese: "この味は、この店ならではだ。", furigana: "このあじは、このみせならではだ。", english: "This flavor is something only this shop can offer." },
         { japanese: "細やかな心配りは、彼女ならではのおもてなしだ。", furigana: "こまやかなこころくばりは、かのじょならではのおもてなしだ。", english: "That thoughtful attention to detail is hospitality only she could provide." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ ならでは", example: "京都 → 京都ならでは" }
     ]
   },
   {
     id: "n2-nari-ni", level: "N2", pattern: "～なりに", title: "In one's own way", short: "Doing something according to one's own ability, style, or position.",
     explanation: "～なりに follows a noun (often 自分, 私, or a description of someone's ability or position) and means doing something to the best of one's own particular capacity — not as well as someone else might, but genuinely and sincerely within one's own limits.",
     usages: [
-      { title: "One's own way", examples: [
+      { title: "With nouns", examples: [
         { japanese: "私なりに一生懸命やっています。", furigana: "わたしなりにいっしょうけんめいやっています。", english: "I'm doing my best in my own way." },
         { japanese: "子供なりに考えているんだろう。", furigana: "こどもなりにかんがえているんだろう。", english: "He's probably thinking about it in his own way as a child." },
         { japanese: "初心者なりに、精一杯頑張りました。", furigana: "しょしんしゃなりに、せいいっぱいがんばりました。", english: "In my own way as a beginner, I did my very best." },
         { japanese: "子供は子供なりに、いろいろ考えているものだ。", furigana: "こどもはこどもなりに、いろいろかんがえているものだ。", english: "Children think things through in their own way, young as they are." }
+      ]},
+      { title: "With verbs", examples: [
+        { japanese: "彼は彼が考えるなりに、最善を尽くしたのだろう。", furigana: "かれはかれがかんがえるなりに、さいぜんをつくしたのだろう。", english: "He probably did his best in his own way of thinking about it." },
+        { japanese: "自分が理解したなりに、説明してみます。", furigana: "じぶんがりかいしたなりに、せつめいしてみます。", english: "I'll try to explain it in the way I've come to understand it myself." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ なりに", example: "子供 → 子供なりに" },
+      { pos: "Verb", form: "dictionary form + なりに", example: "考える → 考えるなりに" }
     ]
   },
   {
@@ -3520,6 +4528,10 @@ const N2_GRAMMAR = [
         { japanese: "こんな結果になって、残念な限りです。", furigana: "こんなけっかになって、ざんねんなかぎりです。", english: "Ending up with a result like this, I couldn't be more disappointed." },
         { japanese: "皆様にお会いできて、嬉しい限りです。", furigana: "みなさまにおあいできて、うれしいかぎりです。", english: "I couldn't be happier to have the chance to meet everyone." }
       ]}
+    ],
+    conjugations: [
+      { pos: "い-Adjective", form: "plain form", example: "嬉しい → 嬉しい限りだ" },
+      { pos: "な-Adjective", form: "stem + な", example: "残念 → 残念な限りだ" }
     ]
   },
   {
@@ -3534,6 +4546,10 @@ const N2_GRAMMAR = [
       { title: "Minimum condition", examples: [
         { japanese: "努力しない限り、成功はない。", furigana: "どりょくしないかぎり、せいこうはない。", english: "Unless you make an effort, there is no success." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "plain form + 限りでは", example: "調べた → 調べた限りでは" },
+      { pos: "Verb", form: "negative form + 限り", example: "謝る → 謝らない限り" }
     ]
   },
   {
@@ -3541,11 +4557,22 @@ const N2_GRAMMAR = [
     explanation: "～とて is a formal, literary concessive attaching to plain forms, meaning 'even if' or 'even though' — it firmly rejects the idea that the stated condition would change anything about the conclusion. It's closer in feel to classical Japanese than to everyday speech.",
     usages: [
       { title: "Firm concession", examples: [
-        { japanese: "どんなに相手が強いとて、諦めるものか。", furigana: "どんなにあいてがつよいとて、あきらめるものか。", english: "No matter how strong the opponent, I will never give up." },
         { japanese: "子供とて、嘘をつけば叱られる。", furigana: "こどもとて、うそをつけばしかられる。", english: "Even being a child, if you lie you'll be scolded." },
-        { japanese: "後悔したとて、もう取り返しはつかない。", furigana: "こうかいしたとて、もうとりかえしはつかない。", english: "Even if you regret it, there's no undoing it now." },
         { japanese: "専門家とて、あらゆる問いに答えられるわけではない。", furigana: "せんもんかとて、あらゆるといにこたえられるわけではない。", english: "Even being an expert, one can't answer every single question." }
+      ]},
+      { title: "With verbs", examples: [
+        { japanese: "後悔したとて、もう取り返しはつかない。", furigana: "こうかいしたとて、もうとりかえしはつかない。", english: "Even if you regret it, there's no undoing it now." },
+        { japanese: "急いだとて、今からでは間に合わない。", furigana: "いそいだとて、いまからではまにあわない。", english: "Even if we hurry, it won't be in time starting now." }
+      ]},
+      { title: "With adjectives", examples: [
+        { japanese: "どんなに相手が強いとて、諦めるものか。", furigana: "どんなにあいてがつよいとて、あきらめるものか。", english: "No matter how strong the opponent, I will never give up." },
+        { japanese: "どんなに忙しいとて、食事は抜かないほうがいい。", furigana: "どんなにいそがしいとて、しょくじはぬかないほうがいい。", english: "However busy you may be, it's best not to skip meals." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "plain form", example: "後悔した → 後悔したとて" },
+      { pos: "い-Adjective", form: "plain form", example: "強い → 強いとて" },
+      { pos: "Noun", form: "+ とて", example: "専門家 → 専門家とて" }
     ]
   },
   {
@@ -3558,6 +4585,9 @@ const N2_GRAMMAR = [
         { japanese: "もう帰れとばかりに、店員が時計を見た。", furigana: "もうかえれとばかりに、てんいんがとけいをみた。", english: "The clerk looked at the clock as if to say 'time to go home already'." },
         { japanese: "しめたとばかりに、彼はチャンスを逃さなかった。", furigana: "しめたとばかりに、かれはチャンスをのがさなかった。", english: "As if to say 'got it', he didn't let the chance slip by." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Quoted phrase / plain form", form: "+ とばかりに", example: "早く行け → 早く行けとばかりに" }
     ]
   },
   {
@@ -3570,6 +4600,9 @@ const N2_GRAMMAR = [
         { japanese: "全国大会ともなると、緊張感が違う。", furigana: "ぜんこくたいかいともなると、きんちょうかんがちがう。", english: "Once it's a national tournament, the tension is on a different level." },
         { japanese: "課長ともなれば、責任の重さが違う。", furigana: "かちょうともなれば、せきにんのおもさがちがう。", english: "Once you become a section chief, the weight of responsibility is different." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ ともなると／ともなれば", example: "課長 → 課長ともなると" }
     ]
   },
   {
@@ -3582,6 +4615,12 @@ const N2_GRAMMAR = [
         { japanese: "こんなことで負けるものか。", furigana: "こんなことでまけるものか。", english: "There's no way I'll lose over something like this." },
         { japanese: "あんな人に頼るものか。", furigana: "あんなひとにたよるものか。", english: "As if I'd ever rely on someone like that." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "plain form", example: "来る → 来るものか" },
+      { pos: "い-Adjective", form: "plain form", example: "怖い → 怖いものか" },
+      { pos: "な-Adjective", form: "stem + な", example: "平気 → 平気なものか" },
+      { pos: "Noun", form: "+ な", example: "嘘 → 嘘なものか" }
     ]
   },
   {
@@ -3594,6 +4633,9 @@ const N2_GRAMMAR = [
         { japanese: "早く言ってくれれば手伝えたものを。", furigana: "はやくいってくれればてつだえたものを。", english: "If only you'd told me sooner, I could have helped." },
         { japanese: "もっと早く病院に行けばよかったものを。", furigana: "もっとはやくびょういんにいけばよかったものを。", english: "If only he'd gone to the hospital sooner." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "conditional (ば) or plain past + ものを", example: "言えば → 言ってくれればものを" }
     ]
   },
   {
@@ -3603,21 +4645,37 @@ const N2_GRAMMAR = [
       { title: "Formal concession", examples: [
         { japanese: "残念ながら、今回は見送ります。", furigana: "ざんねんながら、こんかいはみおくります。", english: "Regrettably, we will pass this time." },
         { japanese: "若いながらも、彼はとても落ち着いている。", furigana: "わかいながらも、かれはとてもおちついている。", english: "Despite being young, he is very composed." },
-        { japanese: "狭いながらも、居心地のいい部屋だ。", furigana: "せまいながらも、いごこちのいいへやだ。", english: "It's a comfortable room, despite being small." },
-        { japanese: "苦しみながらも、彼は最後まで走り抜いた。", furigana: "くるしみながらも、かれはさいごまではしりぬいた。", english: "Despite being in pain, he ran all the way to the end." }
+        { japanese: "狭いながらも、居心地のいい部屋だ。", furigana: "せまいながらも、いごこちのいいへやだ。", english: "It's a comfortable room, despite being small." }
+      ]},
+      { title: "With verbs", examples: [
+        { japanese: "苦しみながらも、彼は最後まで走り抜いた。", furigana: "くるしみながらも、かれはさいごまではしりぬいた。", english: "Despite being in pain, he ran all the way to the end." },
+        { japanese: "疲れながらも、最後まで仕事をやり遂げた。", furigana: "つかれながらも、さいごまでしごとをやりとげた。", english: "Even while tired, I saw the work through to the end." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "ます-stem", example: "苦しむ → 苦しみながらも" },
+      { pos: "い-Adjective", form: "plain form", example: "狭い → 狭いながらも" },
+      { pos: "な-Adjective", form: "stem + であり／で", example: "残念 → 残念ながら" }
     ], notes: "残念ながら and 幸いながら are set phrases where ながら clearly means 'although'."
   },
   {
     id: "n2-tada-nomi", level: "N2", pattern: "～ただ～のみだ / ～のみ", title: "Only / nothing but (formal)", short: "A formal, literary restriction meaning 'nothing more than'.",
     explanation: "～ただ～のみだ is a formal, emphatic way to say 'the only thing left is X' or 'all that remains is X' — ただ and のみ both mean 'only', used together for extra emphasis in formal speech and writing, often at a decisive or resolute moment.",
     usages: [
-      { title: "Sole option", examples: [
+      { title: "With verbs", examples: [
         { japanese: "今は祈るのみだ。", furigana: "いまはいのるのみだ。", english: "All we can do now is pray." },
         { japanese: "ただ信じるのみだ。", furigana: "ただしんじるのみだ。", english: "All we can do is believe." },
         { japanese: "準備は整った。あとはただ本番を待つのみだ。", furigana: "じゅんびはととのった。あとはただほんばんをまつのみだ。", english: "Preparations are complete. All that's left now is to wait for the real thing." },
         { japanese: "彼はただ黙って話を聞くのみだった。", furigana: "かれはただだまってはなしをきくのみだった。", english: "All he did was listen quietly, nothing more." }
+      ]},
+      { title: "With nouns", examples: [
+        { japanese: "残る道はただ一つ、前進のみだ。", furigana: "のこるみちはただひとつ、ぜんしんのみだ。", english: "There's only one path left — forward, and nothing else." },
+        { japanese: "今、頼れるのは自分の力のみだ。", furigana: "いま、たよれるのはじぶんのちからのみだ。", english: "Right now, the only thing I can rely on is my own strength." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary form + のみ", example: "祈る → 祈るのみ" },
+      { pos: "Noun", form: "+ のみ", example: "本番 → 本番を待つのみ" }
     ]
   },
   {
@@ -3630,6 +4688,9 @@ const N2_GRAMMAR = [
         { japanese: "彼は英語はもとより、フランス語やドイツ語も話せる。", furigana: "かれはえいごはもとより、フランスごやドイツごもはなせる。", english: "Not to mention English, he can also speak French and German." },
         { japanese: "平日はもとより、週末も休みなく働いている。", furigana: "へいじつはもとより、しゅうまつもやすみなくはたらいている。", english: "Not to mention weekdays, he works without a break on weekends too." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ はもとより", example: "英語 → 英語はもとより" }
     ]
   },
   {
@@ -3642,6 +4703,9 @@ const N2_GRAMMAR = [
         { japanese: "この土地をめぐって、長年争いが続いている。", furigana: "このとちをめぐって、ながねんあらそいがつづいている。", english: "There has been a long-running dispute over this land." },
         { japanese: "遺産をめぐって、兄弟の間で争いが起きた。", furigana: "いさんをめぐって、きょうだいのあいだであらそいがおきた。", english: "A dispute broke out among the siblings over the inheritance." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ をめぐって", example: "領土 → 領土をめぐって" }
     ]
   },
   {
@@ -3654,18 +4718,29 @@ const N2_GRAMMAR = [
         { japanese: "この小説は作者の実体験をもとに書かれた。", furigana: "このしょうせつはさくしゃのじったいけんをもとにかかれた。", english: "This novel was written based on the author's real experiences." },
         { japanese: "アンケート結果をもとに、サービスを改善した。", furigana: "アンケートけっかをもとに、サービスをかいぜんした。", english: "We improved the service based on the survey results." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ をもとに", example: "データ → データをもとに" }
     ]
   },
   {
     id: "n2-goto-ni", level: "N2", pattern: "～ごとに", title: "Each / every", short: "Something happens repeatedly at every instance of an event.",
     explanation: "～ごとに follows a noun or the dictionary form of a verb and means 'every X' or 'at each X', emphasizing regular, repeated intervals. With verbs, ～たびに is the more common everyday choice; ごとに leans slightly more formal and is especially natural with numbers and counters (十分ごとに, 'every ten minutes').",
     usages: [
-      { title: "Regular repetition", examples: [
+      { title: "With nouns", examples: [
         { japanese: "季節ごとに景色が変わる。", furigana: "きせつごとにけしきがかわる。", english: "The scenery changes with every season." },
         { japanese: "この薬は八時間ごとに飲んでください。", furigana: "このくすりははちじかんごとにのんでください。", english: "Please take this medicine every eight hours." },
         { japanese: "この電車は各駅ごとに停車する。", furigana: "このでんしゃはかくえきごとにていしゃする。", english: "This train stops at every single station." },
         { japanese: "国ごとに、文化やマナーは大きく異なる。", furigana: "くにごとに、ぶんかやマナーはおおきくことなる。", english: "Culture and manners differ greatly from country to country." }
+      ]},
+      { title: "With verbs", examples: [
+        { japanese: "彼に会うごとに、成長を感じる。", furigana: "かれにあうごとに、せいちょうをかんじる。", english: "Every time I meet him, I sense his growth." },
+        { japanese: "改訂を重ねるごとに、内容がより良くなっている。", furigana: "かいていをかさねるごとに、ないようがよりよくなっている。", english: "The content improves with every revision." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ ごとに", example: "季節 → 季節ごとに" },
+      { pos: "Verb", form: "dictionary form + ごとに", example: "会う → 会うごとに" }
     ], notes: "With verbs, ～たびに is more common; ごとに leans slightly more formal."
   },
   {
@@ -3676,8 +4751,13 @@ const N2_GRAMMAR = [
         { japanese: "彼は鬼のごとく働く。", furigana: "かれはおにのごとくはたらく。", english: "He works like a demon." },
         { japanese: "時は矢のごとし。", furigana: "ときはやのごとし。", english: "Time flies like an arrow." },
         { japanese: "彼女は何事もなかったごとく、平然としていた。", furigana: "かのじょはなにごともなかったごとく、へいぜんとしていた。", english: "She remained calm, as if nothing had happened." },
-        { japanese: "彼は氷のごとく冷たい態度をとった。", furigana: "かれはこおりのごとくつめたいたいどをとった。", english: "He adopted an attitude as cold as ice." }
+        { japanese: "彼は氷のごとく冷たい態度をとった。", furigana: "かれはこおりのごとくつめたいたいどをとった。", english: "He adopted an attitude as cold as ice." },
+        { japanese: "波が押し寄せるがごとく、観客が押し寄せた。", furigana: "なみがおしよせるがごとく、かんきゃくがおしよせた。", english: "The audience surged forward, just like waves crashing in." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ の + ごとく", example: "氷 → 氷のごとく" },
+      { pos: "Verb", form: "plain form + が + ごとく", example: "何事もなかった → 何事もなかったがごとく" }
     ], notes: "ごとし conjugates like an adjective: ごとき (attributive), ごとく (adverbial), ごとし (predicative)."
   },
   {
@@ -3690,6 +4770,9 @@ const N2_GRAMMAR = [
         { japanese: "この状況では、待つよりほかない。", furigana: "このじょうきょうでは、まつよりほかない。", english: "In this situation, there's nothing to do but wait." },
         { japanese: "こうなったら、正直に話すよりほかない。", furigana: "こうなったら、しょうじきにはなすよりほかない。", english: "At this point, there's nothing to do but tell the truth honestly." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary form", example: "謝る → 謝るよりほかない" }
     ], notes: "Slightly more formal than ～ほかない (N3); meaning is essentially the same."
   },
   {
@@ -3702,6 +4785,9 @@ const N2_GRAMMAR = [
         { japanese: "彼の話し方からして、育ちの良さが感じられる。", furigana: "かれのはなしかたからして、そだちのよさがかんじられる。", english: "Just from the way he talks, you can sense he was raised well." },
         { japanese: "この店は入り口からして、こだわりが感じられる。", furigana: "このみせはいりぐちからして、こだわりがかんじられる。", english: "Just from the entrance alone, you can tell this shop has real attention to detail." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ からして", example: "服装 → 服装からして" }
     ]
   },
   {
@@ -3714,6 +4800,10 @@ const N2_GRAMMAR = [
         { japanese: "太陽が今にも沈まんとしている。", furigana: "たいようがいまにもしずまんとしている。", english: "The sun is just about to set." },
         { japanese: "彼は真実を語らんとしていた。", furigana: "かれはしんじつをかたらんとしていた。", english: "He was trying to speak the truth." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "volitional form + とする", example: "解く → 解こうとする" },
+      { pos: "Verb (literary)", form: "negative-adverbial (ん) form", example: "語る → 語らんとする" }
     ]
   },
   {
@@ -3725,19 +4815,33 @@ const N2_GRAMMAR = [
         { japanese: "お金がないことには、旅行にも行けない。", furigana: "おかねがないことには、りょこうにもいけない。", english: "Without money, I can't even go on a trip." },
         { japanese: "本人に確認しないことには、何とも言えません。", furigana: "ほんにんにかくにんしないことには、なんともいえません。", english: "Unless I check with the person themselves, I can't say anything either way." },
         { japanese: "実際に住んでみないことには、その町の良さは分からない。", furigana: "じっさいにすんでみないことには、そのまちのよさはわからない。", english: "Unless you actually live there, you won't understand what's good about that town." }
+      ]},
+      { title: "With adjectives", examples: [
+        { japanese: "値段が安くないことには、たくさんは売れない。", furigana: "ねだんがやすくないことには、たくさんはうれない。", english: "Unless the price is cheap, it won't sell in large quantities." },
+        { japanese: "資料が十分でないことには、判断のしようがない。", furigana: "しりょうがじゅうぶんでないことには、はんだんのしようがない。", english: "Unless the materials are sufficient, there's no way to make a judgment." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "negative (ない) form", example: "確認する → 確認しないことには" },
+      { pos: "い-Adjective", form: "negative (くない) form", example: "多い → 多くないことには" }
     ], notes: "Almost always paired with a negative main clause (～ない, ～わけにはいかない), since it stresses that nothing can happen without the condition."
   },
   {
     id: "n2-ijou", level: "N2", pattern: "～以上（は）", title: "Now that / Since", short: "Given that a situation is true, a natural obligation or conclusion follows.",
     explanation: "～以上（は） attaches to a plain-form verb and means 'given that X is the case' — since the premise is true, the speaker draws a firm conclusion or states a resulting obligation. It has a resolved, no-turning-back tone, similar in spirit to からには but slightly more formal and often used to state a rule or principle rather than personal resolve.",
     usages: [
-      { title: "Resulting obligation", examples: [
+      { title: "With verbs", examples: [
         { japanese: "約束した以上、必ず守ります。", furigana: "やくそくしたいじょう、かならずまもります。", english: "Now that I've promised, I will definitely keep it." },
+        { japanese: "引き受けた以上、最後までやり遂げます。", furigana: "ひきうけたいじょう、さいごまでやりとげます。", english: "Now that I've taken this on, I'll see it through to the end." }
+      ]},
+      { title: "With nouns", examples: [
         { japanese: "学生である以上、勉強するのは当然だ。", furigana: "がくせいであるいじょう、べんきょうするのはとうぜんだ。", english: "Since you're a student, it's only natural that you study." },
-        { japanese: "引き受けた以上、最後までやり遂げます。", furigana: "ひきうけたいじょう、さいごまでやりとげます。", english: "Now that I've taken this on, I'll see it through to the end." },
         { japanese: "教師である以上、生徒の手本にならなければならない。", furigana: "きょうしであるいじょう、せいとのてほんにならなければならない。", english: "Since I'm a teacher, I must set an example for my students." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "plain form", example: "引き受けた → 引き受けた以上" },
+      { pos: "な-Adjective / Noun", form: "+ である", example: "学生 → 学生である以上" }
     ]
   },
   {
@@ -3749,19 +4853,40 @@ const N2_GRAMMAR = [
         { japanese: "契約書にサインした上で、鍵をお渡しします。", furigana: "けいやくしょにサインしたうえで、かぎをおわたしします。", english: "We will hand over the key after you sign the contract." },
         { japanese: "資料を確認した上で、改めてご連絡いたします。", furigana: "しりょうをかくにんしたうえで、あらためてごれんらくいたします。", english: "I will contact you again after confirming the materials." },
         { japanese: "全員の同意を得た上で、計画を実行に移した。", furigana: "ぜんいんのどういをえたうえで、けいかくをじっこうにうつした。", english: "We put the plan into action after obtaining everyone's agreement." }
+      ]},
+      { title: "With nouns", examples: [
+        { japanese: "十分な話し合いの上で、結論を出したい。", furigana: "じゅうぶんなはなしあいのうえで、けつろんをだしたい。", english: "I want to reach a conclusion only after thorough discussion." },
+        { japanese: "双方の合意の上で、契約を進めます。", furigana: "そうほうのごういのうえで、けいやくをすすめます。", english: "We will proceed with the contract based on mutual agreement." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "past (た) form", example: "確認する → 確認した上で" },
+      { pos: "Noun", form: "+ の + 上で", example: "同意 → 同意の上で" }
     ]
   },
   {
     id: "n2-ue-ni", level: "N2", pattern: "～上に", title: "In addition to / On top of", short: "Adds a second fact that stacks on top of the first, usually intensifying it.",
     explanation: "～上に attaches to a plain-form phrase and adds an extra fact on top of the first, often making a good situation even better or a bad one even worse. Unlike 上で (which describes a deliberate sequence of actions), 上に is purely about stacking facts, with no implied order or intention.",
     usages: [
-      { title: "Stacking facts", examples: [
-        { japanese: "このアパートは駅から近い上に、家賃も安い。", furigana: "このアパートはえきからちかいうえに、やちんもやすい。", english: "This apartment is close to the station, and on top of that, the rent is cheap." },
+      { title: "With verbs", examples: [
         { japanese: "道に迷った上に、雨まで降ってきた。", furigana: "みちにまよったうえに、あめまでふってきた。", english: "Not only did I get lost, but it started raining on top of it." },
+        { japanese: "財布を落とした上に、携帯電話まで壊れてしまった。", furigana: "さいふをおとしたうえに、けいたいでんわまでこわれてしまった。", english: "Not only did I drop my wallet, but my phone even broke too." }
+      ]},
+      { title: "With adjectives", examples: [
+        { japanese: "このアパートは駅から近い上に、家賃も安い。", furigana: "このアパートはえきからちかいうえに、やちんもやすい。", english: "This apartment is close to the station, and on top of that, the rent is cheap." },
         { japanese: "彼は頭がいい上に、努力家でもある。", furigana: "かれはあたまがいいうえに、どりょくかでもある。", english: "He's smart, and on top of that, he's also a hard worker." },
         { japanese: "この部屋は日当たりがいい上に、家賃も手頃だ。", furigana: "このへやはひあたりがいいうえに、やちんもてごろだ。", english: "This room gets good sunlight, and on top of that, the rent is reasonable too." }
+      ]},
+      { title: "With nouns", examples: [
+        { japanese: "彼は医者である上に、優れた研究者でもある。", furigana: "かれはいしゃであるうえに、すぐれたけんきゅうしゃでもある。", english: "He's a doctor, and on top of that, he's also an excellent researcher." },
+        { japanese: "このホテルは五つ星である上に、価格も手頃だ。", furigana: "このホテルはいつつぼしであるうえに、かかくもてごろだ。", english: "This hotel is five-star, and on top of that, the price is also reasonable." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "plain form", example: "迷った → 迷った上に" },
+      { pos: "い-Adjective", form: "plain form", example: "近い → 近い上に" },
+      { pos: "な-Adjective", form: "stem + な", example: "日当たりがいい → 日当たりがいい上に" },
+      { pos: "Noun", form: "+ である + 上に", example: "学生 → 学生である上に" }
     ]
   },
   {
@@ -3776,6 +4901,9 @@ const N2_GRAMMAR = [
       { title: "Impossible / unthinkable", examples: [
         { japanese: "彼が裏切るなんて、あり得ない。", furigana: "かれがうらぎるなんて、ありえない。", english: "It's unthinkable that he would betray us." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "ます-stem", example: "起こる → 起こり得る" }
     ], notes: "得る is read うる in its plain dictionary form but える when conjugated (見えます is unrelated; 起こり得ます uses えます). ～得ない is always read えない."
   },
   {
@@ -3800,6 +4928,9 @@ const N2_GRAMMAR = [
         { japanese: "電車のドアが閉まるか閉まらないかのうちに、彼は飛び乗った。", furigana: "でんしゃのドアがしまるかしまらないかのうちに、かれはとびのった。", english: "He jumped on almost before the train doors had finished closing." },
         { japanese: "始まるか始まらないかのうちに、停電になった。", furigana: "はじまるかはじまらないかのうちに、ていでんになった。", english: "The power went out almost before it had even started." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary + negative form repeated", example: "鳴る → 鳴るか鳴らないかのうちに" }
     ]
   },
   {
@@ -3814,6 +4945,10 @@ const N2_GRAMMAR = [
       { title: "\"Worth doing\" noun (～がい)", examples: [
         { japanese: "この仕事はやりがいがあります。", furigana: "このしごとはやりがいがあります。", english: "This job is rewarding to do." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "past (た) form + かいがある", example: "練習した → 練習したかいがある" },
+      { pos: "Verb", form: "ます-stem + がい", example: "やる → やりがい" }
     ]
   },
   {
@@ -3838,6 +4973,9 @@ const N2_GRAMMAR = [
         { japanese: "静かになったかと思ったら、また騒ぎ出した。", furigana: "しずかになったかとおもったら、またさわぎだした。", english: "Just when it seemed to have quieted down, it got noisy again." },
         { japanese: "笑っていたかと思うと、急に涙を流し始めた。", furigana: "わらっていたかとおもうと、きゅうになみだをながしはじめた。", english: "Just when she seemed to be laughing, she suddenly burst into tears." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "plain form", example: "笑う → 笑っていたかと思ったら" }
     ]
   },
   {
@@ -3845,11 +4983,23 @@ const N2_GRAMMAR = [
     explanation: "～からこそ attaches to a plain-form phrase and strongly emphasizes the reason, meaning 'it's precisely because of X (and nothing else)'. It's stronger and more pointed than plain から, which just states a reason neutrally.",
     usages: [
       { title: "Emphatic reason", examples: [
-        { japanese: "あなたのことが大切だからこそ、注意しているんです。", furigana: "あなたのことがたいせつだからこそ、ちゅういしているんです。", english: "It's precisely because I care about you that I'm warning you." },
-        { japanese: "厳しい練習があったからこそ、この結果が出せた。", furigana: "きびしいれんしゅうがあったからこそ、このけっかがだせた。", english: "It's precisely because of the tough practice that we achieved this result." },
         { japanese: "失敗したからこそ、学べることもある。", furigana: "しっぱいしたからこそ、まなべることもある。", english: "It's precisely because you failed that there are things you can learn." },
-        { japanese: "苦しい時期があったからこそ、今の自分がある。", furigana: "くるしいじきがあったからこそ、いまのじぶんがある。", english: "It's precisely because there were hard times that I am who I am today." }
+        { japanese: "苦しい時期があったからこそ、今の自分がある。", furigana: "くるしいじきがあったからこそ、いまのじぶんがある。", english: "It's precisely because there were hard times that I am who I am today." },
+        { japanese: "厳しい練習があったからこそ、この結果が出せた。", furigana: "きびしいれんしゅうがあったからこそ、このけっかがだせた。", english: "It's precisely because of the tough practice that we achieved this result." }
+      ]},
+      { title: "With adjectives", examples: [
+        { japanese: "難しいからこそ、挑戦する価値がある。", furigana: "むずかしいからこそ、ちょうせんするかちがある。", english: "It's precisely because it's difficult that it's worth trying." },
+        { japanese: "厳しいからこそ、彼の指導を信頼している。", furigana: "きびしいからこそ、かれのしどうをしんらいしている。", english: "It's precisely because he's strict that I trust his guidance." }
+      ]},
+      { title: "With nouns", examples: [
+        { japanese: "あなたのことが大切だからこそ、注意しているんです。", furigana: "あなたのことがたいせつだからこそ、ちゅういしているんです。", english: "It's precisely because I care about you that I'm warning you." },
+        { japanese: "家族だからこそ、正直に話せることがある。", furigana: "かぞくだからこそ、しょうじきにはなせることがある。", english: "It's precisely because we're family that there are things I can tell you honestly." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "plain form", example: "失敗した → 失敗したからこそ" },
+      { pos: "い-Adjective", form: "plain form", example: "つらい → つらいからこそ" },
+      { pos: "な-Adjective / Noun", form: "+ だ", example: "大切 → 大切だからこそ" }
     ]
   },
   {
@@ -3864,17 +5014,26 @@ const N2_GRAMMAR = [
       { title: "From someone's perspective", examples: [
         { japanese: "初心者からすれば、この説明は難しすぎる。", furigana: "しょしんしゃからすれば、このせつめいはむずかしすぎる。", english: "From a beginner's point of view, this explanation is too difficult." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ からすると／からすれば", example: "態度 → 態度からすると" }
     ]
   },
   {
     id: "n2-karatoitte", level: "N2", pattern: "～からといって", title: "Just because ... (doesn't mean)", short: "Rejects a conclusion that people might wrongly draw from a given reason.",
     explanation: "～からといって attaches to a plain-form phrase and is almost always followed by a negative statement, meaning 'just because X, that doesn't necessarily mean Y'. It's used to push back against a hasty generalization someone might be tempted to make.",
     usages: [
-      { title: "Rejecting a false conclusion", examples: [
+      { title: "With nouns", examples: [
         { japanese: "日本人だからといって、みんな漢字が得意だとは限らない。", furigana: "にほんじんだからといって、みんなかんじがとくいだとはかぎらない。", english: "Just because someone is Japanese doesn't mean they're all good at kanji." },
+        { japanese: "医者だからといって、すべての病気が治せるわけではない。", furigana: "いしゃだからといって、すべてのびょうきがなおせるわけではない。", english: "Just because someone is a doctor doesn't mean they can cure every illness." }
+      ]},
+      { title: "With adjectives", examples: [
         { japanese: "安いからといって、質が悪いわけではない。", furigana: "やすいからといって、しつがわるいわけではない。", english: "Just because it's cheap doesn't mean the quality is bad." },
-        { japanese: "経験があるからといって、必ず成功するとは限らない。", furigana: "けいけんがあるからといって、かならずせいこうするとはかぎらない。", english: "Just because you have experience doesn't mean you'll definitely succeed." },
         { japanese: "若いからといって、体力があるとは限らない。", furigana: "わかいからといって、たいりょくがあるとはかぎらない。", english: "Just because someone is young doesn't mean they necessarily have stamina." }
+      ]},
+      { title: "With verbs", examples: [
+        { japanese: "経験があるからといって、必ず成功するとは限らない。", furigana: "けいけんがあるからといって、かならずせいこうするとはかぎらない。", english: "Just because you have experience doesn't mean you'll definitely succeed." },
+        { japanese: "留学したからといって、英語がペラペラになるとは限らない。", furigana: "りゅうがくしたからといって、えいごがペラペラになるとはかぎらない。", english: "Just because you studied abroad doesn't mean you'll become fluent in English." }
       ]}
     ],
     conjugations: [
@@ -3893,7 +5052,15 @@ const N2_GRAMMAR = [
         { japanese: "プロを目指すからには、生半可な気持ちでは続けられない。", furigana: "プロをめざすからには、なまはんかなきもちではつづけられない。", english: "Since you're aiming to be a pro, you can't keep going with a half-hearted attitude." },
         { japanese: "留学するからには、しっかり勉強しなければならない。", furigana: "りゅうがくするからには、しっかりべんきょうしなければならない。", english: "Now that I'm studying abroad, I have to study hard." },
         { japanese: "プロとして働くからには、結果を出さなければならない。", furigana: "プロとしてはたらくからには、けっかをださなければならない。", english: "Now that I'm working as a professional, I have to produce results." }
+      ]},
+      { title: "With nouns", examples: [
+        { japanese: "教師であるからには、生徒に責任を持つべきだ。", furigana: "きょうしであるからには、せいとにせきにんをもつべきだ。", english: "Since I'm a teacher, I should take responsibility for my students." },
+        { japanese: "リーダーであるからには、決断力が求められる。", furigana: "リーダーであるからには、けつだんりょくがもとめられる。", english: "Since one is a leader, decisiveness is required." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary form", example: "引き受ける → 引き受けるからには" },
+      { pos: "な-Adjective / Noun", form: "+ である", example: "プロ → プロであるからには" }
     ]
   },
   {
@@ -3918,6 +5085,9 @@ const N2_GRAMMAR = [
         { japanese: "彼女は誰にも頼ることなく、一人でやり遂げた。", furigana: "かのじょはだれにもたよることなく、ひとりでやりとげた。", english: "She saw it through entirely on her own, without relying on anyone." },
         { japanese: "彼女は文句を言うことなく、黙々と作業を続けた。", furigana: "かのじょはもんくをいうことなく、もくもくとさぎょうをつづけた。", english: "She continued working silently, without complaining even once." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary form", example: "諦める → 諦めることなく" }
     ]
   },
   {
@@ -3928,8 +5098,13 @@ const N2_GRAMMAR = [
         { japanese: "一度失敗したからといって、才能がないことにはならない。", furigana: "いちどしっぱいしたからといって、さいのうがないことにはならない。", english: "Failing once doesn't mean you have no talent." },
         { japanese: "謝ったからといって、それで済むことにはならない。", furigana: "あやまったからといって、それでずむことにはならない。", english: "Just because you apologized doesn't mean that settles the matter." },
         { japanese: "黙っていたからといって、認めたことにはならない。", furigana: "だまっていたからといって、みとめたことにはならない。", english: "Just because I stayed silent doesn't mean I admitted to it." },
-        { japanese: "点数が良かったからといって、理解しているということにはならない。", furigana: "てんすうがよかったからといって、りかいしているということにはならない。", english: "Just because the score was good doesn't mean it means you understand it." }
+        { japanese: "点数が良かったからといって、理解しているということにはならない。", furigana: "てんすうがよかったからといって、りかいしているということにはならない。", english: "Just because the score was good doesn't mean it means you understand it." },
+        { japanese: "反応が薄いからといって、興味がないことにはならない。", furigana: "はんのうがうすいからといって、きょうみがないことにはならない。", english: "Just because the reaction was lukewarm doesn't mean there's no interest." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "plain form", example: "謝った → 謝ったからといって、済むことにはならない" },
+      { pos: "い-Adjective", form: "plain form", example: "良かった → 良かったことにはならない" }
     ]
   },
   {
@@ -3938,10 +5113,17 @@ const N2_GRAMMAR = [
     usages: [
       { title: "Formal occasion", examples: [
         { japanese: "お申し込みの際に、身分証明書をご用意ください。", furigana: "おもうしこみのさいに、みぶんしょうめいしょをごようういください。", english: "Please have your ID ready when applying." },
-        { japanese: "出発する際に、忘れ物がないか確認してください。", furigana: "しゅっぱつするさいに、わすれものがないかかくにんしてください。", english: "Please check that you haven't forgotten anything before departing." },
         { japanese: "ご来店の際には、こちらのクーポンをご利用ください。", furigana: "ごらいてんのさいには、こちらのクーポンをごりようください。", english: "Please use this coupon when you visit our store." },
         { japanese: "面接の際には、履歴書をご持参ください。", furigana: "めんせつのさいには、りれきしょをごじさんください。", english: "Please bring your resume when you come for the interview." }
+      ]},
+      { title: "With verbs", examples: [
+        { japanese: "出発する際に、忘れ物がないか確認してください。", furigana: "しゅっぱつするさいに、わすれものがないかかくにんしてください。", english: "Please check that you haven't forgotten anything before departing." },
+        { japanese: "退社する際に、備品をすべて返却してください。", furigana: "たいしゃするさいに、びひんをすべてへんきゃくしてください。", english: "Please return all equipment when leaving the company." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ の + 際に", example: "面接 → 面接の際に" },
+      { pos: "Verb", form: "dictionary form + 際に", example: "出発する → 出発する際に" }
     ]
   },
   {
@@ -4095,12 +5277,19 @@ const N2_GRAMMAR = [
       { title: "Result matches the cause (だけに / だけあって)", examples: [
         { japanese: "国際大会だけに、レベルがとても高い。", furigana: "こくさいたいかいだけに、レベルがとてもたかい。", english: "Precisely because it's an international competition, the level is very high." },
         { japanese: "彼は経験が長いだけあって、説明がとても分かりやすい。", furigana: "かれはけいけんがながいだけあって、せつめいがとてもわかりやすい。", english: "As you'd expect from someone with a lot of experience, his explanations are very easy to understand." },
-        { japanese: "長年準備してきただけに、悔しさもひとしおだ。", furigana: "ながねんじゅんびしてきただけに、くやしさもひとしおだ。", english: "Precisely because I'd been preparing for years, the disappointment is all the greater." },
-        { japanese: "有名な選手だけあって、彼のプレーには安定感がある。", furigana: "ゆうめいなせんしゅだけあって、かれのプレーにはあんていかんがある。", english: "As you'd expect from a famous player, his performance has real stability." }
+        { japanese: "有名な選手だけあって、彼のプレーには安定感がある。", furigana: "ゆうめいなせんしゅだけあって、かれのプレーにはあんていかんがある。", english: "As you'd expect from a famous player, his performance has real stability." },
+        { japanese: "長い間練習してきただけあって、彼の腕前はプロ並みだ。", furigana: "ながいあいだれんしゅうしてきただけあって、かれのうでまえはプロなみだ。", english: "As you'd expect from someone who's practiced for so long, his skill is on par with a professional." },
+        { japanese: "体力に自信があるだけに、無理をしがちだ。", furigana: "たいりょくにじしんがあるだけに、むりをしがちだ。", english: "Precisely because he's confident in his stamina, he tends to overdo it." }
       ]},
       { title: "Living up to expectations (だけのことはある)", examples: [
-        { japanese: "さすがプロだけのことはある。演技が素晴らしい。", furigana: "さすがプロだけのことはある。えんぎがすばらしい。", english: "No wonder — that's what you'd expect from a pro. The performance is wonderful." }
+        { japanese: "さすがプロだけのことはある。演技が素晴らしい。", furigana: "さすがプロだけのことはある。えんぎがすばらしい。", english: "No wonder — that's what you'd expect from a pro. The performance is wonderful." },
+        { japanese: "長年準備してきただけに、悔しさもひとしおだ。", furigana: "ながねんじゅんびしてきただけに、くやしさもひとしおだ。", english: "Precisely because I'd been preparing for years, the disappointment is all the greater." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "plain form", example: "準備してきた → 準備してきただけに" },
+      { pos: "い-Adjective", form: "plain form", example: "長い → 長いだけあって" },
+      { pos: "な-Adjective / Noun", form: "+ な / である", example: "国際大会 → 国際大会だけに" }
     ]
   },
   {
@@ -4112,7 +5301,20 @@ const N2_GRAMMAR = [
         { japanese: "そんなに謝ったって、許さないよ。", furigana: "そんなにあやまったって、ゆるさないよ。", english: "Even if you apologize that much, I'm not going to forgive you." },
         { japanese: "どんなに頼んだって、彼は首を縦に振らないだろう。", furigana: "どんなにたのんだって、かれはくびをたてにふらないだろう。", english: "No matter how much you ask, he probably won't agree." },
         { japanese: "泣いたって、何も変わらないよ。", furigana: "ないたって、なにもかわらないよ。", english: "Even if you cry, nothing's going to change." }
+      ]},
+      { title: "With adjectives", examples: [
+        { japanese: "どんなに高くたって、必要な物は買うしかない。", furigana: "どんなにたかくたって、ひつようなものはかうしかない。", english: "No matter how expensive, I have no choice but to buy what I need." },
+        { japanese: "いくら便利だって、使い方が難しければ意味がない。", furigana: "いくらべんりだって、つかいかたがむずかしければいみがない。", english: "No matter how convenient it is, it's pointless if it's hard to use." }
+      ]},
+      { title: "With nouns", examples: [
+        { japanese: "相手が子供だって、失礼な態度は許されない。", furigana: "あいてがこどもだって、しつれいなたいどはゆるされない。", english: "Even if the other person is a child, rude behavior isn't acceptable." },
+        { japanese: "休日だって、仕事の連絡が来ることがある。", furigana: "きゅうじつだって、しごとのれんらくがくることがある。", english: "Even on days off, work-related contact sometimes comes in." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "て-form base + たって", example: "急ぐ → 急いだって" },
+      { pos: "い-Adjective", form: "くたって", example: "高い → 高くたって" },
+      { pos: "な-Adjective / Noun", form: "だって", example: "便利 → 便利だって" }
     ]
   },
   {
@@ -4125,6 +5327,9 @@ const N2_GRAMMAR = [
         { japanese: "失敗を経験してこそ、本当の成長がある。", furigana: "しっぱいをけいけんしてこそ、ほんとうのせいちょうがある。", english: "It's only by experiencing failure that real growth happens." },
         { japanese: "支え合ってこそ、本当のチームだと言える。", furigana: "ささえあってこそ、ほんとうのチームだといえる。", english: "It's only by supporting one another that you can call it a real team." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "て-form", example: "苦労する → 苦労してこそ" }
     ]
   },
   {
@@ -4137,6 +5342,9 @@ const N2_GRAMMAR = [
         { japanese: "それは彼の勝手な想像でしかない。", furigana: "それはかれのかってなそうぞうでしかない。", english: "That's nothing but his own arbitrary imagination." },
         { japanese: "これは表面的な解決策でしかない。", furigana: "これはひょうめんてきなかいけつさくでしかない。", english: "This is nothing more than a superficial solution." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ でしかない", example: "噂 → 噂でしかない" }
     ]
   },
   {
@@ -4149,6 +5357,9 @@ const N2_GRAMMAR = [
         { japanese: "こんな大事な時に、休んではいられない。", furigana: "こんなだいじなときに、やすんではいられない。", english: "At a critical time like this, I can't afford to rest." },
         { japanese: "赤ちゃんが泣いているのに、のんびりテレビを見てはいられない。", furigana: "あかちゃんがないているのに、のんびりテレビをみてはいられない。", english: "The baby is crying, so I can't just sit around watching TV." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "て-form", example: "休む → 休んではいられない" }
     ]
   },
   {
@@ -4163,6 +5374,9 @@ const N2_GRAMMAR = [
       { title: "Firm suggestion", examples: [
         { japanese: "みんなで力を合わせようではないか。", furigana: "みんなでちからをあわせようではないか。", english: "Let's all join forces together, shall we." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "plain form / volitional form", example: "できる → できるではないか" }
     ]
   },
   {
@@ -4175,6 +5389,9 @@ const N2_GRAMMAR = [
         { japanese: "個人情報は決して他人に教えてはならない。", furigana: "こじんじょうほうはけっしてたにんにおしえてはならない。", english: "Personal information must never be shared with others." },
         { japanese: "未成年者にお酒を売ってはならない。", furigana: "みせいねんしゃにおさけをうってはならない。", english: "Alcohol must not be sold to minors." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "て-form", example: "触れる → 触れてはならない" }
     ]
   },
   {
@@ -4186,7 +5403,15 @@ const N2_GRAMMAR = [
         { japanese: "返事がないということは、断られたということだろう。", furigana: "へんじがないということは、ことわられたということだろう。", english: "The fact that there's no reply probably means we've been turned down." },
         { japanese: "電気がついているということは、誰か家にいるのだろう。", furigana: "でんきがついているということは、だれかいえにいるのだろう。", english: "The fact that the lights are on probably means someone's home." },
         { japanese: "彼が謝ったということは、自分の非を認めたということだ。", furigana: "かれがあやまったということは、じぶんのひをみとめたということだ。", english: "The fact that he apologized means he's acknowledged his own fault." }
+      ]},
+      { title: "With nouns", examples: [
+        { japanese: "今日が休みだということは、明日は忙しいということだ。", furigana: "きょうがやすみだということは、あしたはいそがしいということだ。", english: "The fact that today's a day off means tomorrow will be busy." },
+        { japanese: "満席だということは、この店は評判がいいということだろう。", furigana: "まんせきだということは、このみせはひょうばんがいいということだろう。", english: "The fact that it's fully booked probably means this shop has a good reputation." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "plain form", example: "来ない → 来ないということは" },
+      { pos: "い-Adjective / な-Adjective / Noun", form: "plain form + ということは", example: "静か → 静かだということは" }
     ]
   },
   {
@@ -4199,6 +5424,9 @@ const N2_GRAMMAR = [
         { japanese: "京都や奈良といった歴史的な街を訪れたい。", furigana: "きょうとやならといったれきしてきなまちをおとずれたい。", english: "I want to visit historic cities such as Kyoto and Nara." },
         { japanese: "彼女はピアノやバイオリンといった楽器を演奏できる。", furigana: "かのじょはピアノやバイオリンといったがっきをえんそうできる。", english: "She can play instruments such as the piano and violin." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ といった", example: "すし、天ぷら → すし、天ぷらといった" }
     ]
   },
   {
@@ -4234,7 +5462,15 @@ const N2_GRAMMAR = [
         { japanese: "赤ちゃんが泣き続けていて、ゆっくり食事どころではなかった。", furigana: "あかちゃんがなきつづけていて、ゆっくりしょくじどころではなかった。", english: "The baby wouldn't stop crying, so it was no time for a leisurely meal." },
         { japanese: "頭が痛くて、勉強どころではなかった。", furigana: "あたまがいたくて、べんきょうどころではなかった。", english: "My head hurt so much that studying was out of the question." },
         { japanese: "台風が来ているので、旅行どころではない。", furigana: "たいふうがきているので、りょこうどころではない。", english: "A typhoon is coming, so this is no time for a trip." }
+      ]},
+      { title: "With verbs", examples: [
+        { japanese: "仕事に追われていて、ゆっくり話し合うどころではない。", furigana: "しごとにおわれていて、ゆっくりはなしあうどころではない。", english: "I'm swamped with work, so this is no time for a leisurely discussion." },
+        { japanese: "けがをしていて、走るどころではなかった。", furigana: "けがをしていて、はしるどころではなかった。", english: "I was injured, so running was completely out of the question." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ どころではない", example: "旅行 → 旅行どころではない" },
+      { pos: "Verb", form: "dictionary form + どころではない", example: "勉強する → 勉強するどころではない" }
     ]
   },
   {
@@ -4247,6 +5483,9 @@ const N2_GRAMMAR = [
         { japanese: "個人としては賛成だが、部署の意見はまだまとまっていない。", furigana: "こじんとしてはさんせいだが、ぶしょのいけんはまだまとまっていない。", english: "Personally, I'm in favor, but the department's opinion hasn't been settled yet." },
         { japanese: "地元のチームとしては、今シーズンは満足のいく成績だった。", furigana: "じもとのチームとしては、こんシーズンはまんぞくのいくせいせきだった。", english: "As the local team, this season's results were satisfying." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ としては", example: "会社 → 会社としては" }
     ]
   },
   {
@@ -4271,6 +5510,9 @@ const N2_GRAMMAR = [
         { japanese: "経験に応じて、給料が決まります。", furigana: "けいけんにおうじて、きゅうりょうがきまります。", english: "Salary is decided according to experience." },
         { japanese: "状況に応じて、対応を変える必要がある。", furigana: "じょうきょうにおうじて、たいおうをかえるひつようがある。", english: "It's necessary to adjust our response according to the situation." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ に応じて", example: "状況 → 状況に応じて" }
     ]
   },
   {
@@ -4283,6 +5525,9 @@ const N2_GRAMMAR = [
         { japanese: "年齢にかかわらず、誰でも参加できます。", furigana: "ねんれいにかかわらず、だれでもさんかできます。", english: "Anyone can participate, regardless of age." },
         { japanese: "天候にかかわらず、イベントは予定通り開催されます。", furigana: "てんこうにかかわらず、イベントはよていどおりかいさいされます。", english: "The event will be held as scheduled, regardless of the weather." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ にかかわらず", example: "年齢 → 年齢にかかわらず" }
     ]
   },
   {
@@ -4294,7 +5539,15 @@ const N2_GRAMMAR = [
         { japanese: "そんなに練習したのだから、上手になるに決まっている。", furigana: "そんなにれんしゅうしたのだから、じょうずになるにきまっている。", english: "You practiced that much, so of course you're bound to get good at it." },
         { japanese: "そんなに練習もせずに勝てるわけがない。負けるに決まっている。", furigana: "そんなにれんしゅうもせずにかてるわけがない。まけるにきまっている。", english: "There's no way you can win without practicing that much. You're bound to lose." },
         { japanese: "あんなに練習したのだから、上達するに決まっている。", furigana: "あんなにれんしゅうしたのだから、じょうたつするにきまっている。", english: "You practiced that much, so of course you're bound to improve." }
+      ]},
+      { title: "With adjectives", examples: [
+        { japanese: "こんな時間に電話が来るなんて、何か緊急なことに決まっている。", furigana: "こんなじかんにでんわがくるなんて、なにかきんきゅうなことにきまっている。", english: "A call at this hour must mean something urgent, no doubt about it." },
+        { japanese: "手作りなのだから、市販品より美味しいに決まっている。", furigana: "てづくりなのだから、しはんひんよりおいしいにきまっている。", english: "Since it's homemade, it's bound to taste better than store-bought." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "plain form", example: "上手になる → 上手になるに決まっている" },
+      { pos: "い-Adjective / な-Adjective / Noun", form: "plain form + に決まっている", example: "偽物 → 偽物に決まっている" }
     ]
   },
   {
@@ -4306,7 +5559,15 @@ const N2_GRAMMAR = [
         { japanese: "契約に際して、いくつか確認しておきたいことがあります。", furigana: "けいやくにさいして、いくつかかくにんしておきたいことがあります。", english: "When it comes to the contract, there are a few things I'd like to confirm." },
         { japanese: "卒業に際して、恩師に感謝の手紙を書いた。", furigana: "そつぎょうにさいして、おんしにかんしゃのてがみをかいた。", english: "On the occasion of graduating, I wrote a letter of thanks to my mentor." },
         { japanese: "新規開業に際して、多くの方々にお世話になった。", furigana: "しんきかいぎょうにさいして、おおくのかたがたにおせわになった。", english: "On the occasion of opening the new business, many people helped us." }
+      ]},
+      { title: "With verbs", examples: [
+        { japanese: "新製品を発表するに際して、記者会見を開いた。", furigana: "しんせいひんをはっぴょうするにさいして、きしゃかいけんをひらいた。", english: "A press conference was held on the occasion of announcing the new product." },
+        { japanese: "海外へ渡航するに際して、必要な手続きを確認した。", furigana: "かいがいへとこうするにさいして、ひつようなてつづきをかくにんした。", english: "I checked the necessary procedures for traveling abroad." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ に際して", example: "卒業 → 卒業に際して" },
+      { pos: "Verb", form: "dictionary form + に際して", example: "開始する → 開始に際して" }
     ]
   },
   {
@@ -4319,6 +5580,9 @@ const N2_GRAMMAR = [
         { japanese: "会議に先立って、資料が配布された。", furigana: "かいぎにさきだって、しりょうがはいふされた。", english: "Materials were distributed ahead of the meeting." },
         { japanese: "本格的な販売に先立ち、試験的に一部地域で発売した。", furigana: "ほんかくてきなはんばいにさきだち、しけんてきにいちぶちいきではつばいした。", english: "Ahead of the full-scale sales launch, it was released on a trial basis in some regions." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ に先立ち／に先立って", example: "開店 → 開店に先立ち" }
     ]
   },
   {
@@ -4329,8 +5593,13 @@ const N2_GRAMMAR = [
         { japanese: "この筆跡は本人のものに相違ない。", furigana: "このひっせきはほんにんのものにそういない。", english: "There is no doubt that this handwriting belongs to the person themselves." },
         { japanese: "この報告は事実に相違ない。", furigana: "このほうこくはじじつにそういない。", english: "There's no doubt this report is accurate." },
         { japanese: "この計画には何か裏があるに相違ない。", furigana: "このけいかくにはなにかうらがあるにそういない。", english: "There's no doubt this plan has something behind it." },
-        { japanese: "この字の癖から見て、彼の書いたものに相違ない。", furigana: "このじのくせからみて、かれのかいたものにそういない。", english: "Judging from the handwriting habits, there's no doubt this was written by him." }
+        { japanese: "この字の癖から見て、彼の書いたものに相違ない。", furigana: "このじのくせからみて、かれのかいたものにそういない。", english: "Judging from the handwriting habits, there's no doubt this was written by him." },
+        { japanese: "この結果を見れば、彼が努力してきたに相違ない。", furigana: "このけっかをみれば、かれがどりょくしてきたにそういない。", english: "Judging from this result, there's no doubt he's been putting in the effort." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ に相違ない", example: "事実 → 事実に相違ない" },
+      { pos: "Verb", form: "plain form + に相違ない", example: "書いた → 書いたに相違ない" }
     ]
   },
   {
@@ -4343,6 +5612,9 @@ const N2_GRAMMAR = [
         { japanese: "この事故の原因は、整備不足にほかならない。", furigana: "このじこのげんいんは、せいびぶそくにほかならない。", english: "The cause of this accident is nothing other than insufficient maintenance." },
         { japanese: "彼女が成功したのは、日々の積み重ねにほかならない。", furigana: "かのじょがせいこうしたのは、ひびのつみかさねにほかならない。", english: "Her success is nothing other than the result of daily accumulation of effort." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ にほかならない", example: "努力 → 努力にほかならない" }
     ]
   },
   {
@@ -4355,6 +5627,10 @@ const N2_GRAMMAR = [
         { japanese: "私たちは次世代のために行動せねばならない。", furigana: "わたしたちはじせだいのためにこうどうせねばならない。", english: "We must act for the sake of the next generation." },
         { japanese: "私たちは互いに助け合わねばならない。", furigana: "わたしたちはたがいにたすけあわねばならない。", english: "We must help one another." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb (godan)", form: "negative stem + ねばならない", example: "守る → 守らねばならない" },
+      { pos: "Verb (する)", form: "irregular: せねばならない", example: "行動する → 行動せねばならない" }
     ]
   },
   {
@@ -4366,7 +5642,15 @@ const N2_GRAMMAR = [
         { japanese: "彼は英語のみならず、フランス語も話せる。", furigana: "かれはえいごのみならず、フランスごもはなせる。", english: "He can speak not only English but French as well." },
         { japanese: "この選手は国内のみならず、海外でも高く評価されている。", furigana: "このせんしゅはこくないのみならず、かいがいでもたかくひょうかされている。", english: "This athlete is highly regarded not only domestically but overseas as well." },
         { japanese: "その被害は都市部のみならず、地方にも及んだ。", furigana: "そのひがいはとしぶのみならず、ちほうにもおよんだ。", english: "The damage extended not only to urban areas but to rural areas as well." }
+      ]},
+      { title: "With verbs", examples: [
+        { japanese: "彼は歌うのみならず、作曲までこなす。", furigana: "かれはうたうのみならず、さっきょくまでこなす。", english: "He doesn't just sing — he even handles composing." },
+        { japanese: "この薬は痛みを和らげるのみならず、炎症も抑える。", furigana: "このくすりはいたみをやわらげるのみならず、えんしょうもおさえる。", english: "This medicine doesn't just relieve pain — it also suppresses inflammation." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ のみならず", example: "国内 → 国内のみならず" },
+      { pos: "Verb", form: "plain form + のみならず", example: "話す → 話すのみならず" }
     ]
   },
   {
@@ -4379,6 +5663,9 @@ const N2_GRAMMAR = [
         { japanese: "冗談はともかく、真剣に話し合いましょう。", furigana: "じょうだんはともかく、しんけんにはなしあいましょう。", english: "Jokes aside, let's talk about this seriously." },
         { japanese: "デザインはともかく、使いやすさを優先したい。", furigana: "デザインはともかく、つかいやすさをゆうせんしたい。", english: "Setting design aside, I want to prioritize ease of use." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ はともかく", example: "値段 → 値段はともかく" }
     ]
   },
   {
@@ -4390,7 +5677,16 @@ const N2_GRAMMAR = [
         { japanese: "都会は便利な反面、自然が少ない。", furigana: "とかいはべんりなはんめん、しぜんがすくない。", english: "The city is convenient, but on the other hand, there's little nature." },
         { japanese: "在宅勤務は自由な反面、自己管理が難しい。", furigana: "ざいたくきんむはじゆうなはんめん、じこかんりがむずかしい。", english: "Working from home offers freedom, but on the other hand, self-management is difficult." },
         { japanese: "新しい制度は効率がいい反面、導入コストが高い。", furigana: "あたらしいせいどはこうりつがいいはんめん、どうにゅうコストがたかい。", english: "The new system is efficient, but on the other hand, the implementation cost is high." }
+      ]},
+      { title: "With verbs", examples: [
+        { japanese: "この薬はよく効く反面、副作用も出やすい。", furigana: "このくすりはよくきくはんめん、ふくさようもでやすい。", english: "This medicine works well, but on the other hand, side effects also tend to occur." },
+        { japanese: "インターネットは便利な反面、誤情報も広がりやすい。", furigana: "インターネットはべんりなはんめん、ごじょうほうもひろがりやすい。", english: "The internet is convenient, but on the other hand, misinformation also spreads easily." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "plain form", example: "効く → 効く反面" },
+      { pos: "い-Adjective", form: "plain form", example: "いい → いい反面" },
+      { pos: "な-Adjective", form: "stem + な", example: "自由 → 自由な反面" }
     ]
   },
   {
@@ -4403,6 +5699,9 @@ const N2_GRAMMAR = [
         { japanese: "十年ぶりに同窓会に参加した。", furigana: "じゅうねんぶりにどうそうかいにさんかした。", english: "I attended the class reunion for the first time in ten years." },
         { japanese: "五年ぶりに帰国して、街の変化に驚いた。", furigana: "ごねんぶりにきこくして、まちのへんかにおどろいた。", english: "Returning to my home country for the first time in five years, I was surprised by how much the city had changed." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Time expression (Noun)", form: "+ ぶりに", example: "三年 → 三年ぶりに" }
     ]
   },
   {
@@ -4426,7 +5725,16 @@ const N2_GRAMMAR = [
         { japanese: "道が分からなかったものだから、遅刻してしまった。", furigana: "みちがわからなかったものだから、ちこくしてしまった。", english: "It's just that I didn't know the way, so I ended up being late." },
         { japanese: "隣の部屋がうるさかったものだから、よく眠れなかった。", furigana: "となりのへやがうるさかったものだから、よくねむれなかった。", english: "The room next door was so noisy that I couldn't sleep well." },
         { japanese: "あまりにも眠かったものだから、会議中に居眠りしてしまった。", furigana: "あまりにもねむかったものだから、かいぎちゅうにいねむりしてしまった。", english: "I was so sleepy that I ended up dozing off during the meeting." }
+      ]},
+      { title: "With nouns", examples: [
+        { japanese: "初めての場所だったものだから、道に迷ってしまった。", furigana: "はじめてのばしょだったものだから、みちにまよってしまった。", english: "It was my first time there, so I ended up getting lost." },
+        { japanese: "彼は新人だったものだから、少し緊張していた。", furigana: "かれはしんじんだったものだから、すこしきんちょうしていた。", english: "He was a newcomer, so he was a little nervous." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "plain form", example: "分からなかった → 分からなかったものだから" },
+      { pos: "い-Adjective", form: "plain form", example: "眠かった → 眠かったものだから" },
+      { pos: "な-Adjective / Noun", form: "+ な / だった", example: "うるさかった → うるさかったものだから" }
     ]
   },
   {
@@ -4451,6 +5759,9 @@ const N2_GRAMMAR = [
         { japanese: "田中さんを除いて、全員が賛成した。", furigana: "たなかさんをのぞいて、ぜんいんがさんせいした。", english: "Everyone except Tanaka agreed." },
         { japanese: "一部の商品を除いて、全品セール対象です。", furigana: "いちぶのしょうひんをのぞいて、ぜんぴんセールたいしょうです。", english: "Except for a few items, everything is included in the sale." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ を除いて", example: "日曜日 → 日曜日を除いて" }
     ]
   }
 ];
@@ -4466,6 +5777,9 @@ const N1_GRAMMAR = [
         { japanese: "彼は合図を聞くや否や、走り出した。", furigana: "かれはあいずをきくやいなや、はしりだした。", english: "The moment he heard the signal, he took off running." },
         { japanese: "警報が鳴るや否や、住民は一斉に避難を始めた。", furigana: "けいほうがなるやいなや、じゅうみんはいっせいにひなんをはじめた。", english: "The moment the alarm sounded, residents began evacuating all at once." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary form", example: "鳴る → 鳴るや否や" }
     ]
   },
   {
@@ -4475,9 +5789,11 @@ const N1_GRAMMAR = [
       { title: "Abrupt action", examples: [
         { japanese: "彼は部屋に入ってくるなり、怒鳴り散らした。", furigana: "かれはへやにはいってくるなり、どなりちらした。", english: "The moment he entered the room, he started shouting." },
         { japanese: "彼はその知らせを聞くなり、部屋を飛び出した。", furigana: "かれはそのしらせをきくなり、へやをとびだした。", english: "The moment he heard the news, he dashed out of the room." },
-        { japanese: "彼はその知らせを聞くなり、部屋を飛び出した。", furigana: "かれはそのしらせをきくなり、へやをとびだした。", english: "The moment he heard the news, he dashed out of the room." },
         { japanese: "子供は母親の顔を見るなり、泣き出した。", furigana: "こどもははははおやのかおをみるなり、なきだした。", english: "The child burst into tears the moment they saw their mother's face." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary form", example: "見る → 見るなり" }
     ]
   },
   {
@@ -4487,9 +5803,11 @@ const N1_GRAMMAR = [
       { title: "Repetitive cycle", examples: [
         { japanese: "片付けるそばから、子供が部屋を散らかす。", furigana: "かたづけるそばから、こどもがへやをちらかす。", english: "As fast as I clean up, the child messily scatters things around." },
         { japanese: "覚えるそばから忘れてしまう。", furigana: "おぼえるそばからわすれてしまう。", english: "I forget things just as fast as I learn them." },
-        { japanese: "覚えるそばから忘れてしまう。", furigana: "おぼえるそばからわすれてしまう。", english: "I forget things just as fast as I learn them." },
         { japanese: "説明するそばから、彼は同じ質問を繰り返した。", furigana: "せつめいするそばから、かれはおなじしつもんをくりかえした。", english: "No sooner had I explained it than he asked the same question again." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary form", example: "覚える → 覚えるそばから" }
     ]
   },
   {
@@ -4499,23 +5817,29 @@ const N1_GRAMMAR = [
       { title: "Easy to imagine", examples: [
         { japanese: "彼の失望は想像にかたくない。", furigana: "かれのしつぼうはそうぞうにかたくない。", english: "It is not difficult to imagine his disappointment." },
         { japanese: "両親の喜びは察するにかたくない。", furigana: "りょうしんのよろこびはさっするにかたくない。", english: "It's not hard to imagine how happy his parents were." },
-        { japanese: "両親の喜びは察するにかたくない。", furigana: "りょうしんのよろこびはさっするにかたくない。", english: "It's not hard to imagine how happy his parents were." },
         { japanese: "長年の努力が実を結んだ喜びは、想像にかたくない。", furigana: "ながねんのどりょくがみをむすんだよろこびは、そうぞうにかたくない。", english: "It's not hard to imagine the joy of having years of effort finally pay off." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary form", example: "察する → 察するにかたくない" }
     ]
   },
   {
     id: "n1-ni-taenai", level: "N1", pattern: "～に堪えない", title: "Cannot bear / unbearable or deeply filled with", short: "Expresses intense emotion (gratitude, regret) or unbearable conditions.",
     explanation: "～に堪えない has two related but distinct senses. Following an emotional noun like 感謝 or 感激, it means a feeling is so strong the speaker can barely contain it ('I can't thank you enough'). Following a verb like 聞く or 見る, it means the opposite — that something is so unpleasant or poor in quality that it's unbearable to experience.\n\nContext (an emotional noun vs. a sensory verb) is what tells the two meanings apart, since 堪える itself just means 'to endure' — the surrounding word decides whether enduring is impossible because the feeling is overwhelming, or because the experience is dreadful.",
     usages: [
-      { title: "Deep emotional state", examples: [
+      { title: "Overwhelming emotion (with nouns)", examples: [
         { japanese: "皆様のご支援に対し、感謝に堪えません。", furigana: "みなさまのごしえんにたいし、かんしゃにたえません。", english: "I am overwhelmed with gratitude for everyone's support." },
-        { japanese: "あまりにひどい内容で、聞くに堪えない。", furigana: "あまりにひどいないようで、きくにたえない。", english: "The content was so awful it was unbearable to listen to." },
-        { japanese: "あまりにひどい内容で、聞くに堪えない。", furigana: "あまりにひどいないようで、きくにたえない。", english: "The content was so awful it was unbearable to listen to." }
-      ]},
-      { title: "Overwhelming gratitude", examples: [
         { japanese: "皆様のご厚意には、感謝に堪えません。", furigana: "みなさまのごこういには、かんしゃにたえません。", english: "I can't thank everyone enough for their kindness." }
+      ]},
+      { title: "Unbearable to experience (with verbs)", examples: [
+        { japanese: "あまりにひどい内容で、聞くに堪えない。", furigana: "あまりにひどいないようで、きくにたえない。", english: "The content was so awful it was unbearable to listen to." },
+        { japanese: "画質が悪すぎて、見るに堪えない映像だった。", furigana: "がしつがわるすぎて、みるにたえないえいぞうだった。", english: "The picture quality was so bad it was unbearable to watch." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ に堪えない", example: "感謝 → 感謝に堪えない" },
+      { pos: "Verb", form: "dictionary form", example: "聞く → 聞くに堪えない" }
     ]
   },
   {
@@ -4525,9 +5849,11 @@ const N1_GRAMMAR = [
       { title: "Worthy of value", examples: [
         { japanese: "大人の鑑賞に堪えるアニメ作品だ。", furigana: "おとなのかんしょうにたえるアニメさくひんだ。", english: "It is an anime work worthy of adult appreciation." },
         { japanese: "この機械は長時間の使用に堪える設計になっている。", furigana: "このきかいはちょうじかんのしようにたえるせっけいになっている。", english: "This machine is designed to withstand long hours of use." },
-        { japanese: "この機械は長時間の使用に堪える設計になっている。", furigana: "このきかいはちょうじかんのしようにたえるせっけいになっている。", english: "This machine is designed to withstand long hours of use." },
         { japanese: "この橋は大地震にも堪える強度で設計された。", furigana: "このはしはだいじしんにもたえるきょうどでせっけいされた。", english: "This bridge was designed with strength that can withstand even a major earthquake." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ に堪える", example: "使用 → 使用に堪える" }
     ]
   },
   {
@@ -4537,9 +5863,11 @@ const N1_GRAMMAR = [
       { title: "Permanent conclusion", examples: [
         { japanese: "今年度を限りに、この事業を撤退いたします。", furigana: "こんねんどをかぎりに、このじぎょうをてったいいたします。", english: "We will withdraw from this business as of the end of this fiscal year." },
         { japanese: "彼女は声を限りに助けを求めた。", furigana: "かのじょはこえをかぎりにたすけをもとめた。", english: "She cried out for help at the top of her voice." },
-        { japanese: "彼女は声を限りに助けを求めた。", furigana: "かのじょはこえをかぎりにたすけをもとめた。", english: "She cried out for help at the top of her voice." },
         { japanese: "本日を限りに、この店は閉店いたします。", furigana: "ほんじつをかぎりに、このみせはへいてんいたします。", english: "As of today, this shop will be permanently closing." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ を限りに", example: "本日 → 本日を限りに" }
     ]
   },
   {
@@ -4549,9 +5877,11 @@ const N1_GRAMMAR = [
       { title: "Initial spark of a chain", examples: [
         { japanese: "東京公演を皮切りに、全国ツアーが始まる。", furigana: "とうきょうこうえんをかわきりに、ぜんこくツアーがはじまる。", english: "Starting with the Tokyo performance, the nationwide tour will begin." },
         { japanese: "この事件を皮切りに、次々と不正が発覚した。", furigana: "このじけんをかわきりに、つぎつぎとふせいがはっかくした。", english: "Starting with this incident, one instance of fraud after another came to light." },
-        { japanese: "この事件を皮切りに、次々と不正が発覚した。", furigana: "このじけんをかわきりに、つぎつぎとふせいがはっかくした。", english: "Starting with this incident, one instance of fraud after another came to light." },
         { japanese: "彼の受賞を皮切りに、その映画は世界的な注目を集めた。", furigana: "かれのじゅしょうをかわきりに、そのえいがはせかいてきなちゅうもくをあつめた。", english: "Starting with his award, that film went on to attract worldwide attention." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ を皮切りに", example: "公演 → 公演を皮切りに" }
     ]
   },
   {
@@ -4561,9 +5891,11 @@ const N1_GRAMMAR = [
       { title: "Forced change", examples: [
         { japanese: "悪天候のため、計画の変更を余儀なくされた。", furigana: "あくてんこうのため、けいかくのへんこうをよぎなくされた。", english: "Due to bad weather, we were forced to change our plans." },
         { japanese: "会社は経営難のため、大規模なリストラを余儀なくされた。", furigana: "かいしゃはけいえいなんのため、だいきぼなリストラをよぎなくされた。", english: "Due to financial difficulties, the company was forced into large-scale restructuring." },
-        { japanese: "会社は経営難のため、大規模なリストラを余儀なくされた。", furigana: "かいしゃはけいえいなんのため、だいきぼなリストラをよぎなくされた。", english: "Due to financial difficulties, the company was forced into large-scale restructuring." },
         { japanese: "感染拡大は、多くの店に休業を余儀なくさせた。", furigana: "かんせんかくだいは、おおくのみせにきゅうぎょうをよぎなくさせた。", english: "The spread of the infection forced many shops into closure." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ を余儀なくされる", example: "変更 → 変更を余儀なくされる" }
     ]
   },
   {
@@ -4573,9 +5905,11 @@ const N1_GRAMMAR = [
       { title: "Aimless sensory action", examples: [
         { japanese: "テレビを見るともなく眺めていた。", furigana: "テレビをみるともなくながめていた。", english: "I was idly gazing at the television without really watching it." },
         { japanese: "どこからともなく、いい匂いが漂ってきた。", furigana: "どこからともなく、いいにおいがただよってきた。", english: "A nice smell drifted in from who-knows-where." },
-        { japanese: "どこからともなく、いい匂いが漂ってきた。", furigana: "どこからともなく、いいにおいがただよってきた。", english: "A nice smell drifted in from who-knows-where." },
         { japanese: "誰からともなく、拍手が起こった。", furigana: "だれからともなく、はくしゅがおこった。", english: "Applause broke out, though it wasn't clear who started it." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "ている form", example: "見ている → 見るともなく" }
     ]
   },
   {
@@ -4585,9 +5919,11 @@ const N1_GRAMMAR = [
       { title: "Associated narrative", examples: [
         { japanese: "この城には恐ろしい伝説にまつわる話がある。", furigana: "このしろにはおそろしいでんせつにまつわるはなしがある。", english: "This castle has stories associated with a terrifying legend." },
         { japanese: "この地名にまつわる由来を調べた。", furigana: "このちめいにまつわるゆらいをしらべた。", english: "I looked into the origin story associated with this place name." },
-        { japanese: "この地名にまつわる由来を調べた。", furigana: "このちめいにまつわるゆらいをしらべた。", english: "I looked into the origin story associated with this place name." },
         { japanese: "この神社にまつわる伝説は、地元の人ならみんな知っている。", furigana: "このじんじゃにまつわるでんせつは、じもとのひとならみんなしっている。", english: "Anyone from the local area knows the legend associated with this shrine." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ にまつわる", example: "伝説 → 伝説にまつわる" }
     ]
   },
   {
@@ -4597,9 +5933,11 @@ const N1_GRAMMAR = [
       { title: "Unique suitabilities", examples: [
         { japanese: "この大役を果たせるのは、彼をおいて他にはいない。", furigana: "このたいやくをはたせるのは、かれをおいてほかにはいない。", english: "There is no one other than him who can fulfill this major role." },
         { japanese: "この町の魅力を語れるのは、彼女をおいて他にいない。", furigana: "このまちのみりょくをかたれるのは、かのじょをおいてほかにいない。", english: "There's no one but her who can speak to this town's charm." },
-        { japanese: "この町の魅力を語れるのは、彼女をおいて他にいない。", furigana: "このまちのみりょくをかたれるのは、かのじょをおいてほかにいない。", english: "There's no one but her who can speak to this town's charm." },
         { japanese: "彼をおいて、このチームをまとめられる人はいない。", furigana: "かれをおいて、このチームをまとめられるひとはいない。", english: "There's no one but him who could bring this team together." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ をおいて～ない", example: "彼 → 彼をおいて他にいない" }
     ]
   },
   {
@@ -4609,9 +5947,11 @@ const N1_GRAMMAR = [
       { title: "Overcoming obstacles", examples: [
         { japanese: "周囲の反対を押して、彼は夢を追求した。", furigana: "しゅういのはんたいをおして、かれはゆめをついきゅうした。", english: "In spite of opposition from those around him, he pursued his dream." },
         { japanese: "彼女は病気を押して、舞台に立った。", furigana: "かのじょはびょうきをおして、ぶたいにたった。", english: "She took to the stage, pushing through her illness." },
-        { japanese: "彼女は病気を押して、舞台に立った。", furigana: "かのじょはびょうきをおして、ぶたいにたった。", english: "She took to the stage, pushing through her illness." },
         { japanese: "周囲の批判を押してでも、彼は自分の意見を貫いた。", furigana: "しゅういのひはんをおしてでも、かれはじぶんのいけんをつらぬいた。", english: "Even pushing through criticism from those around him, he held firm to his own opinion." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ を押して", example: "反対 → 反対を押して" }
     ]
   },
   {
@@ -4621,9 +5961,11 @@ const N1_GRAMMAR = [
       { title: "Worthy of trust/evaluation", examples: [
         { japanese: "彼は信頼するにたる人物だ。", furigana: "かれはしんらいするにたるじんぶつだ。", english: "He is a person worthy of trust." },
         { japanese: "この計画は検討するにたりない、粗末なものだ。", furigana: "このけいかくはけんとうするにたりない、そまつなものだ。", english: "This plan is too shoddy to even be worth considering." },
-        { japanese: "この計画は検討するにたりない、粗末なものだ。", furigana: "このけいかくはけんとうするにたりない、そまつなものだ。", english: "This plan is too shoddy to even be worth considering." },
         { japanese: "彼女の実績は、リーダーとして推薦するにたる。", furigana: "かのじょのじっせきは、リーダーとしてすいせんするにたる。", english: "Her track record is sufficient to recommend her as a leader." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary form", example: "信頼する → 信頼するにたる" }
     ]
   },
   {
@@ -4633,9 +5975,11 @@ const N1_GRAMMAR = [
       { title: "Instantaneous action", examples: [
         { japanese: "チャイムが鳴るが早いか、生徒たちは教室を飛び出した。", furigana: "チャイムがなるがはやいか、せいとたちはきょうしつをとびだした。", english: "No sooner had the chime rung than the students rushed out of the classroom." },
         { japanese: "彼は席に着くが早いか、資料を読み始めた。", furigana: "かれはせきにつくがはやいか、しりょうをよみはじめた。", english: "No sooner had he sat down than he began reading the documents." },
-        { japanese: "彼は席に着くが早いか、資料を読み始めた。", furigana: "かれはせきにつくがはやいか、しりょうをよみはじめた。", english: "No sooner had he sat down than he began reading the documents." },
         { japanese: "号砲が鳴るが早いか、選手たちは一斉に走り出した。", furigana: "ごうほうがなるがはやいか、せんしゅたちはいっせいにはしりだした。", english: "The moment the starting gun fired, the runners took off all at once." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary form", example: "鳴る → 鳴るが早いか" }
     ]
   },
   {
@@ -4645,9 +5989,11 @@ const N1_GRAMMAR = [
       { title: "Smeared or burdened", examples: [
         { japanese: "選手たちは泥まみれになりながらボールを追った。", furigana: "せんしゅたちはどろまみれになりながらボールをおった。", english: "The players chased the ball while completely covered in mud." },
         { japanese: "借金まみれの生活から抜け出したい。", furigana: "しゃっきんまみれのせいかつからぬけだしたい。", english: "I want to escape a life buried in debt." },
-        { japanese: "借金まみれの生活から抜け出したい。", furigana: "しゃっきんまみれのせいかつからぬけだしたい。", english: "I want to escape a life buried in debt." },
         { japanese: "工事現場で働く彼は、いつも汗まみれだった。", furigana: "こうじげんばではたらくかれは、いつもあせまみれだった。", english: "Working at the construction site, he was always covered in sweat." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ まみれ", example: "泥 → 泥まみれ" }
     ]
   },
   {
@@ -4657,9 +6003,11 @@ const N1_GRAMMAR = [
       { title: "Official termination", examples: [
         { japanese: "本日の営業はこれをもって終了いたします。", furigana: "ほんじつのえいぎょうはこれをもってしゅうりょういたします。", english: "Business for today hereby concludes as of this moment." },
         { japanese: "彼の実力をもってすれば、優勝は間違いない。", furigana: "かれのじつりょくをもってすれば、ゆうしょうはまちがいない。", english: "Given his skill, victory is certain." },
-        { japanese: "彼の実力をもってすれば、優勝は間違いない。", furigana: "かれのじつりょくをもってすれば、ゆうしょうはまちがいない。", english: "Given his skill, victory is certain." },
         { japanese: "以上をもって、本日の議事を終了いたします。", furigana: "いじょうをもって、ほんじつのぎじをしゅうりょういたします。", english: "With that, we will conclude today's proceedings." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ をもって", example: "これ → これをもって" }
     ]
   },
   {
@@ -4669,9 +6017,11 @@ const N1_GRAMMAR = [
       { title: "Emphatic reason", examples: [
         { japanese: "子供を思えばこそ、厳しく育てるのです。", furigana: "こどもをおもえばこそ、きびしくそだてるのです。", english: "It is precisely because I care for my child that I raise them strictly." },
         { japanese: "あなたを信じればこそ、この仕事を任せたのです。", furigana: "あなたをしんじればこそ、このしごとをまかせたのです。", english: "It's precisely because I trust you that I entrusted this work to you." },
-        { japanese: "あなたを信じればこそ、この仕事を任せたのです。", furigana: "あなたをしんじればこそ、このしごとをまかせたのです。", english: "It's precisely because I trust you that I entrusted this work to you." },
         { japanese: "厳しい師であればこそ、彼はここまで成長できた。", furigana: "きびしいしであればこそ、かれはここまでせいちょうできた。", english: "It's precisely because his mentor was strict that he was able to grow this much." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "ば-form", example: "信じる → 信じればこそ" }
     ]
   },
   {
@@ -4681,9 +6031,11 @@ const N1_GRAMMAR = [
       { title: "Synergistic effect", examples: [
         { japanese: "美しい紅葉と相まって、湖の風景は絶景だった。", furigana: "うつくしいこうようとあいまって、みずうみのふうけいはぜっけいだった。", english: "Combined with the beautiful autumn leaves, the scenery of the lake was breathtaking." },
         { japanese: "円安と相まって、輸出が大きく伸びた。", furigana: "えんやすとあいまって、ゆしゅつがおおきくのびた。", english: "Combined with the weak yen, exports grew significantly." },
-        { japanese: "円安と相まって、輸出が大きく伸びた。", furigana: "えんやすとあいまって、ゆしゅつがおおきくのびた。", english: "Combined with the weak yen, exports grew significantly." },
         { japanese: "巧みな演出と相まって、この舞台は高く評価された。", furigana: "たくみなえんしゅつとあいまって、このぶたいはたかくひょうかされた。", english: "Combined with the skillful direction, this production was highly praised." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ と相まって", example: "紅葉 → 紅葉と相まって" }
     ]
   },
   {
@@ -4693,28 +6045,29 @@ const N1_GRAMMAR = [
       { title: "Omitted step", examples: [
         { japanese: "努力することなしに、成功は掴めない。", furigana: "どりょくすることなしに、せいこうはつかめない。", english: "You cannot grasp success without making an effort." },
         { japanese: "彼はためらうことなしに、危険な現場へ向かった。", furigana: "かれはためらうことなしに、きけんなげんばへむかった。", english: "He headed to the dangerous scene without hesitating even once." },
-        { japanese: "彼はためらうことなしに、危険な現場へ向かった。", furigana: "かれはためらうことなしに、きけんなげんばへむかった。", english: "He headed to the dangerous scene without hesitating even once." },
         { japanese: "彼は一度も遅刻することなしに、三十年間働き続けた。", furigana: "かれはいちどもちこくすることなしに、さんじゅうねんかんはたらきつづけた。", english: "He worked for thirty years without ever being late, not even once." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary form", example: "努力する → 努力することなしに" }
     ]
   },
   {
     id: "n1-ikan", level: "N1", pattern: "～いかんでは / ～いかんだ / ～いかんによらず", title: "Depends on / depending on", short: "Formal expressions of dependence on, or indifference to, a factor.",
     explanation: "いかん is a formal noun meaning roughly 'the state of affairs' or 'how something turns out'. ～いかんでは means an outcome depends on how a particular factor plays out; ～いかんだ states plainly that everything hinges on that one factor; and ～いかんによらず（or にかかわらず）flips it to mean the outcome is the same no matter how that factor turns out.\n\nAll three are formal, written-register expressions — common in official notices, business writing, and news reporting rather than casual speech.",
     usages: [
-      { title: "Depends on (いかんだ)", examples: [
+      { title: "Depends on (いかんだ／いかんでは)", examples: [
         { japanese: "結果はやり方いかんだ。", furigana: "けっかはやりかたいかんだ。", english: "The result depends entirely on how you do it." },
-        { japanese: "今後の対応いかんで、被害の大きさが変わってくる。", furigana: "こんごのたいおういかんで、ひがいのおおきさがかわってくる。", english: "The scale of the damage will change depending on how the response is handled from here." }
-      ]},
-      { title: "Possibly, depending on (いかんでは)", examples: [
+        { japanese: "今後の対応いかんで、被害の大きさが変わってくる。", furigana: "こんごのたいおういかんで、ひがいのおおきさがかわってくる。", english: "The scale of the damage will change depending on how the response is handled from here." },
         { japanese: "状況いかんでは、中止するかもしれない。", furigana: "じょうきょういかんでは、ちゅうしするかもしれない。", english: "Depending on the situation, we may have to cancel." }
       ]},
       { title: "Regardless of (いかんによらず)", examples: [
-        { japanese: "理由のいかんによらず、遅刻は認められない。", furigana: "りゆうのいかんによらず、ちこくはみとめられない。", english: "Regardless of the reason, lateness is not accepted." }
-      ]},
-      { title: "いかんによらず — regardless of how it turns out", examples: [
+        { japanese: "理由のいかんによらず、遅刻は認められない。", furigana: "りゆうのいかんによらず、ちこくはみとめられない。", english: "Regardless of the reason, lateness is not accepted." },
         { japanese: "理由のいかんによらず、遅刻は遅刻だ。", furigana: "りゆうのいかんによらず、ちこくはちこくだ。", english: "Regardless of the reason, being late is being late." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ いかんだ／いかんでは／いかんによらず", example: "対応 → 対応いかんで" }
     ]
   },
   {
@@ -4724,9 +6077,11 @@ const N1_GRAMMAR = [
       { title: "Foundational relationship", examples: [
         { japanese: "お客様あっての商売です。", furigana: "おきゃくさまあってのしょうばいです。", english: "Business exists only because of its customers." },
         { japanese: "健康あっての人生だ。", furigana: "けんこうあってのじんせいだ。", english: "Life is only possible when you have your health." },
-        { japanese: "健康あっての人生だ。", furigana: "けんこうあってのじんせいだ。", english: "Life is only possible when you have your health." },
         { japanese: "地域の支え合いあっての、この祭りの伝統だ。", furigana: "ちいきのささえあいあっての、このまつりのでんとうだ。", english: "This festival's tradition exists only because of the community supporting one another." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ あっての", example: "健康 → 健康あっての" }
     ]
   },
   {
@@ -4736,9 +6091,11 @@ const N1_GRAMMAR = [
       { title: "Justified reason", examples: [
         { japanese: "苦労あればこそ、人は成長する。", furigana: "くろうあればこそ、ひとはせいちょうする。", english: "It is precisely through hardship that people grow." },
         { japanese: "皆様の協力あればこそ、このイベントは成功しました。", furigana: "みなさまのきょうりょくあればこそ、このイベントはせいこうしました。", english: "It's precisely thanks to everyone's cooperation that this event succeeded." },
-        { japanese: "皆様の協力あればこそ、このイベントは成功しました。", furigana: "みなさまのきょうりょくあればこそ、このイベントはせいこうしました。", english: "It's precisely thanks to everyone's cooperation that this event succeeded." },
         { japanese: "失敗を恐れない心あればこそ、新しい挑戦ができる。", furigana: "しっぱいをおそれないこころあればこそ、あたらしいちょうせんができる。", english: "It's only because of a heart unafraid of failure that new challenges become possible." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ あればこそ", example: "苦労 → 苦労あればこそ" }
     ], notes: "Compare N1 ～ばこそ: あればこそ follows nouns, while ～ばこそ follows verb conditionals."
   },
   {
@@ -4748,9 +6105,11 @@ const N1_GRAMMAR = [
       { title: "Side activity", examples: [
         { japanese: "本業のかたわら、絵を描いている。", furigana: "ほんぎょうのかたわら、えをかいている。", english: "Alongside my main job, I paint." },
         { japanese: "彼女は仕事のかたわら、大学院で学んでいる。", furigana: "かのじょはしごとのかたわら、だいがくいんでまなんでいる。", english: "Alongside her job, she's studying at graduate school." },
-        { japanese: "彼女は仕事のかたわら、大学院で学んでいる。", furigana: "かのじょはしごとのかたわら、だいがくいんでまなんでいる。", english: "Alongside her job, she's studying at graduate school." },
         { japanese: "彼は会社員のかたわら、地域のボランティア活動にも力を入れている。", furigana: "かれはかいしゃいんのかたわら、ちいきのボランティアかつどうにもちからをいれている。", english: "Alongside being a company employee, he also puts effort into local volunteer work." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ の + かたわら", example: "仕事 → 仕事のかたわら" }
     ]
   },
   {
@@ -4760,9 +6119,11 @@ const N1_GRAMMAR = [
       { title: "Formal combined purpose", examples: [
         { japanese: "ご挨拶かたがた、お願いに参りました。", furigana: "ごあいさつかたがた、おねがいにまいりました。", english: "I have come both to greet you and to make a request." },
         { japanese: "お礼かたがた、近況をご報告いたします。", furigana: "おれいかたがた、きんきょうをごほうこくいたします。", english: "I'm writing to thank you, and to also share a brief update." },
-        { japanese: "お礼かたがた、近況をご報告いたします。", furigana: "おれいかたがた、きんきょうをごほうこくいたします。", english: "I'm writing to thank you, and to also share a brief update." },
         { japanese: "退院のご報告かたがた、お世話になった皆様にご挨拶に伺いました。", furigana: "たいいんのごほうこくかたがた、おせわになったみなさまにごあいさつにうかがいました。", english: "I visited to greet everyone who helped me, while also reporting my discharge from the hospital." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ かたがた", example: "お礼 → お礼かたがた" }
     ]
   },
   {
@@ -4772,9 +6133,11 @@ const N1_GRAMMAR = [
       { title: "Inherent consequence", examples: [
         { japanese: "若さがゆえの失敗だ。", furigana: "わかさがゆえのしっぱいだ。", english: "It is a failure born of youth." },
         { japanese: "完璧主義であるがゆえに、彼は仕事を抱え込みすぎる。", furigana: "かんぺきしゅぎであるがゆえに、かれはしごとをかかえこみすぎる。", english: "Because he's a perfectionist, he takes on too much work." },
-        { japanese: "完璧主義であるがゆえに、彼は仕事を抱え込みすぎる。", furigana: "かんぺきしゅぎであるがゆえに、かれはしごとをかかえこみすぎる。", english: "Because he's a perfectionist, he takes on too much work." },
         { japanese: "有名であるがゆえに、彼のプライベートはいつも注目される。", furigana: "ゆうめいであるがゆえに、かれのプライベートはいつもちゅうもくされる。", english: "Because he's famous, his private life is always in the spotlight." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun / な-Adjective", form: "+ である + がゆえに", example: "完璧主義 → 完璧主義であるがゆえに" }
     ], notes: "～ゆえに is the standalone variant; ～がゆえに connects directly to the noun."
   },
   {
@@ -4784,28 +6147,30 @@ const N1_GRAMMAR = [
       { title: "Written prohibition", examples: [
         { japanese: "関係者以外立ち入るべからず。", furigana: "かんけいしゃいがいたちいるべからず。", english: "No entry except for authorized personnel." },
         { japanese: "初心忘るべからず。", furigana: "しょしんわするべからず。", english: "Never forget your beginner's spirit. (proverb)" },
-        { japanese: "初心忘るべからず。", furigana: "しょしんわするべからず。", english: "Never forget your beginner's spirit. (proverb)" },
         { japanese: "工事中につき、関係者以外立ち入るべからず。", furigana: "こうじちゅうにつき、かんけいしゃいがいたちいるべからず。", english: "Under construction — no entry for unauthorized persons." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary form", example: "立ち入る → 立ち入るべからず" }
     ]
   },
   {
     id: "n1-shidai", level: "N1", pattern: "～次第だ / ～次第で / ～次第による", title: "Depends on / as soon as", short: "Rests everything on one factor, or links two events with no delay.",
     explanation: "次第 as a noun means roughly 'depending on' or 'as soon as'. ～次第だ can close a sentence to say an outcome depends entirely on a preceding factor; ～次第で is the adverbial form used mid-sentence ('depending on X, ...'); and attached directly to a verb stem (連絡し次第), 次第 instead means 'as soon as' — a distinct, unrelated use worth keeping separate in your mind from the 'depends on' meaning.",
     usages: [
-      { title: "Everything depends on", examples: [
+      { title: "Depends on (with nouns)", examples: [
         { japanese: "成功するかどうかは努力次第だ。", furigana: "せいこうするかどうかはどりょくしだいだ。", english: "Whether we succeed depends entirely on effort." },
-        { japanese: "計画がうまくいくかどうかは、準備次第だ。", furigana: "けいかくがうまくいくかどうかは、じゅんびしだいだ。", english: "Whether the plan succeeds or not depends on the preparation." }
-      ]},
-      { title: "Depending on (次第で)", examples: [
+        { japanese: "計画がうまくいくかどうかは、準備次第だ。", furigana: "けいかくがうまくいくかどうかは、じゅんびしだいだ。", english: "Whether the plan succeeds or not depends on the preparation." },
         { japanese: "使い方次第で、結果は変わる。", furigana: "つかいかたしだいで、けっかはかわる。", english: "The result changes depending on how you use it." }
       ]},
-      { title: "As soon as", examples: [
-        { japanese: "到着次第、ご連絡いたします。", furigana: "とうちゃくしだい、ごれんらくいたします。", english: "I will contact you as soon as I arrive." }
-      ]},
-      { title: "Verb stem + 次第 — as soon as", examples: [
+      { title: "As soon as (verb stem + 次第)", examples: [
+        { japanese: "到着次第、ご連絡いたします。", furigana: "とうちゃくしだい、ごれんらくいたします。", english: "I will contact you as soon as I arrive." },
         { japanese: "空港に着き次第、電話します。", furigana: "くうこうにつきしだい、でんわします。", english: "I'll call you as soon as I arrive at the airport." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ 次第", example: "準備 → 準備次第だ" },
+      { pos: "Verb", form: "ます-stem + 次第", example: "着く → 着き次第" }
     ]
   },
   {
@@ -4815,9 +6180,11 @@ const N1_GRAMMAR = [
       { title: "Dismissing an excuse", examples: [
         { japanese: "子供じゃあるまいし、自分で決めなさい。", furigana: "こどもじゃあるまいし、じぶんできめなさい。", english: "You're not a child — decide for yourself." },
         { japanese: "神様じゃあるまいし、全部予測できるわけがない。", furigana: "かみさまじゃあるまいし、ぜんぶよそくできるわけがない。", english: "I'm no god — there's no way I could predict everything." },
-        { japanese: "神様じゃあるまいし、全部予測できるわけがない。", furigana: "かみさまじゃあるまいし、ぜんぶよそくできるわけがない。", english: "I'm no god — there's no way I could predict everything." },
         { japanese: "小さい子供じゃあるまいし、そんなことで泣かないでよ。", furigana: "ちいさいこどもじゃあるまいし、そんなことでなかないでよ。", english: "You're not a small child, so don't cry over something like that." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ じゃあるまいし", example: "子供 → 子供じゃあるまいし" }
     ]
   },
   {
@@ -4827,9 +6194,11 @@ const N1_GRAMMAR = [
       { title: "Absolute minimum denied", examples: [
         { japanese: "一日たりとも無駄にはできない。", furigana: "ついたちたりともむだにはできない。", english: "I cannot waste even a single day." },
         { japanese: "一瞬たりとも気を抜けない状況だった。", furigana: "いっしゅんたりともきをぬけないじょうきょうだった。", english: "It was a situation where I couldn't let my guard down for even a moment." },
-        { japanese: "一瞬たりとも気を抜けない状況だった。", furigana: "いっしゅんたりともきをぬけないじょうきょうだった。", english: "It was a situation where I couldn't let my guard down for even a moment." },
         { japanese: "この件については、一円たりとも無駄にできない。", furigana: "このけんについては、いちえんたりともむだにできない。", english: "When it comes to this matter, not even a single yen can be wasted." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun (small quantity)", form: "+ たりとも", example: "一円 → 一円たりとも" }
     ]
   },
   {
@@ -4839,9 +6208,11 @@ const N1_GRAMMAR = [
       { title: "Not even in imagination", examples: [
         { japanese: "こんな結果は想像だにしなかった。", furigana: "こんなけっかはそうぞうだにしなかった。", english: "I never even imagined such an outcome." },
         { japanese: "その名を聞くだに、恐ろしくなる。", furigana: "そのなをきくだに、おそろしくなる。", english: "Just hearing that name is enough to frighten me." },
-        { japanese: "その名を聞くだに、恐ろしくなる。", furigana: "そのなをきくだに、おそろしくなる。", english: "Just hearing that name is enough to frighten me." },
         { japanese: "そんな結末になろうとは、夢にだに思わなかった。", furigana: "そんなけつまつになろうとは、ゆめにだにおもわなかった。", english: "I never dreamed, even for a moment, that it would end that way." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary form", example: "聞く → 聞くだに" }
     ]
   },
   {
@@ -4851,9 +6222,11 @@ const N1_GRAMMAR = [
       { title: "Unnamed specific", examples: [
         { japanese: "とある田舎で知り合いました。", furigana: "とあるいなかでしりあいました。", english: "We met in a certain rural town." },
         { japanese: "とある喫茶店で偶然彼女に会った。", furigana: "とあるきっさてんでぐうぜんかのじょにあった。", english: "I happened to run into her at a certain café." },
-        { japanese: "とある喫茶店で偶然彼女に会った。", furigana: "とあるきっさてんでぐうぜんかのじょにあった。", english: "I happened to run into her at a certain café." },
         { japanese: "とある小さな町で、この物語は始まる。", furigana: "とあるちいさなまちで、このものがたりははじまる。", english: "This story begins in a certain small town." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "とある + Noun", example: "町 → とある町" }
     ]
   },
   {
@@ -4863,7 +6236,6 @@ const N1_GRAMMAR = [
       { title: "Tendency of a group", examples: [
         { japanese: "人はとかく、都合のいいことを信じたがる。", furigana: "ひとはとかく、つごうのいいことをしんじたがる。", english: "People tend to believe what is convenient for them." },
         { japanese: "とかく噂とは尾ひれがつくものだ。", furigana: "とかくうわさとはおひれがつくものだ。", english: "Rumors have a way of getting exaggerated, one way or another." },
-        { japanese: "とかく噂とは尾ひれがつくものだ。", furigana: "とかくうわさとはおひれがつくものだ。", english: "Rumors have a way of getting exaggerated, one way or another." },
         { japanese: "とかく人間は、自分に都合の悪いことを忘れがちだ。", furigana: "とかくにんげんは、じぶんにつごうのわるいことをわすれがちだ。", english: "People tend, one way or another, to forget things inconvenient to themselves." }
       ]}
     ]
@@ -4872,26 +6244,33 @@ const N1_GRAMMAR = [
     id: "n1-tokoro-wo", level: "N1", pattern: "～ところを", title: "Even though / at the very moment", short: "Interrupting someone at a busy or inconvenient moment, or despite circumstances.",
     explanation: "～ところを marks a specific moment or situation — often an inconvenient, busy, or vulnerable one — as the backdrop against which something else happens. It commonly appears in polite apologies for interrupting someone (お忙しいところを) or in expressions of gratitude for help received at a difficult moment.",
     usages: [
-      { title: "Interrupting apology", examples: [
+      { title: "With adjectives", examples: [
         { japanese: "お忙しいところを、失礼いたします。", furigana: "おいそがしいところを、しつれいいたします。", english: "Forgive me for disturbing you when you are busy." },
-        { japanese: "危ないところを助けていただき、ありがとうございました。", furigana: "あぶないところをたすけていただき、ありがとうございました。", english: "Thank you for helping me at that dangerous moment." },
-        { japanese: "危ないところを助けていただき、ありがとうございました。", furigana: "あぶないところをたすけていただき、ありがとうございました。", english: "Thank you for helping me at that dangerous moment." },
-        { japanese: "お取り込み中のところを、失礼いたします。", furigana: "おとりこみちゅうのところを、しつれいいたします。", english: "Excuse me for interrupting at such a busy moment." }
+        { japanese: "危ないところを助けていただき、ありがとうございました。", furigana: "あぶないところをたすけていただき、ありがとうございました。", english: "Thank you for helping me at that dangerous moment." }
+      ]},
+      { title: "With nouns", examples: [
+        { japanese: "お取り込み中のところを、失礼いたします。", furigana: "おとりこみちゅうのところを、しつれいいたします。", english: "Excuse me for interrupting at such a busy moment." },
+        { japanese: "食事中のところを、申し訳ございません。", furigana: "しょくじちゅうのところを、もうしわけございません。", english: "I'm sorry to interrupt you while you're eating." }
       ]}
+    ],
+    conjugations: [
+      { pos: "い-Adjective", form: "plain form", example: "忙しい → お忙しいところを" },
+      { pos: "Noun", form: "+ の", example: "取り込み中 → 取り込み中のところを" }
     ]
   },
   {
     id: "n1-dzukume", level: "N1", pattern: "～づくめ", title: "All over / nothing but", short: "Covered entirely in one color, or consisting only of one kind of thing.",
     explanation: "～づくめ attaches to a noun to describe something entirely made up of, or completely covered in, that one thing — 黒ずくめ ('dressed all in black'), いいことずくめ ('nothing but good news'). It emphasizes totality: there's no exception or variation within the described state.",
     usages: [
-      { title: "All one color", examples: [
+      { title: "Entirely covered in / made up of one thing", examples: [
         { japanese: "黒づくめの服を着ていた。", furigana: "くろづくめのふくをきていた。", english: "She was dressed all in black." },
         { japanese: "今年はいいことずくめの一年だった。", furigana: "ことしはいいことずくめのいちねんだった。", english: "This year was one good thing after another." },
-        { japanese: "彼は結婚が決まり、就職も決まり、いいことずくめだ。", furigana: "かれはけっこんがきまり、しゅうしょくもきまり、いいことずくめだ。", english: "His marriage is settled and his job is settled — it's nothing but good news for him." }
-      ]},
-      { title: "Only one kind of thing", examples: [
+        { japanese: "彼は結婚が決まり、就職も決まり、いいことずくめだ。", furigana: "かれはけっこんがきまり、しゅうしょくもきまり、いいことずくめだ。", english: "His marriage is settled and his job is settled — it's nothing but good news for him." },
         { japanese: "このごろは忙しいことづくめだ。", furigana: "このごろはいそがしいことづくめだ。", english: "These days it's nothing but busy-ness." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ づくめ", example: "黒 → 黒づくめ" }
     ]
   },
   {
@@ -4900,7 +6279,6 @@ const N1_GRAMMAR = [
     usages: [
       { title: "Extended consequence", examples: [
         { japanese: "地域の発展を促し、ひいては国全体に貢献する。", furigana: "ちいきのはってんをうながし、ひいてはくにぜんたいにこうけんする。", english: "It promotes regional development and, by extension, contributes to the whole country." },
-        { japanese: "個人の成長は、ひいてはチーム全体の力になる。", furigana: "こじんのせいちょうは、ひいてはチームぜんたいのちからになる。", english: "Individual growth, by extension, becomes strength for the whole team." },
         { japanese: "個人の成長は、ひいてはチーム全体の力になる。", furigana: "こじんのせいちょうは、ひいてはチームぜんたいのちからになる。", english: "Individual growth, by extension, becomes strength for the whole team." },
         { japanese: "省エネは家計の助けとなり、ひいては環境保護にもつながる。", furigana: "しょうエネはかけいのたすけとなり、ひいてはかんきょうほごにもつながる。", english: "Saving energy helps household finances and, by extension, also contributes to protecting the environment." }
       ]}
@@ -4913,9 +6291,11 @@ const N1_GRAMMAR = [
       { title: "Formal purpose", examples: [
         { japanese: "合格すべく、日夜勉強した。", furigana: "ごうかくすべく、にちやべんきょうした。", english: "In order to pass, I studied day and night." },
         { japanese: "資金を集めるべく、様々な方法を試した。", furigana: "しきんをあつめるべく、さまざまなほうほうをためした。", english: "In order to raise funds, we tried various methods." },
-        { japanese: "資金を集めるべく、様々な方法を試した。", furigana: "しきんをあつめるべく、さまざまなほうほうをためした。", english: "In order to raise funds, we tried various methods." },
         { japanese: "この問題を解決すべく、専門家チームが結成された。", furigana: "このもんだいをかいけつすべく、せんもんかチームがけっせいされた。", english: "A team of experts was formed in order to resolve this problem." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary form", example: "解決する → 解決すべく" }
     ]
   },
   {
@@ -4925,9 +6305,11 @@ const N1_GRAMMAR = [
       { title: "Beyond possibility", examples: [
         { japanese: "そんな高い山は登るべくもない。", furigana: "そんなたかいやまはのぼるべくもない。", english: "There is no way I could climb such a high mountain." },
         { japanese: "素人の私に、専門家の技術は真似るべくもない。", furigana: "しろうとのわたしに、せんもんかのぎじゅつはまねるべくもない。", english: "As an amateur, there's no way I could imitate an expert's skill." },
-        { japanese: "素人の私に、専門家の技術は真似るべくもない。", furigana: "しろうとのわたしに、せんもんかのぎじゅつはまねるべくもない。", english: "As an amateur, there's no way I could imitate an expert's skill." },
         { japanese: "彼の速さは、他の誰も真似るべくもない。", furigana: "かれのはやさは、ほかのだれもまねるべくもない。", english: "His speed is something no one else could possibly imitate." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary form", example: "真似る → 真似るべくもない" }
     ]
   },
   {
@@ -4937,9 +6319,11 @@ const N1_GRAMMAR = [
       { title: "Resigned last resort", examples: [
         { japanese: "ダメなら、また挑戦するまでだ。", furigana: "ダメなら、またちょうせんするまでだ。", english: "If it fails, I'll simply try again." },
         { japanese: "誰も手伝ってくれないなら、一人でやるまでだ。", furigana: "だれもてつだってくれないなら、ひとりでやるまでだ。", english: "If no one will help, I'll simply do it alone." },
-        { japanese: "誰も手伝ってくれないなら、一人でやるまでだ。", furigana: "だれもてつだってくれないなら、ひとりでやるまでだ。", english: "If no one will help, I'll simply do it alone." },
         { japanese: "この方法がだめなら、別のやり方を試すまでのことだ。", furigana: "このほうほうがだめなら、べつのやりかたをためすまでのことだ。", english: "If this method doesn't work, I'll simply try a different approach." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary form", example: "やる → やるまでだ" }
     ]
   },
   {
@@ -4949,9 +6333,11 @@ const N1_GRAMMAR = [
       { title: "Layered praise", examples: [
         { japanese: "彼の才能もさることながら、その努力が認められる。", furigana: "かれのさいのうもさることながら、そのどりょくがみとめられる。", english: "His talent is undeniable, but his effort deserves even more recognition." },
         { japanese: "味もさることながら、店の雰囲気も素晴らしい。", furigana: "あじもさることながら、みせのふんいきもすばらしい。", english: "The taste is wonderful, but the shop's atmosphere is just as impressive." },
-        { japanese: "味もさることながら、店の雰囲気も素晴らしい。", furigana: "あじもさることながら、みせのふんいきもすばらしい。", english: "The taste is wonderful, but the shop's atmosphere is just as impressive." },
         { japanese: "デザインもさることながら、機能性の高さも評価されている。", furigana: "デザインもさることながら、きのうせいのたかさもひょうかされている。", english: "The design is impressive, but its high functionality is also praised." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ もさることながら", example: "才能 → 才能もさることながら" }
     ]
   },
   {
@@ -4961,9 +6347,11 @@ const N1_GRAMMAR = [
       { title: "Disregarding others", examples: [
         { japanese: "親の心配をよそに、息子は遊んでばかりいる。", furigana: "おやのしんぱいをよそに、むすこはあそんでばかりいる。", english: "Ignoring his parents' worries, the son does nothing but play." },
         { japanese: "周囲の反対をよそに、彼は計画を進めた。", furigana: "しゅういのはんたいをよそに、かれはけいかくをすすめた。", english: "Disregarding opposition from those around him, he went ahead with the plan." },
-        { japanese: "周囲の反対をよそに、彼は計画を進めた。", furigana: "しゅういのはんたいをよそに、かれはけいかくをすすめた。", english: "Disregarding opposition from those around him, he went ahead with the plan." },
         { japanese: "医者の忠告をよそに、彼は無理を続けた。", furigana: "いしゃのちゅうこくをよそに、かれはむりをつづけた。", english: "Disregarding the doctor's warnings, he kept pushing himself too hard." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ をよそに", example: "心配 → 心配をよそに" }
     ]
   },
   {
@@ -4973,9 +6361,11 @@ const N1_GRAMMAR = [
       { title: "Unshaken resolve", examples: [
         { japanese: "困難をものともせずに前進する。", furigana: "こんなんをものともせずにぜんしんする。", english: "They push forward, undaunted by difficulties." },
         { japanese: "彼女は周囲の批判をものともせず、自分の道を歩み続けた。", furigana: "かのじょはしゅういのひはんをものともせず、じぶんのみちをあゆみつづけた。", english: "Undaunted by criticism from those around her, she continued down her own path." },
-        { japanese: "彼女は周囲の批判をものともせず、自分の道を歩み続けた。", furigana: "かのじょはしゅういのひはんをものともせず、じぶんのみちをあゆみつづけた。", english: "Undaunted by criticism from those around her, she continued down her own path." },
         { japanese: "厳しい寒さをものともせず、登山隊は頂上を目指した。", furigana: "きびしいさむさをものともせず、とざんたいはちょうじょうをめざした。", english: "Undaunted by the harsh cold, the climbing team pushed for the summit." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ をものともせず", example: "困難 → 困難をものともせず" }
     ]
   },
   {
@@ -4985,9 +6375,11 @@ const N1_GRAMMAR = [
       { title: "Indispensable condition", examples: [
         { japanese: "あなたなしには生きていけない。", furigana: "あなたなしにはいきていけない。", english: "I cannot live without you." },
         { japanese: "事前の連絡なしに訪ねるのは失礼だ。", furigana: "じぜんのれんらくなしにたずねるのはしつれいだ。", english: "It's rude to visit without contacting someone beforehand." },
-        { japanese: "事前の連絡なしに訪ねるのは失礼だ。", furigana: "じぜんのれんらくなしにたずねるのはしつれいだ。", english: "It's rude to visit without contacting someone beforehand." },
         { japanese: "彼女なしには、このプロジェクトは成功しなかっただろう。", furigana: "かのじょなしには、このプロジェクトはせいこうしなかっただろう。", english: "Without her, this project probably wouldn't have succeeded." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ なしに", example: "連絡 → 連絡なしに" }
     ]
   },
   {
@@ -4997,9 +6389,11 @@ const N1_GRAMMAR = [
       { title: "Universal application", examples: [
         { japanese: "神であれ、人間であれ、間違うことはある。", furigana: "かみであれ、にんげんであれ、まちがうことはある。", english: "Whether god or human, everyone makes mistakes." },
         { japanese: "結果がどうであれ、最善を尽くすつもりだ。", furigana: "けっかがどうであれ、さいぜんをつくすつもりだ。", english: "Whatever the outcome, I intend to do my best." },
-        { japanese: "結果がどうであれ、最善を尽くすつもりだ。", furigana: "けっかがどうであれ、さいぜんをつくすつもりだ。", english: "Whatever the outcome, I intend to do my best." },
         { japanese: "相手が誰であれ、礼儀は忘れてはならない。", furigana: "あいてがだれであれ、れいぎはわすれてはならない。", english: "Whoever the other person may be, you must not forget your manners." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ であれ", example: "誰 → 誰であれ" }
     ]
   },
   {
@@ -5009,9 +6403,11 @@ const N1_GRAMMAR = [
       { title: "On the verge manner", examples: [
         { japanese: "泣かんばかりに頼み込んだ。", furigana: "なかんばかりにたのみこんだ。", english: "He begged as if he were about to cry." },
         { japanese: "今にも爆発せんばかりの怒りを見せた。", furigana: "いまにもばくはつせんばかりのいかりをみせた。", english: "He showed anger that looked as if it would explode at any moment." },
-        { japanese: "今にも爆発せんばかりの怒りを見せた。", furigana: "いまにもばくはつせんばかりのいかりをみせた。", english: "He showed anger that looked as if it would explode at any moment." },
         { japanese: "彼女は今にも泣き出さんばかりの顔をしていた。", furigana: "かのじょはいまにもなきださんばかりのかおをしていた。", english: "She had a face that looked as if she might burst into tears at any moment." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "negative-adverbial (ん) form", example: "泣き出す → 泣き出さんばかりに" }
     ]
   },
   {
@@ -5021,9 +6417,11 @@ const N1_GRAMMAR = [
       { title: "Uncharacteristic behavior", examples: [
         { japanese: "紳士らしからぬ振る舞いだった。", furigana: "しんしらしからぬふるまいだった。", english: "It was behavior unbecoming of a gentleman." },
         { japanese: "彼らしくない弱気な発言に驚いた。", furigana: "かれらしくないよわきなはつげんにおどろいた。", english: "I was surprised by such a weak-willed remark, so unlike him." },
-        { japanese: "彼らしくない弱気な発言に驚いた。", furigana: "かれらしくないよわきなはつげんにおどろいた。", english: "I was surprised by such a weak-willed remark, so unlike him." },
         { japanese: "冷静な彼らしからぬ判断ミスだった。", furigana: "れいせいなかららしからぬはんだんミスだった。", english: "It was a lapse in judgment unlike the usually calm person he is." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ らしからぬ", example: "紳士 → 紳士らしからぬ" }
     ]
   },
   {
@@ -5032,7 +6430,6 @@ const N1_GRAMMAR = [
     usages: [
       { title: "Firm stance", examples: [
         { japanese: "これはあくまでも私個人の意見です。", furigana: "これはあくまでもわたしこじんのいけんです。", english: "This is strictly my own personal opinion." },
-        { japanese: "彼はあくまでも自分の主張を曲げなかった。", furigana: "かれはあくまでもじぶんのしゅちょうをまげなかった。", english: "He refused to budge from his position to the very end." },
         { japanese: "彼はあくまでも自分の主張を曲げなかった。", furigana: "かれはあくまでもじぶんのしゅちょうをまげなかった。", english: "He refused to budge from his position to the very end." },
         { japanese: "今回の決定は、あくまでも暫定的なものです。", furigana: "こんかいのけっていは、あくまでもざんていてきなものです。", english: "This decision is, strictly speaking, only a provisional one." }
       ]}
@@ -5069,6 +6466,9 @@ const N1_GRAMMAR = [
         { japanese: "彼は自分の名前ですら思い出せなかった。", furigana: "かれはじぶんのなまえですらおもいだせなかった。", english: "He couldn't even remember his own name." },
         { japanese: "ベテランの職人ですら、この作業には手こずるという。", furigana: "ベテランのしょくにんですら、このさぎょうにはてこずるという。", english: "Even a veteran craftsman apparently struggles with this task." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ ですら", example: "専門家 → 専門家ですら" }
     ]
   },
   {
@@ -5080,6 +6480,9 @@ const N1_GRAMMAR = [
         { japanese: "この扉は一度閉まったが最後、外からは開けられない。", furigana: "このとびらはいちどしまったがさいご、そとからはあけられない。", english: "Once this door closes, there's no opening it from outside." },
         { japanese: "彼は一度怒りだしたが最後、誰にも止められない。", furigana: "かれはいちどおこりだしたがさいご、だれにもとめられない。", english: "Once he starts getting angry, no one can stop him." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "past (た) form", example: "眠った → 眠ったが最後" }
     ]
   },
   {
@@ -5091,6 +6494,9 @@ const N1_GRAMMAR = [
         { japanese: "電車を逃してしまい、タクシーで帰る羽目になった。", furigana: "でんしゃをのがしてしまい、タクシーでかえるはめになった。", english: "I missed the train and ended up having to take a taxi home." },
         { japanese: "地図を確認しなかったせいで、一時間も歩き回る羽目になった。", furigana: "ちずをかくにんしなかったせいで、いちじかんもあるきまわるはめになった。", english: "Because I didn't check the map, I ended up wandering around for a whole hour." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary form", example: "徹夜する → 徹夜する羽目になる" }
     ]
   },
   {
@@ -5102,6 +6508,9 @@ const N1_GRAMMAR = [
         { japanese: "こんな給料で働き続けるくらいなら、辞めたほうがましだ。", furigana: "こんなきゅうりょうではたらきつづけるくらいなら、やめたほうがましだ。", english: "I'd rather quit than keep working for pay like this." },
         { japanese: "嘘をつき続けるくらいなら、本当のことを話したほうがましだ。", furigana: "うそをつきつづけるくらいなら、ほんとうのことをはなしたほうがましだ。", english: "Rather than keep lying, it would be better to just tell the truth." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "past (た) form", example: "辞めた → 辞めたほうがましだ" }
     ]
   },
   {
@@ -5113,6 +6522,9 @@ const N1_GRAMMAR = [
         { japanese: "いかなる困難にも屈しない覚悟だ。", furigana: "いかなるこんなんにもくっしないかくごだ。", english: "I'm prepared not to yield to any kind of hardship." },
         { japanese: "いかなる犠牲を払っても、この計画を成功させる。", furigana: "いかなるぎせいをはらっても、このけいかくをせいこうさせる。", english: "Whatever sacrifice it takes, I will make this plan succeed." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "いかなる + Noun + も", example: "理由 → いかなる理由も" }
     ]
   },
   {
@@ -5141,11 +6553,23 @@ const N1_GRAMMAR = [
     id: "n1-kahika", level: "N1", pattern: "～か否か", title: "Whether or not (formal)", short: "A formal equivalent of かどうか, common in written Japanese.",
     explanation: "～か否か is a formal, written equivalent of ～かどうか, meaning 'whether or not X'. It's common in reports, contracts, and formal speeches — 実現可能か否か ('whether or not it's feasible') — and would sound stiff or overly formal in casual conversation.",
     usages: [
-      { title: "Formal uncertainty", examples: [
-        { japanese: "この計画が実現可能か否か、慎重に検討する必要がある。", furigana: "このけいかくがじつげんかのうかいなか、しんちょうにけんとうするひつようがある。", english: "We need to carefully consider whether or not this plan is feasible." },
+      { title: "With verbs", examples: [
         { japanese: "この案が採用されるか否かは、来週分かります。", furigana: "このあんがさいようされるかいなかは、らいしゅうわかります。", english: "We'll find out next week whether or not this proposal is adopted." },
-        { japanese: "彼の話が事実か否か、確認する必要がある。", furigana: "かれのはなしがじじつかいなか、かくにんするひつようがある。", english: "We need to confirm whether or not his story is true." }
+        { japanese: "この提案が通るか否かは、会議で決まる。", furigana: "このていあんがとおるかいなかは、かいぎできまる。", english: "Whether or not this proposal passes will be decided at the meeting." }
+      ]},
+      { title: "With adjectives", examples: [
+        { japanese: "この計画が実現可能か否か、慎重に検討する必要がある。", furigana: "このけいかくがじつげんかのうかいなか、しんちょうにけんとうするひつようがある。", english: "We need to carefully consider whether or not this plan is feasible." },
+        { japanese: "この方法が正しいか否か、専門家に聞いてみよう。", furigana: "このほうほうがただしいかいなか、せんもんかにきいてみよう。", english: "Let's ask an expert whether or not this method is correct." }
+      ]},
+      { title: "With nouns", examples: [
+        { japanese: "彼の話が事実か否か、確認する必要がある。", furigana: "かれのはなしがじじつかいなか、かくにんするひつようがある。", english: "We need to confirm whether or not his story is true." },
+        { japanese: "その情報が正確か否か、まだ分からない。", furigana: "そのじょうほうがせいかくかいなか、まだわからない。", english: "It's still unclear whether or not that information is accurate." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "plain form", example: "採用される → 採用されるか否か" },
+      { pos: "い-Adjective / な-Adjective", form: "plain form", example: "可能 → 可能か否か" },
+      { pos: "Noun", form: "+ か否か", example: "事実 → 事実か否か" }
     ]
   },
   {
@@ -5157,6 +6581,9 @@ const N1_GRAMMAR = [
         { japanese: "他人と比べていたらきりがない。", furigana: "たにんとくらべていたらきりがない。", english: "If you keep comparing yourself to others, there's no end to it." },
         { japanese: "後悔していたらきりがないから、前を向くことにした。", furigana: "こうかいしていたらきりがないから、まえをむくことにした。", english: "If I kept regretting it, there'd be no end to it, so I decided to look forward instead." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "ている form", example: "比べている → 比べていたらきりがない" }
     ]
   },
   {
@@ -5165,10 +6592,12 @@ const N1_GRAMMAR = [
     usages: [
       { title: "Extreme degree", examples: [
         { japanese: "彼のマナーの悪さは失礼極まりない。", furigana: "かれのマナーのわるさはしつれいきわまりない。", english: "His poor manners are extremely rude." },
-        { japanese: "彼のマナーの悪さは失礼極まりない。", furigana: "かれのマナーのわるさはしつれいきわまりない。", english: "His poor manners are extremely rude." },
         { japanese: "危険極まる作業だったが、無事に終わった。", furigana: "きけんきわまるさぎょうだったが、ぶじにおわった。", english: "It was an extremely dangerous task, but it ended safely." },
         { japanese: "深夜に大音量で音楽を流すとは、迷惑極まりない。", furigana: "しんやにだいおんりょうでおんがくをながすとは、めいわくきわまりない。", english: "Playing music at full volume in the middle of the night is extremely inconsiderate." }
       ]}
+    ],
+    conjugations: [
+      { pos: "な-Adjective", form: "stem + 極まる／極まりない", example: "失礼 → 失礼極まりない" }
     ]
   },
   {
@@ -5177,9 +6606,11 @@ const N1_GRAMMAR = [
     usages: [
       { title: "Rejecting the lesser evil", examples: [
         { japanese: "満員電車に乗るくらいなら、一時間歩いたほうがいい。", furigana: "まんいんでんしゃにのるくらいなら、いちじかんあるいたほうがいい。", english: "Rather than ride a packed train, I'd rather walk for an hour." },
-        { japanese: "満員電車に乗るくらいなら、一時間歩いたほうがいい。", furigana: "まんいんでんしゃにのるくらいなら、いちじかんあるいたほうがいい。", english: "Rather than ride a packed train, I'd rather walk for an hour." },
         { japanese: "彼に頭を下げるくらいなら、この仕事を諦めたほうがましだ。", furigana: "かれにあたまをさげるくらいなら、このしごとをあきらめたほうがましだ。", english: "Rather than bow my head to him, I'd sooner give up this job." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary form", example: "乗る → 乗るくらいなら" }
     ]
   },
   {
@@ -5188,9 +6619,11 @@ const N1_GRAMMAR = [
     usages: [
       { title: "Unnecessary effort", examples: [
         { japanese: "近いから、タクシーを呼ぶまでもない。", furigana: "ちかいから、タクシーをよぶまでもない。", english: "It's close by, so there's no need to even call a taxi." },
-        { japanese: "近いから、タクシーを呼ぶまでもない。", furigana: "ちかいから、タクシーをよぶまでもない。", english: "It's close by, so there's no need to even call a taxi." },
         { japanese: "結果は見るまでもなく、はっきりしていた。", furigana: "けっかはみるまでもなく、はっきりしていた。", english: "There was no need to even look at the result — it was already obvious." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary form", example: "呼ぶ → 呼ぶまでもない" }
     ]
   },
   {
@@ -5202,6 +6635,9 @@ const N1_GRAMMAR = [
         { japanese: "教師にあるまじき暴言だった。", furigana: "きょうしにあるまじきぼうげんだった。", english: "That was abusive language unbecoming of a teacher." },
         { japanese: "証拠を隠すなど、警察官にあるまじき行為だ。", furigana: "しょうこをかくすなど、けいさつかんにあるまじきこういだ。", english: "Hiding evidence is an act unbecoming of a police officer." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ にあるまじき", example: "医者 → 医者にあるまじき" }
     ]
   },
   {
@@ -5213,6 +6649,9 @@ const N1_GRAMMAR = [
         { japanese: "危険も顧みず、彼は川に飛び込んで子供を助けた。", furigana: "きけんもかえりみず、かれはかわにとびこんでこどもをたすけた。", english: "Without regard for the danger, he jumped into the river to save the child." },
         { japanese: "彼は世間の評判も顧みず、自分の信念を貫いた。", furigana: "かれはせけんのひょうばんもかえりみず、じぶんのしんねんをつらぬいた。", english: "Without regard for public opinion, he stuck to his own convictions." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ も顧みず", example: "健康 → 健康も顧みず" }
     ]
   },
   {
@@ -5235,6 +6674,9 @@ const N1_GRAMMAR = [
         { japanese: "その事件は世間に衝撃を与えないではおかないだろう。", furigana: "そのじけんはせけんにしょうげきをあたえないではおかないだろう。", english: "That incident is bound to shock the public." },
         { japanese: "この本の結末は、読者を驚かせないではおかない。", furigana: "このほんのけつまつは、どくしゃをおどろかせないではおかない。", english: "This book's ending is bound to surprise its readers." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "negative form", example: "感動させない → 感動させないではおかない" }
     ]
   },
   {
@@ -5246,6 +6688,9 @@ const N1_GRAMMAR = [
         { japanese: "会社に大きな損害を与えたのだから、責任を取らないでは済まない。", furigana: "かいしゃにおおきなそんがいをあたえたのだから、せきにんをとらないではすまない。", english: "Since he caused the company such a big loss, he can't get away without taking responsibility." },
         { japanese: "無断でお借りしたのですから、謝罪しないでは済みません。", furigana: "むだんでおかりしたのですから、しゃざいしないではすみません。", english: "Since I borrowed it without permission, I can't get away without apologizing." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "negative form", example: "謝らない → 謝らないでは済まない" }
     ]
   },
   {
@@ -5257,6 +6702,9 @@ const N1_GRAMMAR = [
         { japanese: "もう少し早く終わらせられないものか。", furigana: "もうすこしはやくおわらせられないものか。", english: "Isn't there some way to finish this a bit sooner?" },
         { japanese: "何か彼を元気づける方法はないものか。", furigana: "なにかかれをげんきづけるほうほうはないものか。", english: "Isn't there some way to cheer him up?" }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "negative potential form", example: "解決できない → 解決できないものか" }
     ]
   },
   {
@@ -5268,6 +6716,9 @@ const N1_GRAMMAR = [
         { japanese: "この研究成果は国際的な評価に値する。", furigana: "このけんきゅうせいかはこくさいてきなひょうかにあたいする。", english: "This research achievement deserves international recognition." },
         { japanese: "彼のボランティア活動は、社会的な評価に値する。", furigana: "かれのボランティアかつどうは、しゃかいてきなひょうかにあたいする。", english: "His volunteer work deserves social recognition." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ に値する", example: "称賛 → 称賛に値する" }
     ]
   },
   {
@@ -5279,6 +6730,9 @@ const N1_GRAMMAR = [
         { japanese: "この程度のミスは驚くには当たらない。", furigana: "このていどのミスはおどろくにはあたらない。", english: "A mistake of this level isn't anything to be surprised about." },
         { japanese: "経験の浅い彼が戸惑うのは、責めるには当たらない。", furigana: "けいけんのあさいかれがとまどうのは、せめるにはあたらない。", english: "It's not worth blaming him for being confused, given his lack of experience." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary form", example: "責める → 責めるには当たらない" }
     ]
   },
   {
@@ -5290,6 +6744,9 @@ const N1_GRAMMAR = [
         { japanese: "去年の売り上げにひきかえ、今年は大きく伸びた。", furigana: "きょねんのうりあげにひきかえ、ことしはおおきくのびた。", english: "In stark contrast to last year's sales, this year saw significant growth." },
         { japanese: "明るい妹にひきかえ、姉は物静かな性格だ。", furigana: "あかるいいもうとにひきかえ、あねはものしずかなせいかくだ。", english: "In contrast to her cheerful younger sister, the older sister has a quiet personality." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ にひきかえ", example: "性格 → 性格にひきかえ" }
     ]
   },
   {
@@ -5301,6 +6758,9 @@ const N1_GRAMMAR = [
         { japanese: "彼は幼少期の記憶に至るまで、鮮明に覚えている。", furigana: "かれはようしょうきのきおくにいたるまで、せんめいにおぼえている。", english: "He remembers vividly, right down to his memories from early childhood." },
         { japanese: "契約書は細部に至るまで、慎重に確認された。", furigana: "けいやくしょはさいぶにいたるまで、しんちょうにかくにんされた。", english: "The contract was carefully checked, right down to the smallest details." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ に至るまで", example: "細部 → 細部に至るまで" }
     ]
   },
   {
@@ -5312,6 +6772,9 @@ const N1_GRAMMAR = [
         { japanese: "社員の遅刻も問題だが、部長の遅刻に至っては話にならない。", furigana: "しゃいんのちこくももんだいだが、ぶちょうのちこくにいたってははなしにならない。", english: "Employees being late is already a problem, but when it comes to the department head being late, it's beyond ridiculous." },
         { japanese: "他の科目もひどかったが、数学の点数に至っては最下位だった。", furigana: "ほかのかもくもひどかったが、すうがくのてんすうにいたってはさいかいだった。", english: "The other subjects were bad too, but when it comes to the math score, it was dead last." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ に至っては", example: "数学 → 数学に至っては" }
     ]
   },
   {
@@ -5323,6 +6786,9 @@ const N1_GRAMMAR = [
         { japanese: "会社の将来は、この新製品の成功にかかっている。", furigana: "かいしゃのしょうらいは、このしんせいひんのせいこうにかかっている。", english: "The company's future depends on this new product's success." },
         { japanese: "交渉の成否は、次の一手にかかっている。", furigana: "こうしょうのせいひは、つぎのいってにかかっている。", english: "Whether the negotiation succeeds or fails depends on the next move." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ にかかっている", example: "成否 → 成否にかかっている" }
     ]
   },
   {
@@ -5334,6 +6800,9 @@ const N1_GRAMMAR = [
         { japanese: "わがままにもほどがある。", furigana: "わがままにもほどがある。", english: "There's a limit to how selfish you can be!" },
         { japanese: "無責任にもほどがある。", furigana: "むせきにんにもほどがある。", english: "There's a limit to how irresponsible you can be!" }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun / な-Adjective / Verb", form: "plain form + にもほどがある", example: "わがまま → わがままにもほどがある" }
     ]
   },
   {
@@ -5345,6 +6814,9 @@ const N1_GRAMMAR = [
         { japanese: "この地域は全国に先駆けて再生可能エネルギーを導入した。", furigana: "このちいきはぜんこくにさきがけてさいせいかのうエネルギーをどうにゅうした。", english: "This region introduced renewable energy ahead of the rest of the country." },
         { japanese: "この店は他店に先駆けて、キャッシュレス決済を導入した。", furigana: "このみせはたてんにさきがけて、キャッシュレスけっさいをどうにゅうした。", english: "This shop introduced cashless payment ahead of other stores." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ に先駆けて", example: "業界 → 業界に先駆けて" }
     ]
   },
   {
@@ -5356,17 +6828,27 @@ const N1_GRAMMAR = [
         { japanese: "彼女の活躍は音楽界にとどまらず、映画界にも及んでいる。", furigana: "かのじょのかつやくはおんがくかいにとどまらず、えいがかいにもおよんでいる。", english: "Her success isn't limited to the music world — it extends into film as well." },
         { japanese: "被害は一つの町にとどまらず、周辺地域全体に広がった。", furigana: "ひがいはひとつのまちにとどまらず、しゅうへんちいきぜんたいにひろがった。", english: "The damage wasn't limited to one town — it spread across the entire surrounding area." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ にとどまらず", example: "国内 → 国内にとどまらず" }
     ]
   },
   {
     id: "n1-niwaoyobanai", level: "N1", pattern: "～には及ばない", title: "There's no need to / Doesn't measure up to", short: "Says an action is unnecessary, or that one thing doesn't reach the level of another.",
     explanation: "～には及ばない has two related senses: softening a suggestion by saying there's no need to go as far as X (a polite way to decline an overly generous offer), or, following a comparison, saying that one thing simply doesn't measure up to another.",
     usages: [
-      { title: "Unnecessary effort", examples: [
+      { title: "No need to go so far", examples: [
         { japanese: "電話で十分ですから、わざわざ来ていただくには及びません。", furigana: "でんわでじゅうぶんですから、わざわざきていただくにはおよびません。", english: "A phone call is enough, so there's no need for you to go out of your way to come." },
-        { japanese: "彼の実力は、まだプロには及ばない。", furigana: "かれのじつりょくは、まだプロにはおよばない。", english: "His skill still doesn't measure up to a professional's." },
         { japanese: "そこまでしていただくには及びません。", furigana: "そこまでしていただくにはおよびません。", english: "There's no need for you to go so far as to do that." }
+      ]},
+      { title: "Doesn't measure up", examples: [
+        { japanese: "彼の実力は、まだプロには及ばない。", furigana: "かれのじつりょくは、まだプロにはおよばない。", english: "His skill still doesn't measure up to a professional's." },
+        { japanese: "今回の結果は、去年の記録には及ばない。", furigana: "こんかいのけっかは、きょねんのきろくにはおよばない。", english: "This time's result doesn't measure up to last year's record." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "dictionary form", example: "来る → 来ていただくには及ばない" },
+      { pos: "Noun", form: "+ には及ばない", example: "プロ → プロには及ばない" }
     ]
   },
   {
@@ -5378,6 +6860,9 @@ const N1_GRAMMAR = [
         { japanese: "毎日豪華な食事とは、贅沢の極みだ。", furigana: "まいにちごうかなしょくじとは、ぜいたくのきわみだ。", english: "A gorgeous meal every day is the height of luxury." },
         { japanese: "こんな高級ホテルに泊まれるとは、贅沢の極みだ。", furigana: "こんなこうきゅうホテルにとまれるとは、ぜいたくのきわみだ。", english: "Getting to stay at such a luxury hotel is the height of extravagance." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ の極み", example: "贅沢 → 贅沢の極み" }
     ]
   },
   {
@@ -5389,6 +6874,9 @@ const N1_GRAMMAR = [
         { japanese: "皆さんのご意見を踏まえて、計画を修正いたします。", furigana: "みなさんのごいけんをふまえて、けいかくをしゅうせいいたします。", english: "We will revise the plan based on everyone's feedback." },
         { japanese: "現状を踏まえて、来年度の計画を立てる必要がある。", furigana: "げんじょうをふまえて、らいねんどのけいかくをたてるひつようがある。", english: "We need to make next year's plan based on the current situation." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ を踏まえて", example: "結果 → 結果を踏まえて" }
     ]
   },
   {
@@ -5400,6 +6888,9 @@ const N1_GRAMMAR = [
         { japanese: "彼は数々の困難を経て、今の地位を築いた。", furigana: "かれはかずかずのこんなんをへて、いまのちいをきずいた。", english: "He built his current standing after going through numerous hardships." },
         { japanese: "彼女は厳しい選考を経て、この役職に就いた。", furigana: "かのじょはきびしいせんこうをへて、このやくしょくについた。", english: "She took up this position after going through a rigorous selection process." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ を経て", example: "選考 → 選考を経て" }
     ]
   },
   {
@@ -5411,6 +6902,9 @@ const N1_GRAMMAR = [
         { japanese: "誰も見ていないのをいいことに、彼はルールを破った。", furigana: "だれもみていないのをいいことに、かれはルールをやぶった。", english: "Taking advantage of no one watching, he broke the rules." },
         { japanese: "上司が出張中なのをいいことに、彼は勝手に休みを取った。", furigana: "じょうしがしゅっちょうちゅうなのをいいことに、かれはかってにやすみをとった。", english: "Taking advantage of his boss being away on a business trip, he took time off without permission." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb / Noun", form: "plain form + のをいいことに", example: "不在 → 不在なのをいいことに" }
     ]
   },
   {
@@ -5422,6 +6916,9 @@ const N1_GRAMMAR = [
         { japanese: "研究発表を兼ねて、久しぶりに海外へ出張することになった。", furigana: "けんきゅうはっぴょうをかねて、ひさしぶりにかいがいへしゅっちょうすることになった。", english: "Combined with a research presentation, I'm going on an overseas business trip for the first time in a while." },
         { japanese: "お祝いを兼ねて、久しぶりに家族で食事に出かけた。", furigana: "おいわいをかねて、ひさしぶりにかぞくでしょくじにでかけた。", english: "Combined with a celebration, the family went out to eat together for the first time in a while." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ を兼ねて", example: "気分転換 → 気分転換を兼ねて" }
     ]
   },
   {
@@ -5433,6 +6930,9 @@ const N1_GRAMMAR = [
         { japanese: "定年退職を機に、田舎で農業を始めた人もいる。", furigana: "ていねんたいしょくをきに、いなかでのうぎょうをはじめたひともいる。", english: "Some people, taking retirement as an opportunity, start farming in the countryside." },
         { japanese: "健康診断の結果を機に、生活習慣を見直すことにした。", furigana: "けんこうしんだんのけっかをきに、せいかつしゅうかんをみなおすことにした。", english: "Taking the results of my health checkup as an opportunity, I decided to reconsider my lifestyle habits." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ を機に", example: "結婚 → 結婚を機に" }
     ]
   },
   {
@@ -5444,6 +6944,9 @@ const N1_GRAMMAR = [
         { japanese: "この結果には、疑問を禁じ得ない。", furigana: "このけっかには、ぎもんをきんじえない。", english: "I can't help but feel doubtful about this result." },
         { japanese: "彼らの勇敢な行動には、賞賛を禁じ得ない。", furigana: "かれらのゆうかんなこうどうには、しょうさんをきんじえない。", english: "I can't help but admire their courageous actions." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ を禁じ得ない", example: "疑問 → 疑問を禁じ得ない" }
     ]
   },
   {
@@ -5477,6 +6980,9 @@ const N1_GRAMMAR = [
         { japanese: "君の頼みとあれば、断るわけにはいかない。", furigana: "きみのたのみとあれば、ことわるわけにはいかない。", english: "If it's a request from you, I can't refuse." },
         { japanese: "会社の存続にかかわることとあれば、迅速な対応が必要だ。", furigana: "かいしゃのそんぞくにかかわることとあれば、じんそくなたいおうがひつようだ。", english: "If it's something that affects the company's survival, a swift response is necessary." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ とあれば", example: "頼み → 頼みとあれば" }
     ]
   },
   {
@@ -5488,6 +6994,9 @@ const N1_GRAMMAR = [
         { japanese: "子供といえども、嘘をつくことは許されない。", furigana: "こどもといえども、うそをつくことはゆるされない。", english: "Even granting that they're a child, lying isn't acceptable." },
         { japanese: "王といえども、法律には従わなければならない。", furigana: "おうといえども、ほうりつにはしたがわなければならない。", english: "Even a king must obey the law." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ といえども", example: "専門家 → 専門家といえども" }
     ]
   },
   {
@@ -5496,9 +7005,16 @@ const N1_GRAMMAR = [
     usages: [
       { title: "Logical conclusion", examples: [
         { japanese: "電車が止まっていた。つまり、遅刻したのは仕方なかったというわけだ。", furigana: "でんしゃがとまっていた。つまり、ちこくしたのはしかたなかったというわけだ。", english: "The train had stopped. In other words, being late couldn't be helped." },
-        { japanese: "彼は昨日徹夜したらしい。だから今日眠そうというわけだ。", furigana: "かれはきのうてつやしたらしい。だからきょうねむそうというわけだ。", english: "Apparently he stayed up all night yesterday. So that's why he looks sleepy today." },
         { japanese: "全員の予定が空いていた。だから今日集まれたというわけだ。", furigana: "ぜんいんのよていがあいていた。だからきょうあつまれたというわけだ。", english: "Everyone's schedule happened to be free. That's why we were able to get together today." }
+      ]},
+      { title: "With adjectives", examples: [
+        { japanese: "彼は昨日徹夜したらしい。だから今日眠そうというわけだ。", furigana: "かれはきのうてつやしたらしい。だからきょうねむそうというわけだ。", english: "Apparently he stayed up all night yesterday. So that's why he looks sleepy today." },
+        { japanese: "彼は最近元気そうだ。仕事がうまくいっているというわけだ。", furigana: "かれはさいきんげんきそうだ。しごとがうまくいっているというわけだ。", english: "He's seemed lively lately. Which means work must be going well." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "plain form", example: "集まれた → 集まれたというわけだ" },
+      { pos: "い-Adjective / な-Adjective", form: "plain form", example: "眠そう → 眠そうというわけだ" }
     ]
   },
   {
@@ -5516,11 +7032,18 @@ const N1_GRAMMAR = [
     id: "n1-to-omoikiya", level: "N1", pattern: "～と思いきや", title: "I thought ..., but", short: "An expectation is unexpectedly overturned by what actually happens.",
     explanation: "～と思いきや attaches to a plain-form phrase representing the speaker's expectation, then reveals that reality turned out differently — often surprisingly so. It's a literary, narrative device for building in a twist.",
     usages: [
-      { title: "Overturned expectation", examples: [
+      { title: "With verbs", examples: [
         { japanese: "簡単に終わると思いきや、予想以上に時間がかかった。", furigana: "かんたんにおわるとおもいきや、よそういじょうにじかんがかかった。", english: "I thought it would finish easily, but it ended up taking far longer than expected." },
-        { japanese: "彼は反対すると思いきや、あっさり賛成した。", furigana: "かれははんたいするとおもいきや、あっさりさんせいした。", english: "I thought he'd object, but he agreed without any fuss." },
-        { japanese: "静かな性格かと思いきや、話し出すととても賑やかだった。", furigana: "しずかなせいかくかとおもいきや、はなしだすととてもにぎやかだった。", english: "I thought he had a quiet personality, but once he started talking, he was very lively." }
+        { japanese: "彼は反対すると思いきや、あっさり賛成した。", furigana: "かれははんたいするとおもいきや、あっさりさんせいした。", english: "I thought he'd object, but he agreed without any fuss." }
+      ]},
+      { title: "With nouns", examples: [
+        { japanese: "静かな性格かと思いきや、話し出すととても賑やかだった。", furigana: "しずかなせいかくかとおもいきや、はなしだすととてもにぎやかだった。", english: "I thought he had a quiet personality, but once he started talking, he was very lively." },
+        { japanese: "冗談かと思いきや、本気で言っているようだった。", furigana: "じょうだんかとおもいきや、ほんきでいっているようだった。", english: "I thought it was a joke, but he seemed to be serious." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "plain form", example: "終わる → 終わると思いきや" },
+      { pos: "Noun", form: "+ か + と思いきや", example: "性格 → 性格かと思いきや" }
     ]
   },
   {
@@ -5538,11 +7061,18 @@ const N1_GRAMMAR = [
     id: "n1-towaie", level: "N1", pattern: "～とはいえ", title: "Nonetheless / That said (formal)", short: "Concedes a fact, then immediately notes an important qualification.",
     explanation: "～とはいえ attaches to a plain-form phrase to acknowledge a preceding fact, then immediately adds an important qualification — 'that said' or 'even so'. It's a formal, written-register equivalent of だけど or でも, common in essays and reports that want to sound balanced.",
     usages: [
-      { title: "Formal qualification", examples: [
+      { title: "With verbs", examples: [
         { japanese: "景気が回復しているとはいえ、まだ油断はできない。", furigana: "けいきがかいふくしているとはいえ、まだゆだんはできない。", english: "The economy is recovering, but even so, we can't let our guard down yet." },
-        { japanese: "台風は過ぎたとはいえ、まだ油断はできない。", furigana: "たいふうはすぎたとはいえ、まだゆだんはできない。", english: "The typhoon has passed, but even so, we still can't let our guard down." },
-        { japanese: "経験が浅いとはいえ、彼の判断は的確だった。", furigana: "けいけんがあさいとはいえ、かれのはんだんはてきかくだった。", english: "Even though his experience is limited, his judgment was accurate." }
+        { japanese: "台風は過ぎたとはいえ、まだ油断はできない。", furigana: "たいふうはすぎたとはいえ、まだゆだんはできない。", english: "The typhoon has passed, but even so, we still can't let our guard down." }
+      ]},
+      { title: "With adjectives", examples: [
+        { japanese: "経験が浅いとはいえ、彼の判断は的確だった。", furigana: "けいけんがあさいとはいえ、かれのはんだんはてきかくだった。", english: "Even though his experience is limited, his judgment was accurate." },
+        { japanese: "値段は高いとはいえ、それだけの価値はある。", furigana: "ねだんはたかいとはいえ、それだけのかちはある。", english: "It's expensive, but even so, it's worth that much." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "plain form", example: "過ぎた → 過ぎたとはいえ" },
+      { pos: "い-Adjective", form: "plain form", example: "浅い → 浅いとはいえ" }
     ]
   },
   {
@@ -5554,6 +7084,9 @@ const N1_GRAMMAR = [
         { japanese: "食事はおろか、水も喉を通らなかった。", furigana: "しょくじはおろか、みずものどをとおらなかった。", english: "Never mind food — I couldn't even get water down." },
         { japanese: "海外旅行はおろか、国内旅行すら行ったことがない。", furigana: "かいがいりょこうはおろか、こくないりょこうすらいったことがない。", english: "Never mind overseas travel — I haven't even been on a domestic trip." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Noun", form: "+ はおろか", example: "漢字 → 漢字はおろか" }
     ]
   }
 ];
