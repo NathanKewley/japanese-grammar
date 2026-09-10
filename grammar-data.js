@@ -3876,6 +3876,12 @@ const N2_GRAMMAR = [
         { japanese: "経験があるからといって、必ず成功するとは限らない。", furigana: "けいけんがあるからといって、かならずせいこうするとはかぎらない。", english: "Just because you have experience doesn't mean you'll definitely succeed." },
         { japanese: "若いからといって、体力があるとは限らない。", furigana: "わかいからといって、たいりょくがあるとはかぎらない。", english: "Just because someone is young doesn't mean they necessarily have stamina." }
       ]}
+    ],
+    conjugations: [
+      { pos: "Verb", form: "plain form", example: "行く → 行くからといって" },
+      { pos: "い-Adjective", form: "plain form", example: "安い → 安いからといって" },
+      { pos: "な-Adjective", form: "stem + だ", example: "便利 → 便利だからといって" },
+      { pos: "Noun", form: "+ だ", example: "学生 → 学生だからといって" }
     ]
   },
   {

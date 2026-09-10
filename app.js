@@ -500,6 +500,7 @@
       ? '<span class="level-badge" style="--entry-color:' + color + '">' + entry.level + "</span>"
       : "";
     var usagesHtml = entry.usages.map(function (u) { return usageHtml(u, entry.pattern); }).join("");
+    var conjugationsHtml = conjugationTableHtml(entry.conjugations);
     var notesHtml = entry.notes
       ? '<div class="entry-note"><span class="entry-note-label">Note</span>' + escapeHtml(entry.notes) + "</div>"
       : "";
@@ -522,8 +523,33 @@
           '<div class="entry-body-inner">' +
             explanationHtml(entry.explanation) +
             usagesHtml +
+            conjugationsHtml +
             notesHtml +
           "</div>" +
+        "</div>" +
+      "</div>"
+    );
+  }
+
+  function conjugationTableHtml(conjugations) {
+    if (!conjugations || !conjugations.length) return "";
+    var rows = conjugations.map(function (row) {
+      return (
+        "<tr>" +
+          "<td>" + escapeHtml(row.pos) + "</td>" +
+          "<td>" + escapeHtml(row.form) + "</td>" +
+          '<td class="jp-body">' + escapeHtml(row.example) + "</td>" +
+        "</tr>"
+      );
+    }).join("");
+    return (
+      '<div class="conjugation-wrap">' +
+        '<div class="conjugation-title">Conjugation</div>' +
+        '<div class="conjugation-table-inner">' +
+          '<table class="conjugation-table">' +
+            "<thead><tr><th>Word Type</th><th>Form</th><th>Example</th></tr></thead>" +
+            "<tbody>" + rows + "</tbody>" +
+          "</table>" +
         "</div>" +
       "</div>"
     );
