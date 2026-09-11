@@ -517,37 +517,13 @@
   // using the same alignment the ruby-builder relies on.
   var HIRAGANA_ONLY_RE = /^[\u3041-\u3096\u30fc]+$/;
 
+  // Alignment algorithm lives in alignment.js (loaded before this file) so
+  // the validator can reuse the exact same logic instead of a hand-copied
+  // approximation of it. See that file for how/why it works.
+  var computeAlignment = GrammarAlignment.computeAlignment;
+
   function buildAlignmentSegments(japanese, furigana) {
-    var literalParts = japanese.split(KANJI_RUN_RE);
-    var kanjiRuns = japanese.match(KANJI_RUN_RE) || [];
-    var jPos = 0, fPos = 0;
-    var segments = [];
-    for (var i = 0; i < literalParts.length; i++) {
-      var lit = literalParts[i];
-      if (lit) {
-        var idx = furigana.indexOf(lit, fPos);
-        if (idx === -1) return null;
-        segments.push({ jStart: jPos, jEnd: jPos + lit.length, fStart: idx, fEnd: idx + lit.length, isKanji: false });
-        fPos = idx + lit.length;
-        jPos += lit.length;
-      }
-      if (i < kanjiRuns.length) {
-        var run = kanjiRuns[i];
-        var nextLit = literalParts[i + 1];
-        var end;
-        if (nextLit) {
-          end = furigana.indexOf(nextLit, fPos + 1);
-          if (end === -1) return null;
-        } else {
-          end = furigana.length;
-        }
-        if (end === fPos) return null;
-        segments.push({ jStart: jPos, jEnd: jPos + run.length, fStart: fPos, fEnd: end, isKanji: true });
-        jPos += run.length;
-        fPos = end;
-      }
-    }
-    return segments;
+    return computeAlignment(japanese, furigana);
   }
 
   function mapFuriRangeToJapanese(segments, fStart, fEnd) {
@@ -582,47 +558,25 @@
   // showing the japanese text plain if alignment ever fails. Optionally
   // wraps the span given by `hl` ({start,end} character offsets into
   // `japanese`) in a highlight <mark>.
-  var KANJI_RUN_RE = /[\u4e00-\u9faf\u30050-9\uFF10-\uFF19]+/g;
-
   function buildRuby(japanese, furigana, hl) {
     if (!furigana) return highlightSlice(japanese, 0, japanese.length, hl);
-    var literalParts = japanese.split(KANJI_RUN_RE);
-    var kanjiRuns = japanese.match(KANJI_RUN_RE) || [];
-    var ptr = 0;
-    var jPos = 0;
+    var segments = computeAlignment(japanese, furigana);
+    if (!segments) return highlightSlice(japanese, 0, japanese.length, hl);
     var out = "";
-    for (var i = 0; i < literalParts.length; i++) {
-      var lit = literalParts[i];
-      if (lit) {
-        var idx = furigana.indexOf(lit, ptr);
-        if (idx === -1) return highlightSlice(japanese, 0, japanese.length, hl);
-        ptr = idx + lit.length;
-        out += highlightSlice(lit, jPos, jPos + lit.length, hl);
-        jPos += lit.length;
+    segments.forEach(function (seg) {
+      var jText = japanese.slice(seg.jStart, seg.jEnd);
+      if (!seg.isKanji) {
+        out += highlightSlice(jText, seg.jStart, seg.jEnd, hl);
+        return;
       }
-      if (i < kanjiRuns.length) {
-        var run = kanjiRuns[i];
-        var nextLit = literalParts[i + 1];
-        var end;
-        if (nextLit) {
-          end = furigana.indexOf(nextLit, ptr + 1);
-          if (end === -1) return highlightSlice(japanese, 0, japanese.length, hl);
-        } else {
-          end = furigana.length;
-        }
-        if (end === ptr) return highlightSlice(japanese, 0, japanese.length, hl);
-        var reading = furigana.slice(ptr, end);
-        var rubyHtml = "<ruby>" + escapeHtml(run) + "<rt>" + escapeHtml(reading) + "</rt></ruby>";
-        var runStart = jPos, runEnd = jPos + run.length;
-        if (hl && rangesOverlap(runStart, runEnd, hl.start, hl.end)) {
-          out += '<mark class="grammar-hl">' + rubyHtml + "</mark>";
-        } else {
-          out += rubyHtml;
-        }
-        jPos += run.length;
-        ptr = end;
+      var reading = furigana.slice(seg.fStart, seg.fEnd);
+      var rubyHtml = "<ruby>" + escapeHtml(jText) + "<rt>" + escapeHtml(reading) + "</rt></ruby>";
+      if (hl && rangesOverlap(seg.jStart, seg.jEnd, hl.start, hl.end)) {
+        out += '<mark class="grammar-hl">' + rubyHtml + "</mark>";
+      } else {
+        out += rubyHtml;
       }
-    }
+    });
     return out;
   }
 
