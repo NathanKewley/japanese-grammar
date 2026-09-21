@@ -35,7 +35,22 @@
   <div id="mainContent"></div>
 </main>
 
+<div class="worksheet-modal" id="worksheetModal" hidden>
+  <div class="worksheet-backdrop" id="worksheetBackdrop"></div>
+  <div class="worksheet-panel" role="dialog" aria-modal="true" aria-labelledby="worksheetTitle">
+    <div class="worksheet-toolbar">
+      <div class="worksheet-toolbar-actions">
+        <button class="worksheet-check" id="worksheetCheck" type="button">✓ Check Answers</button>
+        <button class="worksheet-regenerate" id="worksheetRegenerate" type="button">↻ New Worksheet</button>
+      </div>
+      <button class="worksheet-close" id="worksheetClose" type="button" aria-label="Close worksheet">✕</button>
+    </div>
+    <div class="worksheet-content" id="worksheetContent"></div>
+  </div>
+</div>
+
 <script src="grammar-data.js"></script>
+<script src="reference-data.js"></script>
 <script src="alignment.js"></script>
 <script src="app.js"></script>
 </body>

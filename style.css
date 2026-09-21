@@ -20,6 +20,7 @@
   --lvl-n3: #C79A3A;
   --lvl-n2: #A166C4;
   --lvl-n1: #DE5A5A;
+  --lvl-ref: #2E9E9E;
 
   color-scheme: light;
 }
@@ -44,6 +45,7 @@
   --lvl-n3: #E0B458;
   --lvl-n2: #C084E8;
   --lvl-n1: #F0797E;
+  --lvl-ref: #4FC1C1;
 
   color-scheme: dark;
 }
@@ -558,6 +560,372 @@ mark.grammar-hl {
   font-weight: 600;
 }
 
+/* ---------- Worksheet trigger button ---------- */
+
+.worksheet-open-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 18px;
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: 1px solid var(--entry-color, var(--accent));
+  background: transparent;
+  color: var(--entry-color, var(--accent));
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.worksheet-open-btn:hover {
+  background: var(--entry-color, var(--accent));
+  color: #fff;
+}
+
+/* ---------- Worksheet modal ---------- */
+
+.worksheet-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.worksheet-modal[hidden] {
+  display: none;
+}
+
+body.worksheet-open {
+  overflow: hidden;
+}
+
+.worksheet-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.worksheet-panel {
+  position: relative;
+  width: 100%;
+  max-width: 640px;
+  height: 100%;
+  max-height: 860px;
+  background: var(--surface);
+  border-radius: 16px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.worksheet-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--rule);
+  flex-shrink: 0;
+}
+
+.worksheet-toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.worksheet-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  padding: 7px 12px;
+  color: #fff;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.worksheet-check:hover {
+  opacity: 0.9;
+}
+
+.worksheet-regenerate {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 7px 12px;
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.worksheet-regenerate:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.worksheet-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: none;
+  background: none;
+  color: var(--ink-soft);
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.worksheet-close:hover {
+  background: var(--surface-hover);
+  color: var(--ink);
+}
+
+.worksheet-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 22px 24px 32px;
+}
+
+.worksheet-header {
+  margin-bottom: 22px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid var(--rule);
+}
+
+.worksheet-header-pattern {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.worksheet-header-meaning {
+  font-size: 13.5px;
+  color: var(--ink-soft);
+  margin-top: 3px;
+}
+
+.worksheet-section {
+  margin-bottom: 28px;
+}
+
+.worksheet-section-title {
+  font-size: 14.5px;
+  font-weight: 800;
+  color: var(--accent);
+  margin-bottom: 4px;
+}
+
+.worksheet-section-instructions {
+  font-size: 12.5px;
+  color: var(--ink-soft);
+  margin: 0 0 14px;
+  line-height: 1.5;
+}
+
+.worksheet-items {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.worksheet-item {
+  display: flex;
+  gap: 10px;
+}
+
+.worksheet-item-num {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--badge-bg);
+  color: var(--ink-soft);
+  font-size: 11.5px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+}
+
+.worksheet-item-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.worksheet-en {
+  font-size: 12.5px;
+  color: var(--ink-soft);
+  margin-bottom: 6px;
+}
+
+.worksheet-jp {
+  font-size: 16px;
+  line-height: 2.1;
+}
+
+.worksheet-blank-placeholder {
+  display: inline-block;
+  min-width: 64px;
+  border-bottom: 2px solid var(--entry-color, var(--accent));
+  color: transparent;
+  text-align: center;
+  margin: 0 2px;
+}
+
+.worksheet-mc-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.worksheet-mc-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-align: left;
+  padding: 9px 12px;
+  border-radius: 9px;
+  border: 1px solid var(--rule);
+  background: transparent;
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.worksheet-mc-option:hover {
+  border-color: var(--accent);
+}
+
+.worksheet-mc-option.selected {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.worksheet-mc-letter {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1px solid var(--ink-faint);
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.worksheet-mc-option.selected .worksheet-mc-letter {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.worksheet-mc-feedback {
+  margin-left: auto;
+  font-size: 14px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.worksheet-mc-option--correct {
+  border-color: #3a9d5d;
+  background: rgba(58, 157, 93, 0.12);
+}
+
+.worksheet-mc-option--correct .worksheet-mc-letter {
+  border-color: #3a9d5d;
+  color: #3a9d5d;
+}
+
+.worksheet-mc-option--correct .worksheet-mc-feedback::after {
+  content: "✓";
+  color: #3a9d5d;
+}
+
+.worksheet-mc-option--incorrect {
+  border-color: #d4534f;
+  background: rgba(212, 83, 79, 0.12);
+}
+
+.worksheet-mc-option--incorrect .worksheet-mc-letter {
+  border-color: #d4534f;
+  color: #d4534f;
+}
+
+.worksheet-mc-option--incorrect .worksheet-mc-feedback::after {
+  content: "✕";
+  color: #d4534f;
+}
+
+.worksheet-score {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+  background: var(--badge-bg);
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin-bottom: 14px;
+}
+
+.worksheet-answers {
+  margin-top: 8px;
+  border-top: 1px solid var(--rule);
+  padding-top: 16px;
+}
+
+.worksheet-answers summary {
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.worksheet-answers-block {
+  margin-top: 14px;
+  font-size: 13.5px;
+}
+
+.worksheet-answers-block strong {
+  display: block;
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--ink-soft);
+  margin-bottom: 6px;
+}
+
+.worksheet-answer-list {
+  margin: 0;
+  padding-left: 18px;
+  line-height: 1.9;
+}
+
+@media (max-width: 480px) {
+  .worksheet-modal { padding: 0; }
+  .worksheet-panel { max-width: none; max-height: none; border-radius: 0; }
+  .worksheet-content { padding: 18px 16px 26px; }
+  .worksheet-header-pattern { font-size: 22px; }
+}
+
 .conjugation-wrap {
   margin-top: 16px;
 }
@@ -635,6 +1003,126 @@ mark.grammar-hl {
   font-size: 14px;
   padding: 60px 20px;
   line-height: 1.6;
+}
+
+/* ---------- Reference tab ---------- */
+
+.article-card .entry-head { cursor: pointer; }
+
+.article-detail {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 14px;
+  padding: 22px 20px 26px;
+  box-shadow: 0 1px 2px var(--shadow);
+}
+
+.article-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  color: var(--ink-soft);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0 0 16px;
+}
+
+.article-back:hover { color: var(--accent); }
+
+.article-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--ink);
+  margin: 0 0 18px;
+}
+
+.ref-paragraph {
+  font-size: 14.5px;
+  line-height: 1.7;
+  color: var(--ink);
+  margin: 0 0 20px;
+}
+
+.ref-table-wrap {
+  margin: 0 0 22px;
+}
+
+.ref-table-title {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--lvl-ref);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 8px;
+}
+
+.ref-table-scroll {
+  overflow-x: auto;
+}
+
+.ref-table {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 320px;
+}
+
+.ref-table th,
+.ref-table td {
+  border: 1px solid var(--rule);
+  padding: 8px 10px;
+  text-align: left;
+  font-size: 13px;
+  color: var(--ink);
+}
+
+.ref-table th {
+  background: var(--badge-bg);
+  color: var(--ink-soft);
+  font-weight: 700;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  text-align: center;
+}
+
+.kana-table td {
+  text-align: center;
+  padding: 6px 4px;
+  min-width: 56px;
+}
+
+.kana-cell-hira {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.3;
+}
+
+.kana-cell-kata {
+  font-size: 13px;
+  color: var(--ink-soft);
+  line-height: 1.3;
+}
+
+.kana-cell-romaji {
+  font-size: 10.5px;
+  color: var(--ink-faint);
+  letter-spacing: 0.02em;
+  margin-top: 1px;
+}
+
+.kana-cell-empty {
+  background: var(--surface-hover);
+}
+
+@media (max-width: 480px) {
+  .article-detail { padding: 18px 14px 22px; }
+  .kana-cell-hira { font-size: 15px; }
+  .kana-table td { min-width: 46px; }
 }
 
 @media (max-width: 480px) {

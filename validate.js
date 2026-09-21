@@ -1,20 +1,25 @@
 #!/usr/bin/env node
 // ---------------------------------------------------------------------
-// validate.js — standing validation tool for grammar-data.js
+// validate.js — standing validation tool for grammar-data.js and
+// reference-data.js
 //
 // Run from this directory with:  node validate.js
 //
 // Consolidates every check that was previously re-derived from scratch
-// in a throwaway script each time an edit was made:
+// in a throwaway script each time an edit was made. For grammar-data.js:
 //   1. Schema        — every entry/usage/example has its required fields
 //   2. Alignment      — every (japanese, furigana) pair aligns cleanly,
 //                        using the *actual* algorithm from alignment.js
 //                        (shared with app.js — never a hand-copied
 //                        approximation that can drift out of sync)
 //   3. Duplicate IDs  — no entry id appears twice across the dataset
+//   3b. Reference article schema — every article/block in reference-data.js
+//                        has its required fields and well-formed blocks,
+//                        and no duplicate article ids
 //   4. Duplicate examples — no example is repeated within one entry
 //   5. Related links  — every id in an entry's `related` array resolves
-//                        to a real entry somewhere in the dataset
+//                        to a real entry or reference article
+//   5b. Reference article related links — same check, the other direction
 //   6. Reading consistency — cross-references every kanji run's reading
 //        across the whole dataset and flags cases where a rare reading
 //        sits alongside a much more common one for the same kanji run.
@@ -28,7 +33,7 @@
 //        correct) plus four genuine furigana typos, none of which
 //        checks 1-5 had any way of catching.
 //
-// Checks 1-5 are hard failures: the script exits non-zero if any fire.
+// Checks 1-5b are hard failures: the script exits non-zero if any fire.
 // Check 6 always prints its findings but never affects the exit code —
 // it needs a human to tell real errors apart from legitimate variance.
 // ---------------------------------------------------------------------
@@ -37,11 +42,18 @@ var fs = require("fs");
 var path = require("path");
 
 var DATA_PATH = path.join(__dirname, "grammar-data.js");
+var REFERENCE_PATH = path.join(__dirname, "reference-data.js");
 var GrammarAlignment = require(path.join(__dirname, "alignment.js"));
 
 function loadLevels() {
   var code = fs.readFileSync(DATA_PATH, "utf8");
   var fn = new Function(code + "; return {N5_GRAMMAR, N4_GRAMMAR, N3_GRAMMAR, N2_GRAMMAR, N1_GRAMMAR};");
+  return fn();
+}
+
+function loadReferenceArticles() {
+  var code = fs.readFileSync(REFERENCE_PATH, "utf8");
+  var fn = new Function(code + "; return REFERENCE_ARTICLES;");
   return fn();
 }
 
@@ -152,16 +164,96 @@ function checkDuplicateExamples(all) {
 }
 
 // ---------- 5. Related-link integrity ----------
-function checkRelatedLinks(all) {
+function checkRelatedLinks(all, articles) {
   var issues = [];
   var idSet = {};
   all.forEach(function (item) { idSet[item.entry.id] = true; });
+  (articles || []).forEach(function (a) { idSet[a.id] = true; });
   all.forEach(function (item) {
     var e = item.entry, lvl = item.levelName;
     if (!e.related) return;
     e.related.forEach(function (r) {
       if (!idSet[r]) issues.push(lvl + " " + e.id + ": related link to unknown id '" + r + "'");
       if (r === e.id) issues.push(lvl + " " + e.id + ": related link to itself");
+    });
+  });
+  return issues;
+}
+
+// ---------- 5b. Reference articles: schema ----------
+var VALID_BLOCK_TYPES = ["paragraph", "note", "table", "kana-table"];
+
+function checkArticleSchema(articles) {
+  var issues = [];
+  articles.forEach(function (a) {
+    ["id", "title", "short", "blocks"].forEach(function (f) {
+      if (!(f in a)) issues.push((a.id || "(no id)") + ": missing field '" + f + "'");
+    });
+    if (a.id && a.id.indexOf("ref-") !== 0) {
+      issues.push(a.id + ": id should be prefixed 'ref-'");
+    }
+    if (!Array.isArray(a.blocks) || a.blocks.length === 0) {
+      issues.push(a.id + ": blocks must be a non-empty array");
+      return;
+    }
+    a.blocks.forEach(function (b, bi) {
+      if (VALID_BLOCK_TYPES.indexOf(b.type) === -1) {
+        issues.push(a.id + ": blocks[" + bi + "] has unknown type '" + b.type + "'");
+        return;
+      }
+      if ((b.type === "paragraph" || b.type === "note") && (typeof b.text !== "string" || !b.text)) {
+        issues.push(a.id + ": blocks[" + bi + "] (" + b.type + ") missing/empty 'text'");
+      }
+      if (b.type === "table" || b.type === "kana-table") {
+        if (!Array.isArray(b.headers) || b.headers.length === 0) {
+          issues.push(a.id + ": blocks[" + bi + "] (" + b.type + ") missing/empty 'headers'");
+        }
+        if (!Array.isArray(b.rows) || b.rows.length === 0) {
+          issues.push(a.id + ": blocks[" + bi + "] (" + b.type + ") missing/empty 'rows'");
+        } else {
+          b.rows.forEach(function (row, ri) {
+            if (!Array.isArray(row)) {
+              issues.push(a.id + ": blocks[" + bi + "].rows[" + ri + "] must be an array");
+              return;
+            }
+            if (row.length !== b.headers.length) {
+              issues.push(a.id + ": blocks[" + bi + "].rows[" + ri + "] has " + row.length + " cells, headers has " + b.headers.length);
+            }
+            if (b.type === "kana-table") {
+              row.forEach(function (cell, ci) {
+                if (cell !== null && (!cell.hira || !cell.kata || !cell.romaji)) {
+                  issues.push(a.id + ": blocks[" + bi + "].rows[" + ri + "][" + ci + "] kana cell missing hira/kata/romaji");
+                }
+              });
+            }
+          });
+        }
+      }
+    });
+  });
+  return issues;
+}
+
+function checkArticleDuplicateIds(articles) {
+  var seen = {};
+  var issues = [];
+  articles.forEach(function (a) {
+    if (seen[a.id]) issues.push("duplicate article id '" + a.id + "'");
+    else seen[a.id] = true;
+  });
+  return issues;
+}
+
+function checkArticleRelatedLinks(articles, all) {
+  var issues = [];
+  var idSet = {};
+  all.forEach(function (item) { idSet[item.entry.id] = true; });
+  articles.forEach(function (a) { idSet[a.id] = true; });
+  articles.forEach(function (a) {
+    if (!a.related) return;
+    a.related.forEach(function (r) {
+      if (!idSet[r]) issues.push(a.id + ": related link to unknown id '" + r + "'");
+      if (r === a.id) issues.push(a.id + ": related link to itself");
     });
   });
   return issues;
@@ -222,11 +314,13 @@ function section(title) {
 function main() {
   var levels = loadLevels();
   var all = flattenEntries(levels);
+  var articles = loadReferenceArticles();
 
-  console.log("Loaded " + all.length + " entries across " + Object.keys(levels).length + " levels:");
+  console.log("Loaded " + all.length + " entries across " + Object.keys(levels).length + " levels, plus " + articles.length + " reference article(s):");
   Object.entries(levels).forEach(function (pair) {
     console.log("  " + pair[0] + ": " + pair[1].length + " entries");
   });
+  articles.forEach(function (a) { console.log("  " + a.id + ": \"" + a.title + "\""); });
 
   var hardFailures = 0;
 
@@ -258,6 +352,15 @@ function main() {
     hardFailures += dupIdIssues.length;
   }
 
+  section("3b. Reference article schema");
+  var articleSchemaIssues = checkArticleSchema(articles).concat(checkArticleDuplicateIds(articles));
+  if (articleSchemaIssues.length === 0) {
+    console.log("OK — every article has its required fields and well-formed blocks.");
+  } else {
+    articleSchemaIssues.forEach(function (i) { console.log("FAIL: " + i); });
+    hardFailures += articleSchemaIssues.length;
+  }
+
   section("4. Duplicate examples within an entry");
   var dupExIssues = checkDuplicateExamples(all);
   if (dupExIssues.length === 0) {
@@ -268,7 +371,7 @@ function main() {
   }
 
   section("5. Related-link integrity");
-  var relatedIssues = checkRelatedLinks(all);
+  var relatedIssues = checkRelatedLinks(all, articles);
   var relatedCount = all.filter(function (item) { return item.entry.related; }).length;
   console.log("Checked " + relatedCount + " entries with related links.");
   if (relatedIssues.length === 0) {
@@ -276,6 +379,17 @@ function main() {
   } else {
     relatedIssues.forEach(function (i) { console.log("FAIL: " + i); });
     hardFailures += relatedIssues.length;
+  }
+
+  section("5b. Reference article related-link integrity");
+  var articleRelatedIssues = checkArticleRelatedLinks(articles, all);
+  var articleRelatedCount = articles.filter(function (a) { return a.related && a.related.length; }).length;
+  console.log("Checked " + articleRelatedCount + " article(s) with related links.");
+  if (articleRelatedIssues.length === 0) {
+    console.log("OK — every article related link resolves to a real entry or article.");
+  } else {
+    articleRelatedIssues.forEach(function (i) { console.log("FAIL: " + i); });
+    hardFailures += articleRelatedIssues.length;
   }
 
   section("6. Kanji-reading consistency (review — not a hard failure)");

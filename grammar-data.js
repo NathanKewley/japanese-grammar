@@ -328,7 +328,8 @@ const N5_GRAMMAR = [
       { title: "Past", examples: [
         { japanese: "昨日は暑かったです。", furigana: "きのうはあつかったです。", english: "It was hot yesterday.", hl: "暑かった" }
       ]}
-    ], notes: "Not every adjective ending in い is an い-adjective; common exceptions such as きれい belong to the な-adjective group."
+    ],
+    related: ["ref-conjugations"], notes: "Not every adjective ending in い is an い-adjective; common exceptions such as きれい belong to the な-adjective group."
   },
   {
     id: "n5-na-adj", level: "N5", pattern: "な-adjectives", title: "Describing with な-adjectives", short: "Adjectives that use な before a noun and です in polite statements.",
@@ -343,7 +344,8 @@ const N5_GRAMMAR = [
       { title: "Negative", examples: [
         { japanese: "便利ではありません。", furigana: "べんりではありません。", english: "It is not convenient.", hl: "便利ではありません" }
       ]}
-    ]
+    ],
+    related: ["ref-conjugations"]
   },
   {
     id: "n5-kono", level: "N5", pattern: "この / その / あの", title: "This / that / that over there", short: "Points to a noun based on its distance from the speaker and listener.",
@@ -1134,7 +1136,7 @@ const N4_GRAMMAR = [
       { pos: "Verb (godan)", form: "negative stem + れる", example: "読む → 読まれる" },
       { pos: "Verb (ichidan)", form: "stem + られる", example: "好む → 好まれる" }
     ],
-    related: ["n4-causative","n4-potential"]
+    related: ["n4-causative","n4-potential","ref-conjugations"]
   },
   {
     id: "n4-causative", level: "N4", pattern: "～させる / ～せられる", title: "Causative voice", short: "Expresses making or letting someone do something.",
@@ -1153,7 +1155,7 @@ const N4_GRAMMAR = [
       { pos: "Verb (godan)", form: "negative stem + せる", example: "練習する → 練習させる" },
       { pos: "Verb (する)", form: "irregular: させる", example: "する → させる" }
     ],
-    related: ["n4-passive","n4-causative-passive"]
+    related: ["n4-passive","n4-causative-passive","ref-conjugations"]
   },
   {
     id: "n4-causative-passive", level: "N4", pattern: "～させられる", title: "Causative-Passive voice", short: "Expresses being forced to do something against your will.",
@@ -1171,7 +1173,7 @@ const N4_GRAMMAR = [
     conjugations: [
       { pos: "Verb", form: "causative stem + られる", example: "掃除する → 掃除させられる" }
     ],
-    related: ["n4-causative"]
+    related: ["n4-causative","ref-conjugations"]
   },
   {
     id: "n4-sou-da-looks", level: "N4", pattern: "～そうだ（様態）", title: "Looks like / appears to be", short: "Expresses a visual impression or impression of likelihood.",
@@ -1277,7 +1279,8 @@ const N4_GRAMMAR = [
     ],
     conjugations: [
       { pos: "Verb", form: "volitional form", example: "行く → 行こう" }
-    ]
+    ],
+    related: ["ref-conjugations"]
   },
   {
     id: "n4-volitional-omou", level: "N4", pattern: "～と思っています", title: "Plan to / thinking of doing", short: "Expresses an intention or personal decision that you have been considering.",
@@ -2156,7 +2159,7 @@ const N4_GRAMMAR = [
       { pos: "Verb (ichidan)", form: "stem + られる", example: "食べる → 食べられる" },
       { pos: "Verb (godan)", form: "e-row stem + る", example: "読む → 読める" }
     ],
-    related: ["n4-passive"], notes: "For る-verbs, the potential form (食べられる) and the passive form (食べられる) are identical in writing; only context tells them apart. Casual speech often drops ら (ら抜き言葉): 食べれる."
+    related: ["n4-passive","ref-conjugations"], notes: "For る-verbs, the potential form (食べられる) and the passive form (食べられる) are identical in writing; only context tells them apart. Casual speech often drops ら (ら抜き言葉): 食べれる."
   },
   {
     id: "n4-rashii", level: "N4", pattern: "～らしい", title: "I heard / seems typical of", short: "Reports secondhand information, or says something fits a typical image.",
@@ -2789,7 +2792,7 @@ const N3_GRAMMAR = [
       { pos: "Verb", form: "plain form", example: "遅れた → 遅れたため" },
       { pos: "Noun", form: "+ の", example: "大雨 → 大雨のため" }
     ],
-    related: ["n5-kara", "n4-node"]
+    related: ["n5-kara","n4-node"]
   },
   {
     id: "n3-osore-ga-aru", level: "N3", pattern: "～おそれがある", title: "There is a risk that / fear that", short: "Used in news or formal warnings for potential negative events.",

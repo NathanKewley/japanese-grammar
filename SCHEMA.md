@@ -52,7 +52,7 @@ alignment).
 - `/` or `／` separates alternate forms: `"～ほうがいい / ～ほうがよかった"`.
 - A `～` or bare `A`/`B` **in the middle** of the string is a placeholder
   standing in for arbitrary content (`"どんな～も"`, `"AよりBのほうが"`) —
-  the matcher splits around these automatically now (see §6).
+  the matcher splits around these automatically now (see §7).
 - Parenthetical annotations like `（様態）` are extracted as a secondary
   fragment candidate but mostly exist for the reader's benefit.
 
@@ -87,7 +87,7 @@ Each example:
 - `furigana` is the **all-hiragana/katakana reading** of the whole
   sentence, not per-word annotations — `app.js` derives the `<ruby>` markup
   by aligning `japanese` against `furigana` automatically.
-- `hl` is optional — see §6.2.
+- `hl` is optional — see §7.2.
 
 ### 3.1 Bucket titles
 
@@ -147,7 +147,7 @@ noun.
   word class (か, ね, よ).
 - Entries that describe a whole word class rather than a single grammar
   point (い-adjectives, な-adjectives, 普通形) — these need `hl` overrides
-  instead of a pattern-driven table (see §6.2).
+  instead of a pattern-driven table (see §7.2).
 - Fixed idioms with no productive conjugation (やむを得ない as a frozen
   phrase, not a general X+を得ない pattern).
 
@@ -190,9 +190,101 @@ Don't add a link on vague topical similarity alone. `validate.js` checks
 that every id resolves and that nothing links to itself, but it can't check
 whether a link is *worth* having — that's a judgment call each time.
 
+`related` can point to a reference article (§6) as well as another grammar
+entry — the chip rendering and navigation both handle either target
+automatically based on whether the id is prefixed `ref-`.
+
 ---
 
-## 6. Highlighting mechanics (read before fighting with a stuck highlight)
+## 6. Reference articles (`reference-data.js`)
+
+A second, separate top-level tab ("Reference") for longer-form, denser
+explainers that sit *underneath* the pattern-level grammar entries above —
+kana charts, conjugation mechanics, word-type overviews. Where a grammar
+entry's `conjugations` table says `Verb (godan), form: negative stem` and
+assumes you already know what that means, an article is where that
+assumption gets explained.
+
+### 6.1 File and schema
+
+`reference-data.js` declares `const REFERENCE_ARTICLES = [...]` the same
+way `grammar-data.js` declares its five level arrays — loaded as a plain
+script tag in `index.html`, referenced directly (not via `window.*`).
+
+```js
+{
+  id: "ref-kana",              // required, unique, "ref-" prefixed
+  title: "Kana Charts",        // required
+  short: "One-line summary shown in the article list.",  // required
+  related: [],                 // optional, ids of grammar entries or other articles
+  blocks: [ ... ]               // required, non-empty, see §6.2
+}
+```
+
+The `ref-` id prefix isn't cosmetic — `isReferenceArticle()` in `app.js`
+uses it to tell an article apart from a grammar entry wherever the two can
+appear interchangeably (cross-link chip targets, `findEntryById` results).
+Don't use that prefix for anything else.
+
+### 6.2 Block types
+
+An article's body is a flat array of typed blocks, rendered in order:
+
+- `{ type: "paragraph", text: "..." }` — plain prose.
+- `{ type: "note", text: "..." }` — reuses the grammar-entry note styling,
+  for an aside worth visually setting apart from the main flow.
+- `{ type: "table", title: "...", headers: [...], rows: [[...], ...] }` —
+  generic table, string cells. `title` is optional.
+- `{ type: "kana-table", title: "...", headers: [...], rows: [[cell, ...], ...] }`
+  — specialized for hiragana/katakana/romaji triples. Each cell is either
+  `null` (no such sound exists — renders as a blank cell) or
+  `{ hira, kata, romaji }`.
+
+Every row must have exactly as many cells as `headers` has columns —
+`validate.js`'s §3b check enforces this, along with checking that every
+`kana-table` cell that isn't `null` has all three of `hira`/`kata`/`romaji`.
+
+This is a deliberately small, closed set of block types (no generic
+markdown/HTML rendering) — add a new block type only when an article
+genuinely needs a layout none of the existing ones can express, and update
+`renderReferenceBlock` and the §3b schema check in `validate.js` together
+when you do.
+
+### 6.3 Navigation shape
+
+The Reference tab sits at the same level as N5–N1 and Saved (one top-level
+tab), with its own two-level navigation *inside* that tab: a list view
+(`referenceArticleCardHtml`, one card per article) and a full detail view
+(`referenceArticleDetailHtml`, with a back button) — not the accordion/
+expand-in-place pattern the grammar entries use, since these are meant to
+be read as standalone long-form pages rather than skimmed inline.
+
+The search bar is intentionally hidden while on the Reference tab
+(`$searchWrap.style.display`) rather than left active — search does not
+currently span into article content, and leaving the box visible-but-
+inert was worse than hiding it outright (rendering the reference view
+also blanks `$search.value`, which would otherwise erase whatever the
+person had just typed on every keystroke).
+
+### 6.4 Cross-linking with grammar entries
+
+Same `related` mechanism as §5, extended to work in both directions:
+a grammar entry can link to an article, and an article can link back to
+specific grammar entries via its own `related` array. `navigateToEntry`
+detects an article target (via the `ref-` prefix) and switches to the
+Reference tab + opens that article, instead of trying to switch to a JLPT
+level tab and expand an accordion card.
+
+The kana article currently has no grammar-entry links — kana charts don't
+have a natural single-pattern pairing the way, say, a future "verb types"
+article would (which should link out to n4-passive/n4-causative/
+n4-potential, all of which lean on godan/ichidan conjugation knowledge).
+Don't force a link where one doesn't genuinely help; an article with zero
+`related` entries is fine.
+
+---
+
+## 7. Highlighting mechanics (read before fighting with a stuck highlight)
 
 Two independent things are happening in an example sentence:
 
@@ -209,7 +301,7 @@ Two independent things are happening in an example sentence:
    voicing/politeness variant-generation) inside `japanese`. This is what
    wraps the matched span in `<mark class="grammar-hl">`.
 
-### 6.1 When automatic highlighting won't find a match
+### 7.1 When automatic highlighting won't find a match
 
 The variant-generation in `app.js` (`withConjugationStems`,
 `withPoliteVariant`, `withCopulaVariant`, `withAdjectiveVariant`,
@@ -226,7 +318,7 @@ ending that varies by verb class — volitional よう/おう (行く→行こ�
 行よう) and potential られる/れる (読む→読める, not 読まれる) are the known
 example of this. This is why those entries use `hl` overrides.
 
-### 6.2 The `hl` override
+### 7.2 The `hl` override
 
 ```js
 { japanese: "大きい犬です。", furigana: "おおきいいぬです。", english: "It is a big dog.", hl: "大きい" }
@@ -237,7 +329,7 @@ conjugation logic, just literal substring search. Use it when:
 - The entry has no meaningful `pattern` text to match against (i-adjective/
   na-adjective/plain-form class-description entries).
 - The pattern text's representative ending doesn't literally occur in a
-  specific example (volitional/potential class-variance, §6.1).
+  specific example (volitional/potential class-variance, §7.1).
 
 Keep the highlighted span to the **grammar suffix**, not the content verb/
 noun stem — e.g. highlight `める` in `読めます`, not `読める`; highlight
@@ -247,7 +339,72 @@ inconsistent highlighting scope between hand-set and automatic cases.
 
 ---
 
-## 7. Validation
+## 8. Worksheet generator (`generateWorksheetHtml` in `app.js`)
+
+Every grammar entry's expanded view has a "View Worksheet" button
+(`worksheet-open-btn`) that opens a fullscreen modal with a practice
+worksheet, built entirely from that entry's own data — no separate
+worksheet content is authored or stored anywhere.
+
+### 8.1 What it generates
+
+A single "Fill in the Blank" section: up to 5 of the entry's own
+examples, each with the grammar-point span removed and replaced with a
+static visual blank (`worksheet-blank-placeholder`), followed by
+multiple-choice options for which text correctly fills it. Which span to
+blank starts from `getExampleHighlightRange` — the exact same function
+`exampleHtml` uses to decide what to highlight (§7) — then extended
+through one immediately-following conjugation ending via
+`extendBlankForConjugation` (a fixed list of common endings: ました, ます,
+た, て, ない, ...), since the highlighting system deliberately marks only
+a pattern's invariant core (させ) and a blank built from just that would
+always look like the same bare stem regardless of which example was
+picked. The extension is capped at a single following ending rather than
+looped, so a blank like させて (causative + て-form) correctly stops there
+instead of swallowing an unrelated following verb, as in させてあげた.
+
+Each option is real inflected text pulled from an actual example — the
+correct option from the entry's own extended blank, and each distractor
+from a genuinely different pattern's own examples (preferring `related`
+entries first, since a real confusion pair makes a better question than
+a random one; topped up with random same-level entries, requesting extra
+candidates beyond what's needed so a distractor whose text happens to
+collide with something already used can just be skipped rather than
+leaving the question short an option) — buildRubyBlank (a sibling of
+buildRuby that takes the blank's markup as a parameter) renders the
+sentence with the blank in place.
+
+A "✓ Check Answers" button (`checkWorksheetAnswers`) marks each answered
+question's selected option green if correct or red if not, revealing the
+correct option in green alongside it when the pick was wrong, and shows a
+score summary ("3 / 5 correct (1 unanswered)"). Re-selecting an option on
+an already-checked question clears that question's feedback so it can be
+answered and checked again — nothing is locked after one check. An
+earlier version used a static `<details>` answer key instead; that's what
+this replaced.
+
+An even earlier version split this into two separate exercises (a typed
+fill-in-the-blank, plus a separate "which pattern fits" multiple choice
+using just the English translation and the bare pattern label as every
+option) and included a third, ungraded "write your own sentence" section.
+Both were cut in favor of the single merged exercise described above.
+
+### 8.2 Regeneration
+
+Selections are randomized (`shuffleArray`/`pickN`) — the "↻ New
+Worksheet" button re-runs generation for the same entry, producing a
+different set of examples/distractors each time, since this is meant to
+be practiced more than once rather than viewed as a single fixed sheet.
+
+### 8.3 Why this approach
+
+Building this as an algorithm over existing data (rather than authoring a
+worksheet per entry by hand) means it works for all 487 entries
+immediately and stays in sync automatically if an entry's examples ever
+change — no second content-authoring pass to maintain alongside the main
+one.
+
+## 9. Validation
 
 Run before shipping any data change:
 
@@ -273,7 +430,7 @@ it wouldn't catch a CSS regression or a JS error in a new feature).
 
 ---
 
-## 8. Changelog (high-level, chronological)
+## 10. Changelog (high-level, chronological)
 
 1. **Initial build** — static HTML5 JLPT reference, N5–N1, ~486 grammar
    points with furigana toggle, search, save/review list, light/dark mode.
@@ -317,11 +474,94 @@ it wouldn't catch a CSS regression or a JS error in a new feature).
     given how simple the underlying grammar is; N4 skews slightly longer
     given more auxiliary-verb nuance to unpack. This closes the depth gap
     called out as a known limitation after the original content passes.
+12. **Reference tab added** — a new top-level tab for longer-form articles
+    on Japanese mechanics (kana, conjugation systems, word types) that sit
+    underneath the pattern-level grammar entries, with cross-linking in
+    both directions via the same `related` mechanism. Started with one
+    article (kana charts); see §6.
+13. **Five more reference articles** — particles at a glance (consolidated
+    comparison table across every core particle, cross-linked to 15
+    individual grammar entries), counters, numbers & dates, kanji readings
+    (onyomi/kunyomi), and keigo's irregular verbs (cross-linked to the two
+    productive keigo grammar entries). 6 articles total.
+14. **Conjugation reference tables** — the full adjective (い vs な) and
+    verb (ichidan vs godan) conjugation paradigms side by side, adapted
+    from a user-supplied reference doc. Corrected one factual error found
+    in that source (an example demonstrating "too quiet to sleep" had used
+    寝られる, the *positive* "can sleep," rather than a negative outcome —
+    fixed to 眠れない) and replaced its abstract gojūon-row lookup method
+    for verb stem-shifts with a direct table of each dictionary ending's
+    full shifted forms, explicitly calling out the う→わ exception the
+    original's row-based method left implicit. Cross-linked to the
+    adjective-type entries and the passive/causative/potential/volitional
+    grammar entries (added bidirectionally, per §5's rule). 7 articles
+    total.
+15. **Reference tab hidden.** Reconsidered — felt like it pulled focus
+    away from the app's core (pattern-level grammar reference) rather than
+    complementing it. Hidden behind `SHOW_REFERENCE_TAB` in `app.js`
+    (currently `false`) rather than removed: `reference-data.js`, its
+    render/cross-link code, and `validate.js`'s article checks are all
+    left fully intact, so flipping that one flag brings it straight back.
+    Related-grammar chips pointing to articles are also suppressed while
+    the flag is off, so nothing links into a tab with no way back to it.
+16. **Worksheet generator.** A "View Worksheet" button on every expanded
+    grammar entry opens a fullscreen modal with a practice worksheet:
+    fill-in-the-blank (built by reusing the exact highlighting/`hl`-match
+    logic to find and blank the grammar-point span in a few of the
+    entry's own examples), multiple-choice pattern recognition (distractor
+    options drawn from `related` entries when available, falling back to
+    random same-level entries), an open "write your own sentence" prompt,
+    and a collapsible answer key. Everything is generated algorithmically
+    from data the entry already has — no separate worksheet content was
+    authored, so it works for all 487 entries immediately, and a
+    "New Worksheet" button reshuffles the selection on demand. See §8.
+17. **Worksheet simplified: merged into one exercise.** The separate
+    typed-fill-in-the-blank and pattern-recognition-multiple-choice
+    sections were merged into a single "fill in the blank, answered by
+    multiple choice" exercise, and the ungraded "write your own sentence"
+    section was dropped entirely. `buildRubyBlank` was generalized to take
+    the blank's markup as a parameter (a static placeholder now, rather
+    than always building a text input) so the same span-splicing logic
+    still serves both.
+18. **Worksheet: Check Answers replaces the static answer key.** A
+    "✓ Check Answers" button grades whatever's currently selected in
+    place — correct picks turn green, wrong picks turn red with the
+    actual correct option also revealed in green, and a score summary
+    appears ("3 / 5 correct"). Re-picking an option on an already-checked
+    question clears its feedback so it can be tried and checked again.
+19. **Worksheet options now use real inflected text, not the bare
+    pattern label.** Previously every option was just the entry's
+    dictionary-form pattern name regardless of which example was shown,
+    so a causative question always offered "causative voice" as the
+    answer even when the blanked sentence used させました or させて.
+    `extendBlankForConjugation` extends the blank (and thus the correct
+    answer) through one following conjugation ending, and distractors are
+    now pulled from a genuinely different pattern's own examples the same
+    way, so options actually vary in form question to question. Needed a
+    second fix once shipped: a distractor whose extracted text happened
+    to collide with the correct answer wasn't always caught (the
+    fallback path didn't re-check for collision), so `buildFillBlankQuestions`
+    now requests extra candidate distractors and skips any that fully
+    collide rather than showing a duplicate option.
 
 **Current state:** 487 entries across N5–N1, all validation checks
-passing, 100% highlight coverage, 93 entries cross-linked, all 5 levels
-at consistent explanation depth.
+passing, 100% highlight coverage, 96 entries cross-linked, all 5 levels
+at consistent explanation depth, 7 reference articles built (currently
+hidden), worksheet generation available on every entry.
 
 **Known gaps, not yet addressed:**
 - No systematic re-check of whether more `related` pairs are warranted
   beyond the two curation passes in §5.
+- Reference-tab search is intentionally out of scope for now (§6.3) —
+  revisit if the article count grows enough that browsing alone doesn't
+  cut it.
+- Two of the four originally-uploaded reference docs haven't been adapted
+  into articles yet: identifying い-adjectives vs な-adjectives (including
+  the いい exception and the えい-ending rule), and identifying
+  Ichidan vs Godan vs Irregular verbs. The conjugation *tables* from the
+  third doc are done (§14); the *type-identification* guides from the
+  other two are still outstanding.
+- Further reference-article candidates considered but not yet built:
+  compound verb formation (〜始める/〜過ぎる/〜出す as a general mechanism),
+  sentence structure/word order, and a consolidated formality-register
+  chart (だ/です, から/ので, ない/ません side by side).

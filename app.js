@@ -20,11 +20,28 @@
     N1: (typeof N1_GRAMMAR !== "undefined") ? N1_GRAMMAR : []
   };
 
+  // Longer-form reference articles (kana, conjugation mechanics, word
+  // types, ...) — a separate, denser tier below the pattern-level grammar
+  // entries above. See reference-data.js for the schema.
+  var REFERENCE_ARTICLES_DATA = (typeof REFERENCE_ARTICLES !== "undefined") ? REFERENCE_ARTICLES : [];
+
+  function findReferenceArticleById(id) {
+    for (var i = 0; i < REFERENCE_ARTICLES_DATA.length; i++) {
+      if (REFERENCE_ARTICLES_DATA[i].id === id) return REFERENCE_ARTICLES_DATA[i];
+    }
+    return null;
+  }
+
+  function isReferenceArticle(item) {
+    return !!item && typeof item.id === "string" && item.id.indexOf("ref-") === 0;
+  }
+
   var STORAGE_SAVED = "grammarNotebook.saved";
   var STORAGE_THEME = "grammarNotebook.theme";
 
   var state = {
     activeTab: "N5",
+    activeArticle: null,
     query: "",
     saved: loadSaved()
   };
@@ -72,7 +89,7 @@
         if (arr[j].id === id) return arr[j];
       }
     }
-    return null;
+    return findReferenceArticleById(id);
   }
 
   // ---------- Heuristic categorization ----------
@@ -603,18 +620,33 @@
   var $main = document.getElementById("mainContent");
   var $search = document.getElementById("searchInput");
   var $searchWrap = document.getElementById("searchWrap");
+  var $worksheetModal = document.getElementById("worksheetModal");
+  var $worksheetContent = document.getElementById("worksheetContent");
+  var $worksheetBackdrop = document.getElementById("worksheetBackdrop");
+  var $worksheetClose = document.getElementById("worksheetClose");
+  var $worksheetRegenerate = document.getElementById("worksheetRegenerate");
+  var $worksheetCheck = document.getElementById("worksheetCheck");
+
+  // Set to true to bring the Reference tab back — the tab, its data
+  // (reference-data.js), and all its rendering/cross-link code are left
+  // fully intact, just not shown.
+  var SHOW_REFERENCE_TAB = false;
 
   function renderTabs() {
     var html = "";
     LEVELS.forEach(function (lvl) {
       html += tabButtonHtml(lvl.id, lvl.label, "var(--lvl-" + lvl.id.toLowerCase() + ")");
     });
+    if (SHOW_REFERENCE_TAB) {
+      html += tabButtonHtml("reference", "Reference", "var(--lvl-ref)");
+    }
     html += tabButtonHtml("saved", "Saved · " + state.saved.length, "var(--accent)", true);
     $tabBar.innerHTML = html;
 
     Array.prototype.forEach.call($tabBar.querySelectorAll(".tab-btn"), function (btn) {
       btn.addEventListener("click", function () {
         state.activeTab = btn.getAttribute("data-tab");
+        state.activeArticle = null;
         state.query = "";
         $search.value = "";
         renderTabs();
@@ -648,6 +680,13 @@
   var $pageHeading = document.getElementById("pageHeading");
 
   function renderMain() {
+    if (state.activeTab === "reference") {
+      $searchWrap.style.display = "none";
+      renderReferenceMain();
+      return;
+    }
+    $searchWrap.style.display = "";
+
     var isSavedTab = state.activeTab === "saved";
     var isSearching = state.query.trim().length > 0 && !isSavedTab;
     $search.placeholder = isSavedTab ? "Search your saved points…" : "Search all grammar points…";
@@ -709,6 +748,136 @@
     return '<div class="empty-state">No grammar points match your search.</div>';
   }
 
+  // ---------- Reference tab (articles) ----------
+  function renderReferenceMain() {
+    $search.value = "";
+    var article = state.activeArticle ? findReferenceArticleById(state.activeArticle) : null;
+    if (state.activeArticle && !article) state.activeArticle = null; // stale id, fall back to list
+
+    if (article) {
+      $pageHeading.innerHTML = referenceHeadingHtml(article.title, "Reference", null);
+      $main.innerHTML = referenceArticleDetailHtml(article);
+      attachReferenceBackHandler();
+      attachOpenHandlers(); // for related-grammar chips inside the article
+    } else {
+      $pageHeading.innerHTML = referenceHeadingHtml("Reference", "Longer-form explainers on kana, conjugation, and word types.", REFERENCE_ARTICLES_DATA.length);
+      $main.innerHTML = REFERENCE_ARTICLES_DATA.length
+        ? '<div class="entry-list">' + REFERENCE_ARTICLES_DATA.map(referenceArticleCardHtml).join("") + "</div>"
+        : '<div class="empty-state">No reference articles yet.</div>';
+      attachReferenceCardHandlers();
+    }
+  }
+
+  function referenceHeadingHtml(title, subtitle, count) {
+    return (
+      '<div class="page-heading">' +
+        "<div>" +
+          '<h2 class="page-heading-title">' + escapeHtml(title) + "</h2>" +
+          '<p class="page-heading-subtitle">' + escapeHtml(subtitle) + "</p>" +
+        "</div>" +
+        (count === null ? "" : '<div class="page-heading-count">' + count + "</div>") +
+      "</div>"
+    );
+  }
+
+  function referenceArticleCardHtml(article) {
+    return (
+      '<div class="entry article-card" data-article="' + article.id + '" style="--entry-color:var(--lvl-ref)">' +
+        '<div class="entry-head" data-open-article="' + article.id + '" role="button" tabindex="0">' +
+          '<div class="entry-icon jp">' + escapeHtml(article.title.slice(0, 2)) + "</div>" +
+          '<div class="entry-head-text">' +
+            '<div class="entry-pattern">' + escapeHtml(article.title) + "</div>" +
+            '<div class="entry-meaning">' + escapeHtml(article.short) + "</div>" +
+          "</div>" +
+          '<div class="entry-actions">' + chevronSvg() + "</div>" +
+        "</div>" +
+      "</div>"
+    );
+  }
+
+  function attachReferenceCardHandlers() {
+    Array.prototype.forEach.call($main.querySelectorAll("[data-open-article]"), function (el) {
+      el.addEventListener("click", function () {
+        state.activeArticle = el.getAttribute("data-open-article");
+        renderMain();
+        if (typeof window.scrollTo === "function") window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+    });
+  }
+
+  function attachReferenceBackHandler() {
+    var back = $main.querySelector("[data-article-back]");
+    if (back) {
+      back.addEventListener("click", function () {
+        state.activeArticle = null;
+        renderMain();
+      });
+    }
+  }
+
+  function referenceArticleDetailHtml(article) {
+    var blocksHtml = (article.blocks || []).map(renderReferenceBlock).join("");
+    return (
+      '<div class="article-detail">' +
+        '<button class="article-back" data-article-back>' + backArrowSvg() + " All reference articles</button>" +
+        '<h2 class="article-title">' + escapeHtml(article.title) + "</h2>" +
+        blocksHtml +
+        relatedGrammarHtml(article.related) +
+      "</div>"
+    );
+  }
+
+  function renderReferenceBlock(block) {
+    switch (block.type) {
+      case "paragraph": return '<p class="ref-paragraph">' + escapeHtml(block.text) + "</p>";
+      case "note": return '<div class="entry-note"><span class="entry-note-label">Note</span>' + escapeHtml(block.text) + "</div>";
+      case "table": return renderRefTable(block);
+      case "kana-table": return renderKanaTable(block);
+      default: return "";
+    }
+  }
+
+  function renderRefTable(block) {
+    var head = "<tr>" + block.headers.map(function (h) { return "<th>" + escapeHtml(h) + "</th>"; }).join("") + "</tr>";
+    var rows = block.rows.map(function (row) {
+      return "<tr>" + row.map(function (cell) { return "<td>" + escapeHtml(cell == null ? "" : String(cell)) + "</td>"; }).join("") + "</tr>";
+    }).join("");
+    return (
+      '<div class="ref-table-wrap">' +
+        (block.title ? '<div class="ref-table-title">' + escapeHtml(block.title) + "</div>" : "") +
+        '<div class="ref-table-scroll"><table class="ref-table"><thead>' + head + "</thead><tbody>" + rows + "</tbody></table></div>" +
+      "</div>"
+    );
+  }
+
+  function renderKanaTable(block) {
+    var head = "<tr>" + block.headers.map(function (h) { return "<th>" + escapeHtml(h) + "</th>"; }).join("") + "</tr>";
+    var rows = block.rows.map(function (row) {
+      return "<tr>" + row.map(renderKanaCell).join("") + "</tr>";
+    }).join("");
+    return (
+      '<div class="ref-table-wrap">' +
+        (block.title ? '<div class="ref-table-title">' + escapeHtml(block.title) + "</div>" : "") +
+        '<div class="ref-table-scroll"><table class="ref-table kana-table"><thead>' + head + "</thead><tbody>" + rows + "</tbody></table></div>" +
+      "</div>"
+    );
+  }
+
+  function renderKanaCell(cell) {
+    if (!cell) return '<td class="kana-cell kana-cell-empty"></td>';
+    return (
+      '<td class="kana-cell">' +
+        '<div class="kana-cell-hira jp">' + escapeHtml(cell.hira) + "</div>" +
+        '<div class="kana-cell-kata jp">' + escapeHtml(cell.kata) + "</div>" +
+        '<div class="kana-cell-romaji">' + escapeHtml(cell.romaji) + "</div>" +
+      "</td>"
+    );
+  }
+
+  function backArrowSvg() {
+    return '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>';
+  }
+
   function entryHtml(entry, showBadge) {
     var saved = isSaved(entry.id);
     var color = "var(--lvl-" + entry.level.toLowerCase() + ")";
@@ -743,10 +912,328 @@
             conjugationsHtml +
             relatedHtml +
             notesHtml +
+            '<button class="worksheet-open-btn" data-worksheet="' + entry.id + '" type="button">' + worksheetIconSvg() + " View Worksheet</button>" +
           "</div>" +
         "</div>" +
       "</div>"
     );
+  }
+
+  function worksheetIconSvg() {
+    return '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 2h6a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="11" x2="15" y2="11"/><line x1="9" y1="15" x2="12" y2="15"/></svg>';
+  }
+
+  // ---------- Worksheet generator ----------
+  // Builds a practice worksheet entirely from an entry's own data (its
+  // existing examples, its conjugation categories, its related entries) —
+  // no separate authored content, so it works for all 487 entries without
+  // a second giant writing pass. Regenerating draws a fresh random
+  // selection each time, since this is meant to be practiced more than
+  // once.
+
+  function shuffleArray(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+    }
+    return a;
+  }
+
+  function pickN(arr, n) {
+    return shuffleArray(arr).slice(0, Math.min(n, arr.length));
+  }
+
+  function flattenExamples(entry) {
+    var all = [];
+    entry.usages.forEach(function (u) { u.examples.forEach(function (ex) { all.push(ex); }); });
+    return all;
+  }
+
+  function patternLabel(entry) {
+    return entry.pattern.replace(/^[~～]/, "").split(/[／\/]/)[0].trim();
+  }
+
+  // Mirrors buildRuby, but instead of wrapping the grammar-point span in
+  // <mark>, it omits that span entirely and drops in a text input — used
+  // to build fill-in-the-blank questions from a real example sentence
+  // without a second, separately-maintained way of locating that span.
+  function buildRubyBlank(japanese, furigana, hl, blankMarkupHtml) {
+    if (!hl) return buildRuby(japanese, furigana, null);
+    if (!furigana) {
+      return escapeHtml(japanese.slice(0, hl.start)) + blankMarkupHtml + escapeHtml(japanese.slice(hl.end));
+    }
+    var segments = computeAlignment(japanese, furigana);
+    if (!segments) return buildRuby(japanese, furigana, null);
+    var out = "";
+    var blankInserted = false;
+    segments.forEach(function (seg) {
+      if (!rangesOverlap(seg.jStart, seg.jEnd, hl.start, hl.end)) {
+        var jText = japanese.slice(seg.jStart, seg.jEnd);
+        if (seg.isKanji) {
+          var reading = furigana.slice(seg.fStart, seg.fEnd);
+          out += "<ruby>" + escapeHtml(jText) + "<rt>" + escapeHtml(reading) + "</rt></ruby>";
+        } else {
+          out += escapeHtml(jText);
+        }
+        return;
+      }
+      if (seg.isKanji) {
+        // Kanji runs are short; a partial overlap is rare and not worth
+        // splitting a ruby annotation over, so the whole run is blanked.
+        if (!blankInserted) { out += blankMarkupHtml; blankInserted = true; }
+        return;
+      }
+      var s = Math.max(seg.jStart, hl.start), e = Math.min(seg.jEnd, hl.end);
+      var text = japanese.slice(seg.jStart, seg.jEnd);
+      var before = text.slice(0, s - seg.jStart);
+      var after = text.slice(e - seg.jStart);
+      out += escapeHtml(before);
+      if (!blankInserted) { out += blankMarkupHtml; blankInserted = true; }
+      out += escapeHtml(after);
+    });
+    return out;
+  }
+
+  function worksheetBlankPlaceholderHtml() {
+    return '<span class="worksheet-blank-placeholder">＿＿＿＿</span>';
+  }
+
+  // Distractor patterns for the multiple-choice options: entries already
+  // marked `related` make the best distractors (genuinely similar
+  // patterns, so the question actually tests discrimination) — topped up
+  // with random same-level entries when there aren't enough related ones.
+  function pickDistractorEntries(entry, count) {
+    var candidates = [];
+    var seen = {};
+    seen[entry.id] = true;
+    if (entry.related) {
+      entry.related.forEach(function (id) {
+        var t = findEntryById(id);
+        if (t && !isReferenceArticle(t) && !seen[t.id]) { candidates.push(t); seen[t.id] = true; }
+      });
+    }
+    if (candidates.length < count) {
+      var pool = shuffleArray(entriesForLevel(entry.level));
+      for (var i = 0; i < pool.length && candidates.length < count; i++) {
+        if (!seen[pool[i].id]) { candidates.push(pool[i]); seen[pool[i].id] = true; }
+      }
+    }
+    return candidates.slice(0, count);
+  }
+
+  // Each question pairs a blanked example sentence with multiple-choice
+  // options for which pattern fills the blank — merges what used to be
+  // two separate exercises (a typed fill-in-the-blank, and a separate
+  // pattern-recognition multiple choice) into one.
+  // The main highlighting system deliberately marks only the invariant
+  // core of a pattern (させ, not させました) — right for drawing attention
+  // to "here's the grammar point" inline, but for a fill-in-the-blank
+  // question it means the blank is missing whatever tense/politeness
+  // ending the example actually uses, so every answer ends up looking
+  // like the same bare stem regardless of which example got picked. This
+  // extends the blank through ONE immediately-following conjugation
+  // ending when present, so the blank (and the correct answer option)
+  // reflects the whole conjugated word — させました, させた, させます —
+  // not just its invariant core. Bounded to a single extension rather
+  // than looped, so a blank like させて (causative + te-form) correctly
+  // stops there instead of swallowing an unrelated following verb like
+  // させてあげた's あげた.
+  var TRAILING_CONJUGATION_ENDINGS = [
+    "ませんでした", "ましょうか", "なかった", "ましょう", "ければ",
+    "ません", "ました", "なくて", "ないで", "かった", "れば", "たら",
+    "ない", "ます", "よう", "た", "て", "で", "ろ", "ば"
+  ].sort(function (a, b) { return b.length - a.length; });
+
+  function extendBlankForConjugation(japanese, hl) {
+    if (!hl) return hl;
+    var rest = japanese.slice(hl.end);
+    for (var i = 0; i < TRAILING_CONJUGATION_ENDINGS.length; i++) {
+      var ending = TRAILING_CONJUGATION_ENDINGS[i];
+      if (rest.indexOf(ending) === 0) {
+        return { start: hl.start, end: hl.end + ending.length };
+      }
+    }
+    return hl;
+  }
+
+  // The text that was actually removed from an example — usually a
+  // specific conjugated form (させました, させない, ...), not just the
+  // pattern's bare dictionary-form label. Falls back to the label only in
+  // the rare case no highlight range was found for this example.
+  function literalBlankedText(entryForFallback, ex, hl) {
+    if (hl) return ex.japanese.slice(hl.start, hl.end);
+    return patternLabel(entryForFallback);
+  }
+
+  // Pulls a real conjugated snippet from one of a distractor entry's own
+  // examples (rather than its bare label), so multiple-choice options are
+  // all the same kind of thing — real inflected text a learner would
+  // actually see — and naturally vary in form question to question along
+  // with whichever example got picked. Tries a few of the distractor's
+  // own examples in case one happens to collide with text already used
+  // elsewhere in this question; returns null if every example (and even
+  // the bare label fallback) collides, so the caller can skip this
+  // distractor entirely rather than show a duplicate option.
+  function pickDistractorText(distractorEntry, usedTexts) {
+    var examples = shuffleArray(flattenExamples(distractorEntry));
+    for (var i = 0; i < examples.length; i++) {
+      var dHl = extendBlankForConjugation(examples[i].japanese, getExampleHighlightRange(examples[i], distractorEntry.pattern));
+      var text = literalBlankedText(distractorEntry, examples[i], dHl);
+      if (usedTexts.indexOf(text) === -1) return text;
+    }
+    var fallback = patternLabel(distractorEntry);
+    return usedTexts.indexOf(fallback) === -1 ? fallback : null;
+  }
+
+  function buildFillBlankQuestions(entry, examples) {
+    return examples.map(function (ex) {
+      var hl = extendBlankForConjugation(ex.japanese, getExampleHighlightRange(ex, entry.pattern));
+      var correctText = literalBlankedText(entry, ex, hl);
+      var usedTexts = [correctText];
+      var optionObjs = [{ text: correctText, correct: true }];
+      // Pull extra candidates beyond the 3 needed, so a distractor whose
+      // text fully collides with what's already used can just be skipped
+      // rather than leaving the question short an option.
+      var candidates = pickDistractorEntries(entry, 8);
+      for (var i = 0; i < candidates.length && optionObjs.length < 4; i++) {
+        var text = pickDistractorText(candidates[i], usedTexts);
+        if (text === null) continue;
+        usedTexts.push(text);
+        optionObjs.push({ text: text, correct: false });
+      }
+      return { ex: ex, hl: hl, options: shuffleArray(optionObjs) };
+    });
+  }
+
+  function worksheetFillBlankHtml(questions) {
+    var items = questions.map(function (q, i) {
+      var sentenceHtml = q.hl
+        ? buildRubyBlank(q.ex.japanese, q.ex.furigana, q.hl, worksheetBlankPlaceholderHtml())
+        : buildRuby(q.ex.japanese, q.ex.furigana, null);
+      var optionsHtml = q.options.map(function (opt, oi) {
+        var letter = String.fromCharCode(65 + oi);
+        return (
+          '<button type="button" class="worksheet-mc-option" data-mc-option' + (opt.correct ? ' data-correct="true"' : "") + '>' +
+            '<span class="worksheet-mc-letter">' + letter + "</span>" +
+            '<span class="jp">' + escapeHtml(opt.text) + "</span>" +
+            '<span class="worksheet-mc-feedback"></span>' +
+          "</button>"
+        );
+      }).join("");
+      return (
+        '<div class="worksheet-item">' +
+          '<div class="worksheet-item-num">' + (i + 1) + "</div>" +
+          '<div class="worksheet-item-body">' +
+            '<div class="worksheet-en">' + escapeHtml(q.ex.english) + "</div>" +
+            '<div class="worksheet-jp jp-body">' + sentenceHtml + "</div>" +
+            '<div class="worksheet-mc-options">' + optionsHtml + "</div>" +
+          "</div>" +
+        "</div>"
+      );
+    }).join("");
+    return '<div class="worksheet-items">' + items + "</div>";
+  }
+
+  function generateWorksheetHtml(entry) {
+    var allExamples = flattenExamples(entry);
+    var pickedExamples = pickN(allExamples, Math.min(5, allExamples.length));
+    var questions = buildFillBlankQuestions(entry, pickedExamples);
+
+    var html = "";
+    html += '<div class="worksheet-header">';
+    html +=   '<div class="worksheet-header-pattern jp">' + escapeHtml(patternLabel(entry)) + "</div>";
+    html +=   '<div class="worksheet-header-meaning">' + escapeHtml(entry.title) + "</div>";
+    html += "</div>";
+
+    if (questions.length) {
+      html += '<div class="worksheet-section">';
+      html +=   '<div class="worksheet-section-title">Fill in the Blank</div>';
+      html +=   '<p class="worksheet-section-instructions">Choose the option that correctly fills the blank in each sentence, based on the English translation.</p>';
+      html +=   '<div class="worksheet-score" id="worksheetScore" hidden></div>';
+      html +=   worksheetFillBlankHtml(questions);
+      html += "</div>";
+    }
+
+    return html;
+  }
+
+  var worksheetState = { entryId: null };
+
+  function openWorksheet(entryId) {
+    var entry = findEntryById(entryId);
+    if (!entry || isReferenceArticle(entry)) return;
+    worksheetState.entryId = entryId;
+    $worksheetContent.innerHTML = generateWorksheetHtml(entry);
+    $worksheetModal.hidden = false;
+    document.body.classList.add("worksheet-open");
+  }
+
+  function regenerateWorksheet() {
+    if (!worksheetState.entryId) return;
+    var entry = findEntryById(worksheetState.entryId);
+    if (!entry) return;
+    $worksheetContent.innerHTML = generateWorksheetHtml(entry);
+    $worksheetContent.scrollTop = 0;
+  }
+
+  function closeWorksheet() {
+    $worksheetModal.hidden = true;
+    worksheetState.entryId = null;
+    document.body.classList.remove("worksheet-open");
+  }
+
+  $worksheetClose.addEventListener("click", closeWorksheet);
+  $worksheetBackdrop.addEventListener("click", closeWorksheet);
+  $worksheetRegenerate.addEventListener("click", regenerateWorksheet);
+  $worksheetCheck.addEventListener("click", checkWorksheetAnswers);
+  document.addEventListener("keydown", function (evt) {
+    if (evt.key === "Escape" && !$worksheetModal.hidden) closeWorksheet();
+  });
+  $worksheetContent.addEventListener("click", function (evt) {
+    var opt = evt.target.closest("[data-mc-option]");
+    if (!opt) return;
+    var group = opt.closest(".worksheet-mc-options");
+    // A fresh pick after checking clears that question's feedback, so it
+    // can be answered and checked again rather than staying locked in.
+    Array.prototype.forEach.call(group.querySelectorAll(".worksheet-mc-option"), function (b) {
+      b.classList.remove("selected", "worksheet-mc-option--correct", "worksheet-mc-option--incorrect");
+    });
+    opt.classList.add("selected");
+  });
+
+  function checkWorksheetAnswers() {
+    var items = $worksheetContent.querySelectorAll(".worksheet-item");
+    var answered = 0, correct = 0;
+    Array.prototype.forEach.call(items, function (item) {
+      var options = item.querySelectorAll(".worksheet-mc-option");
+      var selected = item.querySelector(".worksheet-mc-option.selected");
+      var correctOpt = item.querySelector('.worksheet-mc-option[data-correct="true"]');
+      if (!selected) return; // unanswered questions are left as-is, not counted
+      answered++;
+      var gotItRight = selected === correctOpt;
+      if (gotItRight) correct++;
+      Array.prototype.forEach.call(options, function (opt) {
+        opt.classList.remove("worksheet-mc-option--correct", "worksheet-mc-option--incorrect");
+      });
+      if (gotItRight) {
+        selected.classList.add("worksheet-mc-option--correct");
+      } else {
+        selected.classList.add("worksheet-mc-option--incorrect");
+        if (correctOpt) correctOpt.classList.add("worksheet-mc-option--correct");
+      }
+    });
+
+    var $score = document.getElementById("worksheetScore");
+    if ($score) {
+      var total = items.length;
+      if (answered === 0) {
+        $score.hidden = true;
+      } else {
+        $score.hidden = false;
+        $score.textContent = correct + " / " + answered + " correct" + (answered < total ? " (" + (total - answered) + " unanswered)" : "");
+      }
+    }
   }
 
   function relatedGrammarHtml(relatedIds) {
@@ -754,6 +1241,15 @@
     var chips = relatedIds.map(function (id) {
       var target = findEntryById(id);
       if (!target) return "";
+      if (isReferenceArticle(target)) {
+        if (!SHOW_REFERENCE_TAB) return "";
+        return (
+          '<button class="related-chip" data-navigate="' + target.id + '" style="--chip-color:var(--lvl-ref)">' +
+            '<span class="related-chip-level">REF</span>' +
+            '<span class="related-chip-pattern">' + escapeHtml(target.title) + "</span>" +
+          "</button>"
+        );
+      }
       var iconText = target.pattern.replace(/^[~～]/, "").split(/[／\/]/)[0].trim();
       var chipColor = "var(--lvl-" + target.level.toLowerCase() + ")";
       return (
@@ -766,7 +1262,7 @@
     if (!chips) return "";
     return (
       '<div class="related-wrap">' +
-        '<div class="related-title">Related grammar</div>' +
+        '<div class="related-title">Related</div>' +
         '<div class="related-chips">' + chips + "</div>" +
       "</div>"
     );
@@ -815,14 +1311,24 @@
     );
   }
 
+  // Shared by exampleHtml (highlighting) and the worksheet generator
+  // (blanking) — both need to know exactly which span of `japanese`
+  // corresponds to the grammar point, and must never compute it two
+  // different ways.
+  function getExampleHighlightRange(ex, pattern) {
+    if (ex.hl) {
+      var idx = ex.japanese.indexOf(ex.hl);
+      return idx === -1 ? null : { start: idx, end: idx + ex.hl.length };
+    }
+    return findHighlightRange(ex.japanese, ex.furigana, pattern);
+  }
+
   function exampleHtml(ex, pattern) {
     // A few entries (い-adjectives, な-adjectives, 普通形) describe a whole
     // word class rather than a fixed piece of text, so there's no pattern
     // string to match against. For those, the example itself names the
     // exact substring to highlight instead.
-    var hl = ex.hl
-      ? (function () { var idx = ex.japanese.indexOf(ex.hl); return idx === -1 ? null : { start: idx, end: idx + ex.hl.length }; })()
-      : findHighlightRange(ex.japanese, ex.furigana, pattern);
+    var hl = getExampleHighlightRange(ex, pattern);
     return (
       '<div class="example">' +
         '<div class="example-jp jp-body">' + buildRuby(ex.japanese, ex.furigana, hl) + "</div>" +
@@ -856,6 +1362,12 @@
         navigateToEntry(btn.getAttribute("data-navigate"));
       });
     });
+    Array.prototype.forEach.call($main.querySelectorAll("[data-worksheet]"), function (btn) {
+      btn.addEventListener("click", function (evt) {
+        evt.stopPropagation();
+        openWorksheet(btn.getAttribute("data-worksheet"));
+      });
+    });
   }
 
   function navigateToEntry(id) {
@@ -863,8 +1375,19 @@
     if (!target) return;
     state.query = "";
     $search.value = "";
+
+    if (isReferenceArticle(target)) {
+      state.activeTab = "reference";
+      state.activeArticle = target.id;
+      renderTabs();
+      renderMain();
+      if (typeof window.scrollTo === "function") window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+
     if (state.activeTab !== target.level) {
       state.activeTab = target.level;
+      state.activeArticle = null;
       renderTabs();
     }
     renderMain();
