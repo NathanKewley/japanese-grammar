@@ -399,7 +399,7 @@ be practiced more than once rather than viewed as a single fixed sheet.
 ### 8.3 Why this approach
 
 Building this as an algorithm over existing data (rather than authoring a
-worksheet per entry by hand) means it works for all 487 entries
+worksheet per entry by hand) means it works for all 485 entries
 immediately and stays in sync automatically if an entry's examples ever
 change — no second content-authoring pass to maintain alongside the main
 one.
@@ -513,7 +513,7 @@ it wouldn't catch a CSS regression or a JS error in a new feature).
     random same-level entries), an open "write your own sentence" prompt,
     and a collapsible answer key. Everything is generated algorithmically
     from data the entry already has — no separate worksheet content was
-    authored, so it works for all 487 entries immediately, and a
+    authored, so it works for all 485 entries immediately, and a
     "New Worksheet" button reshuffles the selection on demand. See §8.
 17. **Worksheet simplified: merged into one exercise.** The separate
     typed-fill-in-the-blank and pattern-recognition-multiple-choice
@@ -543,9 +543,50 @@ it wouldn't catch a CSS regression or a JS error in a new feature).
     fallback path didn't re-check for collision), so `buildFillBlankQuestions`
     now requests extra candidate distractors and skips any that fully
     collide rather than showing a duplicate option.
+20. **Correctness and accuracy pass across the whole dataset.** Automated
+    scans (doubled words, missing punctuation, a/an errors, half-width
+    katakana, furigana-contains-kanji, related-link bidirectionality) came
+    back clean apart from one real typo (n1-moshikuwa's explanation had
+    "or or simple や", fixed to "or simply や"). The more significant find
+    was two genuine unintentional full-entry duplicates, caught by
+    normalizing every entry's `pattern` text and grouping by exact match:
+    ために was taught nearly identically at both N4 (n4-tame-ni) and N3
+    (n3-tame-ni-purpose) with overlapping examples and no real
+    distinction, and わりに（は） likewise at N3 (n3-warini) and N2
+    (n2-warii-niwa). Each pair was consolidated into the more complete of
+    the two (n2-warii-niwa's conjugation table correctly included
+    な-adjective, which n3-warini's omitted despite using one in its own
+    example), carrying over any genuinely fresh example content before
+    deleting the duplicate, and reassigning any related-links that had
+    pointed at the removed id. The same scan flagged several other
+    same-surface-text pairs (と, でも, ながら, なら, そうだ, しかない, こと)
+    that turned out to be legitimate — genuinely different meanings
+    sharing surface text, not accidental duplicates — confirmed by
+    reading each pair's full explanation and examples rather than pattern
+    text alone. One of those, n5-nara / n4-nara-conditional, was
+    confirmed as a deliberate, well-built design (N4's entry explicitly
+    cross-references N5 in its own explanation text and adds distinct
+    "four conditionals" comparison content with zero example overlap) but
+    was missing the actual `related` link its own explanation text
+    implied — fixed bidirectionally. A closer read of n2-toshite-mo (～と
+    しても／～としたら) found it organizing two genuinely different
+    meanings by word class instead of by meaning (violating §3.1's own
+    documented rule for exactly this situation) with としたら reduced to a
+    single buried example against four としても ones; restructured into
+    two meaning-titled usage groups and added two more としたら examples.
+    Manual linguistic spot-checks across a sample of N1–N5 entries (all
+    particles, conjugation forms, and set phrases checked against actual
+    Japanese grammar, not just structural validity) turned up no further
+    errors, plus one low-stakes duplicate-example fix in n1-ikan (its two
+    "regardless of" examples both used the identical いかんによらず、遅刻は
+    opening; swapped one for a different topic). Net effect: 487 → 485
+    entries, 96 → 97 cross-linked entries (net of the consolidation swaps
+    and the one added link), 1679 → 1681 examples, all counts confirmed
+    against a fresh `validate.js` run and full crash-safety sweep rather
+    than computed by hand.
 
-**Current state:** 487 entries across N5–N1, all validation checks
-passing, 100% highlight coverage, 96 entries cross-linked, all 5 levels
+**Current state:** 485 entries across N5–N1, all validation checks
+passing, 100% highlight coverage, 97 entries cross-linked, all 5 levels
 at consistent explanation depth, 7 reference articles built (currently
 hidden), worksheet generation available on every entry.
 

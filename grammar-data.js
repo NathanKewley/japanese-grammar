@@ -1023,7 +1023,8 @@ const N5_GRAMMAR = [
     ],
     conjugations: [
       { pos: "Noun", form: "+ なら", example: "明日 → 明日なら" }
-    ]
+    ],
+    related: ["n4-nara-conditional"]
   },
   {
     id: "n5-tara", level: "N5", pattern: "～たら", title: "If / when / after", short: "Introduces a condition or says what happens after something.",
@@ -1335,7 +1336,8 @@ const N4_GRAMMAR = [
     usages: [
       { title: "With verbs", examples: [
         { japanese: "車を買うために、お金をためています。", furigana: "くるまをかうために、おかねをためています。", english: "I am saving money in order to buy a car." },
-        { japanese: "遅刻しないために、早く出かけた。", furigana: "ちこくしないために、はやくでかけた。", english: "I left early so I wouldn't be late." }
+        { japanese: "遅刻しないために、早く出かけた。", furigana: "ちこくしないために、はやくでかけた。", english: "I left early so I wouldn't be late." },
+        { japanese: "夢を実現するために、留学を決めた。", furigana: "ゆめをじつげんするために、りゅうがくをきめた。", english: "I decided to study abroad in order to make my dream come true." }
       ]},
       { title: "With nouns", examples: [
         { japanese: "健康のために、毎日運動しています。", furigana: "けんこうのために、まいにちうんどうしています。", english: "I exercise every day for my health." },
@@ -1345,7 +1347,8 @@ const N4_GRAMMAR = [
     conjugations: [
       { pos: "Verb", form: "dictionary form", example: "買う → 買うために" },
       { pos: "Noun", form: "+ の", example: "健康 → 健康のために" }
-    ]
+    ],
+    related: ["n4-you-ni"]
   },
   {
     id: "n4-you-ni", level: "N4", pattern: "～ように", title: "So that / in order to", short: "Expresses acting so that a state or condition becomes possible.",
@@ -1362,7 +1365,7 @@ const N4_GRAMMAR = [
     conjugations: [
       { pos: "Verb", form: "dictionary or negative form", example: "聞こえる → 聞こえるように" }
     ],
-    related: ["n3-tame-ni-purpose"]
+    related: ["n4-tame-ni"]
   },
   {
     id: "n4-you-ni-naru", level: "N4", pattern: "～ようになる", title: "To reach the point where / become able to", short: "Describes a change in state or ability over time.",
@@ -1437,7 +1440,7 @@ const N4_GRAMMAR = [
       { pos: "Verb", form: "plain form", example: "行く → 行くなら" },
       { pos: "Noun", form: "+ なら", example: "学生 → 学生なら" }
     ],
-    related: ["n4-to-conditional","n4-ba-form","n5-tara"]
+    related: ["n4-to-conditional","n4-ba-form","n5-tara","n5-nara"]
   },
   {
     id: "n4-naru", level: "N4", pattern: "～になる", title: "To become", short: "Describes a change of state or transformation.",
@@ -2592,29 +2595,6 @@ const N3_GRAMMAR = [
     ]
   },
   {
-    id: "n3-warini", level: "N3", pattern: "～わりに（は）", title: "Considering that / given that", short: "Expresses a outcome that unexpected given the premise.",
-    explanation: "～わりに（は）connects a premise to a surprising reality that diverges from what the premise alone would predict — the outcome is disproportionately better or worse than expected, given the baseline. It's commonly used to comment on price, effort, or experience relative to results.",
-    usages: [
-      { title: "With verbs", examples: [
-        { japanese: "たくさん食べたわりに、太っていない。", furigana: "たくさんたべたわりに、ふとっていない。", english: "Considering how much I ate, I haven't gained weight." },
-        { japanese: "長時間練習したわりに、上手にならなかった。", furigana: "ちょうじかんれんしゅうしたわりに、じょうずにならなかった。", english: "Considering how long I practiced, I didn't get very good at it." }
-      ]},
-      { title: "With adjectives", examples: [
-        { japanese: "値段が高いわりに、あまり美味しくなかった。", furigana: "ねだんがたかいわりに、あまりおいしくなかった。", english: "Considering how expensive it was, it wasn't very tasty." },
-        { japanese: "簡単なわりに、意外と時間がかかった。", furigana: "かんたんなわりに、いがいとじかんがかかった。", english: "Considering how simple it was, it surprisingly took a lot of time." }
-      ]},
-      { title: "With nouns", examples: [
-        { japanese: "この料理は値段のわりに美味しいです。", furigana: "このりょうりはねだんのわりにおいしいです。", english: "This dish is delicious considering the price." },
-        { japanese: "彼は年齢のわりに、とても落ち着いている。", furigana: "かれはねんれいのわりに、とてもおちついている。", english: "For his age, he's very composed." }
-      ]}
-    ],
-    conjugations: [
-      { pos: "Verb", form: "plain form", example: "食べた → 食べたわりに" },
-      { pos: "い-Adjective", form: "plain form", example: "高い → 高いわりに" },
-      { pos: "Noun", form: "+ の", example: "値段 → 値段のわりに" }
-    ]
-  },
-  {
     id: "n3-kuse-ni", level: "N3", pattern: "～くせに", title: "Even though / and yet (blame)", short: "Expresses criticism or annoyance that something occurs despite a fact.",
     explanation: "～くせに attaches to a plain-form phrase and criticizes a contradiction between a fact and someone's behavior — 'even though X, they act like Y', with a clearly disapproving, sometimes contemptuous tone. It's always critical; unlike のに, it can never be used sympathetically.",
     usages: [
@@ -2860,23 +2840,6 @@ const N3_GRAMMAR = [
       { pos: "Verb", form: "plain form", example: "解ける → 解けるはずがない" }
     ],
     related: ["n4-pukai"]
-  },
-  {
-    id: "n3-tame-ni-purpose", level: "N3", pattern: "～ために", title: "In order to / for the sake of", short: "Expresses deliberate intention to reach a target.",
-    explanation: "Attached to dictionary-form verbs or nouns + の, ～ために states a direct purpose — 'in order to X' or 'for the sake of X'. It requires that the subject of both clauses be capable of intentional action (unlike ように, which also works with involuntary or hoped-for outcomes).",
-    usages: [
-      { title: "Goal", examples: [
-        { japanese: "家を買うために貯金しています。", furigana: "いえをかうためにちょきんしています。", english: "I am saving money to buy a house." },
-        { japanese: "夢を実現するために、留学を決めた。", furigana: "ゆめをじつげんするために、りゅうがくをきめた。", english: "I decided to study abroad in order to make my dream come true." },
-        { japanese: "健康のために、毎朝走っています。", furigana: "けんこうのために、まいあさはしっています。", english: "I run every morning for the sake of my health." },
-        { japanese: "家族のために、もっと稼ぎたいと思っている。", furigana: "かぞくのために、もっとかせぎたいとおもっている。", english: "For my family's sake, I want to earn more." }
-      ]}
-    ],
-    conjugations: [
-      { pos: "Verb", form: "dictionary form", example: "買う → 買うために" },
-      { pos: "Noun", form: "+ の", example: "健康 → 健康のために" }
-    ],
-    related: ["n4-you-ni"]
   },
   {
     id: "n3-zu-ni", level: "N3", pattern: "～ずに", title: "Without doing", short: "A formal or written version of ～ないで.",
@@ -4578,18 +4541,21 @@ const N2_GRAMMAR = [
     id: "n2-toshite-mo", level: "N2", pattern: "～としても / ～としたら", title: "Even assuming that / if we suppose", short: "Sets up a hypothetical scenario or concession.",
     explanation: "～としても attaches to a plain-form phrase and means 'even granting that X is true, ...' — a concessive that acknowledges a hypothetical or actual fact before showing it doesn't change the conclusion. ～としたら sets up a more open hypothetical, closer to 'if we assume that X, ...'.",
     usages: [
-      { title: "With verbs", examples: [
-        { japanese: "彼が来たとしたら、どうする？", furigana: "かれがきたとしたら、どうする？", english: "What would you do if he came?" },
+      { title: "としても (even granting that)", examples: [
         { japanese: "たとえ許可を得たとしても、危険な作業には変わりない。", furigana: "たとえきょかをえたとしても、きけんなさぎょうにはかわりない。", english: "Even granting that permission was obtained, it's still a dangerous task." },
-        { japanese: "全員が反対したとしても、私は計画を進めるつもりだ。", furigana: "ぜんいんがはんたいしたとしても、わたしはけいかくをすすめるつもりだ。", english: "Even if everyone were to oppose it, I intend to move forward with the plan." }
-      ]},
-      { title: "With nouns", examples: [
+        { japanese: "全員が反対したとしても、私は計画を進めるつもりだ。", furigana: "ぜんいんがはんたいしたとしても、わたしはけいかくをすすめるつもりだ。", english: "Even if everyone were to oppose it, I intend to move forward with the plan." },
         { japanese: "本当だとしても、信じられない。", furigana: "ほんとうだとしても、しんじられない。", english: "Even assuming that's true, I can't believe it." },
         { japanese: "たとえ社長だとしても、規則は守るべきだ。", furigana: "たとえしゃちょうだとしても、きそくはまもるべきだ。", english: "Even if he's the president, he should follow the rules." }
+      ]},
+      { title: "としたら (if we suppose)", examples: [
+        { japanese: "彼が来たとしたら、どうする？", furigana: "かれがきたとしたら、どうする？", english: "What would you do if he came?" },
+        { japanese: "宝くじが当たったとしたら、何をしますか。", furigana: "たからくじがあたったとしたら、なにをしますか。", english: "If you won the lottery, what would you do?" },
+        { japanese: "もし彼女が知っているとしたら、なぜ黙っていたのだろう。", furigana: "もしかのじょがしっているとしたら、なぜだまっていたのだろう。", english: "If she did know, I wonder why she kept quiet about it." }
       ]}
     ],
     conjugations: [
       { pos: "Verb", form: "past (た) form + としても", example: "得た → 得たとしても" },
+      { pos: "Verb", form: "past (た) form + としたら", example: "来た → 来たとしたら" },
       { pos: "Noun", form: "+ だ + としても", example: "本当 → 本当だとしても" }
     ],
     related: ["n2-ni-shite-kara"]
@@ -6570,7 +6536,7 @@ const N1_GRAMMAR = [
       ]},
       { title: "Regardless of (いかんによらず)", examples: [
         { japanese: "理由のいかんによらず、遅刻は認められない。", furigana: "りゆうのいかんによらず、ちこくはみとめられない。", english: "Regardless of the reason, lateness is not accepted." },
-        { japanese: "理由のいかんによらず、遅刻は遅刻だ。", furigana: "りゆうのいかんによらず、ちこくはちこくだ。", english: "Regardless of the reason, being late is being late." }
+        { japanese: "年齢のいかんによらず、誰でも参加できます。", furigana: "ねんれいのいかんによらず、だれでもさんかできます。", english: "Regardless of age, anyone can participate." }
       ]}
     ],
     conjugations: [
@@ -7167,7 +7133,7 @@ const N1_GRAMMAR = [
   },
   {
     id: "n1-moshikuwa", level: "N1", pattern: "もしくは", title: "Or (formal)", short: "A formal written equivalent of または, offering an alternative.",
-    explanation: "もしくは is a formal, written conjunction meaning 'or', typically found in official documents, forms, and legal writing rather than everyday speech, where または or or simple や would be more natural.",
+    explanation: "もしくは is a formal, written conjunction meaning 'or', typically found in official documents, forms, and legal writing rather than everyday speech, where または or simply や would be more natural.",
     usages: [
       { title: "Formal alternative", examples: [
         { japanese: "本人もしくは代理人がお越しください。", furigana: "ほんにんもしくはだいりにんがおこしください。", english: "Please have either the person themselves or a representative come." },
