@@ -348,7 +348,7 @@ function settingsExtra() {
 
 const CREDITS = html`
   <p>Literature: public-domain works transcribed by <a href="https://www.aozora.gr.jp/" target="_blank" rel="noopener">Aozora Bunko</a> volunteers.</p>
-  <p>Word meanings from <a href="https://www.edrdg.org/wiki/index.php/JMdict-EDICT_Dictionary_Project" target="_blank" rel="noopener">JMdict</a> and kanji meanings and readings from <a href="https://www.edrdg.org/wiki/index.php/KANJIDIC_Project" target="_blank" rel="noopener">KANJIDIC2</a>, the property of the Electronic Dictionary Research and Development Group, used under their licence (CC BY-SA 4.0).</p>
+  <p>Word meanings from <a href="https://www.edrdg.org/wiki/index.php/JMdict-EDICT_Dictionary_Project" target="_blank" rel="noopener">JMdict</a> and kanji meanings and readings from <a href="https://www.edrdg.org/wiki/index.php/KANJIDIC_Project" target="_blank" rel="noopener">KANJIDIC2</a>, the property of the Electronic Dictionary Research and Development Group, used under <a href="https://www.edrdg.org/edrdg/licence.html" target="_blank" rel="noopener">their licence</a> (CC BY-SA 4.0).</p>
   <p>Tokenising: MeCab with UniDic, at build time only.</p>`;
 
 // ---------- Start ----------
@@ -372,6 +372,7 @@ boot(document.getElementById('app'), async () => {
     id: 'reading',
     title: 'Vibe Reading',
     model,
+    summaryNoun: 'readings',
     backupFile: 'vibe-reading-backup',
     credits: CREDITS,
     text: {

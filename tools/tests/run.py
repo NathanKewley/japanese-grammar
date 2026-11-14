@@ -1,0 +1,340 @@
+#!/usr/bin/env python3
+"""Browser tests for the site: each study app, the landing page, backups and
+Android emulation. They drive a real headless Chrome through the same screens
+a learner uses.
+
+    python3 tools/tests/run.py            # every test
+    python3 tools/tests/run.py reading    # tests whose name contains "reading"
+
+Needs Python 3 and Chrome (or Chromium; set CHROME to its path if it isn't on
+the PATH). Each test gets a fresh browser profile, so none sees another's progress.
+"""
+import functools
+import http.server
+import json
+import os
+import sys
+import threading
+import time
+import traceback
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from cdp import Chrome, free_port  # noqa: E402
+
+ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+BASE = None
+TESTS = []
+
+
+def test(fn):
+    TESTS.append(fn)
+    return fn
+
+
+class Failure(Exception):
+    pass
+
+
+def check(cond, message):
+    if not cond:
+        raise Failure(message)
+
+
+def serve():
+    """Serves the site from the repo root on a free port, quietly."""
+    global BASE
+    port = free_port()
+    handler = functools.partial(QuietHandler, directory=ROOT)
+    server = http.server.ThreadingHTTPServer(('127.0.0.1', port), handler)
+    threading.Thread(target=server.serve_forever, daemon=True).start()
+    BASE = f'http://127.0.0.1:{port}/'
+    return server
+
+
+class QuietHandler(http.server.SimpleHTTPRequestHandler):
+    def log_message(self, *args):
+        pass
+
+
+# ---------- Helpers ----------
+
+def open_app(c, path, wait=3):
+    c.go(BASE + path, 0.5)
+    c.wait_for("!!(window.vibeApp || document.querySelector('.tiles') || document.querySelector('.app-title'))", 15)
+    c.sleep(wait - 0.5)
+
+
+def question(c):
+    """The current question, from the app's debug handle."""
+    return c.js("""(() => { const q = vibeApp.ui.screen.state.engine.currentQuestion;
+      return { type: q.type || null, ci: q.correctIndex,
+        kana: q.answer && q.answer.main ? q.answer.main.map(s => s[1] || s[0]).join('') : null,
+        line: q.type === 'dictation' ? q.item.lines[q.line].text : null }; })()""")
+
+
+def in_quiz(c):
+    return c.js("!!document.querySelector('.quiz-progress')")
+
+
+def type_answer(c, text):
+    c.js(f"document.getElementById('answer').value = {json.dumps(text)}; document.getElementById('answer').dispatchEvent(new Event('input'))")
+    c.js("document.querySelector('form [type=submit]').click()")
+
+
+def answer_all(c, mode=lambda i, q: 'right', limit=150):
+    """Answers the open quiz to the end. mode(i, q) returns 'right', 'wrong', 'romaji' or 'amend'."""
+    i = 0
+    while in_quiz(c) and i < limit:
+        c.sleep(0.35)  # past the input delay
+        if c.js("[...document.querySelectorAll('.view button')].some(b => b.textContent.includes('Show answer'))"):
+            c.click('Show answer', 0.35)
+        q = question(c) if c.js("!!(vibeApp.ui.screen.state && vibeApp.ui.screen.state.engine && vibeApp.ui.screen.state.engine.currentQuestion)") else None
+        m = mode(i, q)
+        if q is None or q['type'] is None:  # Writing: self-marked
+            c.click('Got it' if m == 'right' else 'Not yet', 0.2)
+        elif q['type'] in ('choice',):
+            n = c.js("document.querySelectorAll('.option').length")
+            idx = q['ci'] if m in ('right', 'romaji') else (q['ci'] + 1) % n
+            c.js(f"document.querySelectorAll('.option')[{idx}].click()")
+        elif q['type'] == 'reread':
+            c.click('Read it fine' if m == 'right' else 'Struggled', 0.2)
+        elif q['type'] == 'dictation':
+            type_answer(c, q['line'] if m == 'right' else 'ちがう')
+        else:  # typed conjugation
+            type_answer(c, ROMAJI[q['kana']] if m == 'romaji' and q['kana'] in ROMAJI else q['kana'] if m == 'right' else 'ぜんぜんちがう')
+        if m == 'amend':
+            c.sleep(0.4)
+            c.click('as right' if c.js("document.body.innerText.includes('count it as right')") else 'mark as correct', 0.3)
+        c.sleep(0.15)
+        i += 1
+    c.sleep(1.2)
+    return i
+
+
+ROMAJI = {'みます': 'mimasu', 'たべます': 'tabemasu', 'かきます': 'kakimasu', 'のみます': 'nomimasu', 'かいます': 'kaimasu',
+          'はなします': 'hanashimasu', 'まちます': 'machimasu', 'おきます': 'okimasu', 'します': 'shimasu', 'きます': 'kimasu',
+          'みません': 'mimasen', 'たべません': 'tabemasen', 'かきません': 'kakimasen', 'のみません': 'nomimasen',
+          'かいません': 'kaimasen', 'はなしません': 'hanashimasen', 'まちません': 'machimasen', 'おきません': 'okimasen',
+          'しません': 'shimasen', 'きません': 'kimasen'}
+
+
+def no_errors(c):
+    # Web fonts come from Google over the network, so a failed font request isn't the site's fault.
+    errors = [l for l in c.dump_logs() if ('EXCEPTION' in l or 'log.error' in l or 'console.error' in l)
+              and 'favicon' not in l and 'fonts.googleapis.com' not in l and 'fonts.gstatic.com' not in l]
+    check(not errors, 'console errors:\n  ' + '\n  '.join(errors))
+
+
+def view(c):
+    return c.text('.view')
+
+
+# ---------- Tests ----------
+
+@test
+def landing_starts_empty(c):
+    open_app(c, 'index.html', 2.5)
+    check(c.js("document.getElementById('summary').hidden"), 'summary strip should be hidden with no study')
+    check(c.js("document.getElementById('backupReminder').hidden"), 'no backup reminder with no study')
+    check(c.js("document.getElementById('backupReminder').offsetHeight") == 0, 'the hidden backup reminder should take up no space')
+    check(c.text('[data-stat="writing"]') == 'Not started yet', 'Writing tile should say Not started yet')
+    check('Your study data takes up about' in c.text('#storageLine'), 'storage line missing')
+    open_app(c, 'grammar/index.html', 2)
+    check('Grammar Library' in c.text('.app-title'), 'grammar header')
+    no_errors(c)
+
+
+@test
+def writing_section_resume_and_stats(c):
+    open_app(c, 'writing/index.html#/section/l1.kana')
+    c.click('Write from memory')
+    for _ in range(3):
+        c.sleep(0.35)
+        c.click('Show answer', 0.35)
+        c.click('Got it', 0.2)
+    open_app(c, 'writing/index.html#/section/l1.kana', 1.5)
+    check('3 of 10 done' in c.js("document.querySelector('.view .btn.block').textContent"), 'resume button should show 3 of 10')
+    c.click('Resume writing', 0.6)
+    check('Question 4 of 10' in c.text('.label'), 'should resume at question 4')
+    answer_all(c)
+    v = view(c)
+    check('Section passed' in v and '10/10' in v, 'section should pass with 10/10 after resuming')
+    check(c.js("vibeApp.model.cards.size") == 10, 'ten kana cards should join the deck')
+    open_app(c, 'writing/index.html#/stats', 2)
+    check('First strokes' in view(c) and 'Flawless' in view(c), 'first-section and perfect-quiz achievements should unlock')
+    for path in ['#/reviews', '#/practice', '#/achievements', '#/deck/kana?tab=stats', '#/item/word%3A%E6%97%A5%E6%9C%AC', '#/settings']:
+        open_app(c, 'writing/index.html' + path, 1)
+    no_errors(c)
+
+
+@test
+def conjugation_typing_romaji_typo_and_drill(c):
+    open_app(c, 'conjugation/index.html#/section/l1.types')
+    c.click('Start the quiz')
+    answer_all(c)
+    check('Section passed' in view(c), 'word types section should pass')
+    open_app(c, 'conjugation/index.html#/section/l2.learn', 1.5)
+    c.click('Start the quiz')
+    answer_all(c, lambda i, q: ['right', 'romaji', 'amend', 'right'][i % 4])
+    v = view(c)
+    check('Section passed' in v and '20/20' in v, 'romaji answers and typo amends should all count: ' + v[:200])
+    open_app(c, 'conjugation/index.html#/', 2)
+    c.click("Start today's drill")
+    check(in_quiz(c), 'drill should open')
+    answer_all(c)
+    check('Extra review complete' in view(c), 'drill should finish')
+    check(c.js("vibeApp.model.drillDoneToday"), 'drill should be marked done')
+    no_errors(c)
+
+
+@test
+def reading_popup_pass_and_reread(c):
+    open_app(c, 'reading/index.html#/section/r1')
+    c.click('.passage p .pw ~ .pw', 0.6)
+    check('person' in c.text('.word-popup'), 'word popup should open')
+    c.click('.view h1', 0.3)
+    c.click('Answer')
+    answer_all(c)
+    check('Reading passed' in view(c), 'reading should pass')
+    c.js("(() => { const m = vibeApp.model; for (const x of m.cards.values()) x.card.due = Date.now() - 1000; m.notify(); })()")
+    open_app(c, 'reading/index.html#/quiz/review-all', 2)
+    check(c.js("vibeApp.ui.screen.state.engine.currentQuestion.type") == 'reread', 'review should be a re-read')
+    answer_all(c)
+    check('Review complete' in view(c), 're-read review should complete')
+    no_errors(c)
+
+
+@test
+def listening_audio_amend_dictation_and_transcript(c):
+    open_app(c, 'listening/index.html#/section/l1')
+    c.click('Start listening')
+    c.sleep(0.4)
+    c.click('.pbtn', 1.2)
+    check('played 1×' in c.js("document.querySelector('.audio-bar .time').textContent"), 'audio should play and count')
+    answer_all(c, lambda i, q: 'amend' if i == 1 else 'right')
+    check('Section passed' in view(c) and '3/3' in view(c), 'a wrong tap marked correct should still pass 3/3')
+    open_app(c, 'listening/index.html#/section/d1', 1.5)
+    c.click('Start dictation')
+    answer_all(c)
+    check('Section passed' in view(c), 'dictation should pass')
+    open_app(c, 'listening/index.html#/section/l1', 1.5)
+    c.click('Play along', 1.5)
+    check(c.js("document.querySelector('p.tline.current')?.dataset.para") is not None, 'play along should highlight a line')
+    no_errors(c)
+
+
+@test
+def app_backup_round_trip(c):
+    open_app(c, 'writing/index.html#/section/l1.kana')
+    c.click('Write from memory')
+    answer_all(c)
+    text = c.js("vibeApp.model.exportBackup()")
+    info = c.js(f"(() => {{ const b = vibeApp.model.readBackup({json.dumps(text)}); return [b.sectionsPassed, b.itemsLearned]; }})()")
+    check(info == [1, 10], f'backup should hold 1 section and 10 items, got {info}')
+    c.js("vibeApp.model.store.replaceAllTables({})")
+    c.sleep(0.3)
+    c.js(f"vibeApp.model.restoreBackup(vibeApp.model.readBackup({json.dumps(text)}))")
+    c.sleep(0.5)
+    check(c.js("vibeApp.model.totalPassed") == 1, 'restore should bring progress back')
+    bad = c.js("(() => { try { vibeApp.model.readBackup('{\"app\":\"vibe_web_reading\"}'); return 'accepted'; } catch (e) { return e.message; } })()")
+    check("isn't a Vibe Writing backup" in bad, 'another app\'s backup should be refused')
+    no_errors(c)
+
+
+@test
+def landing_glance_chart_and_backup_reminder(c):
+    open_app(c, 'writing/index.html#/section/l1.kana')
+    c.click('Write from memory')
+    answer_all(c)
+    c.js("""(() => { const s = vibeApp.model.store; const day = 86400000;
+      for (let d = 1; d <= 2; d++) s.logAnswer({ sessionId: 1, cardId: 'kana:hiragana-basic.0', partId: 'kana', round: 1, correct: true, millis: 90000, given: null, at: Date.now() - d * day }); })()""")
+    c.sleep(0.5)
+    open_app(c, 'index.html', 2.5)
+    strip = c.text('#summary')
+    check('3' in strip and 'Day streak' in strip, 'streak should be 3: ' + strip)
+    check(not c.js("document.getElementById('activity').hidden"), 'chart should show')
+    check(c.text('[data-stat="writing"]').startswith('0/262 lessons'), 'Writing tile should show lessons from its summary')
+    reminder = c.js("document.getElementById('backupReminder').hidden ? '' : document.getElementById('backupReminder').innerText")
+    check("haven't backed up" in reminder, 'backup reminder should show after three study days')
+    c.click('[data-reminder="later"]', 0.4)
+    open_app(c, 'index.html', 2)
+    check(c.js("document.getElementById('backupReminder').hidden"), 'Remind me later should hide it on reload')
+    no_errors(c)
+
+
+@test
+def android_emulation_touch_install_and_enter(c):
+    c.send('Emulation.setDeviceMetricsOverride', width=412, height=915, deviceScaleFactor=2.6, mobile=True)
+    c.send('Emulation.setTouchEmulationEnabled', enabled=True, maxTouchPoints=5)
+    c.send('Emulation.setUserAgentOverride', userAgent='Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Mobile Safari/537.36', platform='Android')
+
+    def tap(selector, wait=0.5):
+        x, y = c.js(f"(() => {{ const e = document.querySelector({json.dumps(selector)}); e.scrollIntoView({{block:'center'}}); const b = e.getBoundingClientRect(); return [b.left + b.width/2, b.top + b.height/2]; }})()")
+        c.send('Input.dispatchTouchEvent', type='touchStart', touchPoints=[{'x': x, 'y': y}])
+        c.send('Input.dispatchTouchEvent', type='touchEnd', touchPoints=[])
+        c.sleep(wait)
+
+    open_app(c, 'index.html', 2.5)
+    check(c.send('Page.getInstallabilityErrors')['installabilityErrors'] == [], 'site should be installable')
+    tap('#themeToggle')
+    check(c.js("document.querySelector('meta[name=theme-color]').content") == '#0A0A0C', 'bar colour should follow dark mode')
+    tap('a[href="reading/index.html"]', 3)
+    check(c.js("location.pathname").endswith('/reading/index.html'), 'tapping a tile should open the app')
+    open_app(c, 'conjugation/index.html#/section/l2.learn', 1.5)
+    c.js("vibeApp.model.unlockEarly(vibeApp.model.course.sectionById('l2.learn'))")
+    c.sleep(0.4)
+    tap('a.btn.block', 1.5)
+    kana = question(c)['kana']
+    tap('#answer', 0.4)
+    c.send('Input.insertText', text=kana)
+    c.send('Input.dispatchKeyEvent', type='keyDown', key='Enter', code='Enter', windowsVirtualKeyCode=13, text='\r')
+    c.send('Input.dispatchKeyEvent', type='keyUp', key='Enter', code='Enter', windowsVirtualKeyCode=13)
+    c.sleep(0.8)
+    check('right' in c.text('.result-head'), 'keyboard Enter should submit the typed answer')
+    no_errors(c)
+
+
+@test
+def every_screen_renders(c):
+    for app, paths in {
+        'writing': ['', '#/reviews', '#/stats', '#/settings', '#/section/l1.kana', '#/achievements'],
+        'conjugation': ['', '#/reviews', '#/stats', '#/settings', '#/section/l1.types', '#/deck/n5v?tab=stats'],
+        'reading': ['', '#/reviews', '#/stats', '#/settings', '#/section/r1', '#/item/reread%3A1'],
+        'listening': ['', '#/reviews', '#/stats', '#/settings', '#/section/l1', '#/practice'],
+    }.items():
+        for p in paths:
+            open_app(c, f'{app}/index.html{p}', 1)
+            check(len(view(c)) > 40, f'{app}{p} rendered nothing')
+    no_errors(c)
+
+
+# ---------- Runner ----------
+
+def main():
+    only = sys.argv[1] if len(sys.argv) > 1 else ''
+    server = serve()
+    chosen = [t for t in TESTS if only in t.__name__]
+    failed = 0
+    start = time.time()
+    for t in chosen:
+        c = Chrome(420, 900)
+        t0 = time.time()
+        try:
+            t(c)
+            print(f'PASS  {t.__name__}  ({time.time() - t0:.0f}s)')
+        except Failure as e:
+            failed += 1
+            print(f'FAIL  {t.__name__}: {e}')
+        except Exception:
+            failed += 1
+            print(f'ERROR {t.__name__}:')
+            traceback.print_exc()
+        finally:
+            c.close()
+    server.shutdown()
+    print(f'\n{len(chosen) - failed} of {len(chosen)} passed in {time.time() - start:.0f}s')
+    sys.exit(1 if failed else 0)
+
+
+if __name__ == '__main__':
+    main()

@@ -11,7 +11,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="theme-color" content="#FAFAFA">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Japanese Study</title>
+<title>Nath's 日本語 Tools</title>
 <meta name="description" content="A JLPT grammar library and four spaced-repetition study apps: writing, conjugation, reading and listening.">
 <link rel="stylesheet" href="shared/core.css">
 <link rel="stylesheet" href="landing.css">
@@ -26,14 +26,18 @@
 <body>
 <header class="hub-head">
   <div class="hub-wrap row">
-    <span class="grow hub-brand" lang="ja">日本語</span>
+    <span class="grow"></span>
     <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode"></button>
   </div>
 </header>
 
 <main class="hub-wrap">
-  <h1 class="hub-title">What will you study today?</h1>
+  <h1 class="hub-title">Nath's 日本語 Tools</h1>
   <p class="hub-sub">A grammar library and four spaced-repetition courses, from N5 to N1.</p>
+
+  <div id="backupReminder" class="backup-reminder" role="status" hidden></div>
+
+  <section id="summary" class="summary" aria-label="Your study at a glance" hidden></section>
 
   <nav class="tiles" aria-label="Study apps">
     <a class="tile tile-wide" href="grammar/index.html" style="--tile:var(--app-grammar)">
@@ -64,7 +68,7 @@
       <span class="tile-glyph" lang="ja">読</span>
       <span class="tile-body">
         <span class="tile-name">Reading</span>
-        <span class="tile-desc">132 graded readings, from short messages to literature.</span>
+        <span class="tile-desc">132 graded readings, up to classic literature.</span>
         <span class="tile-stat" data-stat="reading"></span>
       </span>
     </a>
@@ -77,6 +81,12 @@
       </span>
     </a>
   </nav>
+
+  <section id="activity" class="activity" aria-labelledby="activityTitle" hidden>
+    <h2 class="h2" id="activityTitle">Minutes studied, last 14 days</h2>
+    <p class="small">Time in quizzes plus time you've logged, across every app.</p>
+    <div id="activityChart"></div>
+  </section>
 
   <section class="card data-info" aria-labelledby="dataTitle">
     <h2 class="h2" id="dataTitle">Where your progress is kept</h2>

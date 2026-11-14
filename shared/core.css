@@ -72,6 +72,9 @@ body[data-app] { --accent-soft: color-mix(in srgb, var(--accent) 13%, transparen
 
 * { box-sizing: border-box; }
 
+/* Hidden means hidden, even for elements given their own display style. */
+[hidden] { display: none !important; }
+
 html, body {
   margin: 0;
   padding: 0;
@@ -434,6 +437,9 @@ details.lesson > .list { padding: 0 0 8px 30px; }
   white-space: nowrap;
   overflow: visible;
 }
+
+.chart-axis span:first-child { text-align: left; }
+.chart-axis span:last-child { text-align: right; }
 
 .legend { display: flex; gap: 14px; font-size: 0.78rem; color: var(--ink-soft); margin-bottom: 4px; }
 .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; }

@@ -420,6 +420,7 @@ function quizScreen(app, config) {
       window.scrollTo(0, 0);
     }
     celebrate(fresh);
+    app.writeSummary();
   }
 
   const screen = {
@@ -628,7 +629,7 @@ function statsTab(app, ui) {
   const hasAnswers = stats.answers.length > 0;
   // Achievements are checked whenever the stats are shown, as in the apps.
   model.updateAchievements(stats).then((fresh) => {
-    if (fresh.length) { celebrate(fresh); if (ui.screen && ui.screen.tab === 'stats') ui.render(); }
+    if (fresh.length) { celebrate(fresh); app.writeSummary(); if (ui.screen && ui.screen.tab === 'stats') ui.render(); }
   });
   if (!model.lastFacts) model.lastFacts = model.achievementFacts(stats);
 
@@ -1032,7 +1033,29 @@ export function createSrsApp(spec) {
     }
   };
 
+  /**
+   * A small summary for the landing page, which can't load the course content
+   * itself: progress through the course and achievements unlocked.
+   */
+  app.writeSummary = () => {
+    const m = app.model;
+    try {
+      localStorage.setItem(`vibe.summary.${spec.id}`, JSON.stringify({
+        lessonsDone: m.lessonsComplete,
+        lessonsTotal: m.course.lessons.length,
+        noun: spec.summaryNoun || 'lessons',
+        sectionsDone: m.totalPassed,
+        sectionsTotal: m.course.allSections.length,
+        achievements: Object.keys(m.unlocked).length,
+        achievementsTotal: m.achievements.length,
+        updatedAt: Date.now(),
+      }));
+    } catch (e) { /* storage blocked */ }
+  };
+  app.writeSummary();
+
   app.model.onChange(() => {
+    app.writeSummary();
     if (ui.screen && !ui.screen.ignoreModel) ui.render();
   });
   app.model.store.onError = () => toast("Couldn't save your progress. Your browser may be out of storage space.");
