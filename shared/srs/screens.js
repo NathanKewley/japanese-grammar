@@ -2,7 +2,7 @@
 
 import { html, raw, icon, richText, plural, dialog, confirmDialog, toast, longDate, slashDate, shortDate, formatSeconds, formatLong, formatMinutes, currentTheme, setTheme } from './dom.js';
 import { Ui, statGrid, statSection, barRow, barChart, legend, progressBar, dayLabel, aheadLabel, switchRow, GOOD, BAD, ACCENT } from './ui.js';
-import { SrsModel, SectionStatus, BackupError, MIN_DAILY_LIMIT, MAX_DAILY_LIMIT } from './model.js';
+import { SrsModel, SectionStatus, BackupError, MIN_DAILY_LIMIT, MAX_DAILY_LIMIT, projectedFinish } from './model.js';
 import { QuizEngine, seeded, shuffled } from './quiz-engine.js';
 import { buildFocusAreas, buildInsights } from './focus.js';
 import { deleteDatabase } from './store.js';
@@ -913,6 +913,37 @@ async function resetApp(app) {
   await deleteDatabase(app.dbName);
   location.hash = '#/';
   location.reload();
+}
+
+// ---------- Progress panel (Writing, Reading, Listening) ----------
+
+export const LEVELS = ['N5', 'N4', 'N3', 'N2', 'N1'];
+
+/**
+ * Where the course stands: how much is left, when it would be done at one a
+ * day, six days a week, and progress at each level. [noun]/[nouns] name a
+ * lesson ("reading", "readings"); [stats] are [label, value] pairs.
+ */
+export function progressPanel(model, { noun, nouns, stats, lessonsAt }) {
+  const lessons = model.course.lessons;
+  const left = lessons.filter((l) => !model.lessonComplete(l)).length;
+  const finish = projectedFinish(model, lessons);
+  const status = left === 0
+    ? `Every ${noun} is done, all of N5 to N1. Keep up your reviews.`
+    : `${left} ${left === 1 ? noun : nouns} left. At one a day, six days a week, you'd finish on ${longDate(new Date(finish))}.`;
+  return html`<div class="stack">
+    <h1 class="h1">Your progress</h1>
+    <p>${status}</p>
+    ${statGrid(stats)}
+    <div>
+      ${LEVELS.map((level) => {
+        const ls = lessonsAt(level);
+        if (!ls.length) return '';
+        const done = ls.filter((l) => model.lessonComplete(l)).length;
+        return barRow({ label: level, fraction: done / ls.length, value: `${done}/${ls.length}` });
+      })}
+    </div>
+  </div>`;
 }
 
 // ---------- Wiring ----------

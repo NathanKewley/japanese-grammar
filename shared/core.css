@@ -84,6 +84,10 @@ html, body {
 
 body { min-height: 100vh; }
 
+/* No grey flash on tap in Android Chrome; buttons have their own pressed states. */
+a, button, summary, label, .pw, .tile { -webkit-tap-highlight-color: transparent; }
+.btn:active, .option:active, .icon-btn:active { transform: scale(0.98); }
+
 /* Icons are stroked line drawings unless a component says otherwise. */
 svg[aria-hidden="true"] { width: 1.2em; height: 1.2em; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 span[style*="width"] > svg[aria-hidden="true"] { width: 100%; height: 100%; }

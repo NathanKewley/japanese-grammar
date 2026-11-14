@@ -106,15 +106,22 @@ export function currentTheme() {
   return document.documentElement.getAttribute('data-theme') || 'light';
 }
 
+function paintBar(theme) {
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute('content', theme === 'dark' ? '#0A0A0C' : '#FAFAFA');
+}
+
 export function initTheme() {
   let saved = null;
   try { saved = localStorage.getItem(THEME_KEY); } catch (e) { /* storage blocked */ }
   const theme = saved || (window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
   document.documentElement.setAttribute('data-theme', theme);
+  paintBar(theme);
 }
 
 export function setTheme(theme) {
   document.documentElement.setAttribute('data-theme', theme);
+  paintBar(theme);
   try { localStorage.setItem(THEME_KEY, theme); } catch (e) { /* storage blocked */ }
 }
 

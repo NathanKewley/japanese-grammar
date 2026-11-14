@@ -1,12 +1,12 @@
 // Vibe Reading: 132 graded readings from N5 messages to N1 literature, with
 // tappable words, comprehension questions and re-reading reviews.
 
-import { html, icon, plural, shortDate, longDate } from '../shared/srs/dom.js';
+import { html, icon, plural } from '../shared/srs/dom.js';
 import { Store } from '../shared/srs/store.js';
 import { Course } from '../shared/srs/course.js';
-import { SrsModel, SectionStatus, computePlan, DEFAULT_DEPARTURE, count, answersWhere } from '../shared/srs/model.js';
+import { SrsModel, SectionStatus, count, answersWhere } from '../shared/srs/model.js';
 import { statGrid, barRow } from '../shared/srs/ui.js';
-import { createSrsApp, boot, path, offerUnlock } from '../shared/srs/screens.js';
+import { createSrsApp, boot, path, offerUnlock, progressPanel, LEVELS } from '../shared/srs/screens.js';
 import { Rating, newCard } from '../shared/srs/fsrs.js';
 import { Dictionary, renderPassage } from '../shared/srs/passage.js';
 
@@ -81,24 +81,14 @@ function buildCourse(data) {
 
 // ---------- Model ----------
 
-const JAPAN_LEVELS = new Set(['N3', 'N2', 'N1']);
-
 class ReadingModel extends SrsModel {
   loadExtras() {
     const s = this.store;
-    const d = parseInt(s.loadSetting('departure') || '', 10);
-    this.departure = Number.isFinite(d) ? d : DEFAULT_DEPARTURE;
     this.textScale = parseFloat(s.loadSetting('text_scale') || '') || 1.0;
     this.slowSpeech = s.loadSetting('slow_speech') === 'true';
     this.lookups = parseInt(s.loadSetting('lookups') || '0', 10) || 0;
     this.readAloudCount = parseInt(s.loadSetting('read_aloud') || '0', 10) || 0;
     this.fullLookups = parseInt(s.loadSetting('full_lookups') || '0', 10) || 0;
-  }
-
-  async setDeparture(date) {
-    this.departure = date;
-    await this.store.saveSetting('departure', date);
-    this.notify();
   }
 
   async setTextScale(scale) {
@@ -117,11 +107,7 @@ class ReadingModel extends SrsModel {
   countFullLookup() { this.fullLookups++; return this.store.saveSetting('full_lookups', this.fullLookups); }
   countReadAloud() { this.readAloudCount++; return this.store.saveSetting('read_aloud', this.readAloudCount); }
 
-  /** The readings to finish before the trip: N5 and N4. */
-  get tripLessons() { return this.course.lessons.filter((l) => !JAPAN_LEVELS.has(l.level)); }
-  get japanLessons() { return this.course.lessons.filter((l) => JAPAN_LEVELS.has(l.level)); }
   lessonsAt(level) { return this.course.lessons.filter((l) => l.level === level); }
-  get plan() { return computePlan(this, this.tripLessons, this.japanLessons, this.departure); }
 
   /** Characters in the readings passed so far. */
   get charactersRead() {
@@ -162,7 +148,6 @@ class ReadingModel extends SrsModel {
     const skillTotal = (f, skill) => (f.stats.bySkill.get(skill) || { total: 0 }).total;
     const practiceMinutes = (f) => Math.floor(f.stats.totalPracticeSeconds / 60);
     const streak = (f) => f.stats.longestStreak;
-    const trip = this.tripLessons;
     // Quoted authors, from sources like 芥川龍之介『蜘蛛の糸』.
     const byAuthor = new Map();
     for (const l of course.lessons) {
@@ -176,8 +161,6 @@ class ReadingModel extends SrsModel {
       count('readings_10', 'Ten readings', 'Pass ten readings.', '🔟', 10, done),
       count('readings_50', 'Fifty readings', 'Pass fifty readings.', '📈', 50, done),
       count('readings_100', 'A hundred readings', 'Pass a hundred readings.', '🎖️', 100, done),
-      count('ready', 'Ready for Japan', 'Pass every N5 and N4 reading before you fly to Japan.', '🛫', trip.length,
-        (f) => (f.model.now() > f.model.departure ? 0 : trip.filter((l) => f.model.lessonComplete(l)).length)),
       count('everything', 'Bookworm', `Pass all ${readings} readings, N5 to N1.`, '🐛', readings, done),
       count('chars_1000', 'A thousand characters', 'Read 1,000 characters in passed readings.', '🔤', 1000, chars),
       count('chars_10000', 'Ten thousand characters', 'Read 10,000 characters in passed readings.', '📃', 10000, chars),
@@ -304,47 +287,16 @@ function resultHeading(a) {
 // ---------- Today tab ----------
 
 function planPanel(model) {
-  const plan = model.plan;
-  const trip = model.tripLessons;
-  const tripDone = trip.length - plan.lessonsLeft;
-  const inJapan = plan.departed || plan.lessonsLeft === 0;
-  const next = model.nextSection;
-  const current = next ? model.course.lessonOf(next).level : null;
-  let title, good, status;
-  if (!inJapan) {
-    title = plan.daysLeft === 0 ? 'You fly to Japan today' : `${plan.daysLeft} days until Japan (${shortDate(new Date(model.departure))})`;
-    good = plan.onTrack;
-    status = plan.onTrack
-      ? `On track for N5 and N4: one reading a day, six days a week, finishes on ${shortDate(new Date(plan.projectedFinish))}.`
-      : `Behind: one reading a day finishes N4 on ${shortDate(new Date(plan.projectedFinish))}, after you fly. Try two readings on some days.`;
-  } else if (plan.laterLessonsLeft === 0) {
-    title = 'Every level done';
-    good = true;
-    status = 'Every reading is done, all of N5 to N1. Keep up your re-reading reviews.';
-  } else {
-    title = plan.lessonsLeft === 0 && current ? `${current} in Japan` : 'Learning in Japan';
-    good = true;
-    status = plan.lessonsLeft === 0
-      ? `${plan.laterLessonsLeft} readings left up to N1: one a day, six days a week, finishes on ${shortDate(new Date(plan.laterFinish))}.`
-      : `${plan.lessonsLeft} N4 readings left, then N3 to N1. One a day, six days a week, finishes everything on ${shortDate(new Date(plan.laterFinish))}.`;
-  }
-  return html`<div class="stack">
-    <h1 class="h1">${title}</h1>
-    <div class="row top"><span class="status-icon" style="color:${good ? 'var(--good)' : 'var(--warn)'}">${icon(good ? 'checkCircle' : 'warn')}</span><span class="grow">${status}</span></div>
-    ${statGrid([
+  return progressPanel(model, {
+    noun: 'reading',
+    nouns: 'readings',
+    lessonsAt: (level) => model.lessonsAt(level),
+    stats: [
       ['Readings done', `${model.lessonsComplete}/${model.course.lessons.length}`],
       ['Characters read', model.charactersRead.toLocaleString()],
-      inJapan ? ['Readings left', plan.laterLessonsLeft] : ['Study days left', plan.studyDaysLeft],
-    ])}
-    <div>
-      ${barRow({ label: 'N5 & N4, before Japan', fraction: tripDone / trip.length, value: `${tripDone}/${trip.length}` })}
-      ${['N3', 'N2', 'N1'].map((level) => {
-        const ls = model.lessonsAt(level);
-        const done = ls.filter((l) => model.lessonComplete(l)).length;
-        return barRow({ label: `${level}, in Japan`, fraction: done / ls.length, value: `${done}/${ls.length}` });
-      })}
-    </div>
-  </div>`;
+      ['Words looked up', model.lookups.toLocaleString()],
+    ],
+  });
 }
 
 function readingTile(app, ui, lesson) {
@@ -382,31 +334,15 @@ function renderToday(ui, app) {
       </a>`;
     })() : ''}
     ${due > 0 || saved ? html`<a class="btn tonal block" href="#/quiz/review-all">${saved ? "Resume today's reviews" : `Re-read ${plural(due, 'passage')} due today`}</a>` : ''}
-    <section>
-      <h2 class="h3">Before Japan: N5 and N4</h2>
-      <div class="list" style="margin-top:6px">${model.tripLessons.map((l) => readingTile(app, ui, l))}</div>
-    </section>
-    ${['N3', 'N2', 'N1'].map((level) => html`<section>
-      <h2 class="h3">In Japan: ${level}</h2>
+    ${LEVELS.map((level) => html`<section>
+      <h2 class="h3">${level}</h2>
       <div class="list" style="margin-top:6px">${model.lessonsAt(level).map((l) => readingTile(app, ui, l))}</div>
     </section>`)}
   </div>`;
 }
 
-function settingsExtra(ui, app) {
-  const model = app.model;
-  const d = new Date(model.departure);
-  const value = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-  return html`<h3 class="h3">Your trip</h3>
-    <label class="row" style="margin-top:8px;flex-wrap:wrap">
-      <span class="grow"><span style="font-weight:600">Departure date</span><br><span class="small">${longDate(d)}. The plan on the Today tab counts down to this date.</span></span>
-      <input type="date" value="${value}" min="2026-01-01" max="2030-12-31" ${ui.onChange((ev) => {
-        const [y, m, day] = ev.target.value.split('-').map(Number);
-        if (y) model.setDeparture(new Date(y, m - 1, day).getTime());
-      })}>
-    </label>
-    <hr class="rule">
-    <h3 class="h3">Read aloud</h3>
+function settingsExtra() {
+  return html`    <h3 class="h3">Read aloud</h3>
     <p class="small" style="margin-top:4px">Read-aloud uses your browser's Japanese text-to-speech voice. Some devices need one installed in their settings first.</p>`;
 }
 
