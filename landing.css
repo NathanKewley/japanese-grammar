@@ -1,0 +1,81 @@
+.hub-wrap { max-width: 760px; margin: 0 auto; padding: 0 16px; }
+
+.hub-head { padding-top: 14px; }
+.hub-brand { font-family: 'Noto Sans JP', sans-serif; font-weight: 700; font-size: 1.1rem; color: var(--ink-soft); }
+
+.hub-title { font-size: clamp(1.8rem, 6vw, 2.6rem); font-weight: 800; letter-spacing: -0.02em; margin: 28px 0 6px; line-height: 1.15; }
+.hub-sub { color: var(--ink-soft); margin-bottom: 24px; }
+
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.tile {
+  --tile: var(--accent);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 18px;
+  min-height: 190px;
+  border-radius: 18px;
+  border: 1px solid var(--rule);
+  background:
+    linear-gradient(160deg, color-mix(in srgb, var(--tile) 14%, transparent), transparent 70%),
+    var(--surface);
+  color: var(--ink);
+  text-decoration: none;
+  overflow: hidden;
+  transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
+}
+
+.tile:hover, .tile:focus-visible {
+  border-color: var(--tile);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 26px var(--shadow);
+  outline: none;
+}
+
+.tile-wide { grid-column: 1 / -1; flex-direction: row; align-items: center; min-height: 150px; gap: 18px; }
+
+.tile-glyph {
+  flex: none;
+  width: 58px;
+  height: 58px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Noto Sans JP', sans-serif;
+  font-weight: 700;
+  font-size: 1.9rem;
+  background: var(--tile);
+  color: #fff;
+}
+
+[data-theme="dark"] .tile-glyph { color: #0A0A0C; }
+
+.tile-wide .tile-glyph { width: 72px; height: 72px; font-size: 2.4rem; border-radius: 20px; }
+
+.tile-body { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.tile-name { font-weight: 800; font-size: 1.2rem; }
+.tile-desc { font-size: 0.88rem; color: var(--ink-soft); }
+.tile-stat { font-size: 0.8rem; font-weight: 600; color: var(--tile); margin-top: 4px; min-height: 1.2em; }
+
+.data-info { margin: 28px 0 0; }
+.small-prose { font-size: 0.93rem; margin-top: 10px; }
+.small-prose p { margin: 0 0 8px; }
+.small-prose ul { margin: 0 0 10px; padding-left: 20px; }
+.small-prose li { margin-bottom: 4px; }
+
+.hub-foot { padding-top: 24px; padding-bottom: 40px; }
+
+@media (max-width: 480px) {
+  .tile { min-height: 0; padding: 14px; gap: 10px; }
+  .tile-glyph { width: 46px; height: 46px; font-size: 1.5rem; border-radius: 13px; }
+  .tile-wide .tile-glyph { width: 56px; height: 56px; font-size: 1.9rem; }
+  .tile-name { font-size: 1.05rem; }
+  .tile-desc { font-size: 0.8rem; }
+}

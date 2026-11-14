@@ -178,6 +178,17 @@ html.furigana-off ruby rt { display: none; }
   outline-offset: 2px;
 }
 
+.home-link {
+  display: inline-block;
+  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.home-link:hover { text-decoration: underline; }
+
 .theme-toggle {
   border: 1px solid var(--rule-strong);
   background: var(--surface);
