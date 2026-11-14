@@ -1,4 +1,4 @@
-# Japanese Study
+# Nath's 日本語 Tools
 
 A static site with five ways to study Japanese, from N5 to N1. It runs on
 GitHub Pages with no build step and no server.
@@ -29,6 +29,12 @@ Everything stays in the browser, on the device:
   tables mirror the Android apps' SQLite schema. IndexedDB is used instead of
   `localStorage` because the answer history quickly outgrows `localStorage`'s
   5 MB limit.
+
+The landing page reads every app's database to show a combined streak, cards
+due, today's answers, this week's study time and a 14-day chart. Course
+progress on each tile comes from a small summary each app saves in
+`localStorage` (`vibe.summary.<app>`) whenever it's opened or a quiz ends,
+because the landing page doesn't load the course content.
 
 Each app's Settings tab can back up and restore that app. The landing page can
 back up and restore everything at once.
@@ -65,6 +71,23 @@ tools/sync-content.sh [FOLDER_HOLDING_THE_REPOS]
 
 The folder defaults to this repo's parent.
 
+## Tests
+
+Browser tests drive a real headless Chrome through each app the way a learner
+would: lessons, typed and romaji answers, typo fixes, reviews, resuming a quiz,
+audio and dictation, backups, the landing page's stats and backup reminder, and
+Android phone emulation with touch. Any JavaScript error fails the test.
+
+```
+python3 tools/tests/run.py            # everything, about 3 minutes
+python3 tools/tests/run.py listening  # just the tests with "listening" in their name
+```
+
+They need only Python 3 and Chrome or Chromium (set `CHROME` to its path if it
+isn't found). Each test starts its own web server and a fresh browser profile.
+Run them after `tools/sync-content.sh` too: the apps reimplement the Android
+apps' logic, so a change to a content format shows up here first.
+
 ## Running locally
 
 The apps load their content with `fetch` and use ES modules, so open them
@@ -96,6 +119,9 @@ Then open http://localhost:8000.
   browser console.
 
 ## Data sources and licences
+
+The content files in `*/data/` are derived from these sources and are shared
+under the same terms (CC BY-SA). Each app's Settings tab carries the credits.
 
 - Word meanings: [JMdict](https://www.edrdg.org/wiki/index.php/JMdict-EDICT_Dictionary_Project), EDRDG, CC BY-SA 4.0.
 - Kanji: [KANJIDIC2](https://www.edrdg.org/wiki/index.php/KANJIDIC_Project), EDRDG, CC BY-SA 4.0.

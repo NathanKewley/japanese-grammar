@@ -1,6 +1,7 @@
 // The landing page: theme, a progress line on each tile, and whole-site backups.
 
-import { icon, initTheme, toggleTheme, currentTheme, toast, confirmDialog, slashDate } from './shared/srs/dom.js';
+import { html, icon, initTheme, toggleTheme, currentTheme, toast, confirmDialog, slashDate } from './shared/srs/dom.js';
+import { statGrid, barChart, legend, dayLabel } from './shared/srs/ui.js';
 import { TABLES, exportDatabase, importDatabase } from './shared/srs/store.js';
 import { dayKey, startOfDay } from './shared/srs/stats.js';
 
@@ -16,7 +17,9 @@ initTheme();
 paintToggle();
 toggle.addEventListener('click', () => { toggleTheme(); paintToggle(); });
 
-// ---------- Tile stats ----------
+// ---------- At a glance ----------
+
+const NAMES = { writing: 'Writing', conjugation: 'Conjugation', reading: 'Reading', listening: 'Listening' };
 
 async function knownDatabases() {
   if (!indexedDB.databases) return null;
@@ -29,8 +32,7 @@ function readStores(name, stores) {
     req.onerror = () => resolve(null);
     req.onsuccess = () => {
       const db = req.result;
-      const present = stores.filter((s) => db.objectStoreNames.contains(s));
-      if (present.length < stores.length) { db.close(); resolve(null); return; }
+      if (!stores.every((s) => db.objectStoreNames.contains(s))) { db.close(); resolve(null); return; }
       const tx = db.transaction(stores, 'readonly');
       const out = {};
       for (const s of stores) {
@@ -43,20 +45,23 @@ function readStores(name, stores) {
   });
 }
 
-/** Cards learned, and cards due today within each deck's daily limit. */
-async function appSummary(id, known) {
+/** One app's study history, boiled down for the landing page. */
+async function appActivity(id, known) {
   const name = `vibe-${id}`;
   if (known && !known.has(name)) return null;
-  const data = await readStores(name, ['srs_cards', 'deck_settings', 'review_log']);
-  if (!data || !data.srs_cards.length) return null;
-  const endOfDay = startOfDay(Date.now(), 1);
-  const today = dayKey(Date.now());
+  const data = await readStores(name, ['srs_cards', 'deck_settings', 'review_log', 'quiz_answers', 'practice_log', 'app_settings']);
+  if (!data) return null;
+  const now = Date.now();
+  const endOfDay = startOfDay(now, 1);
+  const today = dayKey(now);
+
+  // Cards due today, within each deck's daily limit, as the app counts them.
   const settings = Object.fromEntries(data.deck_settings.map((r) => [r.part_id, r]));
   const dueByPart = {};
   for (const r of data.srs_cards) {
     try {
       if (Date.parse(JSON.parse(r.data).due) < endOfDay) dueByPart[r.part_id] = (dueByPart[r.part_id] || 0) + 1;
-    } catch (e) { /* skip */ }
+    } catch (e) { /* skip a damaged card */ }
   }
   const reviewed = {};
   for (const r of data.review_log) if (r.day === today) (reviewed[r.part_id] ||= new Set()).add(r.card_id);
@@ -67,32 +72,214 @@ async function appSummary(id, known) {
     const limit = s ? s.daily_limit : 20;
     due += Math.min(n, Math.max(0, limit - (reviewed[part] ? reviewed[part].size : 0)));
   }
-  return { learned: data.srs_cards.length, due };
+
+  // Study days, answers and minutes, by day.
+  const days = new Set(data.review_log.map((r) => r.day));
+  const minutesByDay = {};
+  const answersByDay = {};
+  for (const a of data.quiz_answers) {
+    const k = dayKey(a.answered_at);
+    days.add(k);
+    answersByDay[k] = (answersByDay[k] || 0) + 1;
+    minutesByDay[k] = (minutesByDay[k] || 0) + a.millis / 60000;
+  }
+  for (const p of data.practice_log) {
+    const k = dayKey(p.logged_at);
+    days.add(k);
+    minutesByDay[k] = (minutesByDay[k] || 0) + p.seconds / 60;
+  }
+  const backup = data.app_settings.find((r) => r.key === 'last_backup');
+  const lastBackup = backup ? parseInt(backup.value, 10) || null : null;
+  return { learned: data.srs_cards.length, due, days, minutesByDay, answersByDay, lastBackup };
 }
 
-async function fillStats() {
+function readSummary(id) {
+  try { return JSON.parse(localStorage.getItem(`vibe.summary.${id}`) || 'null'); } catch (e) { return null; }
+}
+
+function dayNumber(key) {
+  const [y, m, d] = key.split('-').map(Number);
+  return Math.round(Date.UTC(y, m - 1, d) / 86400000);
+}
+
+/** The current streak: a day studied in any app counts, and it holds until the end of today. */
+function streak(days) {
+  const numbers = new Set([...days].map(dayNumber));
+  const today = dayNumber(dayKey(Date.now()));
+  let day = numbers.has(today) ? today : today - 1;
+  let n = 0;
+  while (numbers.has(day)) { n++; day--; }
+  return n;
+}
+
+function fmtMinutes(m) {
+  const r = Math.round(m);
+  return r < 60 ? `${r}m` : `${Math.floor(r / 60)}h ${r % 60}m`;
+}
+
+async function fillGlance() {
   try {
     const saved = JSON.parse(localStorage.getItem(`${GRAMMAR_PREFIX}saved`) || '[]');
     if (saved.length) document.querySelector('[data-stat="grammar"]').textContent = `${saved.length} saved grammar point${saved.length === 1 ? '' : 's'}`;
   } catch (e) { /* storage blocked */ }
+
   const known = await knownDatabases();
+  const apps = {};
+  for (const id of APPS) apps[id] = await appActivity(id, known);
+
+  // Each tile: course progress from the app's own summary, and cards due.
   for (const id of APPS) {
-    const s = await appSummary(id, known);
+    const a = apps[id];
+    const sum = readSummary(id);
     const el = document.querySelector(`[data-stat="${id}"]`);
-    if (!s) { el.textContent = 'Not started yet'; el.style.opacity = '0.75'; continue; }
-    el.textContent = `${s.learned} learned${s.due ? ` · ${s.due} due today` : ''}`;
+    const started = (a && (a.learned > 0 || a.days.size > 0)) || (sum && sum.lessonsDone > 0);
+    if (!started) { el.textContent = 'Not started yet'; el.style.opacity = '0.75'; continue; }
+    el.style.opacity = '';
+    const bits = [];
+    if (sum) bits.push(`${sum.lessonsDone}/${sum.lessonsTotal} ${sum.noun}`);
+    else bits.push(`${a.learned} learned`);
+    if (a && a.due) bits.push(`${a.due} due today`);
+    el.textContent = bits.join(' · ');
+  }
+
+  // The summary strip, once anything has been studied.
+  const active = APPS.filter((id) => apps[id] && apps[id].days.size > 0);
+  const summary = document.getElementById('summary');
+  const activity = document.getElementById('activity');
+  if (!active.length) { summary.hidden = true; activity.hidden = true; backupReminder(apps, new Set()); return; }
+
+  const allDays = new Set(active.flatMap((id) => [...apps[id].days]));
+  const today = dayKey(Date.now());
+  const due = APPS.reduce((n, id) => n + (apps[id] ? apps[id].due : 0), 0);
+  const answeredToday = APPS.reduce((n, id) => n + (apps[id] ? apps[id].answersByDay[today] || 0 : 0), 0);
+  let week = 0;
+  for (let i = 0; i < 7; i++) {
+    const k = dayKey(startOfDay(Date.now(), -i));
+    for (const id of active) week += apps[id].minutesByDay[k] || 0;
+  }
+  const s = streak(allDays);
+  const studiedToday = allDays.has(today);
+  const dueApps = APPS.filter((id) => apps[id] && apps[id].due > 0);
+  summary.innerHTML = String(html`
+    ${statGrid([
+      ['Day streak', `${s ? '🔥 ' : ''}${s}`],
+      ['Due today', due],
+      ['Answered today', answeredToday],
+      ['Studied this week', fmtMinutes(week)],
+    ])}
+    <div class="due-row">
+      ${dueApps.length
+        ? html`<span class="small">Review:</span>${dueApps.map((id) => html`<a class="due-chip" style="--tile:var(--app-${id})" href="${id}/index.html#/quiz/review-all">${NAMES[id]} · ${apps[id].due}</a>`)}`
+        : html`<span class="small">${studiedToday ? 'All reviews done for today. Nice work.' : 'No reviews due. A new lesson keeps the streak going.'}</span>`}
+    </div>`);
+  summary.hidden = false;
+  backupReminder(apps, allDays);
+
+  // Minutes per day, stacked by app.
+  const series = [];
+  for (let i = 13; i >= 0; i--) {
+    const k = dayKey(startOfDay(Date.now(), -i));
+    series.push({
+      label: dayLabel(13 - i, 14),
+      segments: APPS.map((id) => [Math.round((apps[id] ? apps[id].minutesByDay[k] || 0 : 0) * 10) / 10, `var(--app-${id})`]),
+    });
+  }
+  const any = series.some((d) => d.segments.some(([v]) => v > 0));
+  activity.hidden = !any;
+  if (any) {
+    const used = APPS.filter((id) => series.some((d) => d.segments[APPS.indexOf(id)][0] > 0));
+    document.getElementById('activityChart').innerHTML = String(html`
+      ${legend(used.map((id) => [`var(--app-${id})`, NAMES[id]]))}
+      ${barChart(series.map((d) => ({ ...d, segments: d.segments.map(([v, c]) => [Math.round(v), c]) })))}`);
   }
 }
 
+/**
+ * How much this site's study data takes up: the four app databases and the
+ * grammar library's settings, measured as their saved contents. The browser's
+ * own storage estimate covers the whole origin, which on GitHub Pages is
+ * shared with every other project on the same account, so it isn't used.
+ */
 async function storageLine() {
   const el = document.getElementById('storageLine');
-  if (!navigator.storage || !navigator.storage.estimate) return;
   try {
-    const { usage } = await navigator.storage.estimate();
-    const persisted = navigator.storage.persisted ? await navigator.storage.persisted() : false;
-    const mb = (usage / 1048576).toFixed(usage > 10485760 ? 0 : 1);
-    el.textContent = `This site is using about ${mb} MB of storage in this browser${persisted ? ', marked as persistent so the browser won\'t clear it to free space' : ''}.`;
+    const known = await knownDatabases();
+    let bytes = 0;
+    for (const id of APPS) {
+      const name = `vibe-${id}`;
+      if (known && !known.has(name)) continue;
+      const tables = await exportDatabase(name);
+      if (tables) bytes += new Blob([JSON.stringify(tables)]).size;
+    }
+    try {
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (k.startsWith(GRAMMAR_PREFIX) || k.startsWith('vibe.summary.')) bytes += (k.length + (localStorage.getItem(k) || '').length) * 2;
+      }
+    } catch (e) { /* storage blocked */ }
+    const size = bytes < 1024 * 100 ? `${Math.max(1, Math.round(bytes / 1024))} KB` : `${(bytes / 1048576).toFixed(1)} MB`;
+    const persisted = navigator.storage && navigator.storage.persisted ? await navigator.storage.persisted() : false;
+    el.textContent = `Your study data takes up about ${size} in this browser${persisted ? ", and the browser has agreed not to clear it to free space" : ''}.`;
   } catch (e) { /* not available */ }
+}
+
+// ---------- Backup reminder ----------
+
+const SITE_BACKUP_KEY = 'vibe.lastBackup';
+const SNOOZE_KEY = 'vibe.backupSnooze';
+const DAY = 86400000;
+/** A backup older than this is worth refreshing. */
+const STALE_DAYS = 14;
+/** Days of study before the first nudge, so a quick look around doesn't trigger it. */
+const MIN_STUDY_DAYS = 3;
+
+function readNumber(key) {
+  try { return parseInt(localStorage.getItem(key) || '', 10) || null; } catch (e) { return null; }
+}
+
+function writeNumber(key, value) {
+  try { localStorage.setItem(key, String(value)); } catch (e) { /* storage blocked */ }
+}
+
+/**
+ * Nudges towards a backup once there's real progress and nothing recent covers
+ * it. An app is covered by a whole-site backup or by its own, whichever is newer.
+ */
+function backupReminder(apps, allDays) {
+  const el = document.getElementById('backupReminder');
+  const now = Date.now();
+  const snoozed = (readNumber(SNOOZE_KEY) || 0) > now;
+  const site = readNumber(SITE_BACKUP_KEY);
+  const studied = APPS.filter((id) => apps[id] && (apps[id].learned > 0 || apps[id].days.size > 0));
+  if (snoozed || allDays.size < MIN_STUDY_DAYS || !studied.length) { el.hidden = true; return; }
+  const covered = studied.map((id) => [id, Math.max(site || 0, apps[id].lastBackup || 0) || null]);
+  const never = covered.filter(([, t]) => t == null).map(([id]) => id);
+  const oldest = covered.filter(([, t]) => t != null).reduce((m, [, t]) => Math.min(m, t), Infinity);
+  const ageDays = oldest === Infinity ? null : Math.floor((now - oldest) / DAY);
+  let message;
+  if (never.length === studied.length) {
+    message = "You haven't backed up your progress yet. It only lives in this browser, so save a copy now and then.";
+  } else if (never.length) {
+    message = `${never.map((id) => NAMES[id]).join(' and ')} ${never.length === 1 ? "hasn't" : "haven't"} been backed up yet.`;
+  } else if (ageDays >= STALE_DAYS) {
+    message = `Your last backup was ${ageDays} days ago. Save a fresh copy so recent progress is safe too.`;
+  } else {
+    el.hidden = true;
+    return;
+  }
+  el.innerHTML = String(html`
+    <span style="font-size:1.4rem" aria-hidden="true">💾</span>
+    <span class="grow">${message}</span>
+    <span class="actions">
+      <button class="btn small" type="button" data-reminder="backup">Back up now</button>
+      <button class="btn text small" type="button" data-reminder="later">Remind me later</button>
+    </span>`);
+  el.querySelector('[data-reminder="backup"]').addEventListener('click', () => backupAll());
+  el.querySelector('[data-reminder="later"]').addEventListener('click', () => {
+    writeNumber(SNOOZE_KEY, now + 7 * DAY);
+    el.hidden = true;
+  });
+  el.hidden = false;
 }
 
 // ---------- Whole-site backup ----------
@@ -125,6 +312,8 @@ async function backupAll() {
   a.remove();
   setTimeout(() => URL.revokeObjectURL(a.href), 5000);
   toast('Backup saved to your downloads.');
+  writeNumber(SITE_BACKUP_KEY, now);
+  document.getElementById('backupReminder').hidden = true;
 }
 
 function pickFile() {
@@ -170,6 +359,8 @@ async function restoreAll() {
       const tables = backup.apps[id];
       for (const t of Object.keys(TABLES)) if (tables[t] && !Array.isArray(tables[t])) throw new Error('damaged');
       await importDatabase(`vibe-${id}`, tables);
+      // Its saved summary is out of date until the app is next opened.
+      try { localStorage.removeItem(`vibe.summary.${id}`); } catch (e) { /* storage blocked */ }
     }
     for (const [k, v] of Object.entries(backup.grammar || {})) {
       if (k.startsWith(GRAMMAR_PREFIX) && typeof v === 'string') localStorage.setItem(k, v);
@@ -179,13 +370,15 @@ async function restoreAll() {
     return;
   }
   toast('Backup restored.');
+  // The restored progress is exactly what that file holds, so it's backed up as of then.
+  writeNumber(SITE_BACKUP_KEY, backup.savedAt);
   initTheme();
   paintToggle();
-  fillStats();
+  fillGlance();
 }
 
 document.getElementById('backupAll').addEventListener('click', backupAll);
 document.getElementById('restoreAll').addEventListener('click', restoreAll);
 
-fillStats();
+fillGlance();
 storageLine();

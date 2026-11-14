@@ -599,9 +599,9 @@ function renderToday(ui, app) {
 }
 
 const CREDITS = html`
-  <p>Voices: <a href="https://voicevox.hiroshiba.jp/" target="_blank" rel="noopener">VOICEVOX</a>, with VOICEVOX:No.7, VOICEVOX:四国めたん, VOICEVOX:ちび式じい, VOICEVOX:白上虎太郎, VOICEVOX:玄野武宏, VOICEVOX:東北イタコ, VOICEVOX:青山龍星, VOICEVOX:九州そら, VOICEVOX:雀松朱司, VOICEVOX:もち子(cv 明日葉よもぎ), VOICEVOX:春日部つむぎ, VOICEVOX:剣崎雌雄 and VOICEVOX:麒ヶ島宗麟, each under its own terms.</p>
+  <p>Voices: <a href="https://voicevox.hiroshiba.jp/" target="_blank" rel="noopener">VOICEVOX</a>, with VOICEVOX:No.7, VOICEVOX:四国めたん, VOICEVOX:ちび式じい, VOICEVOX:白上虎太郎, VOICEVOX:玄野武宏, VOICEVOX:東北イタコ, VOICEVOX:青山龍星, VOICEVOX:九州そら, VOICEVOX:雀松朱司, VOICEVOX:東北ずん子, VOICEVOX:春日部つむぎ, VOICEVOX:剣崎雌雄 and VOICEVOX:麒ヶ島宗麟, each under its own terms.</p>
   <p>Scripts written for the app. The myths are retold from the Kojiki, the Izumo Fudoki and Lafcadio Hearn's Kwaidan, all in the public domain.</p>
-  <p>Word meanings from <a href="https://www.edrdg.org/wiki/index.php/JMdict-EDICT_Dictionary_Project" target="_blank" rel="noopener">JMdict</a> and kanji from <a href="https://www.edrdg.org/wiki/index.php/KANJIDIC_Project" target="_blank" rel="noopener">KANJIDIC2</a>, the property of the Electronic Dictionary Research and Development Group, used under their licence (CC BY-SA 4.0).</p>`;
+  <p>Word meanings from <a href="https://www.edrdg.org/wiki/index.php/JMdict-EDICT_Dictionary_Project" target="_blank" rel="noopener">JMdict</a> and kanji from <a href="https://www.edrdg.org/wiki/index.php/KANJIDIC_Project" target="_blank" rel="noopener">KANJIDIC2</a>, the property of the Electronic Dictionary Research and Development Group, used under <a href="https://www.edrdg.org/edrdg/licence.html" target="_blank" rel="noopener">their licence</a> (CC BY-SA 4.0).</p>`;
 
 // ---------- Start ----------
 
@@ -624,6 +624,7 @@ boot(document.getElementById('app'), async () => {
     id: 'listening',
     title: 'Vibe Listening',
     model,
+    summaryNoun: 'tracks',
     backupFile: 'vibe-listening-backup',
     credits: CREDITS,
     text: {

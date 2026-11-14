@@ -467,7 +467,7 @@ function renderToday(ui, app) {
 
 const CREDITS = html`
   <p>Stroke order data from <a href="https://kanjivg.tagaini.net" target="_blank" rel="noopener">KanjiVG</a>, copyright © 2009-2013 Ulrich Apel, used under the Creative Commons Attribution-Share Alike 3.0 licence.</p>
-  <p>Kanji readings, meanings and word checks from the <a href="https://www.edrdg.org/wiki/index.php/KANJIDIC_Project" target="_blank" rel="noopener">KANJIDIC2</a> and <a href="https://www.edrdg.org/wiki/index.php/JMdict-EDICT_Dictionary_Project" target="_blank" rel="noopener">JMdict</a> files, the property of the Electronic Dictionary Research and Development Group, used under their licence (CC BY-SA 4.0).</p>
+  <p>Kanji readings, meanings and word checks from the <a href="https://www.edrdg.org/wiki/index.php/KANJIDIC_Project" target="_blank" rel="noopener">KANJIDIC2</a> and <a href="https://www.edrdg.org/wiki/index.php/JMdict-EDICT_Dictionary_Project" target="_blank" rel="noopener">JMdict</a> files, the property of the Electronic Dictionary Research and Development Group, used under <a href="https://www.edrdg.org/edrdg/licence.html" target="_blank" rel="noopener">their licence</a> (CC BY-SA 4.0).</p>
   <p>N3, N2 and N1 kanji lists: Jonathan Waller's JLPT lists.</p>`;
 
 // ---------- Start ----------
@@ -492,6 +492,7 @@ boot(document.getElementById('app'), async () => {
     id: 'writing',
     title: 'Vibe Writing',
     model,
+    summaryNoun: 'lessons',
     backupFile: 'vibe-writing-backup',
     credits: CREDITS,
     text: {

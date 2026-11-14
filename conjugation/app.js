@@ -615,7 +615,7 @@ function focusExtra(model, stats) {
 }
 
 const CREDITS = html`
-  <p>Word types, readings and furigana are checked against <a href="https://www.edrdg.org/wiki/index.php/JMdict-EDICT_Dictionary_Project" target="_blank" rel="noopener">JMdict</a> and <a href="https://www.edrdg.org/wiki/index.php/KANJIDIC_Project" target="_blank" rel="noopener">KANJIDIC2</a>, the property of the Electronic Dictionary Research and Development Group, used under their licence (CC BY-SA 4.0).</p>
+  <p>Word types, readings and furigana are checked against <a href="https://www.edrdg.org/wiki/index.php/JMdict-EDICT_Dictionary_Project" target="_blank" rel="noopener">JMdict</a> and <a href="https://www.edrdg.org/wiki/index.php/KANJIDIC_Project" target="_blank" rel="noopener">KANJIDIC2</a>, the property of the Electronic Dictionary Research and Development Group, used under <a href="https://www.edrdg.org/edrdg/licence.html" target="_blank" rel="noopener">their licence</a> (CC BY-SA 4.0).</p>
   <p>Answers can be typed in kana, kanji or a mix (食べた, たべた). On a keyboard without Japanese input, type romaji and it's read as kana (tabeta).</p>`;
 
 // ---------- Start ----------
@@ -645,6 +645,7 @@ boot(document.getElementById('app'), async () => {
     id: 'conjugation',
     title: 'Vibe Conjugation',
     model,
+    summaryNoun: 'lessons',
     backupFile: 'vibe-conjugation-backup',
     credits: CREDITS,
     text: {
