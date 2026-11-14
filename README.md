@@ -78,6 +78,14 @@ Then open http://localhost:8000.
 
 ## Notes
 
+- **iPhone and iPad:** Safari clears a website's stored data after 7 days without
+  a visit, but not for sites added to the Home Screen. The site has a web app
+  manifest and icons, so *Share → Add to Home Screen* installs it. The Home
+  Screen copy keeps its own storage, separate from Safari's.
+- **Android:** Chrome keeps the data unless it's cleared or the phone runs very
+  low on space. Chrome can install the site as an app (the manifest has
+  maskable icons for Android's launcher shapes), and the browser bar follows
+  the site's light or dark theme.
 - **Read-aloud** in Reading uses the browser's Japanese text-to-speech voice,
   which some devices need installed first.
 - **Listening audio** is Ogg Opus. Current Chrome, Edge, Firefox and Safari

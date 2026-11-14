@@ -79,3 +79,6 @@
   .tile-name { font-size: 1.05rem; }
   .tile-desc { font-size: 0.8rem; }
 }
+
+.tile { -webkit-tap-highlight-color: transparent; }
+.tile:active { transform: scale(0.99); }

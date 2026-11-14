@@ -1,11 +1,11 @@
 // Vibe Listening: 132 voiced tracks with JLPT-style questions and dictation.
 
-import { html, icon, plural, shortDate, longDate } from '../shared/srs/dom.js';
+import { html, icon, plural } from '../shared/srs/dom.js';
 import { Store } from '../shared/srs/store.js';
 import { Course } from '../shared/srs/course.js';
-import { SrsModel, SectionStatus, computePlan, DEFAULT_DEPARTURE, count, answersWhere } from '../shared/srs/model.js';
+import { SrsModel, SectionStatus, count, answersWhere } from '../shared/srs/model.js';
 import { statGrid, barRow } from '../shared/srs/ui.js';
-import { createSrsApp, boot, path, offerUnlock } from '../shared/srs/screens.js';
+import { createSrsApp, boot, path, offerUnlock, progressPanel, LEVELS } from '../shared/srs/screens.js';
 import { Rating, newCard } from '../shared/srs/fsrs.js';
 import { Dictionary, renderPassage, resetPassages } from '../shared/srs/passage.js';
 import { normaliseTyped, hasRomaji, toHiragana } from '../shared/srs/romaji.js';
@@ -138,13 +138,9 @@ function normaliseDictation(text) {
 
 // ---------- Model ----------
 
-const JAPAN_LEVELS = new Set(['N3', 'N2', 'N1']);
-
 class ListeningModel extends SrsModel {
   loadExtras() {
     const s = this.store;
-    const d = parseInt(s.loadSetting('departure') || '', 10);
-    this.departure = Number.isFinite(d) ? d : DEFAULT_DEPARTURE;
     this.textScale = parseFloat(s.loadSetting('text_scale') || '') || 1.0;
     this.lookups = parseInt(s.loadSetting('lookups') || '0', 10) || 0;
     this.plays = parseInt(s.loadSetting('plays') || '0', 10) || 0;
@@ -154,12 +150,6 @@ class ListeningModel extends SrsModel {
   }
 
   reviewTurn(id) { return this.turns[id] || 0; }
-
-  async setDeparture(date) {
-    this.departure = date;
-    await this.store.saveSetting('departure', date);
-    this.notify();
-  }
 
   async setTextScale(scale) {
     this.textScale = Math.round(Math.min(1.6, Math.max(0.8, scale)) * 10) / 10;
@@ -172,10 +162,7 @@ class ListeningModel extends SrsModel {
   countPlay() { this.plays++; return this.store.saveSetting('plays', this.plays); }
   countOneListenRight() { this.oneListenRight++; return this.store.saveSetting('one_listen_right', this.oneListenRight); }
 
-  get tripLessons() { return this.course.lessons.filter((l) => !JAPAN_LEVELS.has(l.level)); }
-  get japanLessons() { return this.course.lessons.filter((l) => JAPAN_LEVELS.has(l.level)); }
   lessonsAt(level) { return this.course.lessons.filter((l) => l.level === level); }
-  get plan() { return computePlan(this, this.tripLessons, this.japanLessons, this.departure); }
 
   get audioHeard() {
     return this.course.lessons.filter((l) => this.lessonComplete(l)).reduce((n, l) => n + l.item.duration, 0);
@@ -225,7 +212,6 @@ class ListeningModel extends SrsModel {
     const skillRight = (f, skill) => (f.stats.bySkill.get(skill) || { right: 0 }).right;
     const practiceMinutes = (f) => Math.floor(f.stats.totalPracticeSeconds / 60);
     const streak = (f) => f.stats.longestStreak;
-    const trip = this.tripLessons;
     const part = (id, title, description, emoji) => {
       const p = course.partById(id);
       return count(`part_${id}`, title, description, emoji, p.sections.length, (f) => f.model.passedCount(p));
@@ -239,8 +225,6 @@ class ListeningModel extends SrsModel {
       count('tracks_10', 'Ten tracks', 'Finish ten tracks.', '🔟', 10, done),
       count('tracks_50', 'Fifty tracks', 'Finish fifty tracks.', '📈', 50, done),
       count('tracks_100', 'A hundred tracks', 'Finish a hundred tracks.', '🎖️', 100, done),
-      count('ready', 'Ready for Japan', 'Finish every N5 and N4 track before you fly to Japan.', '🛫', trip.length,
-        (f) => (f.model.now() > f.model.departure ? 0 : trip.filter((l) => f.model.lessonComplete(l)).length)),
       count('everything', 'All ears', `Finish all ${tracks} tracks, N5 to N1.`, '👑', tracks, done),
       part('n5', 'N5 listener', 'Finish every N5 track.', '5️⃣'),
       part('n4', 'N4 listener', 'Finish every N4 track.', '4️⃣'),
@@ -331,15 +315,22 @@ async function play(owner, src, startMs, endMs, onTick) {
   player.onTick = onTick;
   player.stopAt = endMs == null ? null : endMs / 1000;
   const full = new URL(src, location.href).href;
+  const start = Math.max(0, startMs / 1000);
+  // iOS only lets audio start from a tap, so play() is called before any
+  // waiting. A new file plays muted until it has jumped to the right place.
   if (a.src !== full) {
     a.src = full;
-    await new Promise((resolve, reject) => {
-      a.addEventListener('loadedmetadata', resolve, { once: true });
-      a.addEventListener('error', reject, { once: true });
-    });
+    a.muted = true;
+    const seek = () => {
+      a.currentTime = start;
+      a.addEventListener('seeked', () => { a.muted = false; }, { once: true });
+    };
+    a.addEventListener('loadedmetadata', seek, { once: true });
+    await a.play();
+  } else {
+    a.currentTime = start;
+    await a.play();
   }
-  a.currentTime = Math.max(0, startMs / 1000);
-  await a.play();
   requestAnimationFrame(tick);
 }
 
@@ -547,47 +538,16 @@ function resultHeading(a) {
 // ---------- Today tab ----------
 
 function planPanel(model) {
-  const plan = model.plan;
-  const trip = model.tripLessons;
-  const tripDone = trip.length - plan.lessonsLeft;
-  const inJapan = plan.departed || plan.lessonsLeft === 0;
-  const next = model.nextSection;
-  const current = next ? model.course.lessonOf(next).level : null;
-  let title, good, status;
-  if (!inJapan) {
-    title = plan.daysLeft === 0 ? 'You fly to Japan today' : `${plan.daysLeft} days until Japan (${shortDate(new Date(model.departure))})`;
-    good = plan.onTrack;
-    status = plan.onTrack
-      ? `On track for N5 and N4: one track a day, six days a week, finishes on ${shortDate(new Date(plan.projectedFinish))}.`
-      : `Behind: one track a day finishes N4 on ${shortDate(new Date(plan.projectedFinish))}, after you fly. Try two tracks on some days.`;
-  } else if (plan.laterLessonsLeft === 0) {
-    title = 'Every level done';
-    good = true;
-    status = 'Every track is done, all of N5 to N1. Keep up your reviews.';
-  } else {
-    title = plan.lessonsLeft === 0 && current ? `${current} in Japan` : 'Learning in Japan';
-    good = true;
-    status = plan.lessonsLeft === 0
-      ? `${plan.laterLessonsLeft} tracks left up to N1: one a day, six days a week, finishes on ${shortDate(new Date(plan.laterFinish))}.`
-      : `${plan.lessonsLeft} N4 tracks left, then N3 to N1. One a day, six days a week, finishes everything on ${shortDate(new Date(plan.laterFinish))}.`;
-  }
-  return html`<div class="stack">
-    <h1 class="h1">${title}</h1>
-    <div class="row top"><span class="status-icon" style="color:${good ? 'var(--good)' : 'var(--warn)'}">${icon(good ? 'checkCircle' : 'warn')}</span><span class="grow">${status}</span></div>
-    ${statGrid([
+  return progressPanel(model, {
+    noun: 'track',
+    nouns: 'tracks',
+    lessonsAt: (level) => model.lessonsAt(level),
+    stats: [
       ['Tracks done', `${model.lessonsComplete}/${model.course.lessons.length}`],
       ['Audio heard', `${Math.floor(model.audioHeard / 60000)} min`],
-      inJapan ? ['Tracks left', plan.laterLessonsLeft] : ['Study days left', plan.studyDaysLeft],
-    ])}
-    <div>
-      ${barRow({ label: 'N5 & N4, before Japan', fraction: tripDone / trip.length, value: `${tripDone}/${trip.length}` })}
-      ${['N3', 'N2', 'N1'].map((level) => {
-        const ls = model.lessonsAt(level);
-        const done = ls.filter((l) => model.lessonComplete(l)).length;
-        return barRow({ label: `${level}, in Japan`, fraction: done / ls.length, value: `${done}/${ls.length}` });
-      })}
-    </div>
-  </div>`;
+      ['Plays', model.plays.toLocaleString()],
+    ],
+  });
 }
 
 function trackTile(app, ui, lesson) {
@@ -631,29 +591,11 @@ function renderToday(ui, app) {
       </a>`;
     })() : ''}
     ${due > 0 || saved ? html`<a class="btn tonal block" href="#/quiz/review-all">${saved ? "Resume today's reviews" : `Review ${plural(due, 'card')} due today`}</a>` : ''}
-    <section>
-      <h2 class="h3">Before Japan: N5 and N4</h2>
-      <div class="list" style="margin-top:6px">${model.tripLessons.map((l) => trackTile(app, ui, l))}</div>
-    </section>
-    ${['N3', 'N2', 'N1'].map((level) => html`<section>
-      <h2 class="h3">In Japan: ${level}</h2>
+    ${LEVELS.map((level) => html`<section>
+      <h2 class="h3">${level}</h2>
       <div class="list" style="margin-top:6px">${model.lessonsAt(level).map((l) => trackTile(app, ui, l))}</div>
     </section>`)}
   </div>`;
-}
-
-function settingsExtra(ui, app) {
-  const model = app.model;
-  const d = new Date(model.departure);
-  const value = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-  return html`<h3 class="h3">Your trip</h3>
-    <label class="row" style="margin-top:8px;flex-wrap:wrap">
-      <span class="grow"><span style="font-weight:600">Departure date</span><br><span class="small">${longDate(d)}. The plan on the Today tab counts down to this date.</span></span>
-      <input type="date" value="${value}" min="2026-01-01" max="2030-12-31" ${ui.onChange((ev) => {
-        const [y, m, day] = ev.target.value.split('-').map(Number);
-        if (y) model.setDeparture(new Date(y, m - 1, day).getTime());
-      })}>
-    </label>`;
 }
 
 const CREDITS = html`
@@ -729,6 +671,5 @@ boot(document.getElementById('app'), async () => {
     deckCards: (section) => [...(section.reviewCard ? [section.reviewCard] : []), ...section.cards.filter((c) => c.id.startsWith('dict:'))],
     partItemCount: (part) => part.sections.reduce((n, s) => n + (s.reviewCard ? 1 : s.cards.length), 0),
     sectionScreenTitle: (lesson) => `Track ${lesson.number} · ${lesson.level}`,
-    settingsExtra,
   });
 });

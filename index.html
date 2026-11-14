@@ -3,6 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2064%2064%27%3E%3Crect%20width%3D%2764%27%20height%3D%2764%27%20rx%3D%2714%27%20fill%3D%27%236E5AE0%27/%3E%3Ctext%20x%3D%2732%27%20y%3D%2745%27%20font-size%3D%2738%27%20text-anchor%3D%27middle%27%20fill%3D%27white%27%20font-family%3D%27sans-serif%27%3E%E6%97%A5%3C/text%3E%3C/svg%3E">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="assets/icons/icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="日本語">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#FAFAFA">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Japanese Study</title>
 <meta name="description" content="A JLPT grammar library and four spaced-repetition study apps: writing, conjugation, reading and listening.">
@@ -11,7 +18,9 @@
 <script>
   // Set the theme before the first paint, so dark mode doesn't flash.
   try { var t = localStorage.getItem('grammarNotebook.theme'); } catch (e) {}
-  document.documentElement.setAttribute('data-theme', t || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
+  t = t || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  document.documentElement.setAttribute('data-theme', t);
+  document.querySelector('meta[name="theme-color"]').setAttribute('content', t === 'dark' ? '#0A0A0C' : '#FAFAFA');
 </script>
 </head>
 <body>
@@ -30,7 +39,7 @@
     <a class="tile tile-wide" href="grammar/index.html" style="--tile:var(--app-grammar)">
       <span class="tile-glyph" lang="ja">文</span>
       <span class="tile-body">
-        <span class="tile-name">Grammar</span>
+        <span class="tile-name">Grammar Library</span>
         <span class="tile-desc">JLPT grammar library: every pattern from N5 to N1, with examples and quizzes.</span>
         <span class="tile-stat" data-stat="grammar"></span>
       </span>
@@ -83,6 +92,8 @@
         <li>Your progress <strong>doesn't follow you</strong> to another browser, another device, or a private window.</li>
         <li><strong>Clearing this site's data</strong> (or "cookies and site data") in your browser settings <strong>deletes your progress</strong>. Some browsers may also clear it if the site goes unused for a long time.</li>
       </ul>
+      <p><strong>On iPhone and iPad:</strong> Safari clears the data of websites you haven't opened for a week. To keep your progress, add this site to your Home Screen (tap Share, then <em>Add to Home Screen</em>) and always open it from there. Home Screen apps aren't cleared like that. The Home Screen app keeps its own progress, separate from Safari's, so pick one and stick with it.</p>
+      <p><strong>On Android:</strong> Chrome keeps your progress unless you clear the site's data or the phone runs very low on space. Installing the site (Chrome menu, then <em>Add to Home screen</em> or <em>Install app</em>) makes it open like an app and helps keep its data safe.</p>
       <p>To keep it safe, save a backup file now and then. You can restore it here or in another browser to carry on where you left off. Each app's Settings tab can also back up just that app.</p>
     </div>
     <div class="stack" style="margin-top:14px">

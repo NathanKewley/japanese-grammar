@@ -1,11 +1,11 @@
 // Vibe Writing: kana and kanji handwriting on paper, with self-marked quizzes.
 
-import { html, raw, icon, richText, plural, toast, shortDate, longDate } from '../shared/srs/dom.js';
+import { html, raw, icon, richText, plural, toast } from '../shared/srs/dom.js';
 import { Store } from '../shared/srs/store.js';
 import { Course } from '../shared/srs/course.js';
-import { SrsModel, SectionStatus, computePlan, DEFAULT_DEPARTURE, count, answersWhere } from '../shared/srs/model.js';
+import { SrsModel, SectionStatus, count, answersWhere } from '../shared/srs/model.js';
 import { statGrid, barRow } from '../shared/srs/ui.js';
-import { createSrsApp, boot, path, offerUnlock } from '../shared/srs/screens.js';
+import { createSrsApp, boot, path, offerUnlock, progressPanel, LEVELS } from '../shared/srs/screens.js';
 import { seeded } from '../shared/srs/quiz-engine.js';
 import { dayKey } from '../shared/srs/stats.js';
 import { KANA_SETS } from './kana.js';
@@ -134,28 +134,9 @@ function buildCourse(data) {
 
 // ---------- Model ----------
 
-const JAPAN_LEVELS = new Set(['N3', 'N2', 'N1']);
-
 class WritingModel extends SrsModel {
-  loadExtras() {
-    const d = parseInt(this.store.loadSetting('departure') || '', 10);
-    this.departure = Number.isFinite(d) ? d : DEFAULT_DEPARTURE;
-  }
-
-  async setDeparture(date) {
-    this.departure = date;
-    await this.store.saveSetting('departure', date);
-    this.notify();
-  }
-
-  static isJapanLesson(l) { return l.kanji.length > 0 && JAPAN_LEVELS.has(l.kanji[0].level); }
-
-  /** The lessons to finish before the trip: kana, N5 and N4. */
-  get tripLessons() { return this.course.lessons.filter((l) => !WritingModel.isJapanLesson(l)); }
-  get japanLessons() { return this.course.lessons.filter((l) => WritingModel.isJapanLesson(l)); }
+  /** The lessons that teach one JLPT level's kanji (kana come with N5). */
   lessonsAt(level) { return this.course.lessons.filter((l) => l.kanji.length && l.kanji[0].level === level); }
-
-  get plan() { return computePlan(this, this.tripLessons, this.japanLessons, this.departure); }
 
   get kanjiLearned() {
     return this.course.lessons
@@ -228,7 +209,6 @@ class WritingModel extends SrsModel {
       count('lessons_50', 'Fifty lessons', 'Finish fifty lessons.', '📈', 50, done),
       count('lessons_100', 'A hundred lessons', 'Finish a hundred lessons.', '🎖️', 100, done),
       count('lessons_200', 'Two hundred lessons', 'Finish two hundred lessons.', '🏆', 200, done),
-      count('ready', 'Ready for Japan', 'Finish every N5 and N4 lesson before your departure date.', '🛫', 1, (f) => (f.model.plan.lessonsLeft === 0 && !f.model.plan.departed ? 1 : 0)),
       part('kana', 'Kana master', 'Finish the kana sections.', 'あ'),
       part('n5', 'N5 kanji', 'Finish the N5 kanji.', '5️⃣'),
       part('n4', 'N4 kanji', 'Finish the N4 kanji.', '4️⃣'),
@@ -399,50 +379,18 @@ function renderResult(attempt) {
 // ---------- Today tab ----------
 
 function planPanel(model) {
-  const plan = model.plan;
   const kanjiTotal = model.course.lessons.reduce((n, l) => n + l.kanji.length, 0);
-  const trip = model.tripLessons;
-  const tripDone = trip.length - plan.lessonsLeft;
-  // Before the trip the plan races the departure date; after it, or once N4
-  // is done, it's N3 to N1 at a steady pace with no deadline.
-  const inJapan = plan.departed || plan.lessonsLeft === 0;
-  const next = model.nextSection;
-  const current = next ? (model.course.lessonOf(next).kanji[0] || {}).level : null;
-  let title, good, status;
-  if (!inJapan) {
-    title = plan.daysLeft === 0 ? 'You fly to Japan today' : `${plan.daysLeft} days until Japan (${shortDate(new Date(model.departure))})`;
-    good = plan.onTrack;
-    status = plan.onTrack
-      ? `On track for N5 and N4: one lesson a day, six days a week, finishes on ${shortDate(new Date(plan.projectedFinish))}.`
-      : `Behind: one lesson a day finishes N4 on ${shortDate(new Date(plan.projectedFinish))}, after you fly. Try two lessons on some days.`;
-  } else if (plan.laterLessonsLeft === 0) {
-    title = 'Every level done';
-    good = true;
-    status = 'Every lesson is done, all of N5 to N1. Keep up your reviews and daily writing.';
-  } else {
-    title = plan.lessonsLeft === 0 && current ? `${current} in Japan` : 'Learning in Japan';
-    good = true;
-    status = plan.lessonsLeft === 0
-      ? `${plan.laterLessonsLeft} lessons left up to N1: one a day, six days a week, finishes on ${shortDate(new Date(plan.laterFinish))}.`
-      : `${plan.lessonsLeft} N4 lessons left, then N3 to N1. One a day, six days a week, finishes everything on ${shortDate(new Date(plan.laterFinish))}.`;
-  }
-  return html`<div class="stack">
-    <h1 class="h1">${title}</h1>
-    <div class="row top"><span class="status-icon ${good ? 'done' : ''}" style="color:${good ? 'var(--good)' : 'var(--warn)'}">${icon(good ? 'checkCircle' : 'warn')}</span><span class="grow">${status}</span></div>
-    ${statGrid([
+  const items = model.course.parts.reduce((n, p) => n + model.summaryOf(p).totalCards, 0);
+  return progressPanel(model, {
+    noun: 'lesson',
+    nouns: 'lessons',
+    lessonsAt: (level) => model.lessonsAt(level),
+    stats: [
       ['Lessons done', `${model.lessonsComplete}/${model.course.lessons.length}`],
       ['Kanji learned', `${model.kanjiLearned}/${kanjiTotal}`],
-      inJapan ? ['Lessons left', plan.laterLessonsLeft] : ['Study days left', plan.studyDaysLeft],
-    ])}
-    <div>
-      ${barRow({ label: 'N5 & N4, before Japan', fraction: tripDone / trip.length, value: `${tripDone}/${trip.length}` })}
-      ${['N3', 'N2', 'N1'].map((level) => {
-        const ls = model.lessonsAt(level);
-        const done = ls.filter((l) => model.lessonComplete(l)).length;
-        return barRow({ label: `${level}, in Japan`, fraction: done / ls.length, value: `${done}/${ls.length}` });
-      })}
-    </div>
-  </div>`;
+      ['Words in reviews', items],
+    ],
+  });
 }
 
 function lessonTile(app, ui, lesson) {
@@ -510,29 +458,11 @@ function renderToday(ui, app) {
         : "Five sentences from your lessons so far, favouring kanji you've marked wrong and sentences you haven't written lately."}</p>
       <button class="btn outline block" ${ui.onClick(() => startDailyWriting(app, ui))}>${writingDone ? 'Write another set' : "Start today's writing"}</button>
     </div>
-    <section>
-      <h2 class="h3">Before Japan: kana, N5 and N4</h2>
-      <div style="margin-top:6px">${model.tripLessons.map((l) => lessonTile(app, ui, l))}</div>
-    </section>
-    ${['N3', 'N2', 'N1'].map((level) => html`<section>
-      <h2 class="h3">In Japan: ${level}</h2>
-      <div style="margin-top:6px">${model.lessonsAt(level).map((l) => lessonTile(app, ui, l))}</div>
+    ${LEVELS.map((level) => html`<section>
+      <h2 class="h3">${level}</h2>
+      <div class="" style="margin-top:6px">${model.lessonsAt(level).map((l) => lessonTile(app, ui, l))}</div>
     </section>`)}
   </div>`;
-}
-
-function settingsExtra(ui, app) {
-  const model = app.model;
-  const d = new Date(model.departure);
-  const value = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-  return html`<h3 class="h3">Your trip</h3>
-    <label class="row" style="margin-top:8px;flex-wrap:wrap">
-      <span class="grow"><span style="font-weight:600">Departure date</span><br><span class="small">${longDate(d)}. The plan on the Today tab counts down to this date.</span></span>
-      <input type="date" value="${value}" min="2026-01-01" max="2030-12-31" ${ui.onChange((ev) => {
-        const [y, m, day] = ev.target.value.split('-').map(Number);
-        if (y) model.setDeparture(new Date(y, m - 1, day).getTime());
-      })}>
-    </label>`;
 }
 
 const CREDITS = html`
@@ -592,6 +522,5 @@ boot(document.getElementById('app'), async () => {
     renderItemDetail: (card, q) => answerPanel(q, 96),
     outcomeFromJson: (json) => ({ correct: !!json.correct }),
     givenText: (o) => (o.correct ? 'Marked as right' : 'Marked as not yet'),
-    settingsExtra,
   });
 });

@@ -476,34 +476,16 @@ function parseMillis(v) {
   return Number.isFinite(n) ? n : null;
 }
 
-// ---------- The trip plan (Writing, Reading and Listening) ----------
-
-export const DEFAULT_DEPARTURE = new Date(2027, 0, 5).getTime();
+// ---------- Pace ----------
 
 /**
- * How the lessons left fit into the days left, at one lesson a day, six days a
- * week. [trip] are the lessons to finish before departure, [later] the rest.
+ * When [lessons] would all be done, at one a day, six days a week:
+ * n lessons take ceil(n * 7 / 6) calendar days. Null when none are left.
  */
-export function computePlan(model, trip, later, departure) {
-  const now = model.now();
-  const today = startOfDay(now);
-  const daysLeft = Math.max(0, dayNumber(departure) - dayNumber(today));
-  const studyDays = Math.floor((daysLeft * 6) / 7);
-  const lessonsLeft = trip.filter((l) => !model.lessonComplete(l)).length;
-  const laterLeft = later.filter((l) => !model.lessonComplete(l)).length;
-  // n lessons take ceil(n * 7 / 6) calendar days.
-  const finishAfter = (n) => (n === 0 ? today : startOfDay(today, Math.ceil((n * 7) / 6) - 1));
-  const finish = finishAfter(lessonsLeft);
-  return {
-    daysLeft,
-    departed: today > departure,
-    studyDaysLeft: studyDays,
-    lessonsLeft,
-    projectedFinish: finish,
-    onTrack: lessonsLeft === 0 || finish < departure,
-    laterLessonsLeft: laterLeft,
-    laterFinish: finishAfter(lessonsLeft + laterLeft),
-  };
+export function projectedFinish(model, lessons) {
+  const left = lessons.filter((l) => !model.lessonComplete(l)).length;
+  if (left === 0) return null;
+  return startOfDay(model.now(), Math.ceil((left * 7) / 6) - 1);
 }
 
 /** Builds achievement entries tersely: count(id, title, description, icon, target, progress, secret?). */
