@@ -69,6 +69,12 @@ it across:
 tools/sync-content.sh [FOLDER_HOLDING_THE_REPOS]
 ```
 
+`conjugation/data/examples.json` is written for this site, not copied, so a
+sync leaves it alone. It holds the example sentences shown under each lesson's
+table, keyed by section id. Each sentence names a word and form, with `{}`
+where the word goes in that form and furigana written as `漢字[かんじ]`. The
+tests check every sentence still fits the synced content.
+
 The folder defaults to this repo's parent.
 
 ## Tests
@@ -111,8 +117,10 @@ Then open http://localhost:8000.
   the site's light or dark theme.
 - **Read-aloud** in Reading uses the browser's Japanese text-to-speech voice,
   which some devices need installed first.
-- **Listening audio** is Ogg Opus. Current Chrome, Edge, Firefox and Safari
-  (18.4 and later) play it.
+- **Listening audio** is Ogg Opus, with an AAC (`.m4a`) copy of each track for
+  browsers that can't play Ogg, such as Safari on iPhone. The app picks the
+  format the browser supports. `tools/sync-content.sh` makes the copies with
+  ffmpeg.
 - **Typed answers** accept kana, kanji or romaji. Romaji is converted to kana, and
   the conversion is shown as you type.
 - **Debugging:** each study app exposes itself as `window.vibeApp` in the

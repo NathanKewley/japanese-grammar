@@ -314,11 +314,12 @@ async function play(owner, src, startMs, endMs, onTick) {
   player.owner = owner;
   player.onTick = onTick;
   player.stopAt = endMs == null ? null : endMs / 1000;
-  const full = new URL(src, location.href).href;
+  const full = new URL(playable(src), location.href).href;
   const start = Math.max(0, startMs / 1000);
   // iOS only lets audio start from a tap, so play() is called before any
   // waiting. A new file plays muted until it has jumped to the right place.
-  if (a.src !== full) {
+  // A track that failed to load is loaded again, so trying again can work.
+  if (a.src !== full || a.error) {
     a.src = full;
     a.muted = true;
     const seek = () => {
@@ -335,6 +336,14 @@ async function play(owner, src, startMs, endMs, onTick) {
 }
 
 window.addEventListener('hashchange', stopAudio);
+
+/**
+ * The track in a format this browser plays. Each track is Ogg Opus, with an
+ * AAC (.m4a) copy for browsers without Ogg, such as Safari on iPhone.
+ */
+function playable(src) {
+  return player.audio.canPlayType('audio/ogg; codecs=opus') ? src : src.replace(/\.ogg$/, '.m4a');
+}
 
 /**
  * The play bar under a question: the whole track, or one line of it. [view]
@@ -367,15 +376,19 @@ function audioBar(ui, view, item, line) {
       update();
       return;
     }
-    if (view.pos === 0) {
-      view.plays++;
-      MODEL.countPlay();
-    }
     try {
       await play(view, item.audio, start + view.pos, end, update);
+      // Counted once it's playing, so a failed try doesn't count as a listen.
+      if (view.pos === 0) {
+        view.plays++;
+        MODEL.countPlay();
+      }
       update();
     } catch (e) {
-      document.getElementById(id).querySelector('.time').textContent = "Audio unavailable in this browser.";
+      player.owner = null;
+      player.onTick = null;
+      const root = document.getElementById(id);
+      if (root) root.querySelector('.time').textContent = "Couldn't load the audio. Tap play to try again.";
     }
   };
   const restart = async () => {

@@ -29,7 +29,18 @@ copy "$src/vibe-jap-reading/assets/content.json" "$here/reading/data/content.jso
 copy "$src/vibe-jap-listening/assets/content.json" "$here/listening/data/content.json"
 
 mkdir -p "$here/listening/audio"
-rm -f "$here/listening/audio/"*.ogg
+rm -f "$here/listening/audio/"*.ogg "$here/listening/audio/"*.m4a
 cp "$src/vibe-jap-listening/assets/audio/"*.ogg "$here/listening/audio/"
+
+# Safari on iPhone doesn't play Ogg, so each track also gets an AAC copy. The
+# voices are 24 kHz, so 32 kbps mono AAC-LC keeps them clear.
+if ! command -v ffmpeg >/dev/null; then
+  echo "ffmpeg is needed to make the .m4a copies of the listening audio" >&2
+  exit 1
+fi
+for f in "$here/listening/audio/"*.ogg; do
+  ffmpeg -nostdin -loglevel error -y -i "$f" -map_metadata -1 \
+    -c:a aac -b:a 32k -ac 1 -ar 24000 -movflags +faststart "${f%.ogg}.m4a"
+done
 
 echo "Content synced from $src"

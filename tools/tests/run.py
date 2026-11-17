@@ -224,6 +224,89 @@ def listening_audio_amend_dictation_and_transcript(c):
 
 
 @test
+def listening_audio_falls_back_to_m4a_without_ogg(c):
+    # Like Safari on iPhone: no Ogg, so each track should play from its .m4a copy.
+    c.send('Page.addScriptToEvaluateOnNewDocument', source="""(() => {
+      const can = HTMLMediaElement.prototype.canPlayType;
+      HTMLMediaElement.prototype.canPlayType = function (t) { return /ogg/i.test(t) ? '' : can.call(this, t); };
+      const d = Object.getOwnPropertyDescriptor(HTMLMediaElement.prototype, 'src');
+      window.__srcs = [];
+      Object.defineProperty(HTMLMediaElement.prototype, 'src', { get: d.get, configurable: true,
+        set(v) { window.__srcs.push(v); d.set.call(this, v); } });
+    })()""")
+    open_app(c, 'listening/index.html#/section/l1')
+    c.click('Start listening')
+    c.sleep(0.4)
+    c.click('.pbtn', 1.5)
+    srcs = c.js("window.__srcs")
+    check(srcs and all(s.endswith('.m4a') for s in srcs), f'tracks should load as .m4a, got {srcs}')
+    check('Audio unavailable' not in view(c), 'the m4a copy should play')
+    check(not c.text('.audio-bar .time').startswith('0:00'), 'the m4a copy should have moved past 0:00')
+    answer_all(c)
+    open_app(c, 'listening/index.html#/section/l1', 1.5)
+    c.click('Play along', 1.5)
+    check(c.js("document.querySelector('p.tline.current')?.dataset.para") is not None, 'play along should highlight a line')
+    c.click('.line-play', 1.0)
+    no_errors(c)
+
+
+@test
+def conjugation_example_sentences(c):
+    # The data first: every sentence fits its lesson's table, has one slot for
+    # the word, and furigana on every kanji. Each form a table teaches has two.
+    import re
+    with open(os.path.join(ROOT, 'conjugation', 'data', 'content.json'), encoding='utf-8') as f:
+        content = json.load(f)
+    with open(os.path.join(ROOT, 'conjugation', 'data', 'examples.json'), encoding='utf-8') as f:
+        examples = json.load(f)
+    words = content['words']
+    tables = {s['id']: [b for b in s['blocks'] if b['t'] == 'table'] for l in content['lessons'] for s in l['sections']}
+    kanji = re.compile(r'[㐀-鿿々〆]')
+    problems = []
+    for sid, items in examples.items():
+        forms = {f for b in tables.get(sid, []) for f in b['forms']}
+        if not forms:
+            problems.append(f'{sid}: no such section with a table')
+        for e in items:
+            where = f"{sid} {e.get('w')} {e.get('f')}: {e.get('s')}"
+            if e['f'] not in forms:
+                problems.append(f'{where}: form not taught here')
+            if e['f'] not in words.get(e['w'], {}).get('forms', {}):
+                problems.append(f'{where}: word missing or has no such form')
+            if e['s'].count('{}') != 1:
+                problems.append(f'{where}: needs exactly one {{}}')
+            if kanji.search(re.sub(r'[㐀-鿿々〆]+\[[^\]]+\]', '', e['s'])) or re.search(r'\[\]|[^㐀-鿿々〆]\[', e['s']):
+                problems.append(f'{where}: kanji without a reading')
+            if not e.get('en'):
+                problems.append(f'{where}: no English')
+    for sid, blocks in tables.items():
+        for b in blocks:
+            for f in b['forms']:
+                n = sum(1 for e in examples.get(sid, []) if e['f'] == f)
+                if n < 2:
+                    problems.append(f'{sid} {f}: {n} example sentences, wants 2')
+    check(not problems, 'example sentence problems:\n  ' + '\n  '.join(problems))
+
+    # Then on screen: Lesson 38 shows them after the table, with the word picked out.
+    open_app(c, 'conjugation/index.html#/section/l38.learn')
+    check('In sentences' in view(c), 'the lesson should show example sentences')
+    check(c.js("[...document.querySelectorAll('.view .emph')].some(e => e.textContent === 'きながら')"), 'the conjugated word should be highlighted')
+    check('I eat while watching TV.' in view(c), 'the English should show')
+    check(c.js("document.querySelectorAll('.view [aria-label=\"Hear this sentence\"]').length") == 5, 'each sentence should have a play button')
+    c.click('[aria-label="Hear this sentence"]', 0.3)
+
+    # After an answer, the result shows the form in a sentence too.
+    c.js("vibeApp.model.unlockEarly(vibeApp.model.course.sectionById('l38.learn'))")
+    c.sleep(0.4)
+    c.click('a.btn.block', 1)
+    c.sleep(0.35)
+    type_answer(c, question(c)['kana'])
+    c.sleep(0.5)
+    check('In a sentence' in c.text('.result'), 'the answer should come with an example sentence')
+    no_errors(c)
+
+
+@test
 def app_backup_round_trip(c):
     open_app(c, 'writing/index.html#/section/l1.kana')
     c.click('Write from memory')
@@ -276,8 +359,13 @@ def android_emulation_touch_install_and_enter(c):
 
     open_app(c, 'index.html', 2.5)
     check(c.send('Page.getInstallabilityErrors')['installabilityErrors'] == [], 'site should be installable')
+    # The starting theme follows the system's, so check the tap flips it either way.
+    before = c.js("document.documentElement.dataset.theme")
     tap('#themeToggle')
-    check(c.js("document.querySelector('meta[name=theme-color]').content") == '#0A0A0C', 'bar colour should follow dark mode')
+    after = c.js("document.documentElement.dataset.theme")
+    check(after != before, 'tapping the toggle should switch the theme')
+    bar = c.js("document.querySelector('meta[name=theme-color]').content")
+    check(bar == ('#0A0A0C' if after == 'dark' else '#FAFAFA'), f'bar colour should follow the {after} theme, got {bar}')
     tap('a[href="reading/index.html"]', 3)
     check(c.js("location.pathname").endswith('/reading/index.html'), 'tapping a tile should open the app')
     open_app(c, 'conjugation/index.html#/section/l2.learn', 1.5)

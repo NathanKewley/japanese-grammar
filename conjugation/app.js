@@ -8,6 +8,7 @@ import { statGrid, barRow } from '../shared/srs/ui.js';
 import { createSrsApp, boot, path, offerUnlock } from '../shared/srs/screens.js';
 import { seeded } from '../shared/srs/quiz-engine.js';
 import { normaliseTyped, hasRomaji, toHiragana } from '../shared/srs/romaji.js';
+import { speak, stopSpeaking } from '../shared/srs/passage.js';
 
 // ---------- Answers ----------
 
@@ -78,7 +79,88 @@ function typeExplanation(w) {
   }
 }
 
-function buildCourse(data) {
+// ---------- Example sentences ----------
+
+const KANJI_RUBY = /([㐀-鿿々〆]+)\[([^\]]+)\]/g;
+
+/** Segments for text written with furigana as 漢字[かんじ]. */
+function rubySegments(text) {
+  const out = [];
+  let at = 0;
+  for (const m of text.matchAll(KANJI_RUBY)) {
+    if (m.index > at) out.push([text.slice(at, m.index), '']);
+    out.push([m[1], m[2]]);
+    at = m.index + m[0].length;
+  }
+  if (at < text.length) out.push([text.slice(at), '']);
+  return out;
+}
+
+/**
+ * The example sentences for a section, grouped by form. Each sentence's {}
+ * is filled with the word in that form, from the same data as the table, so
+ * the two always agree. Sentences whose word or form is missing are skipped.
+ */
+function exampleGroups(raw, forms, words) {
+  const groups = new Map();
+  for (const e of raw) {
+    const form = forms[e.f];
+    const wf = words[e.w] && words[e.w].forms[e.f];
+    const parts = e.s.split('{}');
+    if (!form || !wf || parts.length !== 2) continue;
+    const before = rubySegments(parts[0]);
+    const middle = wf.main;
+    const segments = [...before, ...middle, ...rubySegments(parts[1])];
+    const em = new Set(middle.map((_, i) => before.length + i));
+    if (!groups.has(form.key)) groups.set(form.key, { form, sentences: [] });
+    groups.get(form.key).sentences.push({ word: e.w, segments, em, english: e.en });
+  }
+  return [...groups.values()];
+}
+
+/** Reads a sentence aloud from its kana, so a kanji can't be misread. */
+async function sayExample(s) {
+  stopSpeaking();
+  const ok = await speak(s.segments.map(([t, r]) => r || t).join(''));
+  if (!ok) toast("No Japanese voice found. Add a Japanese text-to-speech voice in your device's settings (or try another browser), then reload the page.", 6000);
+}
+
+/** One example sentence: the word picked out, a button to hear it, and the English. */
+function exampleLine(s, ui) {
+  return html`<div class="row" style="align-items:flex-start;gap:8px">
+    <div class="grow">
+      <div class="ja-m" style="line-height:1.9">${furigana(s.segments, s.em)}</div>
+      <div class="small">${s.english}</div>
+    </div>
+    <button class="icon-btn" type="button" style="width:34px;height:34px;flex:none;margin-top:6px" title="Hear this sentence" aria-label="Hear this sentence" ${ui.onClick(() => sayExample(s))}>${icon('speaker')}</button>
+  </div>`;
+}
+
+/** An example of [formKey], with [word] if there is one. */
+function exampleFor(course, formKey, word) {
+  const list = formKey && course.examplesByForm[formKey];
+  if (!list || !list.length) return null;
+  return list.find((s) => s.word === word) || list[[...(word || '')].reduce((n, ch) => n + ch.codePointAt(0), 0) % list.length];
+}
+
+/** The example below an answer, if the question is about a form and isn't a sentence already. */
+function answerExample(q, ui, app) {
+  const s = !q.before && exampleFor(app.model.course, q.formKey || (q.form && q.form.key), q.word && q.word.surface);
+  return s ? html`<div style="margin-top:10px">
+    <div class="small" style="margin-bottom:2px">In a sentence</div>
+    ${exampleLine(s, ui)}
+  </div>` : '';
+}
+
+/** [blocks] with the example sentences after the last table, if there are any. */
+function withExamples(blocks, groups) {
+  if (!groups.length) return blocks;
+  let at = blocks.length;
+  for (let i = blocks.length - 1; i >= 0; i--) if (blocks[i].type === 'table') { at = i + 1; break; }
+  return [...blocks.slice(0, at), { type: 'examples', groups }, ...blocks.slice(at)];
+}
+
+function buildCourse(data, examples = {}) {
   const forms = {};
   for (const [key, v] of Object.entries(data.forms)) forms[key] = { key, label: v.label, group: v.group, level: v.level };
   const words = {};
@@ -152,6 +234,7 @@ function buildCourse(data) {
               options: order.map((i) => raw.options[i]),
               correctIndex: order.indexOf(0),
               skill: 'Which form?',
+              formKey: form.key,
               explanation: word.forms[form.key].rule,
             };
           },
@@ -173,8 +256,11 @@ function buildCourse(data) {
       kind: s.kind,
       deckId: l.part,
       forms: s.forms,
-      blocks: s.blocks.map((b) =>
-        b.t === 'table' ? { type: 'table', words: b.words.map((w) => words[w]), forms: b.forms.map((f) => forms[f]) } : { type: b.t, text: b.s }
+      blocks: withExamples(
+        s.blocks.map((b) =>
+          b.t === 'table' ? { type: 'table', words: b.words.map((w) => words[w]), forms: b.forms.map((f) => forms[f]) } : { type: b.t, text: b.s }
+        ),
+        exampleGroups(examples[s.id] || [], forms, words)
       ),
       cards: s.cards.map(card),
     })),
@@ -203,6 +289,14 @@ function buildCourse(data) {
   course.wordsForForm = {};
   // The section that taught each form, for drill answers outside any section.
   course.formSections = {};
+  // Every example sentence for each form, for the answers in quizzes.
+  course.examplesByForm = {};
+  for (const s of course.allSections) {
+    for (const b of s.blocks) {
+      if (b.type !== 'examples') continue;
+      for (const g of b.groups) (course.examplesByForm[g.form.key] ||= []).push(...g.sentences);
+    }
+  }
   for (const s of course.allSections) {
     for (const c of s.cards) if (c.form) (course.wordsForForm[c.form] ||= new Set()).add(c.word.surface);
     for (const f of s.forms) course.formSections[f] = s;
@@ -379,7 +473,7 @@ class ConjugationModel extends SrsModel {
 
 // ---------- Lesson content ----------
 
-function renderBlock(block) {
+function renderBlock(block, ui) {
   switch (block.type) {
     case 'text':
       return html`<p class="prose" lang="ja">${richText(block.text)}</p>`;
@@ -406,6 +500,16 @@ function renderBlock(block) {
         </div>
       </div>`;
     }
+    case 'examples':
+      return html`<div>
+        <div class="h3" style="margin-bottom:8px">In sentences</div>
+        <div class="stack">
+          ${block.groups.map((g) => html`<div class="card">
+            <div class="small">${g.form.label}</div>
+            ${g.sentences.map((s) => html`<div style="padding-top:10px">${exampleLine(s, ui)}</div>`)}
+          </div>`)}
+        </div>
+      </div>`;
     default:
       return '';
   }
@@ -491,12 +595,13 @@ function givenText(o) {
   return o.typo ? `${o.given} (typo, counted as right)` : o.given || '';
 }
 
-function renderResult(attempt) {
+function renderResult(attempt, ui, app) {
   const q = attempt.question;
   const o = attempt.outcome;
   return html`<p class="small" lang="ja" style="color:var(--ink)">${questionSummary(q)}</p>
     ${o.given ? html`<p class="small" lang="ja">You answered: ${givenText(o)}</p>` : ''}
-    <div style="margin-top:6px">${answerPanel(q, true)}</div>`;
+    <div style="margin-top:6px">${answerPanel(q, true)}</div>
+    ${answerExample(q, ui, app)}`;
 }
 
 function resultHeading(a) {
@@ -621,11 +726,14 @@ const CREDITS = html`
 // ---------- Start ----------
 
 boot(document.getElementById('app'), async () => {
-  const [content, store] = await Promise.all([
+  const [content, examples, store] = await Promise.all([
     fetch('data/content.json').then((r) => { if (!r.ok) throw new Error('content missing'); return r.json(); }),
+    // Written for this site, so tools/sync-content.sh leaves it alone. The
+    // lessons still work without it.
+    fetch('data/examples.json').then((r) => (r.ok ? r.json() : {})).catch(() => ({})),
     Store.open('vibe-conjugation'),
   ]);
-  const course = buildCourse(content);
+  const course = buildCourse(content, examples);
   const model = new ConjugationModel(store, course, {
     appName: 'Vibe Conjugation',
     backupApp: 'vibe_web_conjugation',
@@ -658,7 +766,7 @@ boot(document.getElementById('app'), async () => {
     renderQuestion,
     resultHeading,
     renderResult,
-    renderItemDetail: (card, q) => answerPanel(q),
+    renderItemDetail: (card, q, ui, app) => html`${answerPanel(q)}${answerExample(q, ui, app)}`,
     outcomeFromJson: (json) => ({ correct: !!json.correct, given: json.given || '', typo: !!json.typo }),
     givenText,
     amendable: true,

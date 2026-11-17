@@ -1,0 +1,323 @@
+{
+  "l2.learn": [
+    { "f": "masu", "w": "飲む", "s": "毎朝[まいあさ]コーヒーを{}。", "en": "I drink coffee every morning." },
+    { "f": "masu", "w": "起きる", "s": "私[わたし]は六時[ろくじ]に{}。", "en": "I get up at six." },
+    { "f": "masu_neg", "w": "食べる", "s": "肉[にく]は{}。", "en": "I don't eat meat." },
+    { "f": "masu_neg", "w": "来る", "s": "田中[たなか]さんは今日[きょう]{}。", "en": "Mr Tanaka isn't coming today." }
+  ],
+  "l3.learn": [
+    { "f": "masu_past", "w": "行く", "s": "昨日[きのう]、友達[ともだち]と映画館[えいがかん]に{}。", "en": "Yesterday I went to the cinema with a friend." },
+    { "f": "masu_past", "w": "勉強する", "s": "週末[しゅうまつ]は図書館[としょかん]で{}。", "en": "I studied at the library at the weekend." },
+    { "f": "masu_past_neg", "w": "寝る", "s": "昨日[きのう]の夜[よる]はあまり{}。", "en": "I didn't sleep much last night." },
+    { "f": "masu_past_neg", "w": "泳ぐ", "s": "寒[さむ]かったので、海[うみ]で{}。", "en": "It was cold, so we didn't swim in the sea." },
+    { "f": "masho", "w": "帰る", "s": "もう遅[おそ]いですから、{}。", "en": "It's late, so let's go home." },
+    { "f": "masho", "w": "遊ぶ", "s": "日曜日[にちようび]に公園[こうえん]で{}。", "en": "Let's play in the park on Sunday." }
+  ],
+  "l5.learn": [
+    { "f": "nai", "w": "飲む", "s": "私[わたし]はお酒[さけ]を{}。", "en": "I don't drink alcohol." },
+    { "f": "nai", "w": "来る", "s": "彼[かれ]は今日[きょう]{}よ。", "en": "He isn't coming today." }
+  ],
+  "l6.learn": [
+    { "f": "te", "w": "書く", "s": "ここに名前[なまえ]を{}ください。", "en": "Please write your name here." },
+    { "f": "te", "w": "起きる", "s": "朝[あさ]{}、シャワーを浴[あ]びます。", "en": "I get up in the morning and have a shower." },
+    { "f": "te", "w": "行く", "s": "駅[えき]まで{}、電車[でんしゃ]に乗[の]ります。", "en": "I go to the station and get on the train." }
+  ],
+  "l7.learn": [
+    { "f": "te", "w": "待つ", "s": "ちょっと{}ください。", "en": "Please wait a moment." },
+    { "f": "te", "w": "飲む", "s": "薬[くすり]を{}、早[はや]く寝[ね]ました。", "en": "I took my medicine and went to bed early." },
+    { "f": "te", "w": "帰る", "s": "家[いえ]に{}、晩[ばん]ご飯[はん]を作[つく]ります。", "en": "I'll go home and make dinner." }
+  ],
+  "l8.learn": [
+    { "f": "ta", "w": "食べる", "s": "昨日[きのう]、すしを{}。", "en": "I ate sushi yesterday." },
+    { "f": "ta", "w": "行く", "s": "先週[せんしゅう]、京都[きょうと]に{}。", "en": "I went to Kyoto last week." },
+    { "f": "nakatta", "w": "来る", "s": "昨日[きのう]のパーティーに、山田[やまだ]さんは{}。", "en": "Mr Yamada didn't come to yesterday's party." },
+    { "f": "nakatta", "w": "ある", "s": "店[みせ]に欲[ほ]しい本[ほん]が{}。", "en": "The shop didn't have the book I wanted." }
+  ],
+  "l9.learn": [
+    { "f": "tai", "w": "行く", "s": "夏休[なつやす]みに沖縄[おきなわ]へ{}です。", "en": "I want to go to Okinawa in the summer holidays." },
+    { "f": "tai", "w": "飲む", "s": "暑[あつ]いから、冷[つめ]たい水[みず]が{}。", "en": "It's hot, so I want to drink some cold water." },
+    { "f": "naide", "w": "忘れる", "s": "傘[かさ]を{}ください。", "en": "Please don't forget your umbrella." },
+    { "f": "naide", "w": "行く", "s": "まだ{}。もう少[すこ]し話[はな]しましょう。", "en": "Don't go yet. Let's talk a bit more." }
+  ],
+  "l12.learn": [
+    { "f": "plain_neg", "w": "安い", "s": "このかばんは{}けど、とても丈夫[じょうぶ]だ。", "en": "This bag isn't cheap, but it's very sturdy." },
+    { "f": "plain_neg", "w": "面白い", "s": "その映画[えいが]は{}よ。", "en": "That film isn't interesting." },
+    { "f": "polite", "w": "新しい", "s": "この車[くるま]はとても{}。", "en": "This car is very new." },
+    { "f": "polite", "w": "面白い", "s": "日本語[にほんご]の勉強[べんきょう]は{}。", "en": "Studying Japanese is interesting." },
+    { "f": "polite_neg", "w": "寒い", "s": "東京[とうきょう]の冬[ふゆ]はそんなに{}。", "en": "Winter in Tokyo isn't that cold." },
+    { "f": "polite_neg", "w": "いい", "s": "今日[きょう]は天気[てんき]が{}。", "en": "The weather isn't good today." }
+  ],
+  "l13.learn": [
+    { "f": "plain_past", "w": "忙しい", "s": "先週[せんしゅう]は仕事[しごと]がとても{}。", "en": "Work was really busy last week." },
+    { "f": "plain_past", "w": "いい", "s": "昨日[きのう]のコンサート、すごく{}ね。", "en": "Yesterday's concert was really good, wasn't it." },
+    { "f": "plain_past_neg", "w": "楽しい", "s": "パーティーはあまり{}。", "en": "The party wasn't much fun." },
+    { "f": "plain_past_neg", "w": "暑い", "s": "今年[ことし]の夏[なつ]はそんなに{}。", "en": "This summer wasn't that hot." },
+    { "f": "polite_past", "w": "難しい", "s": "昨日[きのう]の試験[しけん]は{}。", "en": "Yesterday's exam was difficult." },
+    { "f": "polite_past", "w": "忙しい", "s": "今週[こんしゅう]は毎日[まいにち]{}。", "en": "I was busy every day this week." },
+    { "f": "polite_past_neg", "w": "楽しい", "s": "一人[ひとり]で行[い]った旅行[りょこう]は、あまり{}。", "en": "The trip I took on my own wasn't much fun." },
+    { "f": "polite_past_neg", "w": "いい", "s": "昨日[きのう]は天気[てんき]が{}。", "en": "The weather wasn't good yesterday." }
+  ],
+  "l14.learn": [
+    { "f": "plain", "w": "学生", "s": "弟[おとうと]はまだ{}。", "en": "My little brother is still a student." },
+    { "f": "plain", "w": "雨", "s": "明日[あした]も{}。", "en": "It'll rain tomorrow too." },
+    { "f": "plain_neg", "w": "好き", "s": "私[わたし]は野菜[やさい]があまり{}。", "en": "I don't really like vegetables." },
+    { "f": "plain_neg", "w": "静か", "s": "この町[まち]は夜[よる]も{}。", "en": "This town isn't quiet, even at night." },
+    { "f": "polite", "w": "有名", "s": "このお寺[てら]はとても{}。", "en": "This temple is very famous." },
+    { "f": "polite", "w": "好き", "s": "私[わたし]は猫[ねこ]が{}。", "en": "I like cats." },
+    { "f": "polite_neg", "w": "学生", "s": "私[わたし]はもう{}。", "en": "I'm not a student any more." },
+    { "f": "polite_neg", "w": "雨", "s": "明日[あした]は{}。", "en": "It won't rain tomorrow." }
+  ],
+  "l15.learn": [
+    { "f": "plain_past", "w": "休み", "s": "昨日[きのう]は学校[がっこう]が{}。", "en": "There was no school yesterday." },
+    { "f": "plain_past", "w": "元気", "s": "子供[こども]のころ、私[わたし]はとても{}。", "en": "I was a very lively child." },
+    { "f": "plain_past_neg", "w": "暇", "s": "先週[せんしゅう]は全然[ぜんぜん]{}。", "en": "I wasn't free at all last week." },
+    { "f": "plain_past_neg", "w": "きれい", "s": "昔[むかし]、この川[かわ]は{}。", "en": "This river wasn't clean in the old days." },
+    { "f": "polite_past", "w": "病気", "s": "先週[せんしゅう]、母[はは]は{}。", "en": "My mother was ill last week." },
+    { "f": "polite_past", "w": "きれい", "s": "昨日[きのう]の夕日[ゆうひ]はとても{}。", "en": "Yesterday's sunset was really beautiful." },
+    { "f": "polite_past_neg", "w": "暇", "s": "昨日[きのう]は仕事[しごと]が多[おお]くて、{}。", "en": "I had a lot of work yesterday, so I wasn't free." },
+    { "f": "polite_past_neg", "w": "元気", "s": "先週[せんしゅう]は風邪[かぜ]で{}。", "en": "I wasn't well last week because of a cold." }
+  ],
+  "l16.learn": [
+    { "f": "attr", "w": "静か", "s": "{}部屋[へや]で勉強[べんきょう]したいです。", "en": "I want to study in a quiet room." },
+    { "f": "attr", "w": "先生", "s": "これは{}かばんです。", "en": "This is the teacher's bag." },
+    { "f": "adverb", "w": "早い", "s": "明日[あした]は{}起[お]きます。", "en": "I'll get up early tomorrow." },
+    { "f": "adverb", "w": "上手", "s": "田中[たなか]さんは英語[えいご]を{}話[はな]します。", "en": "Mr Tanaka speaks English well." }
+  ],
+  "l17.learn": [
+    { "f": "adj_te", "w": "安い", "s": "この店[みせ]は{}おいしいです。", "en": "This place is cheap and the food is good." },
+    { "f": "adj_te", "w": "静か", "s": "私[わたし]の町[まち]は{}きれいです。", "en": "My town is quiet and clean." },
+    { "f": "adj_te", "w": "学生", "s": "姉[あね]は{}、妹[いもうと]は会社員[かいしゃいん]です。", "en": "My older sister is a student, and my younger sister works for a company." }
+  ],
+  "l19.learn": [
+    { "f": "potential", "w": "弾く", "s": "姉[あね]はピアノが{}。", "en": "My older sister can play the piano." },
+    { "f": "potential", "w": "泳ぐ", "s": "私[わたし]は百[ひゃく]メートル{}。", "en": "I can swim a hundred metres." },
+    { "f": "potential", "w": "来る", "s": "明日[あした]、何時[なんじ]に{}？", "en": "What time can you come tomorrow?" }
+  ],
+  "l20.learn": [
+    { "f": "volitional", "w": "食べる", "s": "お腹[なか]がすいたね。何[なに]か{}。", "en": "I'm hungry. Let's eat something." },
+    { "f": "volitional", "w": "寝る", "s": "明日[あした]は早[はや]いから、もう{}。", "en": "I've got an early start tomorrow, so I'll go to bed now." }
+  ],
+  "l21.learn": [
+    { "f": "imperative", "w": "止まる", "s": "「{}！」と警官[けいかん]が叫[さけ]んだ。", "en": "\"Stop!\" shouted the police officer." },
+    { "f": "imperative", "w": "逃げる", "s": "火事[かじ]だ！早[はや]く{}！", "en": "Fire! Get out, quick!" },
+    { "f": "prohibitive", "w": "入る", "s": "この部屋[へや]には{}。", "en": "Don't go into this room." },
+    { "f": "prohibitive", "w": "見る", "s": "こっちを{}！", "en": "Don't look at me!" }
+  ],
+  "l22.learn": [
+    { "f": "ba", "w": "読む", "s": "この本[ほん]を{}、よく分[わ]かりますよ。", "en": "If you read this book, you'll understand it well." },
+    { "f": "ba", "w": "ある", "s": "時間[じかん]が{}、手伝[てつだ]います。", "en": "If I have time, I'll help." },
+    { "f": "adj_ba", "w": "安い", "s": "{}買[か]います。", "en": "If it's cheap, I'll buy it." },
+    { "f": "adj_ba", "w": "雨", "s": "{}、試合[しあい]は中止[ちゅうし]です。", "en": "If it rains, the match is off." }
+  ],
+  "l23.learn": [
+    { "f": "tara", "w": "終わる", "s": "仕事[しごと]が{}、飲[の]みに行[い]きましょう。", "en": "When work finishes, let's go for a drink." },
+    { "f": "tara", "w": "帰る", "s": "家[いえ]に{}、すぐ電話[でんわ]します。", "en": "I'll call you as soon as I get home." },
+    { "f": "adj_tara", "w": "いい", "s": "{}、一緒[いっしょ]に行[い]きませんか。", "en": "If you like, would you like to come with us?" },
+    { "f": "adj_tara", "w": "暇", "s": "明日[あした]{}、手伝[てつだ]ってください。", "en": "If you're free tomorrow, please give me a hand." }
+  ],
+  "l24.learn": [
+    { "f": "teiru", "w": "降る", "s": "外[そと]は雪[ゆき]が{}。", "en": "It's snowing outside." },
+    { "f": "teiru", "w": "住む", "s": "兄[あに]は大阪[おおさか]に{}。", "en": "My older brother lives in Osaka." },
+    { "f": "teshimau", "w": "忘れる", "s": "人[ひと]の名前[なまえ]をすぐ{}。", "en": "I always forget people's names straight away." },
+    { "f": "teshimau", "w": "食べる", "s": "おいしいから、いつも全部[ぜんぶ]{}。", "en": "It's so good that I always end up eating the lot." }
+  ],
+  "l25.learn": [
+    { "f": "passive", "w": "褒める", "s": "先生[せんせい]に{}と、嬉[うれ]しい。", "en": "I'm happy when the teacher praises me." },
+    { "f": "passive", "w": "踏む", "s": "電車[でんしゃ]の中[なか]で、よく足[あし]を{}。", "en": "I often get my foot stepped on in the train." },
+    { "f": "passive", "w": "読む", "s": "この本[ほん]は世界中[せかいじゅう]で{}。", "en": "This book is read all over the world." }
+  ],
+  "l26.learn": [
+    { "f": "causative", "w": "習う", "s": "娘[むすめ]にピアノを{}つもりです。", "en": "I'm planning to have my daughter learn the piano." },
+    { "f": "causative", "w": "待つ", "s": "お客[きゃく]さんを長[なが]く{}のはよくない。", "en": "It's not good to keep customers waiting a long time." }
+  ],
+  "l27.learn": [
+    { "f": "caus_pass", "w": "待つ", "s": "病院[びょういん]でいつも一時間[いちじかん]も{}。", "en": "I'm always made to wait a whole hour at the hospital." },
+    { "f": "caus_pass", "w": "歌う", "s": "飲[の]み会[かい]で、いつも{}。", "en": "I always get made to sing at drinking parties." }
+  ],
+  "l28.learn": [
+    { "f": "sou", "w": "降る", "s": "空[そら]が暗[くら]い。雨[あめ]が{}だ。", "en": "The sky's dark. It looks like it's going to rain." },
+    { "f": "sou", "w": "泣く", "s": "妹[いもうと]は今[いま]にも{}な顔[かお]をしている。", "en": "My little sister looks as if she's about to cry." },
+    { "f": "sugiru", "w": "食べる", "s": "{}のは体[からだ]によくない。", "en": "Eating too much is bad for you." },
+    { "f": "sugiru", "w": "飲む", "s": "彼[かれ]はいつもお酒[さけ]を{}。", "en": "He always drinks too much." },
+    { "f": "adj_sou", "w": "おいしい", "s": "このケーキ、{}ね。", "en": "This cake looks delicious, doesn't it." },
+    { "f": "adj_sou", "w": "元気", "s": "おじいさんが{}で安心[あんしん]した。", "en": "I was relieved that Grandpa looked well." },
+    { "f": "adj_sugiru", "w": "高い", "s": "このかばんは{}。", "en": "This bag is too expensive." },
+    { "f": "adj_sugiru", "w": "静か", "s": "{}部屋[へや]は、ちょっと怖[こわ]い。", "en": "A room that's too quiet is a bit scary." }
+  ],
+  "l29.learn": [
+    { "f": "yasui", "w": "読む", "s": "この本[ほん]は字[じ]が大[おお]きくて{}。", "en": "This book has big print and is easy to read." },
+    { "f": "yasui", "w": "使う", "s": "新[あたら]しいパソコンはとても{}。", "en": "The new computer is very easy to use." },
+    { "f": "nikui", "w": "分かる", "s": "先生[せんせい]の説明[せつめい]は少[すこ]し{}。", "en": "The teacher's explanation is a bit hard to follow." },
+    { "f": "nikui", "w": "歩く", "s": "この靴[くつ]は{}。", "en": "These shoes are hard to walk in." },
+    { "f": "naru", "w": "寒い", "s": "夜[よる]になると{}。", "en": "It gets cold at night." },
+    { "f": "naru", "w": "医者", "s": "将来[しょうらい]、{}つもりです。", "en": "I'm planning to become a doctor." },
+    { "f": "naru", "w": "上手", "s": "毎日[まいにち]練習[れんしゅう]すれば、すぐ{}よ。", "en": "If you practise every day, you'll soon get good." }
+  ],
+  "l31.learn": [
+    { "f": "respectful", "w": "来る", "s": "先生[せんせい]は何時[なんじ]ごろ{}予定[よてい]ですか。", "en": "Around what time is the teacher due to arrive?" },
+    { "f": "respectful", "w": "言う", "s": "社長[しゃちょう]が{}とおり、計画[けいかく]を変[か]えましょう。", "en": "Let's change the plan, as the company president says." },
+    { "f": "respectful", "w": "見る", "s": "先生[せんせい]は毎朝[まいあさ]ニュースを{}そうです。", "en": "I hear the teacher watches the news every morning." }
+  ],
+  "l32.learn": [
+    { "f": "humble", "w": "行く", "s": "明日[あした]、私[わたし]がそちらへ{}予定[よてい]です。", "en": "I'm due to visit you tomorrow." },
+    { "f": "humble", "w": "会う", "s": "社長[しゃちょう]に{}のは初[はじ]めてです。", "en": "This is my first time meeting the company president." },
+    { "f": "humble", "w": "見る", "s": "お手紙[てがみ]を{}のを楽[たの]しみにしております。", "en": "I look forward to reading your letter." }
+  ],
+  "l33.learn": [
+    { "f": "respectful", "w": "待つ", "s": "{}方[かた]は、こちらへどうぞ。", "en": "If you're waiting, please come this way." },
+    { "f": "respectful", "w": "帰る", "s": "部長[ぶちょう]は何時[なんじ]ごろ{}予定[よてい]ですか。", "en": "Around what time is the manager planning to go home?" },
+    { "f": "humble", "w": "送る", "s": "資料[しりょう]は明日[あした]{}予定[よてい]です。", "en": "We plan to send you the documents tomorrow." },
+    { "f": "humble", "w": "連絡する", "s": "決[き]まったら、すぐに{}ようにします。", "en": "I'll be sure to contact you as soon as it's decided." }
+  ],
+  "l34.learn": [
+    { "f": "respectful_masu", "w": "行く", "s": "先生[せんせい]は来週[らいしゅう]、京都[きょうと]に{}。", "en": "The teacher is going to Kyoto next week." },
+    { "f": "respectful_masu", "w": "する", "s": "週末[しゅうまつ]は何[なに]を{}か。", "en": "What do you do at weekends?" },
+    { "f": "humble_masu", "w": "言う", "s": "初[はじ]めまして、田中[たなか]と{}。", "en": "How do you do. My name is Tanaka." },
+    { "f": "humble_masu", "w": "いる", "s": "明日[あした]は一日中[いちにちじゅう]会社[かいしゃ]に{}。", "en": "I'll be at the office all day tomorrow." }
+  ],
+  "l36.learn": [
+    { "f": "nakereba", "w": "勉強する", "s": "来週[らいしゅう]は試験[しけん]だから、{}。", "en": "There's an exam next week, so I have to study." },
+    { "f": "nakereba", "w": "行く", "s": "明日[あした]は朝[あさ]早[はや]く病院[びょういん]に{}。", "en": "I have to go to the hospital early tomorrow morning." },
+    { "f": "nakutemoii", "w": "来る", "s": "明日[あした]は{}よ。", "en": "You don't have to come tomorrow." },
+    { "f": "nakutemoii", "w": "書く", "s": "名前[なまえ]は{}。", "en": "You don't have to write your name." },
+    { "f": "temoii", "w": "食べる", "s": "このケーキ、{}？", "en": "Can I eat this cake?" },
+    { "f": "temoii", "w": "書く", "s": "鉛筆[えんぴつ]で{}ですか。", "en": "May I write in pencil?" },
+    { "f": "tewaikenai", "w": "食べる", "s": "授業中[じゅぎょうちゅう]に{}。", "en": "You mustn't eat in class." },
+    { "f": "tewaikenai", "w": "行く", "s": "一人[ひとり]で海[うみ]に{}よ。", "en": "You mustn't go to the sea on your own." }
+  ],
+  "l37.learn": [
+    { "f": "temo", "w": "謝る", "s": "いくら{}、許[ゆる]してくれない。", "en": "However much I apologise, they won't forgive me." },
+    { "f": "temo", "w": "食べる", "s": "いくら{}太[ふと]らない。", "en": "However much I eat, I don't put on weight." },
+    { "f": "adj_temo", "w": "雨", "s": "{}、試合[しあい]はあります。", "en": "Even if it rains, the match is on." },
+    { "f": "adj_temo", "w": "高い", "s": "{}、この本[ほん]は買[か]いたい。", "en": "Even if it's expensive, I want to buy this book." },
+    { "f": "tari", "w": "遊ぶ", "s": "週末[しゅうまつ]は友達[ともだち]と{}、買[か]い物[もの]をしたりします。", "en": "At weekends I do things like hang out with friends and go shopping." },
+    { "f": "tari", "w": "休む", "s": "休[やす]みの日[ひ]は、家[いえ]で{}、テレビを見[み]たりしています。", "en": "On days off I do things like rest at home and watch TV." }
+  ],
+  "l38.learn": [
+    { "f": "nagara", "w": "見る", "s": "テレビを{}ご飯[はん]を食[た]べます。", "en": "I eat while watching TV." },
+    { "f": "nagara", "w": "歩く", "s": "{}スマホを見[み]るのは危[あぶ]ないです。", "en": "Looking at your phone while walking is dangerous." },
+    { "f": "zuni", "w": "寝る", "s": "昨日[きのう]は{}勉強[べんきょう]しました。", "en": "I stayed up all night studying yesterday." },
+    { "f": "zuni", "w": "見る", "s": "地図[ちず]を{}駅[えき]まで行[い]けました。", "en": "I got to the station without looking at a map." },
+    { "f": "zuni", "w": "する", "s": "何[なに]も{}一日[いちにち]が終[お]わった。", "en": "The day ended without my doing anything." }
+  ],
+  "l39.learn": [
+    { "f": "teoku", "w": "買う", "s": "パーティーの前[まえ]に飲[の]み物[もの]を{}。", "en": "I'll buy the drinks before the party." },
+    { "f": "teoku", "w": "準備する", "s": "明日[あした]の会議[かいぎ]の資料[しりょう]を{}。", "en": "I'll get the papers ready for tomorrow's meeting." },
+    { "f": "tearu", "w": "書く", "s": "黒板[こくばん]に名前[なまえ]が{}。", "en": "There's a name written on the blackboard." },
+    { "f": "tearu", "w": "置く", "s": "机[つくえ]の上[うえ]に花[はな]が{}。", "en": "Someone has put flowers on the desk." },
+    { "f": "temiru", "w": "書く", "s": "漢字[かんじ]で名前[なまえ]を{}。", "en": "I'll try writing my name in kanji." },
+    { "f": "temiru", "w": "読む", "s": "面白[おもしろ]そうだから、この本[ほん]を{}。", "en": "It looks interesting, so I'll give this book a try." }
+  ],
+  "l40.learn": [
+    { "f": "potential_neg", "w": "読む", "s": "この漢字[かんじ]が{}。", "en": "I can't read this kanji." },
+    { "f": "potential_neg", "w": "する", "s": "今日[きょう]は忙[いそが]しくて、何[なに]も{}。", "en": "I'm so busy today that I can't do anything." },
+    { "f": "passive_past", "w": "書く", "s": "この小説[しょうせつ]は百年前[ひゃくねんまえ]に{}。", "en": "This novel was written a hundred years ago." },
+    { "f": "passive_past", "w": "食べる", "s": "冷蔵庫[れいぞうこ]のケーキが弟[おとうと]に{}。", "en": "My little brother ate the cake in the fridge." },
+    { "f": "caus_past", "w": "読む", "s": "先生[せんせい]は学生[がくせい]に教科書[きょうかしょ]を{}。", "en": "The teacher had the students read the textbook." },
+    { "f": "caus_past", "w": "来る", "s": "日曜日[にちようび]なのに、部長[ぶちょう]は部下[ぶか]を会社[かいしゃ]に{}。", "en": "The manager made his staff come in to work, even though it was Sunday." }
+  ],
+  "l41.learn": [
+    { "f": "volitional_to", "w": "寝る", "s": "{}と、いつも電話[でんわ]が鳴[な]る。", "en": "Whenever I try to get to sleep, the phone rings." },
+    { "f": "volitional_to", "w": "出る", "s": "家[いえ]を{}と、いつも母[はは]に呼[よ]ばれる。", "en": "Whenever I'm about to leave the house, my mother calls me back." },
+    { "f": "ba_hodo", "w": "考える", "s": "{}、分[わ]からなくなる。", "en": "The more I think about it, the less I understand." },
+    { "f": "ba_hodo", "w": "話す", "s": "彼女[かのじょ]とは{}、好[す]きになる。", "en": "The more I talk with her, the more I like her." },
+    { "f": "adj_ba_hodo", "w": "静か", "s": "勉強[べんきょう]する場所[ばしょ]は{}いい。", "en": "The quieter the place you study, the better." },
+    { "f": "adj_ba_hodo", "w": "新しい", "s": "パソコンは{}便利[べんり]だ。", "en": "The newer a computer is, the handier it is." }
+  ],
+  "l42.learn": [
+    { "f": "rashii", "w": "降る", "s": "明日[あした]は雪[ゆき]が{}。", "en": "Apparently it's going to snow tomorrow." },
+    { "f": "rashii", "w": "休む", "s": "田中[たなか]さんは今日[きょう]会社[かいしゃ]を{}。", "en": "Apparently Mr Tanaka is taking the day off work today." },
+    { "f": "youda", "w": "来る", "s": "誰[だれ]か{}。足音[あしおと]が聞[き]こえる。", "en": "Someone seems to be coming. I can hear footsteps." },
+    { "f": "youda", "w": "降る", "s": "今夜[こんや]は雨[あめ]が{}。", "en": "It looks as if it'll rain tonight." },
+    { "f": "adj_rashii", "w": "病気", "s": "隣[となり]のおじいさんは{}。", "en": "Apparently the old man next door is ill." },
+    { "f": "adj_rashii", "w": "忙しい", "s": "最近[さいきん]、兄[あに]は仕事[しごと]が{}。", "en": "Apparently my brother is busy at work these days." },
+    { "f": "adj_youda", "w": "元気", "s": "子供[こども]たちはみんな{}。", "en": "The children all seem to be well." },
+    { "f": "adj_youda", "w": "静か", "s": "隣[となり]の部屋[へや]は今日[きょう]は{}。", "en": "The room next door seems quiet today." }
+  ],
+  "l43.learn": [
+    { "f": "hazu", "w": "着く", "s": "荷物[にもつ]は明日[あした]{}。", "en": "The parcel should arrive tomorrow." },
+    { "f": "hazu", "w": "終わる", "s": "会議[かいぎ]は三時[さんじ]に{}。", "en": "The meeting should finish at three." },
+    { "f": "adj_hazu", "w": "安い", "s": "あの店[みせ]なら{}。", "en": "It should be cheap at that shop." },
+    { "f": "adj_hazu", "w": "学生", "s": "あの人[ひと]はまだ{}。", "en": "That person should still be a student." }
+  ],
+  "l44.learn": [
+    { "f": "adj_sa", "w": "高い", "s": "富士山[ふじさん]の{}は3776メートルだ。", "en": "Mount Fuji is 3,776 metres high." },
+    { "f": "adj_sa", "w": "優しい", "s": "彼[かれ]の{}に感動[かんどう]した。", "en": "I was moved by his kindness." },
+    { "f": "garu", "w": "欲しい", "s": "子供[こども]が{}ものを全部[ぜんぶ]買[か]ってはいけない。", "en": "You shouldn't buy children everything they want." },
+    { "f": "garu", "w": "怖い", "s": "うちの犬[いぬ]は雷[かみなり]を{}。", "en": "Our dog is afraid of thunder." }
+  ],
+  "l45.learn": [
+    { "f": "o_kudasai", "w": "待つ", "s": "少々[しょうしょう]{}。", "en": "Please wait a moment." },
+    { "f": "o_kudasai", "w": "来る", "s": "またいつでも{}。", "en": "Please come again any time." },
+    { "f": "o_itasu", "w": "送る", "s": "資料[しりょう]はメールで{}。", "en": "I'll send you the documents by email." },
+    { "f": "o_itasu", "w": "説明する", "s": "今[いま]から新[あたら]しい計画[けいかく]について{}。", "en": "I'll now explain the new plan." },
+    { "f": "sasete_itadaku", "w": "説明する", "s": "私[わたし]から簡単[かんたん]に{}。", "en": "Allow me to give a brief explanation." },
+    { "f": "sasete_itadaku", "w": "待つ", "s": "では、ここで{}。", "en": "Then, if I may, I'll wait here." }
+  ],
+  "l47.learn": [
+    { "f": "zaruwoenai", "w": "諦める", "s": "お金[かね]がないので、旅行[りょこう]は{}。", "en": "I've got no money, so I have no choice but to give up on the trip." },
+    { "f": "zaruwoenai", "w": "認める", "s": "これだけ証拠[しょうこ]があれば、ミスを{}。", "en": "With this much evidence, I have to admit the mistake." },
+    { "f": "zuniwairarenai", "w": "笑う", "s": "彼[かれ]の話[はなし]は面白[おもしろ]くて、{}。", "en": "His stories are so funny that I can't help laughing." },
+    { "f": "zuniwairarenai", "w": "泣く", "s": "この映画[えいが]を見[み]ると、{}。", "en": "Whenever I watch this film, I can't help crying." }
+  ],
+  "l48.learn": [
+    { "f": "kaneru", "w": "答える", "s": "その質問[しつもん]には{}。", "en": "I'm afraid I can't answer that question." },
+    { "f": "kaneru", "w": "判断する", "s": "今[いま]の段階[だんかい]では{}。", "en": "At this stage, I can't make a judgement." },
+    { "f": "kanenai", "w": "言う", "s": "あの人[ひと]なら、そんなことも{}。", "en": "That person might well say something like that." },
+    { "f": "kanenai", "w": "決める", "s": "彼[かれ]は一人[ひとり]で何[なん]でも{}から、心配[しんぱい]だ。", "en": "He might well decide everything on his own, which worries me." },
+    { "f": "uru", "w": "言う", "s": "日本[にほん]についても{}ことだ。", "en": "The same could be said of Japan." },
+    { "f": "uru", "w": "判断する", "s": "これは誰[だれ]でも{}問題[もんだい]だ。", "en": "This is a question anyone could judge." }
+  ],
+  "l49.learn": [
+    { "f": "ppanashi", "w": "開ける", "s": "窓[まど]を{}にしないでください。", "en": "Please don't leave the window open." },
+    { "f": "ppanashi", "w": "出す", "s": "水[みず]を{}にしていた。", "en": "I'd left the tap running." },
+    { "f": "gachi", "w": "忘れる", "s": "最近[さいきん]、約束[やくそく]を{}だ。", "en": "I've been forgetting appointments a lot lately." },
+    { "f": "gachi", "w": "遅れる", "s": "冬[ふゆ]は電車[でんしゃ]が{}になる。", "en": "Trains tend to run late in winter." }
+  ],
+  "l50.learn": [
+    { "f": "kkonai", "w": "分かる", "s": "そんな難[むずか]しい問題[もんだい]、私[わたし]に{}よ。", "en": "There's no way I could understand a problem that hard." },
+    { "f": "kkonai", "w": "信じる", "s": "本当[ほんとう]のことを言[い]っても、誰[だれ]も{}。", "en": "Even if I tell the truth, no one's going to believe me." },
+    { "f": "youganai", "w": "説明する", "s": "理由[りゆう]が分[わ]からないので、{}。", "en": "I don't know the reason, so there's no way I can explain it." },
+    { "f": "youganai", "w": "想像する", "s": "経験[けいけん]したことがないので、{}。", "en": "I've never been through it, so there's no way I can imagine it." },
+    { "f": "gatai", "w": "想像する", "s": "彼[かれ]の苦[くる]しみは{}ものだった。", "en": "His suffering was hard to imagine." },
+    { "f": "gatai", "w": "説明する", "s": "この気持[きも]ちは言葉[ことば]では{}。", "en": "This feeling is hard to put into words." }
+  ],
+  "l51.learn": [
+    { "f": "beki", "w": "謝る", "s": "悪[わる]いことをしたら、すぐ{}だ。", "en": "If you've done something wrong, you should apologise straight away." },
+    { "f": "beki", "w": "守る", "s": "約束[やくそく]は{}ものだ。", "en": "Promises are meant to be kept." },
+    { "f": "mai", "w": "行く", "s": "あんな店[みせ]には二度[にど]と{}。", "en": "I'll never go to a shop like that again." },
+    { "f": "mai", "w": "言う", "s": "彼[かれ]はもう嘘[うそ]は{}と決[き]めた。", "en": "He made up his mind never to lie again." }
+  ],
+  "l52.learn": [
+    { "f": "nu", "w": "帰る", "s": "祖父[そふ]は{}人[ひと]となった。", "en": "My grandfather passed away." },
+    { "f": "nu", "w": "知る", "s": "彼[かれ]は{}顔[かお]をしている。", "en": "He's acting as if he knows nothing about it." }
+  ],
+  "l53.learn": [
+    { "f": "adj_ge", "w": "寂しい", "s": "彼女[かのじょ]は{}な顔[かお]で窓[まど]の外[そと]を見[み]ていた。", "en": "She was looking out of the window with a lonely face." },
+    { "f": "adj_ge", "w": "得意", "s": "弟[おとうと]は{}に賞状[しょうじょう]を見[み]せた。", "en": "My little brother proudly showed off his certificate." }
+  ],
+  "l55.learn": [
+    { "f": "neba", "w": "急ぐ", "s": "時間[じかん]がない。{}。", "en": "There's no time. We must hurry." },
+    { "f": "neba", "w": "守る", "s": "法[ほう]は{}。", "en": "The law must be obeyed." },
+    { "f": "zutomo", "w": "行く", "s": "わざわざ{}、電話[でんわ]で済[す]む話[はなし]だ。", "en": "There's no need to go all that way. A phone call will settle it." },
+    { "f": "zutomo", "w": "急ぐ", "s": "{}間[ま]に合[あ]う。", "en": "We'll make it even without hurrying." }
+  ],
+  "l56.learn": [
+    { "f": "nbakari", "w": "泣く", "s": "彼女[かのじょ]は{}の顔[かお]で謝[あやま]った。", "en": "She apologised, looking ready to burst into tears." },
+    { "f": "nbakari", "w": "言う", "s": "彼[かれ]は「早[はや]く帰[かえ]れ」と{}の顔[かお]をした。", "en": "He gave me a look as if to say \"go home\"." },
+    { "f": "beku", "w": "確かめる", "s": "事実[じじつ]を{}、現場[げんば]へ向[む]かった。", "en": "He headed to the scene to confirm the facts." },
+    { "f": "beku", "w": "勝つ", "s": "試合[しあい]に{}、毎日[まいにち]練習[れんしゅう]している。", "en": "They practise every day in order to win the match." },
+    { "f": "nganame", "w": "生きる", "s": "{}に、彼[かれ]は必死[ひっし]で働[はたら]いた。", "en": "He worked desperately just to survive." },
+    { "f": "nganame", "w": "勝つ", "s": "{}には、手段[しゅだん]を選[えら]ばない。", "en": "He'll stop at nothing in order to win." }
+  ],
+  "l57.learn": [
+    { "f": "you_mononara", "w": "遅れる", "s": "一分[いっぷん]でも{}、先生[せんせい]に怒[おこ]られる。", "en": "If you dare be even a minute late, the teacher gets angry." },
+    { "f": "you_mononara", "w": "反対する", "s": "社長[しゃちょう]に{}、すぐクビだ。", "en": "If you dare oppose the president, you're fired on the spot." }
+  ],
+  "l58.learn": [
+    { "f": "adj_karou", "w": "寒い", "s": "北海道[ほっかいどう]の冬[ふゆ]はさぞ{}。", "en": "Winter in Hokkaido must be bitterly cold." },
+    { "f": "adj_karou", "w": "いい", "s": "それなら{}。", "en": "In that case, that will do." },
+    { "f": "adj_ki", "w": "いい", "s": "彼[かれ]は私[わたし]の{}友[とも]だ。", "en": "He is a good friend of mine." },
+    { "f": "adj_ki", "w": "静か", "s": "{}夜[よる]に、雪[ゆき]が降[ふ]り始[はじ]めた。", "en": "On a still night, the snow began to fall." }
+  ]
+}
