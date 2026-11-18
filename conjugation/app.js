@@ -101,7 +101,9 @@ function rubySegments(text) {
 /**
  * The example sentences for a section, grouped by form. Each sentence's {}
  * is filled with the word in that form, from the same data as the table, so
- * the two always agree. Sentences whose word or form is missing are skipped.
+ * the two always agree: its main form, or the variant numbered `v` when the
+ * sentence needs another one (行く's humble 伺う rather than 参る). Sentences
+ * whose word or form is missing are skipped.
  */
 function exampleGroups(raw, forms, words) {
   const groups = new Map();
@@ -109,9 +111,9 @@ function exampleGroups(raw, forms, words) {
     const form = forms[e.f];
     const wf = words[e.w] && words[e.w].forms[e.f];
     const parts = e.s.split('{}');
-    if (!form || !wf || parts.length !== 2) continue;
+    const middle = wf && (e.v != null ? wf.variants[e.v] : wf.main);
+    if (!form || !middle || parts.length !== 2) continue;
     const before = rubySegments(parts[0]);
-    const middle = wf.main;
     const segments = [...before, ...middle, ...rubySegments(parts[1])];
     const em = new Set(middle.map((_, i) => before.length + i));
     if (!groups.has(form.key)) groups.set(form.key, { form, sentences: [] });

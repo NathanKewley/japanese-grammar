@@ -44,7 +44,15 @@ progress on each tile comes from a small summary each app saves in
 because the landing page doesn't load the course content.
 
 Each app's Settings tab can back up and restore that app. The landing page can
-back up and restore everything at once.
+back up and restore everything at once, or restore any one app's backup.
+
+Backups from the Android apps restore too, into Writing, Conjugation, Reading or
+Listening (`ANDROID_BACKUP_APPS` in `shared/srs/store.js`). The web apps use the
+same tables, card format, settings keys and content ids, so the file's tables
+go in as they are. Android-only settings, such as dark mode or the departure
+date, are kept but unused. A quiz saved part-way through resumes with the same
+cards, though its questions may be worded differently: the two apps' random
+numbers differ.
 
 ### What you know, across the apps
 
@@ -172,7 +180,9 @@ Listening. To rebuild it on its own: `python3 tools/build-vocab.py`.
 sync leaves it alone. It holds the example sentences shown under each lesson's
 table, keyed by section id. Each sentence names a word and form, with `{}`
 where the word goes in that form and furigana written as `漢字[かんじ]`. The
-tests check every sentence still fits the synced content.
+word's main form fills the slot unless `v` picks another of its variants (行く's
+humble form is 参る, but `"v": 1` gives 伺う). The tests check every sentence
+still fits the synced content.
 
 The folder defaults to this repo's parent.
 

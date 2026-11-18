@@ -2,7 +2,7 @@
 // Each app extends SrsModel with its own features.
 
 import { Scheduler, Rating, newCard, cardFromMap } from './fsrs.js';
-import { SCHEMA_VERSION } from './store.js';
+import { SCHEMA_VERSION, ANDROID_BACKUP_APPS } from './store.js';
 import { StudyStats, dayKey, startOfDay } from './stats.js';
 
 export const SectionStatus = { locked: 'locked', available: 'available', passed: 'passed' };
@@ -124,7 +124,9 @@ export class SrsModel {
     const notBackup = `This file isn't a ${this.config.appName} backup.`;
     let decoded;
     try { decoded = JSON.parse(text); } catch (e) { throw new BackupError(notBackup); }
-    if (!decoded || typeof decoded !== 'object' || decoded.app !== this.config.backupApp) throw new BackupError(notBackup);
+    // A backup from this web app, or from the Android app it's ported from.
+    const fromAndroid = ANDROID_BACKUP_APPS[decoded && decoded.app] === this.config.backupApp.replace(/^vibe_web_/, '');
+    if (!decoded || typeof decoded !== 'object' || (decoded.app !== this.config.backupApp && !fromAndroid)) throw new BackupError(notBackup);
     if (typeof decoded.format !== 'number' || typeof decoded.schema !== 'number' || decoded.format > 1 || decoded.schema > SCHEMA_VERSION) {
       throw new BackupError('This backup came from a newer version of the app. Reload the page, then try again.');
     }
@@ -135,6 +137,7 @@ export class SrsModel {
       for (const row of cards) cardFromMap(JSON.parse(row.data));
       return {
         savedAt: decoded.savedAt,
+        fromAndroid,
         sectionsPassed: progress.filter((r) => r.passed_at != null).length,
         itemsLearned: cards.length,
         tables,

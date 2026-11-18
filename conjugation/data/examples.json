@@ -159,7 +159,7 @@
     { "f": "respectful", "w": "見る", "s": "先生[せんせい]は毎朝[まいあさ]ニュースを{}そうです。", "en": "I hear the teacher watches the news every morning." }
   ],
   "l32.learn": [
-    { "f": "humble", "w": "行く", "s": "明日[あした]、私[わたし]がそちらへ{}予定[よてい]です。", "en": "I'm due to visit you tomorrow." },
+    { "f": "humble", "w": "行く", "v": 1, "s": "明日[あした]、私[わたし]がそちらへ{}予定[よてい]です。", "en": "I'm due to visit you tomorrow." },
     { "f": "humble", "w": "会う", "s": "社長[しゃちょう]に{}のは初[はじ]めてです。", "en": "This is my first time meeting the company president." },
     { "f": "humble", "w": "見る", "s": "お手紙[てがみ]を{}のを楽[たの]しみにしております。", "en": "I look forward to reading your letter." }
   ],
@@ -212,7 +212,7 @@
     { "f": "potential_neg", "w": "読む", "s": "この漢字[かんじ]が{}。", "en": "I can't read this kanji." },
     { "f": "potential_neg", "w": "する", "s": "今日[きょう]は忙[いそが]しくて、何[なに]も{}。", "en": "I'm so busy today that I can't do anything." },
     { "f": "passive_past", "w": "書く", "s": "この小説[しょうせつ]は百年前[ひゃくねんまえ]に{}。", "en": "This novel was written a hundred years ago." },
-    { "f": "passive_past", "w": "食べる", "s": "冷蔵庫[れいぞうこ]のケーキが弟[おとうと]に{}。", "en": "My little brother ate the cake in the fridge." },
+    { "f": "passive_past", "w": "食べる", "s": "弟[おとうと]に冷蔵庫[れいぞうこ]のケーキを{}。", "en": "My little brother went and ate the cake in the fridge." },
     { "f": "caus_past", "w": "読む", "s": "先生[せんせい]は学生[がくせい]に教科書[きょうかしょ]を{}。", "en": "The teacher had the students read the textbook." },
     { "f": "caus_past", "w": "来る", "s": "日曜日[にちようび]なのに、部長[ぶちょう]は部下[ぶか]を会社[かいしゃ]に{}。", "en": "The manager made his staff come in to work, even though it was Sunday." }
   ],

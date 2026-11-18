@@ -2,7 +2,7 @@
 
 import { html, icon, initTheme, toggleTheme, currentTheme, toast, confirmDialog, dialog, slashDate } from './shared/srs/dom.js';
 import { statGrid, barChart, legend, dayLabel } from './shared/srs/ui.js';
-import { TABLES, exportDatabase, importDatabase } from './shared/srs/store.js';
+import { TABLES, SCHEMA_VERSION, ANDROID_BACKUP_APPS, exportDatabase, importDatabase } from './shared/srs/store.js';
 import { dayKey, startOfDay } from './shared/srs/stats.js';
 import { Learner, LEARNER_DB, exportLearner, importLearner } from './shared/learner.js';
 import { placementOffered, markPlacementOffered } from './shared/placement.js';
@@ -390,6 +390,50 @@ function pickFile() {
   });
 }
 
+/** The web app a single-app backup belongs to (from this site or an Android app), or null. */
+function singleAppOf(appId) {
+  if (typeof appId !== 'string') return null;
+  if (ANDROID_BACKUP_APPS[appId]) return ANDROID_BACKUP_APPS[appId];
+  const web = appId.startsWith('vibe_web_') ? appId.slice('vibe_web_'.length) : null;
+  return APPS.includes(web) ? web : null;
+}
+
+/**
+ * Restores one app's backup into that app: a backup saved from its Settings
+ * tab, or one from the Android app it's ported from, which shares its tables.
+ */
+async function restoreOneApp(backup, id) {
+  const fromAndroid = !!ANDROID_BACKUP_APPS[backup.app];
+  const tables = backup.tables;
+  const valid = tables && typeof tables === 'object' && typeof backup.schema === 'number'
+    && Object.keys(TABLES).every((t) => tables[t] == null || Array.isArray(tables[t]));
+  if (!valid) {
+    toast("This backup file is damaged, so it can't be restored.");
+    return;
+  }
+  if (backup.format > 1 || backup.schema > SCHEMA_VERSION) {
+    toast('This backup came from a newer version of the app. Reload the page, then try again.');
+    return;
+  }
+  const passed = (tables.section_progress || []).filter((r) => r && r.passed_at != null).length;
+  const ok = await confirmDialog(
+    `Restore ${NAMES[id]}?`,
+    `This is a ${NAMES[id]} backup${fromAndroid ? ' from the Android app' : ''}, from ${slashDate(new Date(backup.savedAt))}, with ${passed} sections passed and ${(tables.srs_cards || []).length} items learned. Restoring it replaces the ${NAMES[id]} progress saved in this browser, including reviews, stats and your study log. Close any other tabs of this site first.`,
+    'Replace and restore'
+  );
+  if (!ok) return;
+  try {
+    await importDatabase(`vibe-${id}`, tables);
+  } catch (e) {
+    toast("Couldn't restore this backup. It may be damaged.");
+    return;
+  }
+  // Its saved summary is out of date until the app is next opened.
+  try { localStorage.removeItem(`vibe.summary.${id}`); } catch (e) { /* storage blocked */ }
+  toast(`${NAMES[id]} restored. Open it once to bring "What you know" up to date.`);
+  fillGlance();
+}
+
 async function restoreAll() {
   const file = await pickFile();
   if (!file) return;
@@ -400,10 +444,13 @@ async function restoreAll() {
     toast("This file isn't a backup from this site.");
     return;
   }
+  const single = backup && singleAppOf(backup.app);
+  if (single) {
+    await restoreOneApp(backup, single);
+    return;
+  }
   if (!backup || backup.app !== BACKUP_APP || typeof backup.apps !== 'object') {
-    toast(backup && typeof backup.app === 'string' && backup.app.startsWith('vibe_web_')
-      ? "That's a backup of a single app. Restore it from that app's Settings tab."
-      : "This file isn't a backup from this site.");
+    toast("This file isn't a backup from this site.");
     return;
   }
   if (backup.format > 1) {

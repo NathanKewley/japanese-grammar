@@ -24,6 +24,7 @@ export const GRAMMAR_LABELS = {
   'n2-yo-ga-nai': '～ようがない / ～ようもない', 'n3-gatai': '～がたい', 'n3-beki': '～べき / ～べきではない', 'n2-mai': '～まい / ～んじゃないか',
   'n2-nebanaranai': '～ねばならない', 'n1-nn-bakari-ni': '～んばかりに', 'n1-beku': '～べく', 'n2-mono-nara': '～ものなら',
   'n4-te-kureru': '～てくれる', 'n4-te-morau': '～てもらう', 'n4-te-ikukuru': '～ていく / ～てくる',
+  'n2-nnto-suru': '～んとする / ～ようとする',
 };
 
 /** The grammar points behind each Conjugation lesson, by lesson number. */
@@ -59,7 +60,7 @@ export const CONJUGATION_LESSONS = {
   38: ['n5-nagara', 'n3-zu-ni'],
   39: ['n4-te-oku', 'n4-tearu', 'n4-te-miru'],
   40: ['n4-potential', 'n4-passive', 'n4-causative'],
-  41: ['n3-to-suru', 'n3-ba-hodo'],
+  41: ['n3-to-suru', 'n2-nnto-suru', 'n3-ba-hodo'],
   42: ['n4-rashii', 'n4-youdes', 'n4-mitai'],
   43: ['n4-pukai'],
   44: ['n4-sa-nominalizer', 'n4-garu'],
@@ -92,6 +93,7 @@ export const PASSAGE_FORMS = {
   'done for you': ['n4-te-kureru'],
   'done for you (てくれる)': ['n4-te-kureru'],
   'polite (てくださる)': ['n4-te-kureru'],
+  'please (てください)': ['n5-te-kudasai'],
   'have done for you': ['n4-te-morau'],
   'have done for you (てもらう)': ['n4-te-morau'],
   'humble (ていただく)': ['n4-te-morau'],
@@ -112,12 +114,16 @@ export const PASSAGE_FORMS = {
 /**
  * The grammar points in a passage word's form label, in order, once each.
  * [text] is the word as written: "polite" is です after a noun or adjective
- * (円です), and ます after a verb.
+ * (円です), and ます after a verb. A negative "please" is ないでください.
  */
 export function grammarInForm(label, text = '') {
   const out = [];
-  for (const part of String(label || '').split(', ')) {
-    const ids = part === 'polite' && /で(す|し)/.test(text) ? ['n5-desu'] : PASSAGE_FORMS[part] || [];
+  const parts = String(label || '').split(', ');
+  const dont = parts.includes('negative') && parts.includes('please (てください)');
+  for (const part of parts) {
+    const ids = part === 'polite' && /で(す|し)/.test(text) ? ['n5-desu']
+      : dont && part === 'please (てください)' ? ['n5-naide-kudasai']
+        : PASSAGE_FORMS[part] || [];
     for (const id of ids) if (!out.includes(id)) out.push(id);
   }
   return out;

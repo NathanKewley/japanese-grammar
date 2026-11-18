@@ -294,6 +294,8 @@ def conjugation_example_sentences(c):
                 problems.append(f'{where}: form not taught here')
             if e['f'] not in words.get(e['w'], {}).get('forms', {}):
                 problems.append(f'{where}: word missing or has no such form')
+            elif not 0 <= e.get('v', 0) < len(words[e['w']]['forms'][e['f']]['v']):
+                problems.append(f'{where}: no variant {e["v"]} of that form')
             if e['s'].count('{}') != 1:
                 problems.append(f'{where}: needs exactly one {{}}')
             if kanji.search(re.sub(r'[㐀-鿿々〆]+\[[^\]]+\]', '', e['s'])) or re.search(r'\[\]|[^㐀-鿿々〆]\[', e['s']):
@@ -777,6 +779,58 @@ def pages_load_quickly(c):
     open_app(c, 'writing/index.html#/section/l2.kanji')
     c.wait_for("document.querySelectorAll('svg.stroke path.ink').length > 0", 15)
     check(not c.js("[...document.styleSheets].some((s) => { try { return [...s.cssRules].some((r) => r instanceof CSSImportRule); } catch (e) { return false; } })"), 'no stylesheet should @import (it holds up the page)')
+    no_errors(c)
+
+
+@test
+def android_backups_restore(c):
+    # A backup from the Android app restores from that app's Settings.
+    open_app(c, 'writing/index.html#/section/l1.kana')
+    c.click('Write from memory')
+    answer_all(c)
+    android = json.loads(c.js("vibeApp.model.exportBackup()"))
+    android['app'] = 'vibe_jap_writing'
+    android['tables']['app_settings'].append({'key': 'dark_mode', 'value': 'true'})  # Android-only, ignored here
+    text = json.dumps(android)
+    info = c.js(f"(() => {{ const b = vibeApp.model.readBackup({json.dumps(text)}); return [b.fromAndroid, b.sectionsPassed, b.itemsLearned]; }})()")
+    check(info == [True, 1, 10], f'an Android Writing backup should be accepted: {info}')
+    c.js("vibeApp.model.store.replaceAllTables({})")
+    c.sleep(0.3)
+    c.js(f"vibeApp.model.restoreBackup(vibeApp.model.readBackup({json.dumps(text)}))")
+    c.sleep(0.5)
+    check(c.js("vibeApp.model.totalPassed") == 1 and c.js("vibeApp.model.cards.size") == 10, 'the Android backup should restore')
+    bad = c.js("(() => { try { vibeApp.model.readBackup(JSON.stringify({ app: 'vibe_jap_reading', format: 1, schema: 1, tables: {} })); return 'accepted'; } catch (e) { return e.message; } })()")
+    check("isn't a Writing backup" in bad, "another Android app's backup should be refused")
+
+    # From the landing page, any single app's backup goes to its app: here a
+    # Reading backup as the Android app writes it.
+    open_app(c, 'reading/index.html')
+    card = c.js("vibeApp.model.course.sectionById('r1').reviewCard.id")
+    part = c.js("vibeApp.model.course.partOf(vibeApp.model.course.sectionById('r1')).id")
+    now = int(time.time() * 1000)
+    data = json.dumps({'cardId': 1700000000000, 'state': 2, 'step': None, 'stability': 3.2, 'difficulty': 5.1,
+                       'due': '2026-12-01T09:00:00.000Z', 'lastReview': '2026-11-20T09:00:00.000Z'})
+    reading = {'app': 'vibe_jap_reading', 'format': 1, 'schema': 1, 'savedAt': now, 'tables': {
+        'section_progress': [{'section_id': 'r1', 'passed_at': now, 'early_unlocked_at': None}],
+        'srs_cards': [{'card_id': card, 'part_id': part, 'data': data}],
+        'review_log': [{'id': 1, 'card_id': card, 'part_id': part, 'day': '2026-11-20', 'reviewed_at': now, 'rating': 3}],
+        'deck_settings': [{'part_id': part, 'paused': 0, 'daily_limit': 20}],
+        'quiz_sessions': [], 'quiz_answers': [], 'practice_log': [], 'quiz_progress': [],
+        'app_settings': [{'key': 'lookups', 'value': '12'}, {'key': 'departure', 'value': '2027-01-05'}],
+    }}
+    open_app(c, 'index.html', 2.5)
+    c.js("document.querySelector('dialog.modal')?.close()")
+    c.js(f"""HTMLInputElement.prototype.click = function () {{
+      const dt = new DataTransfer(); dt.items.add(new File([{json.dumps(json.dumps(reading))}], 'reading.json', {{ type: 'application/json' }}));
+      this.files = dt.files; this.dispatchEvent(new Event('change')); }}""")
+    c.click('#restoreAll', 0.8)
+    check('from the Android app' in c.js("document.querySelector('dialog.modal')?.innerText || ''"), 'the landing page should offer to restore the Android Reading backup')
+    c.js("document.querySelector('dialog.modal .btn:not(.text)').click()")
+    c.sleep(1)
+    open_app(c, 'reading/index.html')
+    check(c.js("vibeApp.model.passed.has('r1')") and c.js("vibeApp.model.cards.size") == 1, 'the Reading progress should be restored')
+    check(c.js("vibeApp.model.lookups") == 12, 'its counts should carry over')
+    check(c.js("vibeApp.model.cards.get(" + json.dumps(card) + ").card.stability") == 3.2, 'the card schedule should carry over')
     no_errors(c)
 
 

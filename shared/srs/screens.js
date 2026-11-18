@@ -944,7 +944,7 @@ async function restoreBackup(app) {
   }
   const ok = await confirmDialog(
     'Replace your progress?',
-    `This backup is from ${slashDate(new Date(backup.savedAt))}, with ${backup.sectionsPassed} sections passed and ${backup.itemsLearned} items learned. Restoring it replaces everything currently saved for ${app.title}, including reviews, stats and your study log. To keep your current progress, save a backup first.`,
+    `This backup is from ${slashDate(new Date(backup.savedAt))}${backup.fromAndroid ? ', from the Android app' : ''}, with ${backup.sectionsPassed} sections passed and ${backup.itemsLearned} items learned. Restoring it replaces everything currently saved for ${app.title}, including reviews, stats and your study log. To keep your current progress, save a backup first.`,
     'Replace and restore'
   );
   if (!ok) return;

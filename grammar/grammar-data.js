@@ -3139,7 +3139,7 @@ const N3_GRAMMAR = [
   },
   {
     id: "n3-darake", level: "N3", pattern: "～だらけ", title: "Covered in / full of", short: "A surface or thing is covered with, or full of, something unwanted.",
-    explanation: "～だらけ attaches to a noun describing something messy or undesirable and means it's completely covered in or full of that thing — 泥だらけ ('covered in mud'), 間違いだらけ ('full of mistakes'). It always carries a negative or critical nuance, unlike the neutral まみれ used for physical substances.",
+    explanation: "～だらけ attaches to a noun describing something messy or undesirable and means it's completely covered in or full of that thing — 泥だらけ ('covered in mud'), 間違いだらけ ('full of mistakes'). It always carries a negative or critical nuance. まみれ is negative too, but it's mostly for a substance smeared all over a surface (血まみれ, ほこりまみれ), while だらけ is for anything found all over, including abstract things like mistakes.",
     usages: [
       { title: "Physical covering", examples: [
         { japanese: "靴は泥だらけです。", furigana: "くつはどろだらけです。", english: "My shoes are covered in mud." },
@@ -4263,7 +4263,7 @@ const N2_GRAMMAR = [
   },
   {
     id: "n2-upon-tatanai", level: "N2", pattern: "～わけがない", title: "There is no reason why / impossible that", short: "Strong logical denial based on objective conviction.",
-    explanation: "～わけがない attaches to a plain-form phrase and firmly denies that something is possible, based on the speaker's confident reasoning — 'there's no way X could be true'. It's a stronger, more assertive denial than 〜ないだろう or 〜はずがない's milder cousin.",
+    explanation: "～わけがない attaches to a plain-form phrase and firmly denies that something is possible, based on the speaker's confident reasoning — 'there's no way X could be true'. It's far more assertive than 〜ないだろう, and about as strong as 〜はずがない: わけがない rejects the idea as making no sense, while はずがない rejects it as going against what's expected.",
     usages: [
       { title: "With verbs", examples: [
         { japanese: "そんな難しい問題が一人で解けるわけがない。", furigana: "そんなむずかしいもんだいがひとりでとけるわけがない。", english: "There is no way you can solve such a difficult problem alone." },
@@ -4657,7 +4657,7 @@ const N2_GRAMMAR = [
         { japanese: "若い世代を中心にそのアプリが流行している。", furigana: "わかいせだいをちゅうしんにそのアプリがりゅうこうしている。", english: "That app is popular, centered primarily around the younger generation." },
         { japanese: "駅を中心に、街が発展した。", furigana: "えきをちゅうしんに、まちがはってんした。", english: "The city developed centered around the station." },
         { japanese: "この地域は農業を中心に発展してきた。", furigana: "このちいきはのうぎょうをちゅうしんにはってんしてきた。", english: "This region has developed with agriculture at its center." },
-        { japanese: "この番組は若者を中心とする視聴者に人気がある。", furigana: "このばんぐみはわかものをちゅうしんとするしちょうしゃにんきがある。", english: "This program is popular mainly among young viewers." }
+        { japanese: "この番組は若者を中心とする視聴者に人気がある。", furigana: "このばんぐみはわかものをちゅうしんとするしちょうしゃににんきがある。", english: "This program is popular mainly among young viewers." }
       ]}
     ],
     conjugations: [
@@ -4720,7 +4720,7 @@ const N2_GRAMMAR = [
     explanation: "～をはじめ（として）follows a noun to give a prominent, representative example, implying that other similar things are also included but unstated — 'starting with X (and others)'. It's common when introducing the most notable member of a larger group.",
     usages: [
       { title: "Representative example", examples: [
-        { japanese: "社長をはじめ、社員全員が参加した。", furigana: "しゃちょうをはじめ、しゃいいんぜんいんがさんかした。", english: "Starting with the president, all employees participated." },
+        { japanese: "社長をはじめ、社員全員が参加した。", furigana: "しゃちょうをはじめ、しゃいんぜんいんがさんかした。", english: "Starting with the president, all employees participated." },
         { japanese: "日本をはじめ、多くの国々が協力している。", furigana: "にほんをはじめ、おおくのくにぐにがきょうりょくしている。", english: "Starting with Japan, many countries are cooperating." },
         { japanese: "社長をはじめ、社員全員がその会議に出席した。", furigana: "しゃちょうをはじめ、しゃいんぜんいんがそのかいぎにしゅっせきした。", english: "Starting with the president, all the employees attended that meeting." },
         { japanese: "この地域は米をはじめとする農作物の産地として知られる。", furigana: "このちいきはこめをはじめとするのうさくぶつのさんちとしてしられる。", english: "This region is known as a production area for crops, starting with rice." }
@@ -5567,7 +5567,7 @@ const N2_GRAMMAR = [
     explanation: "～際に attaches to a noun or dictionary-form verb and means 'at the time of X' or 'on the occasion of X', more formal than とき — common in instructions, notices, and formal writing where a precise, businesslike tone is expected.",
     usages: [
       { title: "Formal occasion", examples: [
-        { japanese: "お申し込みの際に、身分証明書をご用意ください。", furigana: "おもうしこみのさいに、みぶんしょうめいしょをごようういください。", english: "Please have your ID ready when applying." },
+        { japanese: "お申し込みの際に、身分証明書をご用意ください。", furigana: "おもうしこみのさいに、みぶんしょうめいしょをごよういください。", english: "Please have your ID ready when applying." },
         { japanese: "ご来店の際には、こちらのクーポンをご利用ください。", furigana: "ごらいてんのさいには、こちらのクーポンをごりようください。", english: "Please use this coupon when you visit our store." },
         { japanese: "面接の際には、履歴書をご持参ください。", furigana: "めんせつのさいには、りれきしょをごじさんください。", english: "Please bring your resume when you come for the interview." }
       ]},
@@ -7137,7 +7137,7 @@ const N1_GRAMMAR = [
     usages: [
       { title: "Formal alternative", examples: [
         { japanese: "本人もしくは代理人がお越しください。", furigana: "ほんにんもしくはだいりにんがおこしください。", english: "Please have either the person themselves or a representative come." },
-        { japanese: "身分証明書は、運転免許証もしくはパスポートをご用意ください。", furigana: "みぶんしょうめいしょは、うんてんめんきょしょうもしくはパスポートをごようういください。", english: "For identification, please prepare either a driver's license or a passport." },
+        { japanese: "身分証明書は、運転免許証もしくはパスポートをご用意ください。", furigana: "みぶんしょうめいしょは、うんてんめんきょしょうもしくはパスポートをごよういください。", english: "For identification, please prepare either a driver's license or a passport." },
         { japanese: "参加希望の方は、メールもしくは電話でご連絡ください。", furigana: "さんかきぼうのかたは、メールもしくはでんわでごれんらくください。", english: "Those wishing to participate should contact us by email or phone." }
       ]}
     ]

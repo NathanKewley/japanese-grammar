@@ -22,6 +22,18 @@ const AUTO_ID = ['review_log', 'quiz_sessions', 'quiz_answers', 'practice_log'];
 
 export const SCHEMA_VERSION = 1;
 
+/**
+ * The Android apps' backups, by the app id in the file, and the web app each
+ * restores into. They share this schema and their content ids, so a backup
+ * from the phone restores here as it is.
+ */
+export const ANDROID_BACKUP_APPS = {
+  vibe_jap_writing: 'writing',
+  vibe_srs_jap_conjugating: 'conjugation',
+  vibe_jap_reading: 'reading',
+  vibe_jap_listening: 'listening',
+};
+
 function openDb(name) {
   return new Promise((resolve, reject) => {
     if (!('indexedDB' in window)) { reject(new Error('IndexedDB unavailable')); return; }
