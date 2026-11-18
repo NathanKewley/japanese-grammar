@@ -24,7 +24,7 @@ const POS_LABELS = {
   vi: 'intransitive', vt: 'transitive', v5aru: 'u-verb (polite ある)', 'v5k-s': 'u-verb (行く)', 'v5r-i': 'u-verb (irregular)',
 };
 
-const posLabel = (code) => POS_LABELS[code] || (code.startsWith('v5') ? 'u-verb' : code);
+export const posLabel = (code) => POS_LABELS[code] || (code.startsWith('v5') ? 'u-verb' : code);
 
 /** The JMdict entries and kanji details that a content file carries. */
 export class Dictionary {

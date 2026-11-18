@@ -6,7 +6,7 @@ import { TABLES, exportDatabase, importDatabase } from './shared/srs/store.js';
 import { dayKey, startOfDay } from './shared/srs/stats.js';
 import { Learner, LEARNER_DB, exportLearner, importLearner } from './shared/learner.js';
 
-const APPS = ['writing', 'conjugation', 'reading', 'listening'];
+const APPS = ['vocab', 'writing', 'conjugation', 'reading', 'listening'];
 const GRAMMAR_PREFIX = 'grammarNotebook.';
 const BACKUP_APP = 'vibe_web_all';
 
@@ -20,7 +20,7 @@ toggle.addEventListener('click', () => { toggleTheme(); paintToggle(); });
 
 // ---------- At a glance ----------
 
-const NAMES = { writing: 'Writing', conjugation: 'Conjugation', reading: 'Reading', listening: 'Listening' };
+const NAMES = { vocab: 'Vocabulary', writing: 'Writing', conjugation: 'Conjugation', reading: 'Reading', listening: 'Listening' };
 
 async function knownDatabases() {
   if (!indexedDB.databases) return null;
@@ -230,7 +230,7 @@ async function fillKnowledge(apps, known) {
 }
 
 /**
- * How much this site's study data takes up: the four app databases and the
+ * How much this site's study data takes up: the app databases and the
  * grammar library's settings, measured as their saved contents. The browser's
  * own storage estimate covers the whole origin, which on GitHub Pages is
  * shared with every other project on the same account, so it isn't used.

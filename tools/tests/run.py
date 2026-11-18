@@ -79,7 +79,7 @@ def question(c):
     """The current question, from the app's debug handle."""
     return c.js("""(() => { const q = vibeApp.ui.screen.state.engine.currentQuestion;
       return { type: q.type || null, ci: q.correctIndex,
-        kana: q.answer && q.answer.main ? q.answer.main.map(s => s[1] || s[0]).join('') : null,
+        kana: q.answer && q.answer.main ? q.answer.main.map(s => s[1] || s[0]).join('') : q.kind === 'reading' ? q.word.r : null,
         line: q.type === 'dictation' ? q.item.lines[q.line].text : null }; })()""")
 
 
@@ -420,6 +420,45 @@ def learner_model_shared_across_apps(c):
 
 
 @test
+def vocab_lessons_lookups_and_landing(c):
+    # A lesson passes, and its words join the learner model.
+    open_app(c, 'vocab/index.html#/section/v1.1')
+    check('From Track 1' in view(c), 'examples should come from the passages')
+    c.click('[aria-label="Play this line"]', 0.5)
+    c.click('a.btn.block', 1)
+    answer_all(c)
+    check(c.js("vibeApp.model.passed.has('v1.1')"), 'the first lesson part should pass')
+    first = c.js("vibeApp.model.course.sectionById('v1.1').cards[0].learn[0].id")
+    s = learner_status(c, first)
+    check(s['status'] == 'learning' and 'vocab' in s['studiedIn'], f'{first} should be learning in Vocabulary, got {s}')
+
+    # A word looked up in Reading is offered for review, and says so in its lesson.
+    open_app(c, 'reading/index.html#/section/r1')
+    c.js("vibeApp.learnerReady")
+    c.js("(() => { const els = [...document.querySelectorAll('.pw[data-pk]')]; els[els.length - 3].click(); })()")
+    c.sleep(0.3)
+    open_app(c, 'vocab/index.html', 2)
+    c.js("vibeApp.learnerReady")
+    check('Words you looked up' in view(c), 'looked-up words should be offered')
+    before = c.js("vibeApp.model.wordsLearned")
+    c.click('Add them to my reviews', 0.5)
+    check(c.js("vibeApp.model.wordsLearned") > before, 'adding looked-up words should put them in the reviews')
+    check('Words you looked up' not in view(c), 'the offer should go once they are added')
+    section = c.js("""(() => { const course = vibeApp.model.course;
+      for (const id of vibeApp.learner.lookups.keys()) {
+        const w = course.wordByKey.get(id.slice(2));
+        if (w) return course.sectionOfCard(course.cardById('mean:' + w.key)).id;
+      } })()""")
+    open_app(c, f'vocab/index.html#/section/{section}', 2)
+    check('Looked up once before' in c.text('.view'), 'a looked-up word should say so in its lesson')
+
+    # The landing page has the tile.
+    open_app(c, 'index.html', 2.5)
+    check('/' in c.text('[data-stat="vocab"]'), f"the Vocabulary tile should show progress, got {c.text('[data-stat=\"vocab\"]')}")
+    no_errors(c)
+
+
+@test
 def app_backup_round_trip(c):
     open_app(c, 'writing/index.html#/section/l1.kana')
     c.click('Write from memory')
@@ -502,6 +541,7 @@ def every_screen_renders(c):
         'conjugation': ['', '#/reviews', '#/stats', '#/settings', '#/section/l1.types', '#/deck/n5v?tab=stats'],
         'reading': ['', '#/reviews', '#/stats', '#/settings', '#/section/r1', '#/item/reread%3A1'],
         'listening': ['', '#/reviews', '#/stats', '#/settings', '#/section/l1', '#/practice'],
+        'vocab': ['', '#/reviews', '#/stats', '#/settings', '#/section/v1.1', '#/section/v60.2', '#/achievements'],
     }.items():
         for p in paths:
             open_app(c, f'{app}/index.html{p}', 1)

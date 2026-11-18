@@ -1,20 +1,23 @@
 # Nath's 日本語 Tools
 
-A static site with five ways to study Japanese, from N5 to N1. It runs on
+A static site with six ways to study Japanese, from N5 to N1. It runs on
 GitHub Pages with no build step and no server.
 
 | App | Folder | What it does |
 | --- | --- | --- |
 | Grammar | `grammar/` | The JLPT grammar library: every pattern, with examples and quizzes. |
+| Vocabulary | `vocab/` | The 5,111 words of the readings and tracks, each lesson just before its passages. |
 | Writing | `writing/` | Kana and 2,195 kanji, written by hand on paper, with stroke order. |
 | Conjugation | `conjugation/` | Word types and every form, typed and checked. |
 | Reading | `reading/` | 132 graded readings with tappable words and comprehension questions. |
 | Listening | `listening/` | 132 voiced tracks with questions and dictation. |
 
-The landing page (`index.html`) links to all five. The four study apps are web
+The landing page (`index.html`) links to all six. Four of the study apps are web
 ports of the Android apps in `vibe-jap-writing`, `vibe-srs-jap-conjugating`,
 `vibe-jap-reading` and `vibe-jap-listening`. They use the same content, the
 same FSRS scheduling and the same course structure, stats and achievements.
+Vocabulary is built for this site from the Reading and Listening content (see
+Updating content), on the same engine.
 
 ![The grammar library](assets/screenshot.png)
 
@@ -25,7 +28,8 @@ Everything stays in the browser, on the device:
 - The grammar library keeps saved points and settings in `localStorage`
   (`grammarNotebook.*`). The theme key is shared by the whole site.
 - Each study app keeps its progress in its own IndexedDB database
-  (`vibe-writing`, `vibe-conjugation`, `vibe-reading`, `vibe-listening`). The
+  (`vibe-vocab`, `vibe-writing`, `vibe-conjugation`, `vibe-reading`,
+  `vibe-listening`). The
   tables mirror the Android apps' SQLite schema. IndexedDB is used instead of
   `localStorage` because the answer history quickly outgrows `localStorage`'s
   5 MB limit.
@@ -78,11 +82,12 @@ shared/srs/                the shared study-app engine
   screens.js, ui.js          the shared screens and the hash router
   passage.js                 tappable Japanese text with furigana and read-aloud
   romaji.js                  romaji to kana, for keyboards without Japanese input
-writing/, conjugation/, reading/, listening/
+vocab/, writing/, conjugation/, reading/, listening/
   app.js                     each app's content loader, model and screens
   data/                      content copied from the Android repos
 grammar/                   the grammar library
 tools/sync-content.sh      copies content from the Android repos
+tools/build-vocab.py       builds the vocabulary course from Reading and Listening
 ```
 
 ## Updating content
@@ -93,6 +98,13 @@ it across:
 ```
 tools/sync-content.sh [FOLDER_HOLDING_THE_REPOS]
 ```
+
+The sync then rebuilds the vocabulary course (`vocab/data/content.json`) with
+`tools/build-vocab.py`. Lesson n holds the words that first appear in Reading n
+or Track n, in the order they come up, leaving pure grammar words (particles,
+the copula) to the grammar library. Each word keeps an example sentence from
+its lesson's passages, with the track's audio timing when it comes from
+Listening. To rebuild it on its own: `python3 tools/build-vocab.py`.
 
 `conjugation/data/examples.json` is written for this site, not copied, so a
 sync leaves it alone. It holds the example sentences shown under each lesson's

@@ -32,7 +32,7 @@ export const KNOWN_DAYS = 21;
 /** The FSRS state for a card in long-term review. */
 const REVIEW_STATE = 2;
 
-export const APP_NAMES = { writing: 'Writing', conjugation: 'Conjugation', reading: 'Reading', listening: 'Listening' };
+export const APP_NAMES = { vocab: 'Vocabulary', writing: 'Writing', conjugation: 'Conjugation', reading: 'Reading', listening: 'Listening' };
 
 // ---------- Items ----------
 
@@ -311,20 +311,21 @@ export function wordLookupHooks(getLearner, app) {
   };
 }
 
-/** One line for a word popup: what you already know about this word from other apps. */
+/**
+ * One line for a word popup or lesson: what you already know about this word
+ * from the other apps (not [here]), or '' if they have nothing to add.
+ */
 export function describeWord(learner, item, here) {
-  const s = learner.status(item.id);
-  const elsewhere = (apps) => apps.filter((a) => a !== here).map((a) => APP_NAMES[a] || a);
-  const studied = elsewhere(s.studiedIn);
-  const looked = s.lookups ? `looked up ${s.lookups === 1 ? 'once' : s.lookups === 2 ? 'twice' : `${s.lookups} times`} before` : '';
-  if (s.status === 'known') return `You know this word${studied.length ? ` from ${studied.join(' and ')}` : ''}.`;
-  if (s.status === 'learning') return `You're learning this word${studied.length ? ` in ${studied.join(' and ')}` : ''}.`;
-  if (s.status === 'met') {
-    const seen = elsewhere(s.seenIn);
-    const bits = [seen.length ? `Met in ${seen.join(' and ')}` : '', looked].filter(Boolean);
-    if (!bits.length) return 'Met before.';
-    const line = bits.join(', ');
-    return `${line[0].toUpperCase()}${line.slice(1)}.`;
-  }
-  return '';
+  const links = learner.linksOf(item.id).filter((l) => l.app !== here);
+  const names = (apps) => [...new Set(apps)].map((a) => APP_NAMES[a] || a).join(' and ');
+  const cards = links.filter((l) => l.type === 'card');
+  const known = cards.filter((l) => l.state === REVIEW_STATE && l.stability >= KNOWN_DAYS);
+  if (known.length) return `You know this word from ${names(known.map((l) => l.app))}.`;
+  if (cards.length) return `You're learning this word in ${names(cards.map((l) => l.app))}.`;
+  const seen = links.filter((l) => l.type === 'seen').map((l) => l.app);
+  const n = learner.status(item.id).lookups;
+  const bits = [seen.length ? `Met in ${names(seen)}` : '', n ? `looked up ${n === 1 ? 'once' : n === 2 ? 'twice' : `${n} times`} before` : ''].filter(Boolean);
+  if (!bits.length) return '';
+  const line = bits.join(', ');
+  return `${line[0].toUpperCase()}${line.slice(1)}.`;
 }

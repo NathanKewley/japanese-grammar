@@ -12,7 +12,7 @@
 <meta name="theme-color" content="#FAFAFA">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Nath's 日本語 Tools</title>
-<meta name="description" content="A JLPT grammar library and four spaced-repetition study apps: writing, conjugation, reading and listening.">
+<meta name="description" content="A JLPT grammar library and five spaced-repetition study apps: vocabulary, writing, conjugation, reading and listening.">
 <link rel="stylesheet" href="shared/core.css">
 <link rel="stylesheet" href="landing.css">
 <script src="shared/staging.js"></script>
@@ -31,7 +31,7 @@
     <h1 class="hub-title">Nath's 日本語 Tools</h1>
     <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode"></button>
   </header>
-  <p class="hub-sub">A grammar library and four spaced-repetition courses, from N5 to N1.</p>
+  <p class="hub-sub">A grammar library and five spaced-repetition courses, from N5 to N1.</p>
 
   <div id="backupReminder" class="backup-reminder" role="status" hidden></div>
 
@@ -44,6 +44,14 @@
         <span class="tile-name">Grammar Library</span>
         <span class="tile-desc">JLPT grammar library: every pattern from N5 to N1, with examples and quizzes.</span>
         <span class="tile-stat" data-stat="grammar"></span>
+      </span>
+    </a>
+    <a class="tile tile-wide" href="vocab/index.html" style="--tile:var(--app-vocab)">
+      <span class="tile-glyph" lang="ja">語</span>
+      <span class="tile-body">
+        <span class="tile-name">Vocabulary</span>
+        <span class="tile-desc">The words of every reading and track, learned just before you meet them.</span>
+        <span class="tile-stat" data-stat="vocab"></span>
       </span>
     </a>
     <a class="tile" href="writing/index.html" style="--tile:var(--app-writing)">
@@ -98,7 +106,7 @@
       <p>There are no accounts and no server. Everything you do here is saved <strong>only in this browser, on this device</strong>:</p>
       <ul>
         <li>The grammar library keeps your saved points and settings in the browser's local storage.</li>
-        <li>The four study apps keep lessons passed, review schedules, answers and stats in the browser's IndexedDB storage.</li>
+        <li>The study apps keep lessons passed, review schedules, answers and stats in the browser's IndexedDB storage.</li>
         <li>A shared record of what you know (the words, kanji, kana and forms you've met or are learning, and the words you've looked up) sits beside them, so every app sees the same picture.</li>
       </ul>
       <p>This means:</p>
@@ -120,7 +128,7 @@
 </main>
 
 <footer class="hub-wrap hub-foot small">
-  Built from four Android study apps. Dictionary data from JMdict and KANJIDIC2 (EDRDG, CC BY-SA 4.0), stroke order from KanjiVG (CC BY-SA 3.0); see each app's Settings tab for full credits.
+  Four of the apps are built from Android study apps. Dictionary data from JMdict and KANJIDIC2 (EDRDG, CC BY-SA 4.0), stroke order from KanjiVG (CC BY-SA 3.0); see each app's Settings tab for full credits.
 </footer>
 
 <script type="module" src="landing.js"></script>

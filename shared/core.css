@@ -29,6 +29,7 @@
   --app-conjugation: #127386;
   --app-reading: #2E7D46;
   --app-listening: #9A3F8E;
+  --app-vocab: #A15C07;
 
   --radius: 14px;
   color-scheme: light;
@@ -60,6 +61,7 @@
   --app-conjugation: #4FC1D3;
   --app-reading: #6CC48F;
   --app-listening: #E08AD6;
+  --app-vocab: #EDA94E;
 
   color-scheme: dark;
 }
@@ -68,6 +70,7 @@ body[data-app="writing"] { --accent: var(--app-writing); }
 body[data-app="conjugation"] { --accent: var(--app-conjugation); }
 body[data-app="reading"] { --accent: var(--app-reading); }
 body[data-app="listening"] { --accent: var(--app-listening); }
+body[data-app="vocab"] { --accent: var(--app-vocab); }
 body[data-app] { --accent-soft: color-mix(in srgb, var(--accent) 13%, transparent); }
 
 * { box-sizing: border-box; }
