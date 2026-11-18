@@ -105,6 +105,27 @@ python3 -m http.server 8000
 
 Then open http://localhost:8000.
 
+## Staging
+
+Changes are tested on a copy of the site before they go live. The copy is a
+second repo, `japanese-grammar-staging`, with GitHub Pages turned on:
+
+```
+git push -f staging some-branch:main
+```
+
+Then open https://nathankewley.github.io/japanese-grammar-staging/.
+
+Both sites are on `nathankewley.github.io`, and browsers keep saved data per
+site, so they would normally share progress. `shared/staging.js`, loaded first
+on every page, prevents that: on any copy whose first folder ends in
+`-staging`, it quietly adds a `staging.` prefix to every saved setting and
+database. Staging starts empty and can't touch real progress, and an orange
+STAGING tab on the left edge shows which site you're on. The code still sees the
+usual names, so backups work in both directions: restore a real backup on
+staging to test with a copy of your progress. On the real site the script does
+nothing.
+
 ## Notes
 
 - **iPhone and iPad:** Safari clears a website's stored data after 7 days without

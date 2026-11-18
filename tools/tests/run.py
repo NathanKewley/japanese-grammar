@@ -51,7 +51,18 @@ def serve():
     return server
 
 
+STAGING = 'japanese-grammar-staging/'
+
+
 class QuietHandler(http.server.SimpleHTTPRequestHandler):
+    """Also serves the site under /japanese-grammar-staging/, on the same
+    origin, the way GitHub Pages serves the staging copy beside the real one."""
+
+    def translate_path(self, path):
+        if path.startswith('/' + STAGING):
+            path = path[len(STAGING):]
+        return super().translate_path(path)
+
     def log_message(self, *args):
         pass
 
@@ -303,6 +314,45 @@ def conjugation_example_sentences(c):
     type_answer(c, question(c)['kana'])
     c.sleep(0.5)
     check('In a sentence' in c.text('.result'), 'the answer should come with an example sentence')
+    no_errors(c)
+
+
+@test
+def staging_keeps_its_own_data(c):
+    # Real progress: a passed section and a dark theme.
+    open_app(c, 'writing/index.html#/section/l1.kana')
+    c.click('Write from memory')
+    answer_all(c)
+    check(c.js("vibeApp.model.totalPassed") == 1, 'the real site should record the pass')
+    c.js("localStorage.setItem('grammarNotebook.theme', 'dark')")
+    check(not c.js("!!document.querySelector('.staging-badge')"), 'the real site should have no staging label')
+    real_text = c.js("JSON.stringify(vibeApp.model.exportBackup())")
+
+    # Staging starts empty, and what it saves stays there.
+    open_app(c, STAGING + 'writing/index.html#/section/l1.kana')
+    check(c.js("window.STAGING === true") and c.js("!!document.querySelector('.staging-badge')"), 'staging should be labelled')
+    check(c.js("vibeApp.model.totalPassed") == 0, 'staging should not see real progress')
+    check(c.js("localStorage.getItem('grammarNotebook.theme')") is None, 'staging should not see real settings')
+    c.js("localStorage.setItem('grammarNotebook.theme', 'light')")
+    keys = c.js("Array.from({ length: localStorage.length }, (_, i) => localStorage.key(i))")
+    check(keys and not any(k.startswith('staging.') for k in keys), f'staging code should see plain key names, got {keys}')
+    names = c.js("indexedDB.databases().then(d => d.map(x => x.name))")
+    check('vibe-writing' in names and not any(n.startswith('staging.') for n in names), f'staging should see plain database names, got {names}')
+
+    # A real backup restores on staging, without touching the real data.
+    c.js(f"vibeApp.model.restoreBackup(vibeApp.model.readBackup(JSON.parse({json.dumps(real_text)})))")
+    c.sleep(0.5)
+    check(c.js("vibeApp.model.totalPassed") == 1, 'a real backup should restore on staging')
+    open_app(c, STAGING + 'index.html', 2)
+    check('Not started yet' not in c.text('[data-stat="writing"]'), 'the staging landing page should read staging progress')
+
+    # Back on the real site, nothing changed.
+    open_app(c, 'index.html', 2)
+    check(c.js("localStorage.getItem('grammarNotebook.theme')") == 'dark', 'staging must not change real settings')
+    raw = c.js("Array.from({ length: localStorage.length }, (_, i) => localStorage.key(i))")
+    check('staging.grammarNotebook.theme' in raw, f'staging data should sit under its prefix, got {raw}')
+    names = c.js("indexedDB.databases().then(d => d.map(x => x.name))")
+    check('vibe-writing' in names and 'staging.vibe-writing' in names, f'each site should have its own database, got {names}')
     no_errors(c)
 
 
