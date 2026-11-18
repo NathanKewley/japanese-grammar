@@ -1162,7 +1162,8 @@ export function createSrsApp(spec) {
 
 /** Shows a loading spinner, then the app, or an error if the content can't load. */
 export async function boot(root, start) {
-  root.innerHTML = '<div class="spinner"></div>';
+  // The page may already show the app's frame with a spinner (see index.html).
+  if (!root.querySelector('.spinner')) root.innerHTML = '<div class="spinner"></div>';
   try {
     const app = await start();
     app.mount(root);

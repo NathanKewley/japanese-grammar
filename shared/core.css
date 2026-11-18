@@ -1,6 +1,5 @@
 /* Shared look for the landing page and the four study apps.
    The palette follows the grammar library so the whole site feels like one. */
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Inter:wght@400;500;600;700;800&display=swap');
 
 :root {
   --bg: #FAFAFA;
@@ -725,3 +724,8 @@ details.passage-tile > div { padding: 0 16px 14px; }
 .tline-head { display: inline; }
 .tline .line-play { position: absolute; left: 2px; top: 6px; width: 34px; height: 34px; color: var(--accent); }
 .tline .speaker { font-size: 0.62em; font-weight: 700; color: var(--accent); margin-right: 8px; vertical-align: middle; }
+
+/* A quick fade between pages of the site, instead of a blank flash. */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition { navigation: auto; }
+}

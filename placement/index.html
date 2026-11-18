@@ -13,6 +13,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Placement test</title>
 <meta name="description" content="A short test that finds your JLPT level in grammar, vocabulary and kanji, so the courses can skip what you already know.">
+<!-- Web fonts load without holding up the page: text shows in the fallback font until they arrive. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&amp;family=Inter:wght@400;500;600;700;800&amp;display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&amp;family=Inter:wght@400;500;600;700;800&amp;display=swap"></noscript>
 <link rel="stylesheet" href="../shared/core.css">
 <link rel="stylesheet" href="placement.css">
 <script src="../shared/staging.js"></script>
@@ -23,6 +28,13 @@
   document.documentElement.setAttribute('data-theme', t);
   document.querySelector('meta[name="theme-color"]').setAttribute('content', t === 'dark' ? '#0A0A0C' : '#FAFAFA');
 </script>
+<!-- Preloads: written by tools/preloads.py, so edit that instead. -->
+<link rel="modulepreload" href="placement.js">
+<link rel="modulepreload" href="../shared/srs/dom.js">
+<link rel="modulepreload" href="../shared/placement.js">
+<link rel="preload" href="../vocab/data/content.json" as="fetch" crossorigin>
+<link rel="preload" href="../writing/data/content.json" as="fetch" crossorigin>
+<!-- End of preloads. -->
 </head>
 <body>
 <div id="app"></div>

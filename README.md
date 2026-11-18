@@ -149,6 +149,7 @@ grammar/                   the grammar library
 placement/                 the placement test
 tools/sync-content.sh      copies content from the Android repos
 tools/build-vocab.py       builds the vocabulary course from Reading and Listening
+tools/preloads.py          keeps each page's list of code and content to fetch up front
 ```
 
 ## Updating content
@@ -191,6 +192,28 @@ They need only Python 3 and Chrome or Chromium (set `CHROME` to its path if it
 isn't found). Each test starts its own web server and a fresh browser profile.
 Run them after `tools/sync-content.sh` too: the apps reimplement the Android
 apps' logic, so a change to a content format shows up here first.
+
+## Loading quickly
+
+There's no build step, so each page does a few things to open fast:
+
+- **Everything is fetched at once.** A browser finds a module's imports only
+  after downloading it, which would load an app's code in rounds. Each page lists
+  all its modules (`<link rel="modulepreload">`) and the content it fetches on
+  start (`<link rel="preload">`) in its `<head>`. `tools/preloads.py` writes
+  those lists: run it after adding, removing or moving an import or a content
+  file. The tests fail if a list is out of date.
+- **Web fonts don't hold up the page.** They load from Google alongside it, and
+  text shows in the fallback font until they arrive.
+- **The app's frame shows at once.** Each app's `index.html` holds its header
+  and a spinner, which the app replaces when it's ready.
+- **Writing's stroke data loads after the app opens.** It's the biggest file
+  (3 MB) and is only drawn in lessons and answers.
+- **Pages fade into each other** (`@view-transition` in `core.css`) in
+  browsers that support it, instead of flashing blank.
+
+GitHub Pages lets browsers keep files for 10 minutes, after which each visit
+checks them with the server again.
 
 ## Running locally
 

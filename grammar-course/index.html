@@ -13,6 +13,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Grammar</title>
 <meta name="description" content="Every JLPT grammar point, N5 to N1, a few at a time with spaced reviews, built from the Grammar Library.">
+<!-- Web fonts load without holding up the page: text shows in the fallback font until they arrive. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&amp;family=Inter:wght@400;500;600;700;800&amp;display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&amp;family=Inter:wght@400;500;600;700;800&amp;display=swap"></noscript>
 <link rel="stylesheet" href="../shared/core.css">
 <script src="../shared/staging.js"></script>
 <script>
@@ -22,9 +27,33 @@
   document.documentElement.setAttribute('data-theme', t);
   document.querySelector('meta[name="theme-color"]').setAttribute('content', t === 'dark' ? '#0A0A0C' : '#FAFAFA');
 </script>
+<!-- Preloads: written by tools/preloads.py, so edit that instead. -->
+<link rel="modulepreload" href="app.js">
+<link rel="modulepreload" href="../shared/srs/dom.js">
+<link rel="modulepreload" href="../shared/srs/store.js">
+<link rel="modulepreload" href="../shared/srs/course.js">
+<link rel="modulepreload" href="../shared/srs/model.js">
+<link rel="modulepreload" href="../shared/srs/fsrs.js">
+<link rel="modulepreload" href="../shared/srs/screens.js">
+<link rel="modulepreload" href="../shared/learner.js">
+<link rel="modulepreload" href="../shared/grammar-links.js">
+<link rel="modulepreload" href="../shared/srs/stats.js">
+<link rel="modulepreload" href="../shared/srs/ui.js">
+<link rel="modulepreload" href="../shared/srs/quiz-engine.js">
+<link rel="modulepreload" href="../shared/srs/focus.js">
+<link rel="modulepreload" href="../shared/placement.js">
+<!-- End of preloads. -->
 </head>
 <body data-app="grammar">
-<div id="app"></div>
+<!-- The app's frame, shown at once while the app loads; the app replaces it. -->
+<div id="app"><header class="appbar">
+  <div class="appbar-row">
+    <a class="icon-btn" href="../index.html" title="All study apps" aria-label="All study apps"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg></a>
+    <div class="appbar-title">Grammar</div>
+    <span class="icon-btn" aria-hidden="true"></span>
+  </div>
+  <nav class="tabs" aria-hidden="true"><a class="active">Today</a><a>Reviews</a><a>Stats</a><a>Settings</a></nav>
+</header><main class="view"><div class="spinner"></div></main></div>
 <!-- The Grammar Library's data and logic, shared with the library page. -->
 <script src="../grammar/grammar-data.js"></script>
 <script src="../grammar/reference-data.js"></script>

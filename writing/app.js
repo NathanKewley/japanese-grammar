@@ -259,8 +259,22 @@ class WritingModel extends SrsModel {
 
 // ---------- Stroke order ----------
 
-let STROKES = {};
+let STROKES = null;
 const BOX = 109;
+
+/**
+ * The stroke data is big (3 MB) and only drawn in lessons and answers, so it
+ * loads after the app opens; diagrams show an empty square until it arrives.
+ */
+function loadStrokes(app) {
+  fetch('data/strokes.json')
+    .then((r) => { if (!r.ok) throw new Error('stroke data missing'); return r.json(); })
+    .then((strokes) => {
+      STROKES = strokes;
+      if (app.ui.screen && !app.ui.screen.ignoreModel) app.ui.render();
+    })
+    .catch((e) => console.error('Stroke order unavailable', e));
+}
 
 /**
  * One character drawn from its strokes on a practice square, like the boxes in
@@ -268,7 +282,7 @@ const BOX = 109;
  * is highlighted, and [numbered] labels where each stroke starts.
  */
 function strokeDiagram(ch, size = 120, { upTo = null, numbered = true } = {}) {
-  const strokes = STROKES[ch] || [];
+  const strokes = (STROKES && STROKES[ch]) || [];
   const shown = upTo ?? strokes.length;
   const unit = BOX / size; // viewBox units per pixel
   const paths = [];
@@ -301,7 +315,7 @@ function strokeDiagram(ch, size = 120, { upTo = null, numbered = true } = {}) {
 
 /** The strokes of one character built up step by step. */
 function strokeSteps(ch, size = 52) {
-  const n = (STROKES[ch] || []).length;
+  const n = ((STROKES && STROKES[ch]) || []).length;
   const out = [];
   for (let i = 1; i <= n; i++) out.push(strokeDiagram(ch, size, { upTo: i, numbered: false }));
   return html`<div class="wrap" style="gap:4px">${out}</div>`;
@@ -488,12 +502,10 @@ const CREDITS = html`
 // ---------- Start ----------
 
 boot(document.getElementById('app'), async () => {
-  const [content, strokes, store] = await Promise.all([
+  const [content, store] = await Promise.all([
     fetch('data/content.json').then((r) => { if (!r.ok) throw new Error('content missing'); return r.json(); }),
-    fetch('data/strokes.json').then((r) => { if (!r.ok) throw new Error('stroke data missing'); return r.json(); }),
     Store.open('vibe-writing'),
   ]);
-  STROKES = strokes;
   const course = buildCourse(content);
   const model = new WritingModel(store, course, {
     appName: 'Writing',
@@ -503,7 +515,7 @@ boot(document.getElementById('app'), async () => {
     statsOptions: { slowExcluded: (id, skill) => skill === 'Sentences' },
   });
   model.load();
-  return createSrsApp({
+  const app = createSrsApp({
     id: 'writing',
     title: 'Writing',
     model,
@@ -539,4 +551,6 @@ boot(document.getElementById('app'), async () => {
     outcomeFromJson: (json) => ({ correct: !!json.correct }),
     givenText: (o) => (o.correct ? 'Marked as right' : 'Marked as not yet'),
   });
+  loadStrokes(app);
+  return app;
 });

@@ -764,6 +764,23 @@ def lesson_end_returns_to_the_lessons(c):
 
 
 @test
+def pages_load_quickly(c):
+    # Each page lists all its code and content up front (tools/preloads.py).
+    import subprocess
+    r = subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'preloads.py'), '--check'], capture_output=True, text=True)
+    check(r.returncode == 0, r.stdout.strip() or r.stderr.strip())
+    # The app's frame shows before its code runs.
+    c.go(BASE + 'vocab/index.html', 0.1)
+    shell = c.js("fetch('index.html').then((r) => r.text()).then((t) => new DOMParser().parseFromString(t, 'text/html').querySelector('#app .appbar-title')?.textContent)")
+    check(shell == 'Vocabulary', f'the page should hold the app frame, got {shell}')
+    # Writing opens without its stroke data, then draws the strokes when it arrives.
+    open_app(c, 'writing/index.html#/section/l2.kanji')
+    c.wait_for("document.querySelectorAll('svg.stroke path.ink').length > 0", 15)
+    check(not c.js("[...document.styleSheets].some((s) => { try { return [...s.cssRules].some((r) => r instanceof CSSImportRule); } catch (e) { return false; } })"), 'no stylesheet should @import (it holds up the page)')
+    no_errors(c)
+
+
+@test
 def app_backup_round_trip(c):
     open_app(c, 'writing/index.html#/section/l1.kana')
     c.click('Write from memory')
