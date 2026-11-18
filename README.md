@@ -45,19 +45,6 @@ because the landing page doesn't load the course content.
 Each app's Settings tab can back up and restore that app. The landing page can
 back up and restore everything at once.
 
-### Today's plan
-
-The landing page's "Today" card is one list across the apps (`shared/today.js`):
-a review step for each app with cards due, then one new lesson. Vocabulary goes
-first until it's ahead of Reading and Listening, then whichever of those is
-further behind; Writing and Conjugation join the rotation once you use them,
-and the app studied least recently goes first. The plan is kept for the day in
-`localStorage` (`vibe.today`). When a quiz ends, the app ticks off its own steps
-and offers the next one ("Next in today's plan"), so the day runs as one flow
-across the apps. The landing page checks every step against the apps' data
-whenever it opens. To choose the lesson it uses each app's summary, which
-includes the app's next lesson.
-
 ### What you know, across the apps
 
 `shared/learner.js` keeps one shared record of what you know, in its own
@@ -107,7 +94,6 @@ tests check every id and pattern there against the library's data.
 index.html, landing.*      the landing page
 shared/core.css            the shared look (light and dark)
 shared/learner.js          what you know across the apps (see above)
-shared/today.js            today's plan across the apps
 shared/grammar-links.js    grammar points behind Conjugation lessons and passage forms
 shared/staging.js          keeps the staging site's data separate (see Staging)
 shared/srs/                the shared study-app engine

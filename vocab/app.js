@@ -405,20 +405,40 @@ function planPanel(model) {
   });
 }
 
+/** One part of a lesson: its status, and a glimpse of its words. */
+function partRow(app, ui, section, label) {
+  const status = app.model.statusOf(section);
+  const locked = status === SectionStatus.locked;
+  const words = section.blocks.find((b) => b.type === 'words').words;
+  return html`<a class="list-item" href="${path('section', section.id)}" ${locked ? ui.onClick(() => offerUnlock(app, section)) : ''}>
+    <span class="status-icon ${status === 'passed' ? 'done' : ''}">${icon(status === 'passed' ? 'checkCircle' : locked ? 'lock' : 'play')}</span>
+    <span class="grow">${label}
+      <div class="sub"><span lang="ja">${words.slice(0, 5).map((w) => w.w).join('、')}${words.length > 5 ? '…' : ''}</span>${locked ? ' · tap to unlock early' : ''}</div></span>
+  </a>`;
+}
+
+/** A lesson in the list: one row, or a dropdown of its parts like Writing's. */
 function lessonTile(app, ui, lesson) {
   const model = app.model;
-  const first = lesson.sections[0];
-  const passed = model.lessonPassedCount(lesson);
   const total = lesson.sections.length;
-  const status = model.statusOf(first);
-  const locked = status === SectionStatus.locked && passed === 0;
-  const done = passed === total;
-  const next = lesson.sections.find((s) => !model.passed.has(s.id)) || first;
-  return html`<a class="list-item" href="${path('section', next.id)}" ${locked ? ui.onClick(() => offerUnlock(app, first)) : ''}>
-    <span class="status-icon ${done ? 'done' : ''}">${icon(done ? 'checkCircle' : locked ? 'lock' : 'play')}</span>
-    <span class="grow">${lesson.number}. ${lesson.title}
-      <div class="sub">${plural(lesson.words.length, 'word')}${total > 1 ? ` · ${passed}/${total} parts` : ''}${locked ? ' · tap to unlock early' : ''}</div></span>
-  </a>`;
+  const title = `${lesson.number}. ${lesson.title}`;
+  if (total === 1) return html`<div class="list">${partRow(app, ui, lesson.sections[0], html`${title} · ${plural(lesson.words.length, 'word')}`)}</div>`;
+  const complete = model.lessonComplete(lesson);
+  const next = model.nextSection;
+  const open = next && model.course.lessonOf(next) === lesson;
+  return html`<details class="lesson" ${open ? 'open' : ''}>
+    <summary>
+      <span class="status-icon ${complete ? 'done' : ''}">${icon(complete ? 'checkCircle' : 'circle')}</span>
+      <span class="grow">
+        <div>${title}</div>
+        <div class="small">${plural(lesson.words.length, 'word')} · ${model.lessonPassedCount(lesson)}/${total} parts</div>
+      </span>
+      <span class="caret">${icon('chevron')}</span>
+    </summary>
+    <div class="list">
+      ${lesson.sections.map((s, i) => partRow(app, ui, s, `Part ${i + 1} of ${total} · ${plural(s.cards.filter((c) => c.id.startsWith('mean:')).length, 'word')}`))}
+    </div>
+  </details>`;
 }
 
 /** Words looked up in Reading and Listening, offered for the review deck. */
@@ -459,7 +479,7 @@ function renderToday(ui, app) {
     ${lookupsPanel(app, ui)}
     ${LEVELS.map((level) => html`<section>
       <h2 class="h3">${level}</h2>
-      <div class="list" style="margin-top:6px">${model.lessonsAt(level).map((l) => lessonTile(app, ui, l))}</div>
+      <div style="margin-top:6px">${model.lessonsAt(level).map((l) => lessonTile(app, ui, l))}</div>
     </section>`)}
   </div>`;
 }

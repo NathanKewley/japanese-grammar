@@ -149,6 +149,9 @@ def landing_starts_empty(c):
     check(c.js("document.getElementById('backupReminder').hidden"), 'no backup reminder with no study')
     check(c.js("document.getElementById('backupReminder').offsetHeight") == 0, 'the hidden backup reminder should take up no space')
     check(c.text('[data-stat="writing"]') == 'Not started yet', 'Writing tile should say Not started yet')
+    check(not c.js("document.querySelector('.data-info').open"), 'the progress box should start closed')
+    c.click('.data-info summary', 0.3)
+    check(c.js("document.querySelector('.data-info').open"), 'tapping it should open it')
     # Inside the closed progress box, so it's read as text rather than as shown.
     check('Your study data takes up about' in c.js("document.getElementById('storageLine').textContent"), 'storage line missing')
     open_app(c, 'grammar/index.html', 2)
@@ -518,25 +521,6 @@ def mark_items_already_known(c):
     check(quiz_size(c) == before - 2, 'a marked word should take both its forms out of the quiz')
     c.click('a.btn.block', 1)
     check(c.js("vibeApp.ui.screen.state.engine.total") == before - 2, 'the quiz itself should skip marked cards')
-    no_errors(c)
-
-
-@test
-def todays_plan_is_off(c):
-    # The Today card is switched off (SHOW_TODAY in landing.js), so no plan is
-    # made and the apps don't offer one either.
-    open_app(c, 'index.html', 2.5)
-    check(c.js("document.getElementById('today').hidden"), 'the Today card should be hidden')
-    check(c.js("localStorage.getItem('vibe.today')") is None, 'no plan should be made')
-    open_app(c, 'vocab/index.html#/section/v1.1')
-    c.click('a.btn.block', 1)
-    answer_all(c)
-    check("today's plan" not in view(c).lower(), 'the quiz summary should not offer a plan step')
-    # The progress box starts closed, and opens.
-    open_app(c, 'index.html', 2)
-    check(not c.js("document.querySelector('.data-info').open"), 'the progress box should start closed')
-    c.click('.data-info summary', 0.3)
-    check(c.js("document.querySelector('.data-info').open"), 'tapping it should open it')
     no_errors(c)
 
 
