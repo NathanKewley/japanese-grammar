@@ -6,6 +6,7 @@ import { SrsModel, SectionStatus, BackupError, MIN_DAILY_LIMIT, MAX_DAILY_LIMIT,
 import { QuizEngine, seeded, shuffled } from './quiz-engine.js';
 import { buildFocusAreas, buildInsights } from './focus.js';
 import { deleteDatabase } from './store.js';
+import { Learner } from '../learner.js';
 import { startOfDay } from './stats.js';
 
 export const EXTRA_REVIEW_SIZE = 20;
@@ -910,6 +911,8 @@ async function resetApp(app) {
     'Delete everything'
   );
   if (!ok) return;
+  // What this app said you know goes too.
+  if (app.learner) await app.learner.syncApp(app.spec.id, []);
   app.model.store.db && app.model.store.db.close();
   await deleteDatabase(app.dbName);
   location.hash = '#/';
@@ -948,6 +951,24 @@ export function progressPanel(model, { noun, nouns, stats, lessonsAt }) {
 }
 
 // ---------- Wiring ----------
+
+/**
+ * Everything [model] shows you've studied, for the learner model. Cards and
+ * sections list what they teach in `learn` (items from learner.js): a card in
+ * the review deck is studied, a passed section's items are seen.
+ */
+function learnerEntries(model) {
+  const out = [];
+  for (const [id, stored] of model.cards) {
+    const card = model.course.cardById(id);
+    for (const item of (card && card.learn) || []) out.push({ item, ref: id, type: 'card', card: stored.card });
+  }
+  for (const s of model.course.allSections) {
+    if (!s.learn || !model.passed.has(s.id)) continue;
+    for (const item of s.learn) out.push({ item, ref: s.id, type: 'seen' });
+  }
+  return out;
+}
 
 /**
  * spec: {
@@ -1054,14 +1075,31 @@ export function createSrsApp(spec) {
   };
   app.writeSummary();
 
+  // The shared learner model: this app's evidence of what you know, sent in
+  // full whenever progress changes, so it always matches this app's data.
+  app.learner = null;
+  app.syncLearner = () => (app.learner ? app.learner.syncApp(spec.id, learnerEntries(app.model)) : Promise.resolve());
+  let learnerTimer = null;
+  const syncSoon = () => {
+    clearTimeout(learnerTimer);
+    learnerTimer = setTimeout(app.syncLearner, 400);
+  };
+  app.learnerReady = Learner.open()
+    .then((l) => { app.learner = l; return app.syncLearner(); })
+    .catch((e) => console.error('Learner model unavailable', e));
+
   app.model.onChange(() => {
     app.writeSummary();
+    syncSoon();
     if (ui.screen && !ui.screen.ignoreModel) ui.render();
   });
   app.model.store.onError = () => toast("Couldn't save your progress. Your browser may be out of storage space.");
 
   document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'visible') app.model.refresh();
+    if (document.visibilityState !== 'visible') return;
+    app.model.refresh();
+    // Other tabs may have added to what you know.
+    if (app.learner) app.learner.reload().catch(() => {});
   });
 
   app.mount = (root) => ui.mount(root);

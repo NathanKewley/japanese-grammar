@@ -8,7 +8,8 @@ import { SrsModel, SectionStatus, count, answersWhere } from '../shared/srs/mode
 import { statGrid, barRow } from '../shared/srs/ui.js';
 import { createSrsApp, boot, path, offerUnlock, progressPanel, LEVELS } from '../shared/srs/screens.js';
 import { Rating, newCard } from '../shared/srs/fsrs.js';
-import { Dictionary, renderPassage } from '../shared/srs/passage.js';
+import { Dictionary, renderPassage, connectLearner } from '../shared/srs/passage.js';
+import { passageWords, wordLookupHooks } from '../shared/learner.js';
 
 const LEVEL_SUMMARIES = {
   N5: 'Short messages, signs and conversations, mostly in kana.',
@@ -59,6 +60,8 @@ function buildCourse(data) {
       kind: 'reading',
       deckId: r.level.toLowerCase(),
       blocks: [{ type: 'reading', reading }],
+      // Passing a reading means you've met every word in it.
+      learn: passageWords(reading.sentences, data.entries),
       cards: r.q.map((q, i) => ({
         id: `q:${n}.${i + 1}`,
         build: (rng) => {
@@ -368,7 +371,7 @@ boot(document.getElementById('app'), async () => {
     statsOptions: { slowExcluded: (id, skill) => skill === 'Re-reading' },
   });
   model.load();
-  return createSrsApp({
+  const app = createSrsApp({
     id: 'reading',
     title: 'Vibe Reading',
     model,
@@ -437,4 +440,6 @@ boot(document.getElementById('app'), async () => {
     sectionScreenTitle: (lesson) => `Reading ${lesson.number} · ${lesson.level}`,
     settingsExtra,
   });
+  connectLearner(wordLookupHooks(() => app.learner, 'reading'));
+  return app;
 });

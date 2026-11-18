@@ -188,6 +188,16 @@ function kanjiRow(dict, c, lesson) {
   </div>`;
 }
 
+// ---------- Learner model ----------
+
+let learnerHooks = null;
+
+/**
+ * Lets an app count word lookups and say what's already known about a word:
+ * { onLookup(entry), note(entry) -> text }. See wordLookupHooks in learner.js.
+ */
+export function connectLearner(hooks) { learnerHooks = hooks; }
+
 function openPopup(el) {
   const key = el.dataset.pk;
   const p = passages.get(key);
@@ -214,6 +224,9 @@ function openPopup(el) {
   const kanji = [...new Set([...text, ...(entry ? entry.w : '')].filter((c) => isKanji(c) && c !== '々'))];
   const pos = entry ? [...new Set(entry.p.map(posLabel))].join(', ') : '';
   const showDictionary = entry && (entry.w !== text || word.f);
+  // What's known from before this lookup, then the lookup itself.
+  const known = entry && learnerHooks ? learnerHooks.note(entry) : '';
+  if (entry && learnerHooks) learnerHooks.onLookup(entry);
   const box = document.createElement('div');
   box.className = 'word-popup';
   box.setAttribute('role', 'dialog');
@@ -224,6 +237,7 @@ function openPopup(el) {
       <button class="icon-btn" data-pop="close" title="Close" aria-label="Close">${icon('cross')}</button>
     </div>
     ${word.f === 'name' ? html`<p>A person's name</p>` : entry ? '' : html`<p class="muted">Not in the dictionary.</p>`}
+    ${known ? html`<p class="small known-note" style="color:var(--accent);font-weight:600;margin-top:2px">${known}</p>` : ''}
     ${showDictionary ? html`<p lang="ja" style="margin-top:4px">Dictionary form: ${entry.w === entry.r ? entry.w : `${entry.w}【${entry.r}】`}</p>` : ''}
     ${word.f && word.f !== 'name' ? html`<p lang="ja" style="color:var(--accent);font-weight:600">${word.f}</p>` : ''}
     ${pos ? html`<p class="small">${pos}</p>` : ''}

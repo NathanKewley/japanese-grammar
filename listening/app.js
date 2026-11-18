@@ -7,7 +7,8 @@ import { SrsModel, SectionStatus, count, answersWhere } from '../shared/srs/mode
 import { statGrid, barRow } from '../shared/srs/ui.js';
 import { createSrsApp, boot, path, offerUnlock, progressPanel, LEVELS } from '../shared/srs/screens.js';
 import { Rating, newCard } from '../shared/srs/fsrs.js';
-import { Dictionary, renderPassage, resetPassages } from '../shared/srs/passage.js';
+import { Dictionary, renderPassage, resetPassages, connectLearner } from '../shared/srs/passage.js';
+import { passageWords, wordLookupHooks } from '../shared/learner.js';
 import { normaliseTyped, hasRomaji, toHiragana } from '../shared/srs/romaji.js';
 
 const LEVEL_SUMMARIES = {
@@ -95,6 +96,8 @@ function buildCourse(data) {
           kind: 'listening',
           deckId: deck,
           blocks: [],
+          // Passing a track means you've met every word in it.
+          learn: passageWords(it.lines, data.entries),
           cards: it.q.map((q, i) => ({ id: `q:${n}.${i + 1}`, build: (rng) => choice(item, q, rng), info: { name: q.q, definition: q.o[0] } })),
           reviewCard: {
             id: reviewId,
@@ -633,7 +636,7 @@ boot(document.getElementById('app'), async () => {
   });
   MODEL = model;
   model.load();
-  return createSrsApp({
+  const app = createSrsApp({
     id: 'listening',
     title: 'Vibe Listening',
     model,
@@ -686,4 +689,6 @@ boot(document.getElementById('app'), async () => {
     partItemCount: (part) => part.sections.reduce((n, s) => n + (s.reviewCard ? 1 : s.cards.length), 0),
     sectionScreenTitle: (lesson) => `Track ${lesson.number} · ${lesson.level}`,
   });
+  connectLearner(wordLookupHooks(() => app.learner, 'listening'));
+  return app;
 });

@@ -4,6 +4,7 @@ import { html, icon, initTheme, toggleTheme, currentTheme, toast, confirmDialog,
 import { statGrid, barChart, legend, dayLabel } from './shared/srs/ui.js';
 import { TABLES, exportDatabase, importDatabase } from './shared/srs/store.js';
 import { dayKey, startOfDay } from './shared/srs/stats.js';
+import { Learner, LEARNER_DB, exportLearner, importLearner } from './shared/learner.js';
 
 const APPS = ['writing', 'conjugation', 'reading', 'listening'];
 const GRAMMAR_PREFIX = 'grammarNotebook.';
@@ -126,6 +127,7 @@ async function fillGlance() {
   const known = await knownDatabases();
   const apps = {};
   for (const id of APPS) apps[id] = await appActivity(id, known);
+  fillKnowledge(apps, known);
 
   // Each tile: course progress from the app's own summary, and cards due.
   for (const id of APPS) {
@@ -194,6 +196,39 @@ async function fillGlance() {
   }
 }
 
+// ---------- What you know ----------
+
+const KINDS = [['word', 'Words'], ['kanji', 'Kanji'], ['kana', 'Kana'], ['form', 'Conjugation forms']];
+
+/** The learner model's counts, and a note for apps whose progress isn't in it yet. */
+async function fillKnowledge(apps, known) {
+  const section = document.getElementById('knowledge');
+  let summary = { byKind: {}, synced: [] };
+  // Opening it would create it, so it's only read once an app has made it.
+  if (!known || known.has(LEARNER_DB)) {
+    try {
+      const learner = await Learner.open();
+      summary = learner.summary();
+      learner.close();
+    } catch (e) { /* not available */ }
+  }
+  const kinds = KINDS.filter(([k]) => summary.byKind[k]);
+  // An app with progress that hasn't been opened since the learner model arrived.
+  const missing = APPS.filter((id) => apps[id] && apps[id].learned + apps[id].days.size > 0 && !summary.synced.includes(id));
+  if (!kinds.length && !missing.length) { section.hidden = true; return; }
+  const num = (n) => html`<span class="k-num ${n ? '' : 'k-zero'}">${n}</span>`;
+  document.getElementById('knowledgeBody').innerHTML = String(html`
+    ${kinds.length ? html`<div class="k-table">
+      <span class="k-head">&nbsp;</span><span class="k-head k-num">Known</span><span class="k-head k-num">Learning</span><span class="k-head k-num">Met</span>
+      ${kinds.map(([k, label]) => {
+        const c = summary.byKind[k];
+        return html`<span>${label}</span>${num(c.known)}${num(c.learning)}${num(c.met)}`;
+      })}
+    </div>` : ''}
+    ${missing.length ? html`<p class="small k-note">Open ${missing.map((id) => NAMES[id]).join(' and ')} once to add what you've studied there.</p>` : ''}`);
+  section.hidden = false;
+}
+
 /**
  * How much this site's study data takes up: the four app databases and the
  * grammar library's settings, measured as their saved contents. The browser's
@@ -211,6 +246,7 @@ async function storageLine() {
       const tables = await exportDatabase(name);
       if (tables) bytes += new Blob([JSON.stringify(tables)]).size;
     }
+    if (!known || known.has(LEARNER_DB)) bytes += new Blob([JSON.stringify(await exportLearner())]).size;
     try {
       for (let i = 0; i < localStorage.length; i++) {
         const k = localStorage.key(i);
@@ -300,8 +336,11 @@ async function backupAll() {
       if (k.startsWith(GRAMMAR_PREFIX)) grammar[k] = localStorage.getItem(k);
     }
   } catch (e) { /* storage blocked */ }
+  // What you know across the apps. Most of it is rebuilt from the apps, but
+  // word lookups are kept only there.
+  const learner = !known || known.has(LEARNER_DB) ? await exportLearner() : null;
   const now = Date.now();
-  const text = JSON.stringify({ app: BACKUP_APP, format: 1, savedAt: now, grammar, apps });
+  const text = JSON.stringify({ app: BACKUP_APP, format: 1, savedAt: now, grammar, apps, learner });
   const d = new Date(now);
   const stamp = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   const a = document.createElement('a');
@@ -362,6 +401,7 @@ async function restoreAll() {
       // Its saved summary is out of date until the app is next opened.
       try { localStorage.removeItem(`vibe.summary.${id}`); } catch (e) { /* storage blocked */ }
     }
+    if (backup.learner && typeof backup.learner === 'object') await importLearner(backup.learner);
     for (const [k, v] of Object.entries(backup.grammar || {})) {
       if (k.startsWith(GRAMMAR_PREFIX) && typeof v === 'string') localStorage.setItem(k, v);
     }

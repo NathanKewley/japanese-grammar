@@ -9,6 +9,7 @@ import { createSrsApp, boot, path, offerUnlock, progressPanel, LEVELS } from '..
 import { seeded } from '../shared/srs/quiz-engine.js';
 import { dayKey } from '../shared/srs/stats.js';
 import { KANA_SETS } from './kana.js';
+import { wordItem, kanaItem, kanjiItemsIn } from '../shared/learner.js';
 
 // ---------- Content ----------
 
@@ -50,9 +51,14 @@ function writeQuestion({ prompt, hint, answer, skill, answerReading = null }) {
   };
 }
 
-function card(id, build, name, definition) {
-  return { id, build, info: { name, definition } };
+/** [learn] lists what the card teaches, as learner-model items. */
+function card(id, build, name, definition, learn = []) {
+  return { id, build, info: { name, definition }, learn };
 }
+
+/** Each kanji's first meaning, for the learner model. Filled in by buildCourse. */
+let KANJI_MEANING = new Map();
+const kanjiMeaning = (c) => KANJI_MEANING.get(c) || '';
 
 function kanaSection(lesson, setName) {
   const set = KANA_SETS[setName];
@@ -74,11 +80,12 @@ function kanaSection(lesson, setName) {
           `kana:${setName}.${i}`,
           () => writeQuestion({ prompt: row.kana.map((k) => k[1]).join(' · '), hint: `Write in ${script}: ${row.name}`, answer: chars, skill: 'Kana' }),
           `${row.name} (${chars})`,
-          `The ${script} ${row.name.toLowerCase()}: ${row.kana.map(([k, r]) => `${k} ${r}`).join(', ')}.`
+          `The ${script} ${row.name.toLowerCase()}: ${row.kana.map(([k, r]) => `${k} ${r}`).join(', ')}.`,
+          row.kana.map(([k, r]) => kanaItem(k, r))
         );
       }),
       ...set.words.map(([word, meaning]) =>
-        card(`kana-word:${word}`, () => writeQuestion({ prompt: katakanaToHiragana(word), hint: `Write in katakana: ${meaning}`, answer: word, skill: 'Kana' }), word, `Katakana for ${meaning}.`)
+        card(`kana-word:${word}`, () => writeQuestion({ prompt: katakanaToHiragana(word), hint: `Write in katakana: ${meaning}`, answer: word, skill: 'Kana' }), word, `Katakana for ${meaning}.`, [wordItem(word, word, meaning)])
       ),
     ],
   };
@@ -95,13 +102,14 @@ function kanjiSection(lesson, kanji, words) {
       ...kanji.map((k) => ({ type: 'kanji', kanji: k, words: words.filter((w) => w.surface.includes(k.char)) })),
     ],
     cards: words.map((w) =>
-      card(`word:${w.surface}`, () => writeQuestion({ prompt: w.reading, hint: w.meaning, answer: w.surface, answerReading: w.reading, skill: 'Words' }), `${w.surface} (${w.reading})`, w.meaning)
+      card(`word:${w.surface}`, () => writeQuestion({ prompt: w.reading, hint: w.meaning, answer: w.surface, answerReading: w.reading, skill: 'Words' }), `${w.surface} (${w.reading})`, w.meaning,
+        [wordItem(w.surface, w.reading, w.meaning), ...kanjiItemsIn(w.surface, kanjiMeaning)])
     ),
   };
 }
 
 function sentenceCard(s) {
-  return card(s.id, () => writeQuestion({ prompt: s.reading, hint: s.english, answer: s.text, answerReading: s.reading, skill: 'Sentences' }), s.text, s.english);
+  return card(s.id, () => writeQuestion({ prompt: s.reading, hint: s.english, answer: s.text, answerReading: s.reading, skill: 'Sentences' }), s.text, s.english, kanjiItemsIn(s.kanji.join(''), kanjiMeaning));
 }
 
 function writingSection(lesson, sentences) {
@@ -119,6 +127,7 @@ function writingSection(lesson, sentences) {
 }
 
 function buildCourse(data) {
+  KANJI_MEANING = new Map(data.lessons.flatMap((l) => l.kanji.map((k) => [k.char, k.meanings[0] || ''])));
   const lessons = data.lessons.map((raw) => {
     const n = raw.number;
     const sentences = raw.sentences.map((s, i) => ({ id: `sentence:${n}.${i + 1}`, text: s.text, reading: s.reading, english: s.english, kanji: s.kanji }));

@@ -9,6 +9,7 @@ import { createSrsApp, boot, path, offerUnlock } from '../shared/srs/screens.js'
 import { seeded } from '../shared/srs/quiz-engine.js';
 import { normaliseTyped, hasRomaji, toHiragana } from '../shared/srs/romaji.js';
 import { speak, stopSpeaking } from '../shared/srs/passage.js';
+import { wordItem, formItem } from '../shared/learner.js';
 
 // ---------- Answers ----------
 
@@ -189,6 +190,7 @@ function buildCourse(data, examples = {}) {
         explanation: answer.rule,
       }),
       info: { name: `${word.surface} → ${info.label}`, definition: segText(answer.main) },
+      learn: [wordItem(word.surface, word.reading, word.meaning), formItem(form, info.label)],
     };
   }
 
@@ -206,6 +208,7 @@ function buildCourse(data, examples = {}) {
           form: form.key,
           build: () => ({ type: 'typein', word, form, answer, shown: word.segments, before: raw.before, after: raw.after, english: raw.en, skill: form.label, explanation: answer.rule }),
           info: { name: `${segText(raw.before)}＿＿${segText(raw.after)}`, definition: `${segText(raw.before)}${segText(answer.main)}${segText(raw.after)} (${raw.en})` },
+          learn: [wordItem(word.surface, word.reading, word.meaning), formItem(form.key, form.label)],
         };
       }
       case 'type':
@@ -215,6 +218,7 @@ function buildCourse(data, examples = {}) {
           form: null,
           build: () => ({ type: 'choice', word, shown: word.segments, ask: 'What type of word is this?', options: raw.options, correctIndex: raw.answer, skill: 'Word types', explanation: typeExplanation(word) }),
           info: { name: `${word.surface}: what type?`, definition: word.kindLabel },
+          learn: [wordItem(word.surface, word.reading, word.meaning)],
         };
       case 'rev': {
         const form = forms[raw.f];
@@ -239,6 +243,7 @@ function buildCourse(data, examples = {}) {
             };
           },
           info: { name: `${segText(shown)}: which form?`, definition: form.label },
+          learn: [wordItem(word.surface, word.reading, word.meaning), formItem(form.key, form.label)],
         };
       }
       default:

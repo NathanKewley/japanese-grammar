@@ -39,11 +39,36 @@ because the landing page doesn't load the course content.
 Each app's Settings tab can back up and restore that app. The landing page can
 back up and restore everything at once.
 
+### What you know, across the apps
+
+`shared/learner.js` keeps one shared record of what you know, in its own
+database (`vibe-learner`). It's an index built from the apps, not a copy of
+their progress: each app keeps its own database and review schedule as before.
+
+- **Items** are things you can know, with the same id in every app: words by
+  headword and reading (`w:食べる|たべる`), kanji (`k:食`), kana (`kana:た`) and
+  conjugation forms (`f:te`).
+- **Links** tie an item to an app's evidence for it. Cards and sections say what
+  they teach in a `learn` list: a card in the review deck means you're
+  studying the item, and a passed section means you've met it. A word is
+  *known* once one of its cards is expected to stick for three weeks.
+- Each app sends all its links when it opens and after every change, so the
+  record can't drift from the app's data, even after a restore or reset.
+  Word lookups in Reading and Listening are the only data kept just here, so
+  whole-site backups include this database.
+
+The landing page shows the counts under "What you know", and the word popup in
+Reading and Listening says when you're already learning a word elsewhere. Rows
+record when they last changed, ready for syncing between devices later. The
+Grammar Library isn't part of it yet.
+
 ## Layout
 
 ```
 index.html, landing.*      the landing page
 shared/core.css            the shared look (light and dark)
+shared/learner.js          what you know across the apps (see above)
+shared/staging.js          keeps the staging site's data separate (see Staging)
 shared/srs/                the shared study-app engine
   fsrs.js                    FSRS scheduler, ported from the Dart fsrs 2.0.1 package
   store.js                   IndexedDB tables, held in memory while an app is open

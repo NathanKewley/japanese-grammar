@@ -356,6 +356,69 @@ def staging_keeps_its_own_data(c):
     no_errors(c)
 
 
+def learner_status(c, item_id):
+    """An item's status in the open app's learner model, after this app has synced."""
+    c.js("vibeApp.learnerReady.then(() => vibeApp.syncLearner())")
+    return c.js(f"vibeApp.learner.status({json.dumps(item_id)})")
+
+
+@test
+def learner_model_shared_across_apps(c):
+    # Conjugation: an empty backup for later, then pass the ます-form lesson.
+    open_app(c, 'conjugation/index.html#/section/l2.learn')
+    empty = c.js("vibeApp.model.exportBackup()")
+    c.js("vibeApp.model.unlockEarly(vibeApp.model.course.sectionById('l2.learn'))")
+    c.sleep(0.4)
+    c.click('a.btn.block', 1)
+    answer_all(c)
+    s = learner_status(c, 'w:食べる|たべる')
+    check(s['status'] == 'learning' and s['studiedIn'] == ['conjugation'], f'食べる should be learning in Conjugation, got {s}')
+    check(learner_status(c, 'f:masu')['status'] == 'learning', 'the ます form should be learning')
+
+    # Writing: the first kana lesson.
+    open_app(c, 'writing/index.html#/section/l1.kana')
+    c.click('Write from memory')
+    answer_all(c)
+    check(learner_status(c, 'kana:あ')['status'] == 'learning', 'あ should be learning in Writing')
+
+    # Reading: a word studied elsewhere says so in its popup, and lookups count.
+    open_app(c, 'reading/index.html#/section/r1')
+    c.js("vibeApp.learnerReady")
+    note = c.js("""(async () => {
+      for (const el of document.querySelectorAll('.pw[data-pk]')) {
+        el.click();
+        await new Promise((r) => setTimeout(r, 30));
+        const n = document.querySelector('.word-popup .known-note');
+        if (n && /Conjugation|Writing/.test(n.textContent)) return n.textContent;
+        document.body.click();
+      }
+      return null;
+    })()""")
+    check(note and 'learning this word in Conjugation' in note, f'a word from Conjugation should say so in Reading, got {note}')
+    check(c.js("vibeApp.learner.lookups.size") > 0, 'tapping words should count as lookups')
+    c.js("document.body.click()")
+    c.click('Answer')
+    answer_all(c)
+    s = learner_status(c, 'w:こんにちは|こんにちは')
+    check(s['status'] == 'met' and 'reading' in s['seenIn'], f'a passed reading should mark its words as met, got {s}')
+
+    # The landing page counts it all.
+    open_app(c, 'index.html', 2.5)
+    check(c.js("!document.getElementById('knowledge').hidden"), 'the landing page should show what you know')
+    table = c.text('#knowledgeBody')
+    for label in ('Words', 'Kana', 'Conjugation forms'):
+        check(label in table, f'"{label}" should be counted, got {table}')
+
+    # Restoring Conjugation to before the lesson takes its items out again.
+    open_app(c, 'conjugation/index.html')
+    c.js(f"vibeApp.model.restoreBackup(vibeApp.model.readBackup({json.dumps(empty)}))")
+    c.sleep(0.5)
+    check(learner_status(c, 'f:masu')['status'] is None, 'restoring an older backup should update the learner model')
+    s = learner_status(c, 'w:こんにちは|こんにちは')
+    check(s['status'] == 'met', "other apps' evidence should be untouched")
+    no_errors(c)
+
+
 @test
 def app_backup_round_trip(c):
     open_app(c, 'writing/index.html#/section/l1.kana')
