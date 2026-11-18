@@ -6,7 +6,7 @@ GitHub Pages with no build step and no server.
 | App | Folder | What it does |
 | --- | --- | --- |
 | Grammar | `grammar/` | The JLPT grammar library: every pattern, with examples and quizzes. |
-| Grammar course | `grammar-course/` | The library's 485 grammar points, five a lesson, with fill-in-the-blank reviews. |
+| Grammar course | `grammar-course/` | The library's 485 grammar points, five a lesson, with fill-in-the-blank and sentence-building reviews. |
 | Vocabulary | `vocab/` | The 5,111 words of the readings and tracks, each lesson just before its passages. |
 | Writing | `writing/` | Kana and 2,195 kanji, written by hand on paper, with stroke order. |
 | Conjugation | `conjugation/` | Word types and every form, typed and checked. |
@@ -78,8 +78,15 @@ record when they last changed, ready for syncing between devices later.
 ### Grammar across the apps
 
 The grammar course (`grammar-course/`) teaches the library's points in library
-order, five a lesson within each level, and quizzes each one as a
-fill-in-the-blank from one of its own examples, with options from related points.
+order, five a lesson within each level. Each point has two cards: a
+fill-in-the-blank from one of its own examples, with options from related
+points, and sentence building, where one of its examples is split into pieces to
+tap back into order from the English. The pieces come from a simple rule in
+`grammar-core.js` (`sentencePieces`): a new piece starts where kanji or
+katakana follows a particle or word ending, or after 、 and 。, never inside a
+kanji reading or the grammar point itself. Examples that give fewer than three
+pieces are skipped, which leaves 55 of the 485 points with only the first card.
+An answer is right when the pieces rebuild the sentence exactly.
 It uses the library's own logic for that: `grammar/grammar-core.js` holds the
 data access, highlighting, furigana and question-building that both pages load.
 The library opens an entry from a link like `grammar/index.html#n4-nagara`, and

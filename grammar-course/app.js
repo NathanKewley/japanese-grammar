@@ -7,6 +7,7 @@ import { html, raw, icon, plural } from '../shared/srs/dom.js';
 import { Store } from '../shared/srs/store.js';
 import { Course } from '../shared/srs/course.js';
 import { SrsModel, SectionStatus, count, answersWhere } from '../shared/srs/model.js';
+import { newCard, cardToMap } from '../shared/srs/fsrs.js';
 import { createSrsApp, boot, path, offerUnlock, progressPanel, knownToggle, LEVELS } from '../shared/srs/screens.js';
 import { grammarItem } from '../shared/learner.js';
 import { CONJUGATION_FOR_GRAMMAR } from '../shared/grammar-links.js';
@@ -27,9 +28,9 @@ const label = (entry) => C.patternLabel(entry);
 // ---------- Course ----------
 
 /**
- * One card per grammar point. Each time it's asked, it picks one of the
- * point's own examples and blanks out the grammar, with options taken from
- * related points, exactly as the library's worksheet does.
+ * Fill the blank: each time it's asked, it picks one of the point's own
+ * examples and blanks out the grammar, with options taken from related
+ * points, exactly as the library's worksheet does.
  */
 function pointCard(entry) {
   return {
@@ -54,6 +55,47 @@ function pointCard(entry) {
   };
 }
 
+/**
+ * The point's examples that make a sentence-building question: split into
+ * pieces (grammar-core.js) with the grammar kept in one piece.
+ */
+function orderableExamples(entry) {
+  const out = [];
+  for (const ex of C.flattenExamples(entry)) {
+    const hl = C.getExampleHighlightRange(ex, entry.pattern);
+    const pieces = C.sentencePieces(ex, hl);
+    if (pieces) out.push({ ex, hl, pieces });
+  }
+  return out;
+}
+
+/**
+ * Sentence building: one of the point's examples in pieces, to put back in
+ * order from its English. Right when the pieces rebuild the sentence.
+ */
+function sentenceCard(entry, examples) {
+  return {
+    id: `gs:${entry.id}`,
+    build: (rng) => {
+      const { ex, hl, pieces } = examples[Math.floor(rng.next() * examples.length)];
+      const ids = pieces.map((_, i) => i);
+      let order = rng.shuffle(ids);
+      // Never already in order.
+      for (let tries = 0; tries < 5 && order.every((v, i) => v === i); tries++) order = rng.shuffle(ids);
+      if (order.every((v, i) => v === i)) order = [...ids.slice(1), ids[0]];
+      return { type: 'order', kind: 'order', entry, ex, hl, pieces, order, skill: 'Sentence building' };
+    },
+    info: { name: `${label(entry)}: build the sentence`, definition: entry.title },
+    learn: [grammarItem(entry)],
+  };
+}
+
+/** A point's cards: fill the blank, and build a sentence when an example allows. */
+function cardsFor(entry) {
+  const examples = orderableExamples(entry);
+  return examples.length ? [pointCard(entry), sentenceCard(entry, examples)] : [pointCard(entry)];
+}
+
 function buildCourse() {
   const parts = C.LEVELS.map((l, i) => ({ id: l.id.toLowerCase(), number: i + 1, title: `${l.id} grammar`, summary: LEVEL_SUMMARIES[l.id] || '' }));
   // The lessons come from grammar-core.js, so the library can link to them.
@@ -68,7 +110,7 @@ function buildCourse() {
       kind: 'grammar',
       deckId: level.toLowerCase(),
       blocks: [{ type: 'points', entries }],
-      cards: entries.map(pointCard),
+      cards: entries.flatMap(cardsFor),
     }],
   }));
   const course = new Course(parts, lessons);
@@ -80,6 +122,29 @@ function buildCourse() {
 
 class GrammarModel extends SrsModel {
   lessonsAt(level) { return this.course.lessons.filter((l) => l.level === level); }
+
+  /**
+   * Sentence-building cards for points studied before they existed: in the
+   * reviews for passed lessons, and known wherever the point was marked known.
+   */
+  async addSentenceCards() {
+    const now = this.now();
+    const added = [];
+    const known = [];
+    for (const section of this.course.allSections) {
+      for (const card of section.cards) {
+        if (!card.id.startsWith('gs:') || this.cards.has(card.id)) continue;
+        const point = `g:${card.id.slice(3)}`;
+        if (this.isMarkedKnown(point)) known.push(card.id);
+        else if (this.passed.has(section.id)) added.push({ cardId: card.id, partId: section.deckId, card: newCard(now) });
+      }
+    }
+    if (added.length) {
+      for (const c of added) this.cards.set(c.cardId, c);
+      await this.store.write(added.map((c) => ({ table: 'srs_cards', put: { card_id: c.cardId, part_id: c.partId, data: JSON.stringify(cardToMap(c.card)) } })));
+    }
+    if (known.length) await this.markKnown(known);
+  }
 
   get pointsLearned() {
     let n = 0;
@@ -132,7 +197,7 @@ function pointCardHtml(entry, ui) {
         <div class="h2" lang="ja" style="margin:0">${entry.pattern}</div>
         <div class="h3" style="margin-top:2px">${entry.title}</div>
       </div>
-      ${APP ? knownToggle(APP, ui, [`g:${entry.id}`]) : ''}
+      ${APP ? knownToggle(APP, ui, [`g:${entry.id}`, `gs:${entry.id}`].filter((id) => APP.model.course.sectionCard(id))) : ''}
     </div>
     ${String(entry.explanation || '').split(/\n\n+/).map((p) => html`<p class="prose" style="margin-top:8px">${p}</p>`)}
     ${examples.map((ex) => exampleHtml(ex, entry))}
@@ -148,7 +213,34 @@ function renderBlock(block, ui) {
 
 // ---------- Quiz ----------
 
-function renderQuestion({ question: q, ui, answer }) {
+/** Sentence building: tap the pieces in order, tap a placed one to take it back. */
+function renderOrder(q, view, ui, answer) {
+  const placed = (view.placed ||= []);
+  const text = (i) => q.ex.japanese.slice(q.pieces[i].start, q.pieces[i].end);
+  const piece = (i) => raw(`<span lang="ja">${C.pieceRuby(q.ex, q.pieces[i])}</span>`);
+  const check = () => {
+    const given = placed.map(text).join('');
+    answer({ correct: given === q.ex.japanese, given });
+  };
+  return html`<div class="stack">
+    <div class="h3">Put the sentence in order</div>
+    <p style="font-size:1.05rem">${q.ex.english}</p>
+    <div class="order-line" aria-label="Your sentence">
+      ${placed.length
+        ? placed.map((i, k) => html`<button class="piece placed" type="button" ${ui.onClick(() => { placed.splice(k, 1); ui.render(); })}>${piece(i)}</button>`)
+        : html`<span class="small">Tap the pieces in order.</span>`}
+    </div>
+    <div class="order-bank">
+      ${q.order.map((i) => (placed.includes(i)
+        ? html`<span class="piece gone" aria-hidden="true">${piece(i)}</span>`
+        : html`<button class="piece" type="button" ${ui.onClick(() => { placed.push(i); ui.render(); })}>${piece(i)}</button>`))}
+    </div>
+    <button class="btn block" type="button" ${placed.length === q.pieces.length ? '' : 'disabled'} ${ui.onClick(check)}>Check</button>
+  </div>`;
+}
+
+function renderQuestion({ question: q, view, ui, answer }) {
+  if (q.kind === 'order') return renderOrder(q, view, ui, answer);
   const options = html`<div class="stack" style="margin-top:8px">
     ${q.options.map((opt, i) => html`<button class="option" lang="ja" ${ui.onClick(() => answer({ correct: i === q.correctIndex, given: opt }))}>${opt}</button>`)}
   </div>`;
@@ -173,7 +265,8 @@ const givenText = (o) => o.given || '';
 function answerPanel(q) {
   const e = q.entry;
   return html`<div>
-    ${q.kind === 'blank' ? html`<div class="ja-m" lang="ja" style="line-height:1.9">${raw(C.buildRuby(q.ex.japanese, q.ex.furigana, q.hl))}</div>` : ''}
+    ${q.kind === 'blank' || q.kind === 'order' ? html`<div class="ja-m" lang="ja" style="line-height:1.9">${raw(C.buildRuby(q.ex.japanese, q.ex.furigana, q.hl))}</div>` : ''}
+    ${q.kind === 'order' ? html`<p class="small">${q.ex.english}</p>` : ''}
     <div class="h3" lang="ja" style="margin-top:6px">${e.pattern} · ${e.title}</div>
     <p class="small">${e.short} <a href="${LIBRARY}#${e.id}">Open in the Grammar Library</a></p>
   </div>`;
@@ -231,7 +324,7 @@ function renderToday(ui, app) {
         <span class="chevron">${icon('chevron')}</span>
       </a>`;
     })() : ''}
-    ${due > 0 || saved ? html`<a class="btn tonal block" href="#/quiz/review-all">${saved ? "Resume today's reviews" : `Review ${plural(due, 'point')} due today`}</a>` : ''}
+    ${due > 0 || saved ? html`<a class="btn tonal block" href="#/quiz/review-all">${saved ? "Resume today's reviews" : `Review ${plural(due, 'card')} due today`}</a>` : ''}
     <a class="btn outline block" href="${LIBRARY}">Browse the Grammar Library</a>
     ${LEVELS.map((level) => html`<section>
       <h2 class="h3">${level}</h2>
@@ -255,6 +348,7 @@ boot(document.getElementById('app'), async () => {
     noPartId: 'practice',
   });
   model.load();
+  await model.addSentenceCards();
   const app = createSrsApp({
     id: 'grammar',
     title: 'Vibe Grammar',

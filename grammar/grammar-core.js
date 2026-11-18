@@ -717,6 +717,93 @@
     });
   }
 
+  // ---------- Sentence building ----------
+  // Splits an example into pieces to put back in order, without a
+  // dictionary. A sentence alternates content (kanji, katakana, numbers) and
+  // hiragana; a new piece starts where content follows a hiragana run that
+  // ends a phrase: a particle (は, を, に, ...) or a word ending (～い, ～る,
+  // ～た, ～な, ～て, ...). So これは本です → これは|本です, and 大きい犬です →
+  // 大きい|犬です, while 食べ物 stays whole (べ ends nothing). A piece also
+  // ends at 、 and 。. Pieces never cut through a kanji run's reading or through the
+  // grammar point itself. Since an answer is right when the pieces rebuild
+  // the sentence exactly, an odd split only changes how hard it is.
+
+  var PIECE_MIN = 3;
+  var PIECE_MAX = 7;
+  var HIRAGANA_RE = /[ぁ-ゖ]/;
+  var CONTENT_RE = /[㐀-鿿々ァ-ヺー0-9A-Za-z０-９Ａ-Ｚａ-ｚ]/;
+  var PHRASE_END_RE = /[はがをにでへともやのかねよいるたなてうくすつむぶぐばら]$/;
+  // A lone お or ご before content is an honorific prefix (お茶), not an ending.
+  var PREFIX_RE = /^[おご]$/;
+
+  /** Character offsets where a new piece could start. */
+  function pieceStarts(japanese) {
+    var starts = [];
+    var run = "";
+    for (var i = 0; i < japanese.length; i++) {
+      var ch = japanese.charAt(i);
+      if (i > 0 && CONTENT_RE.test(ch) && run && PHRASE_END_RE.test(run) && !PREFIX_RE.test(run)) starts.push(i);
+      if (i > 0 && /[、。！？]/.test(japanese.charAt(i - 1)) && starts.indexOf(i) === -1) starts.push(i);
+      run = HIRAGANA_RE.test(ch) ? run + ch : "";
+    }
+    return starts;
+  }
+
+  /**
+   * [{start, end}] pieces of example [ex] to put in order, or null if it
+   * doesn't make a good question (too few pieces). [hl] is the grammar
+   * point's span, kept in one piece.
+   */
+  function sentencePieces(ex, hl) {
+    var text = ex.japanese;
+    var segments = ex.furigana ? computeAlignment(text, ex.furigana) : null;
+    var starts = pieceStarts(text).filter(function (b) {
+      if (hl && b > hl.start && b < hl.end) return false;
+      if (segments) {
+        for (var i = 0; i < segments.length; i++) {
+          var s = segments[i];
+          if (s.isKanji && b > s.jStart && b < s.jEnd) return false;
+        }
+      }
+      return true;
+    });
+    var pieces = [];
+    var from = 0;
+    starts.concat([text.length]).forEach(function (b) {
+      if (b > from) pieces.push({ start: from, end: b });
+      from = b;
+    });
+    // Too many: join the shortest neighbouring pair until it's a fair puzzle.
+    while (pieces.length > PIECE_MAX) {
+      var best = 0;
+      for (var j = 1; j < pieces.length - 1; j++) {
+        var a = pieces[j].end - pieces[j].start + pieces[j + 1].end - pieces[j + 1].start;
+        var b2 = pieces[best].end - pieces[best].start + pieces[best + 1].end - pieces[best + 1].start;
+        if (a < b2) best = j;
+      }
+      pieces.splice(best, 2, { start: pieces[best].start, end: pieces[best + 1].end });
+    }
+    return pieces.length >= PIECE_MIN ? pieces : null;
+  }
+
+  /** A piece as ruby markup, its furigana cut from the whole sentence's. */
+  function pieceRuby(ex, piece) {
+    var text = ex.japanese.slice(piece.start, piece.end);
+    var segments = ex.furigana ? computeAlignment(ex.japanese, ex.furigana) : null;
+    if (!segments) return escapeHtml(text);
+    function toFuri(j) {
+      if (j >= ex.japanese.length) return ex.furigana.length;
+      for (var i = 0; i < segments.length; i++) {
+        var s = segments[i];
+        if (j >= s.jStart && j < s.jEnd) return s.isKanji ? s.fStart : s.fStart + (j - s.jStart);
+      }
+      return null;
+    }
+    var fa = toFuri(piece.start), fb = toFuri(piece.end);
+    if (fa === null || fb === null) return escapeHtml(text);
+    return buildRuby(text, ex.furigana.slice(fa, fb), null);
+  }
+
   // ---------- The grammar course ----------
   // The course (grammar-course/) teaches every point in library order, a few
   // at a time within each level. The grouping lives here so the library can
@@ -751,6 +838,8 @@
     withRandom: withRandom,
     courseLessons: courseLessons,
     courseLessonOf: courseLessonOf,
+    sentencePieces: sentencePieces,
+    pieceRuby: pieceRuby,
     LEVELS: LEVELS,
     LEVEL_DATA: LEVEL_DATA,
     REFERENCE_ARTICLES_DATA: REFERENCE_ARTICLES_DATA,

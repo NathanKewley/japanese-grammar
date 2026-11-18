@@ -103,6 +103,12 @@ def answer_all(c, mode=lambda i, q: 'right', limit=150):
         m = mode(i, q)
         if q is None or q['type'] is None:  # Writing: self-marked
             c.click('Got it' if m == 'right' else 'Not yet', 0.2)
+        elif q['type'] == 'order':
+            # Tap the pieces in sentence order (right), or as shuffled (wrong).
+            c.js(f"""(() => {{ const q = vibeApp.ui.screen.state.engine.currentQuestion;
+              const seq = {'true' if m in ('right', 'romaji') else 'false'} ? q.pieces.map((_, i) => i) : q.order;
+              for (const i of seq) {{ document.querySelectorAll('.order-bank > *')[q.order.indexOf(i)].click(); }}
+              [...document.querySelectorAll('.view button')].find((b) => b.textContent.trim() === 'Check').click(); }})()""")
         elif q['type'] in ('choice',):
             n = c.js("document.querySelectorAll('.option').length")
             idx = q['ci'] if m in ('right', 'romaji') else (q['ci'] + 1) % n
@@ -546,12 +552,14 @@ def grammar_course_library_and_links(c):
     check('The full entry in the Grammar Library' in view(c), 'lessons should link to the library')
     before = quiz_size(c)
     c.click('I already know this', 0.4)
-    check(quiz_size(c) == before - 1, 'a known point should leave the quiz')
+    cards_of_first = c.js("vibeApp.model.course.sectionById('g1').cards.filter((x) => x.id.endsWith(':' + vibeApp.model.course.sectionById('g1').cards[0].id.slice(2))).length")
+    check(quiz_size(c) == before - cards_of_first, 'a known point should take all its cards out of the quiz')
     c.click('a.btn.block', 1)
-    check(c.js("vibeApp.ui.screen.state.engine.currentQuestion.kind") == 'blank', 'questions should blank the grammar out of an example')
+    check(c.js("vibeApp.ui.screen.state.engine.currentQuestion.kind") in ('blank', 'order'), 'questions should be fill-the-blank or sentence building')
     answer_all(c)
     check(c.js("vibeApp.model.passed.has('g1')"), 'the first grammar lesson should pass')
-    second = c.js("vibeApp.model.course.sectionById('g1').cards[1].id")
+    # The next grammar point's fill-the-blank card (each point also has a sentence card).
+    second = c.js(f"vibeApp.model.course.sectionById('g1').cards.find((x) => x.id.startsWith('g:') && x.id !== {json.dumps(first)}).id")
     check(learner_status(c, second)['status'] == 'learning', 'a quizzed point should be learning')
     check(learner_status(c, first)['status'] == 'known', 'a point marked known should be known')
 
@@ -575,6 +583,53 @@ def grammar_course_library_and_links(c):
     # The landing page has the course.
     open_app(c, 'index.html', 2.5)
     check('/' in c.text('[data-stat="grammar"]'), 'the Grammar course tile should show progress')
+    no_errors(c)
+
+
+@test
+def grammar_sentence_building(c):
+    # The pieces: every grammar point with a long enough example gets the
+    # question, each piece's furigana matches the sentence's, and the grammar
+    # point is never split.
+    open_app(c, 'grammar/index.html', 2)
+    bad = c.js("""(() => { const C = GrammarCore; const bad = []; let n = 0;
+      for (const e of C.allEntries()) for (const ex of C.flattenExamples(e)) {
+        const hl = C.getExampleHighlightRange(ex, e.pattern); const p = C.sentencePieces(ex, hl); if (!p) continue; n++;
+        if (p.map((x) => ex.japanese.slice(x.start, x.end)).join('') !== ex.japanese) bad.push(ex.japanese + ': pieces lose text');
+        if (hl && p.some((x) => x.start > hl.start && x.start < hl.end)) bad.push(ex.japanese + ': grammar split');
+        const kana = p.map((x) => { const d = document.createElement('div'); d.innerHTML = C.pieceRuby(ex, x);
+          d.querySelectorAll('ruby').forEach((r) => r.replaceWith(r.querySelector('rt').textContent)); return d.textContent; }).join('');
+        if (ex.furigana && kana !== ex.furigana) bad.push(ex.japanese + ': furigana ' + kana + ' is not ' + ex.furigana);
+      }
+      return { n, bad: bad.slice(0, 5), count: bad.length }; })()""")
+    check(bad['n'] > 1000 and not bad['count'], f"sentence pieces: {bad}")
+
+    # In the course: a right order is right, a wrong one isn't.
+    open_app(c, 'grammar-course/index.html#/section/g1')
+    c.click('a.btn.block', 1)
+    seen = {'right': False, 'wrong': False}
+    for _ in range(20):
+        if not in_quiz(c):
+            break
+        c.sleep(0.35)
+        q = question(c)
+        if q['type'] == 'order' and not all(seen.values()):
+            mode = 'wrong' if not seen['wrong'] else 'right'
+            answer_all(c, lambda i, q: mode, limit=1)
+            ok = c.js("vibeApp.ui.screen.state.last.correct")
+            check(ok == (mode == 'right'), f'a {mode} order should be marked {mode}')
+            seen[mode] = True
+        else:
+            answer_all(c, limit=1)
+    check(all(seen.values()), f'the lesson should ask sentence-building questions, saw {seen}')
+
+    # A lesson passed before sentence building existed gets its cards on reload.
+    answer_all(c)
+    c.js("""(() => { const m = vibeApp.model; const ids = [...m.cards.keys()].filter((id) => id.startsWith('gs:'));
+      for (const id of ids) m.cards.delete(id); return m.store.deleteCards(ids); })()""")
+    c.sleep(0.4)
+    open_app(c, 'grammar-course/index.html', 2)
+    check(c.js("[...vibeApp.model.cards.keys()].some((id) => id.startsWith('gs:'))"), 'passed points should get their sentence cards')
     no_errors(c)
 
 
