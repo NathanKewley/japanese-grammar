@@ -149,7 +149,8 @@ def landing_starts_empty(c):
     check(c.js("document.getElementById('backupReminder').hidden"), 'no backup reminder with no study')
     check(c.js("document.getElementById('backupReminder').offsetHeight") == 0, 'the hidden backup reminder should take up no space')
     check(c.text('[data-stat="writing"]') == 'Not started yet', 'Writing tile should say Not started yet')
-    check('Your study data takes up about' in c.text('#storageLine'), 'storage line missing')
+    # Inside the closed progress box, so it's read as text rather than as shown.
+    check('Your study data takes up about' in c.js("document.getElementById('storageLine').textContent"), 'storage line missing')
     open_app(c, 'grammar/index.html', 2)
     check('Grammar Library' in c.text('.app-title'), 'grammar header')
     no_errors(c)
@@ -521,43 +522,21 @@ def mark_items_already_known(c):
 
 
 @test
-def todays_plan_across_apps(c):
-    # Nothing studied yet: the plan starts with Vocabulary.
+def todays_plan_is_off(c):
+    # The Today card is switched off (SHOW_TODAY in landing.js), so no plan is
+    # made and the apps don't offer one either.
     open_app(c, 'index.html', 2.5)
-    check('Vocabulary lesson 1' in c.text('#today'), f"a new learner should start with Vocabulary, got {c.text('#today')}")
-
-    # Writing studied, with its cards due: reviews first, then the lesson.
-    open_app(c, 'writing/index.html#/section/l1.kana')
-    c.click('Write from memory')
-    answer_all(c)
-    c.js("""(() => { const m = vibeApp.model;
-      for (const x of m.cards.values()) { x.card.due = Date.now() - 1000; m.store.write([{ table: 'srs_cards', put: { card_id: x.cardId, part_id: x.partId,
-        data: JSON.stringify({ cardId: 0, state: x.card.state, step: x.card.step, stability: x.card.stability, difficulty: x.card.difficulty, due: new Date(x.card.due).toISOString(), lastReview: null }) } }]); }
-      localStorage.removeItem('vibe.today'); })()""")
-    c.sleep(0.5)
-    open_app(c, 'index.html', 2.5)
-    steps = c.js("[...document.querySelectorAll('.today-step')].map((e) => e.textContent.trim())")
-    check(len(steps) == 2 and steps[0].startswith('Review') and 'Writing' in steps[0] and 'Vocabulary lesson 1' in steps[1], f'reviews then the lesson, got {steps}')
-
-    # Finishing the reviews offers the next step, in the other app.
-    open_app(c, 'writing/index.html#/quiz/review-all', 1.5)
-    answer_all(c)
-    nxt = c.js("[...document.querySelectorAll('a.btn')].find((a) => a.textContent.includes('today')) || null")
-    check(nxt is not None, 'the review summary should offer the next step')
-    check(c.js("[...document.querySelectorAll('a.btn')].find((a) => a.textContent.includes('Next in today')).getAttribute('href')") == '../vocab/index.html', 'the next step should link to Vocabulary')
-    open_app(c, 'index.html', 2.5)
-    check('1 of 2 done' in c.text('#today'), f"the reviews should be ticked off, got {c.text('#today')}")
-
-    # The lesson, then the plan's done and another lesson is offered.
+    check(c.js("document.getElementById('today').hidden"), 'the Today card should be hidden')
+    check(c.js("localStorage.getItem('vibe.today')") is None, 'no plan should be made')
     open_app(c, 'vocab/index.html#/section/v1.1')
     c.click('a.btn.block', 1)
     answer_all(c)
-    check("Today's plan is done" in view(c), 'finishing the last step should say the plan is done')
-    open_app(c, 'index.html', 2.5)
-    today = c.text('#today')
-    check('2 of 2 done' in today and 'All done for today' in today, f'everything should be ticked off, got {today}')
-    # Grammar hasn't been studied yet, so it's next in the rotation.
-    check('Another lesson: Grammar lesson 1' in today, f'the least recently studied app should be offered next, got {today}')
+    check("today's plan" not in view(c).lower(), 'the quiz summary should not offer a plan step')
+    # The progress box starts closed, and opens.
+    open_app(c, 'index.html', 2)
+    check(not c.js("document.querySelector('.data-info').open"), 'the progress box should start closed')
+    c.click('.data-info summary', 0.3)
+    check(c.js("document.querySelector('.data-info').open"), 'tapping it should open it')
     no_errors(c)
 
 

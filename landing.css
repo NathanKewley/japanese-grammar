@@ -37,6 +37,23 @@
 
 .tile-wide { grid-column: 1 / -1; flex-direction: row; align-items: center; min-height: 0; gap: 16px; padding: 20px 16px; }
 
+/* Half-width tiles: the title beside the icon, centred on it, and the rest underneath. */
+.tile:not(.tile-wide) {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-areas: "glyph name" "desc desc" "stat stat";
+  align-items: center;
+  align-content: start;
+  column-gap: 12px;
+  row-gap: 10px;
+  min-height: 0;
+}
+.tile:not(.tile-wide) .tile-body { display: contents; }
+.tile:not(.tile-wide) .tile-glyph { grid-area: glyph; }
+.tile:not(.tile-wide) .tile-name { grid-area: name; line-height: 1.25; }
+.tile:not(.tile-wide) .tile-desc { grid-area: desc; align-self: start; }
+.tile:not(.tile-wide) .tile-stat { grid-area: stat; margin-top: 0; }
+
 /* A tonal icon container: the app's colour as text on a light wash of it. */
 .tile-glyph {
   flex: none;
@@ -65,6 +82,12 @@
 .hub-wrap .card { background: var(--surface-2); border: 0; border-radius: 16px; }
 
 .data-info { margin: 28px 0 0; }
+.data-info > summary { display: flex; align-items: center; gap: 12px; cursor: pointer; list-style: none; -webkit-tap-highlight-color: transparent; }
+.data-info > summary::-webkit-details-marker { display: none; }
+.data-info > summary .h2 { margin: 0; flex: 1; }
+.data-caret { width: 22px; height: 22px; flex: none; color: var(--ink-soft); transition: transform 0.15s ease; }
+.data-info[open] .data-caret { transform: rotate(180deg); }
+.data-info[open] > summary { margin-bottom: 4px; }
 .small-prose { font-size: 0.93rem; margin-top: 10px; }
 .small-prose p { margin: 0 0 8px; }
 .small-prose ul { margin: 0 0 10px; padding-left: 20px; }
@@ -78,6 +101,9 @@
   .tile-wide .tile-glyph { width: 56px; height: 56px; font-size: 1.9rem; }
   .tile-name { font-size: 1.05rem; }
   .tile-desc { font-size: 0.8rem; }
+  .tile:not(.tile-wide) { column-gap: 10px; }
+  .tile:not(.tile-wide) .tile-glyph { width: 40px; height: 40px; font-size: 1.35rem; border-radius: 12px; }
+  .tile:not(.tile-wide) .tile-name { font-size: 1rem; hyphens: auto; }
 }
 
 .tile { -webkit-tap-highlight-color: transparent; }

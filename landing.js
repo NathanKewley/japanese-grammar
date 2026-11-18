@@ -194,9 +194,17 @@ async function fillGlance() {
 
 // ---------- Today's plan ----------
 
+/**
+ * Switched off: the card felt like clutter. While it's off no plan is made,
+ * so the apps don't offer "Next in today's plan" either. Set to true to bring
+ * both back.
+ */
+const SHOW_TODAY = false;
+
 /** Today's plan: reviews due, then one new lesson, each a link into its app. */
 function fillToday(apps) {
   const section = document.getElementById('today');
+  if (!SHOW_TODAY) { section.hidden = true; return; }
   const activity = {};
   const summaries = {};
   for (const id of APPS) {

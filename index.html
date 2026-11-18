@@ -48,7 +48,7 @@
         <span class="tile-stat" data-stat="library"></span>
       </span>
     </a>
-    <a class="tile tile-wide" href="grammar-course/index.html" style="--tile:var(--app-grammar)">
+    <a class="tile" href="grammar-course/index.html" style="--tile:var(--app-grammar)">
       <span class="tile-glyph" lang="ja">習</span>
       <span class="tile-body">
         <span class="tile-name">Grammar course</span>
@@ -56,7 +56,7 @@
         <span class="tile-stat" data-stat="grammar"></span>
       </span>
     </a>
-    <a class="tile tile-wide" href="vocab/index.html" style="--tile:var(--app-vocab)">
+    <a class="tile" href="vocab/index.html" style="--tile:var(--app-vocab)">
       <span class="tile-glyph" lang="ja">語</span>
       <span class="tile-body">
         <span class="tile-name">Vocabulary</span>
@@ -110,8 +110,11 @@
     <div id="activityChart"></div>
   </section>
 
-  <section class="card data-info" aria-labelledby="dataTitle">
-    <h2 class="h2" id="dataTitle">Where your progress is kept</h2>
+  <details class="card data-info">
+    <summary>
+      <h2 class="h2">Where your progress is kept</h2>
+      <svg class="data-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+    </summary>
     <div class="prose small-prose">
       <p>There are no accounts and no server. Everything you do here is saved <strong>only in this browser, on this device</strong>:</p>
       <ul>
@@ -134,7 +137,7 @@
       <button class="btn outline block" id="restoreAll" type="button">Restore from a backup</button>
     </div>
     <p class="tiny" id="storageLine" style="margin-top:10px"></p>
-  </section>
+  </details>
 </main>
 
 <footer class="hub-wrap hub-foot small">
