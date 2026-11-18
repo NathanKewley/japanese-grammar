@@ -54,7 +54,7 @@ const DEFAULT_TEXT = {
   sectionPassed: 'Section passed',
   sectionNotPassed: 'Section not passed',
   nextLesson: (l) => `Continue to Lesson ${l.number}: ${l.title}`,
-  backToSection: 'Back to the section',
+  backToLessons: 'Back to the lessons',
   rereadSection: 'Reread the section',
   missedTitle: (n) => `Items you got wrong (${n})`,
   missedNote: 'Tap an item name to see its details.',
@@ -511,7 +511,11 @@ function quizSummary(app, ui, { engine, part, section, passed, alreadyPassed, is
     ${passed === false ? html`<button class="btn block" ${ui.onClick(onTryAgain)}>Try again</button>` : ''}
     ${isExtra ? html`<button class="btn block" ${ui.onClick(onTryAgain)}>Do another extra review</button>` : ''}
     ${passed === true && next ? html`<button class="btn block" ${ui.onClick(() => ui.backThenReplace(path('section', next.id)))}>${nextLabel()}</button>` : ''}
-    <button class="btn outline block" ${ui.onClick(() => ui.back())}>${section ? (passed === false ? text.rereadSection : text.backToSection) : 'Done'}</button>
+    ${section && passed === false
+      ? html`<button class="btn outline block" ${ui.onClick(() => ui.back())}>${text.rereadSection}</button>`
+      : section
+        ? html`<button class="btn outline block" ${ui.onClick(() => ui.home())}>${text.backToLessons}</button>`
+        : html`<button class="btn outline block" ${ui.onClick(() => ui.back())}>Done</button>`}
   </div>`;
 
   const bySkill = new Map();

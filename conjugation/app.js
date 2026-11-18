@@ -1,4 +1,4 @@
-// Vibe Conjugation: word types and every form from N5 to N1, typed and checked.
+// Conjugation: word types and every form from N5 to N1, typed and checked.
 
 import { html, raw, icon, richText, plural, toast, furigana, segText } from '../shared/srs/dom.js';
 import { Store } from '../shared/srs/store.js';
@@ -753,7 +753,7 @@ boot(document.getElementById('app'), async () => {
   ]);
   const course = buildCourse(content, examples);
   const model = new ConjugationModel(store, course, {
-    appName: 'Vibe Conjugation',
+    appName: 'Conjugation',
     backupApp: 'vibe_web_conjugation',
     passMark: 0.8,
     noPartId: 'drill',
@@ -769,7 +769,7 @@ boot(document.getElementById('app'), async () => {
   model.load();
   return createSrsApp({
     id: 'conjugation',
-    title: 'Vibe Conjugation',
+    title: 'Conjugation',
     model,
     summaryNoun: 'lessons',
     backupFile: 'vibe-conjugation-backup',

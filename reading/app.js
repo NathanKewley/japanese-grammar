@@ -1,4 +1,4 @@
-// Vibe Reading: 132 graded readings from N5 messages to N1 literature, with
+// Reading: 132 graded readings from N5 messages to N1 literature, with
 // tappable words, comprehension questions and re-reading reviews.
 
 import { html, icon, plural } from '../shared/srs/dom.js';
@@ -114,7 +114,9 @@ class ReadingModel extends SrsModel {
 
   /** Characters in the readings passed so far. */
   get charactersRead() {
-    return this.course.lessons.filter((l) => this.lessonComplete(l)).reduce((n, l) => n + l.reading.characters, 0);
+    // Not readings skipped by the placement test.
+    const read = this.achievementView();
+    return this.course.lessons.filter((l) => read.lessonComplete(l)).reduce((n, l) => n + l.reading.characters, 0);
   }
 
   /**
@@ -363,7 +365,7 @@ boot(document.getElementById('app'), async () => {
   ]);
   const course = buildCourse(content);
   const model = new ReadingModel(store, course, {
-    appName: 'Vibe Reading',
+    appName: 'Reading',
     backupApp: 'vibe_web_reading',
     passMark: 0.8,
     noPartId: 'practice',
@@ -373,7 +375,7 @@ boot(document.getElementById('app'), async () => {
   model.load();
   const app = createSrsApp({
     id: 'reading',
-    title: 'Vibe Reading',
+    title: 'Reading',
     model,
     summaryNoun: 'readings',
     backupFile: 'vibe-reading-backup',
@@ -410,7 +412,7 @@ boot(document.getElementById('app'), async () => {
       sectionPassed: 'Reading passed',
       sectionNotPassed: 'Not passed yet',
       nextLesson: (l) => `Continue to the next reading: ${l.number}, ${l.title}`,
-      backToSection: 'Back to the passage',
+      backToLessons: 'Back to the readings',
       rereadSection: 'Read the passage again',
       missedTitle: (n) => `Questions you got wrong (${n})`,
       missedNote: 'Tap a question to see its answer and history.',

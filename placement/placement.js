@@ -128,7 +128,7 @@ const SECTIONS = [
 
 /** The courses each section places, in the order the results show them. */
 const COURSES = [
-  { id: 'grammar', name: 'Grammar course', from: 'grammar' },
+  { id: 'grammar', name: 'Grammar', from: 'grammar' },
   { id: 'conjugation', name: 'Conjugation', from: 'grammar', note: 'Follows your grammar level.' },
   { id: 'vocab', name: 'Vocabulary', from: 'vocab' },
   { id: 'reading', name: 'Reading', from: 'vocab', note: 'Follows your vocabulary level.' },

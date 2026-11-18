@@ -28,7 +28,7 @@ function dayNumber(t) {
 export class SrsModel {
   /**
    * config: {
-   *   appName,       e.g. 'Vibe Writing'
+   *   appName,       e.g. 'Writing'
    *   backupApp,     the id written into backup files
    *   passMark,      share right first time needed to pass a section
    *   statsOptions,  passed to StudyStats

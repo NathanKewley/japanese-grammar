@@ -734,6 +734,36 @@ def placement_not_offered_to_existing_learners(c):
 
 
 @test
+def lesson_end_returns_to_the_lessons(c):
+    # Two lessons in a row, then back: home, not the lesson before.
+    open_app(c, 'grammar-course/index.html')
+    c.click('.view a.card', 1)
+    c.click('Start the quiz', 1)
+    answer_all(c)
+    c.click('Continue to Lesson 2', 1.2)
+    check(c.js("location.hash") == '#/section/g2', 'the next button should open the next lesson: ' + c.js("location.hash"))
+    c.click('Start the quiz', 1)
+    answer_all(c)
+    c.click('Back to the lessons', 1.2)
+    check(c.js("location.hash") in ('', '#/'), 'back should go to the app home, not ' + c.js("location.hash"))
+    check(c.js("vibeApp.ui.stack.length") == 1, f'the in-app history should be unwound: {c.js("vibeApp.ui.stack")}')
+
+    # Opened straight into a lesson, it still ends at home.
+    c.go('about:blank', 0.3)
+    open_app(c, 'grammar-course/index.html#/section/g3')
+    c.click('Start the quiz', 1)
+    answer_all(c)
+    c.click('Back to the lessons', 1.5)
+    check(c.js("location.hash") == '#/' and 'Your progress' in view(c), 'a lesson opened directly should also end at home: ' + c.js("location.hash"))
+    check([t.strip() for t in c.js("[...document.querySelectorAll('.appbar-title')].map((e) => e.textContent)")] == ['Grammar'], 'the app should be called just Grammar')
+
+    open_app(c, 'index.html', 2.5)
+    names = c.js("[...document.querySelectorAll('nav.tiles .tile-name')].map((e) => e.textContent)")
+    check(names == ['Grammar Library', 'Vocabulary', 'Writing', 'Grammar', 'Conjugation', 'Reading', 'Listening'], f'tile order: {names}')
+    no_errors(c)
+
+
+@test
 def app_backup_round_trip(c):
     open_app(c, 'writing/index.html#/section/l1.kana')
     c.click('Write from memory')
@@ -747,7 +777,7 @@ def app_backup_round_trip(c):
     c.sleep(0.5)
     check(c.js("vibeApp.model.totalPassed") == 1, 'restore should bring progress back')
     bad = c.js("(() => { try { vibeApp.model.readBackup('{\"app\":\"vibe_web_reading\"}'); return 'accepted'; } catch (e) { return e.message; } })()")
-    check("isn't a Vibe Writing backup" in bad, 'another app\'s backup should be refused')
+    check("isn't a Writing backup" in bad, 'another app\'s backup should be refused')
     no_errors(c)
 
 

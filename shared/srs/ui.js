@@ -3,6 +3,8 @@
 
 import { html, raw, icon, esc, initTheme, toggleTheme, currentTheme, toast } from './dom.js';
 
+const isHome = (hash) => hash === '#/' || hash === '#/today';
+
 export class Ui {
   constructor(app) {
     this.app = app;
@@ -79,6 +81,24 @@ export class Ui {
     } else this.replace(hash);
   }
 
+  /**
+   * Back to the app's home screen, unwinding the in-app history so Back from
+   * there leaves the app rather than revisiting the lessons on the way.
+   */
+  home() {
+    const n = this.stack.length;
+    if (n <= 1) { this.replace('#/'); return; }
+    if (!isHome(this.stack[0])) {
+      // Opened deep in the app: unwind to the first screen, then swap it for home.
+      const onPop = () => {
+        window.removeEventListener('hashchange', onPop);
+        setTimeout(() => this.replace('#/'), 0);
+      };
+      window.addEventListener('hashchange', onPop);
+    }
+    history.go(-(n - 1));
+  }
+
   /** Opens a quiz built from [config] (an extra review or a daily task). */
   startQuiz(config) {
     const n = ++this.quizCounter;
@@ -90,8 +110,10 @@ export class Ui {
     const hash = location.hash || '#/';
     if (!force && hash === this.hash && this.screen) return;
     // Track the in-app back stack, so Back can leave the app only from its first screen.
-    if (this.stack[this.stack.length - 2] === hash) this.stack.pop();
-    else if (this.stack[this.stack.length - 1] !== hash) this.stack.push(hash);
+    // Going back several screens at once (home) lands on an earlier entry.
+    const earlier = this.stack.lastIndexOf(hash);
+    if (earlier >= 0) this.stack.length = earlier + 1;
+    else this.stack.push(hash);
     if (this.screen && this.screen.onLeave) this.screen.onLeave();
     this.hash = hash;
     const [path, query] = hash.slice(2).split('?');

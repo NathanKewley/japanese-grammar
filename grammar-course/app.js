@@ -1,4 +1,4 @@
-// Vibe Grammar: every grammar point in the Grammar Library, N5 to N1, a few
+// Grammar: every grammar point in the Grammar Library, N5 to N1, a few
 // at a time, with spaced reviews. The points, examples and question-building
 // come from the library itself (grammar-data.js and grammar-core.js, loaded
 // before this file), so the course and the library always agree.
@@ -344,7 +344,7 @@ boot(document.getElementById('app'), async () => {
   const store = await Store.open('vibe-grammar');
   const course = buildCourse();
   const model = new GrammarModel(store, course, {
-    appName: 'Vibe Grammar',
+    appName: 'Grammar',
     backupApp: 'vibe_web_grammar',
     passMark: 0.8,
     noPartId: 'practice',
@@ -353,7 +353,7 @@ boot(document.getElementById('app'), async () => {
   await model.addSentenceCards();
   const app = createSrsApp({
     id: 'grammar',
-    title: 'Vibe Grammar',
+    title: 'Grammar',
     model,
     summaryNoun: 'lessons',
     backupFile: 'vibe-grammar-backup',

@@ -1,4 +1,4 @@
-// Vibe Listening: 132 voiced tracks with JLPT-style questions and dictation.
+// Listening: 132 voiced tracks with JLPT-style questions and dictation.
 
 import { html, icon, plural } from '../shared/srs/dom.js';
 import { Store } from '../shared/srs/store.js';
@@ -628,7 +628,7 @@ boot(document.getElementById('app'), async () => {
   ]);
   const course = buildCourse(content);
   const model = new ListeningModel(store, course, {
-    appName: 'Vibe Listening',
+    appName: 'Listening',
     backupApp: 'vibe_web_listening',
     passMark: 0.8,
     noPartId: 'practice',
@@ -638,7 +638,7 @@ boot(document.getElementById('app'), async () => {
   model.load();
   const app = createSrsApp({
     id: 'listening',
-    title: 'Vibe Listening',
+    title: 'Listening',
     model,
     summaryNoun: 'tracks',
     backupFile: 'vibe-listening-backup',
@@ -647,6 +647,7 @@ boot(document.getElementById('app'), async () => {
       sectionQuizStart: (n, s) => (s.kind === 'dictation' ? `Start dictation (${plural(n, 'line')})` : `Start listening (${n} questions)`),
       sectionQuizResume: (done, n) => `Resume (${done} of ${n} done)`,
       sectionQuizAgain: (s) => (s.kind === 'dictation' ? 'Write them again' : 'Answer the questions again'),
+      backToLessons: 'Back to the tracks',
       itemTimesNote: 'Time to first answer. Red means it was missed first time. Dictation takes longer than picking an option.',
       practiceTitle: 'Outside listening log',
       practiceChart: 'Minutes of outside listening',

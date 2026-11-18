@@ -36,7 +36,7 @@ export class Dictionary {
 
   entry(i) { return i >= 0 ? this.entries[i] : null; }
 
-  /** Whether [c] is a kanji not learned by Vibe Writing lesson [lesson]. */
+  /** Whether [c] is a kanji not learned by Writing lesson [lesson]. */
   isUnlearned(c, lesson) {
     if (!isKanji(c) || c === '々') return false;
     const info = this.kanji[c];
@@ -297,7 +297,7 @@ function renderWord(key, si, wi, w, dict, lesson, all) {
 /**
  * A passage. sentences: [{t, w: [{s, e, f}]}] (s = [text, reading] pairs, e =
  * entry index, f = form label); paragraphs: sentence counts per paragraph.
- * lesson: the Vibe Writing lesson whose kanji count as learned.
+ * lesson: the Writing lesson whose kanji count as learned.
  * opts: { ui, scale, slow, setSlow, setScale, toolbar, hooks, lineMarks }
  */
 export function renderPassage(key, { sentences, paragraphs, dict, lesson, ui, scale = 1, slow = false, setSlow, setScale, toolbar = true, toolbarExtra = '', hooks = {}, sentenceExtra, paragraphClass = '' }) {

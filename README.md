@@ -6,7 +6,7 @@ GitHub Pages with no build step and no server.
 | App | Folder | What it does |
 | --- | --- | --- |
 | Grammar | `grammar/` | The JLPT grammar library: every pattern, with examples and quizzes. |
-| Grammar course | `grammar-course/` | The library's 485 grammar points, five a lesson, with fill-in-the-blank and sentence-building reviews. |
+| Grammar | `grammar-course/` | The library's 485 grammar points, five a lesson, with fill-in-the-blank and sentence-building reviews. |
 | Vocabulary | `vocab/` | The 5,111 words of the readings and tracks, each lesson just before its passages. |
 | Writing | `writing/` | Kana and 2,195 kanji, written by hand on paper, with stroke order. |
 | Conjugation | `conjugation/` | Word types and every form, typed and checked. |

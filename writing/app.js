@@ -1,4 +1,4 @@
-// Vibe Writing: kana and kanji handwriting on paper, with self-marked quizzes.
+// Writing: kana and kanji handwriting on paper, with self-marked quizzes.
 
 import { html, raw, icon, richText, plural, toast } from '../shared/srs/dom.js';
 import { Store } from '../shared/srs/store.js';
@@ -496,7 +496,7 @@ boot(document.getElementById('app'), async () => {
   STROKES = strokes;
   const course = buildCourse(content);
   const model = new WritingModel(store, course, {
-    appName: 'Vibe Writing',
+    appName: 'Writing',
     backupApp: 'vibe_web_writing',
     passMark: 0.0, // Handwriting is self-marked, so a section passes once every item is ticked.
     noPartId: 'writing',
@@ -505,7 +505,7 @@ boot(document.getElementById('app'), async () => {
   model.load();
   return createSrsApp({
     id: 'writing',
-    title: 'Vibe Writing',
+    title: 'Writing',
     model,
     summaryNoun: 'lessons',
     backupFile: 'vibe-writing-backup',

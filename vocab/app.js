@@ -1,4 +1,4 @@
-// Vibe Vocabulary: the words of each reading and track, learned just before
+// Vocabulary: the words of each reading and track, learned just before
 // you meet them. Built from the Reading and Listening content by
 // tools/build-vocab.py.
 
@@ -499,7 +499,7 @@ boot(document.getElementById('app'), async () => {
   ]);
   const course = buildCourse(content);
   const model = new VocabModel(store, course, {
-    appName: 'Vibe Vocabulary',
+    appName: 'Vocabulary',
     backupApp: 'vibe_web_vocab',
     passMark: 0.8,
     noPartId: 'practice',
@@ -507,7 +507,7 @@ boot(document.getElementById('app'), async () => {
   model.load();
   const app = createSrsApp({
     id: 'vocab',
-    title: 'Vibe Vocabulary',
+    title: 'Vocabulary',
     model,
     summaryNoun: 'lessons',
     backupFile: 'vibe-vocab-backup',

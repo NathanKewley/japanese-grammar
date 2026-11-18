@@ -31,7 +31,7 @@
     <h1 class="hub-title">Nath's 日本語 Tools</h1>
     <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode"></button>
   </header>
-  <p class="hub-sub">A grammar library and six spaced-repetition courses, from N5 to N1.</p>
+  <p class="hub-sub">Personal tools for Japanese study, based on spaced repetition.</p>
 
   <div id="backupReminder" class="backup-reminder" role="status" hidden></div>
 
@@ -44,14 +44,6 @@
         <span class="tile-name">Grammar Library</span>
         <span class="tile-desc">JLPT grammar library: every pattern from N5 to N1, with examples and quizzes.</span>
         <span class="tile-stat" data-stat="library"></span>
-      </span>
-    </a>
-    <a class="tile" href="grammar-course/index.html" style="--tile:var(--app-grammar)">
-      <span class="tile-glyph" lang="ja">習</span>
-      <span class="tile-body">
-        <span class="tile-name">Grammar course</span>
-        <span class="tile-desc">Every grammar point in the library, a few at a time, with reviews.</span>
-        <span class="tile-stat" data-stat="grammar"></span>
       </span>
     </a>
     <a class="tile" href="vocab/index.html" style="--tile:var(--app-vocab)">
@@ -68,6 +60,14 @@
         <span class="tile-name">Writing</span>
         <span class="tile-desc">Kana and 2,195 kanji, written by hand on paper.</span>
         <span class="tile-stat" data-stat="writing"></span>
+      </span>
+    </a>
+    <a class="tile" href="grammar-course/index.html" style="--tile:var(--app-grammar)">
+      <span class="tile-glyph" lang="ja">習</span>
+      <span class="tile-body">
+        <span class="tile-name">Grammar</span>
+        <span class="tile-desc">Every grammar point in the library, a few at a time, with reviews.</span>
+        <span class="tile-stat" data-stat="grammar"></span>
       </span>
     </a>
     <a class="tile" href="conjugation/index.html" style="--tile:var(--app-conjugation)">
@@ -112,7 +112,7 @@
 
   <details class="card data-info">
     <summary>
-      <h2 class="h2">Where your progress is kept</h2>
+      <h2 class="h2">How your data is stored (Backup/Restore)</h2>
       <svg class="data-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
     </summary>
     <div class="prose small-prose">
@@ -154,7 +154,7 @@
         <img class="tile-glyph tile-img" src="assets/icons/kotatsu-redo-ocr.png" alt="" width="56" height="56">
         <span class="tile-body">
           <span class="tile-name">Kotatsu-Redo-OCR</span>
-          <span class="tile-desc">Kotatsu-Redo for learners: a sidebar pulls the Japanese off each manga page into words to look up and save to renshuu.</span>
+          <span class="tile-desc">A fork of the Kotatsu-Redo manga reader that adds OCR: a sidebar pulls the Japanese off each page into words to look up and save to renshuu.</span>
           <span class="tile-stat">Android app · on GitHub ↗</span>
         </span>
       </a>

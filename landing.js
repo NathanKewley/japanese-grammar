@@ -21,7 +21,7 @@ toggle.addEventListener('click', () => { toggleTheme(); paintToggle(); });
 
 // ---------- At a glance ----------
 
-const NAMES = { grammar: 'Grammar course', vocab: 'Vocabulary', writing: 'Writing', conjugation: 'Conjugation', reading: 'Reading', listening: 'Listening' };
+const NAMES = { grammar: 'Grammar', vocab: 'Vocabulary', writing: 'Writing', conjugation: 'Conjugation', reading: 'Reading', listening: 'Listening' };
 
 async function knownDatabases() {
   if (!indexedDB.databases) return null;
