@@ -5,7 +5,7 @@ import { Store } from '../shared/srs/store.js';
 import { Course } from '../shared/srs/course.js';
 import { SrsModel, SectionStatus, count, answersWhere } from '../shared/srs/model.js';
 import { statGrid, barRow } from '../shared/srs/ui.js';
-import { createSrsApp, boot, path, offerUnlock } from '../shared/srs/screens.js';
+import { createSrsApp, boot, path, offerUnlock, knownToggle } from '../shared/srs/screens.js';
 import { seeded } from '../shared/srs/quiz-engine.js';
 import { normaliseTyped, hasRomaji, toHiragana } from '../shared/srs/romaji.js';
 import { speak, stopSpeaking } from '../shared/srs/passage.js';
@@ -478,7 +478,7 @@ class ConjugationModel extends SrsModel {
 
 // ---------- Lesson content ----------
 
-function renderBlock(block, ui) {
+function renderBlock(block, ui, app) {
   switch (block.type) {
     case 'text':
       return html`<p class="prose" lang="ja">${richText(block.text)}</p>`;
@@ -493,7 +493,8 @@ function renderBlock(block, ui) {
           ${block.words.filter((w) => block.forms.some((f) => w.forms[f.key])).map((w) => html`<div class="card">
             <div class="row" style="flex-wrap:wrap;align-items:flex-end;gap:4px 10px">
               <span class="ja-m" style="font-size:1.3rem">${furigana(w.segments)}</span>
-              <span class="small">${w.meaning} · ${w.kindLabel}</span>
+              <span class="small grow">${w.meaning} · ${w.kindLabel}</span>
+              ${knownToggle(app, ui, block.forms.map((f) => `conj:${w.surface}:${f.key}`).filter((id) => app.model.course.sectionCard(id)))}
             </div>
             <div style="margin-top:6px">
               ${block.forms.filter((f) => w.forms[f.key]).map((f) => html`<div class="${stacked ? '' : 'row'}" style="padding-top:6px;align-items:flex-end">

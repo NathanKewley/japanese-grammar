@@ -7,6 +7,7 @@ import { QuizEngine, seeded, shuffled } from './quiz-engine.js';
 import { buildFocusAreas, buildInsights } from './focus.js';
 import { deleteDatabase } from './store.js';
 import { Learner } from '../learner.js';
+import { updatePlanFromApp, nextStep, stepHref } from '../today.js';
 import { startOfDay } from './stats.js';
 
 export const EXTRA_REVIEW_SIZE = 20;
@@ -267,22 +268,43 @@ function sectionScreen(app, section) {
       const passed = model.statusOf(section) === SectionStatus.passed;
       const key = SrsModel.sectionQuizKey(section);
       const saved = model.savedQuiz(key);
-      const n = section.cards.length;
+      const n = model.quizCards(section).length;
+      const marked = section.cards.length - n;
       const quizHash = path('quiz', 'section', section.id);
       const tx = (t, ...args) => (typeof t === 'function' ? t(...args) : t);
       return html`<div class="stack-lg">
         ${app.spec.renderSectionBody ? '' : html`<h1 class="h1" lang="ja">${section.title}</h1>`}
         ${model.statusOf(section) === SectionStatus.locked ? html`<div class="notice">This section is still locked. You can read it, and unlock it early to take its quiz.</div>` : ''}
         ${app.spec.renderSectionBody ? app.spec.renderSectionBody(section, ui, app) : section.blocks.map((b) => app.spec.renderBlock(b, ui, app))}
-        ${n > 0 ? html`<div class="stack" style="position:sticky;bottom:0;padding:12px 0;background:linear-gradient(transparent,var(--bg) 30%)">
+        ${section.cards.length > 0 && (n > 0 || !passed) ? html`<div class="stack" style="position:sticky;bottom:0;padding:12px 0;background:linear-gradient(transparent,var(--bg) 30%)">
           ${model.statusOf(section) === SectionStatus.locked
             ? html`<button class="btn block" ${ui.onClick(() => offerUnlock(app, section))}>Unlock early</button>`
-            : html`<a class="btn block" href="${quizHash}">${saved ? text.sectionQuizResume(model.savedQuizAnswered(saved), n, section) : passed ? tx(text.sectionQuizAgain, section) : text.sectionQuizStart(n, section)}</a>`}
+            : n === 0
+              ? html`<button class="btn block" ${ui.onClick(async () => {
+                await model.passSection(model.course.partOf(section), section, new Map());
+                updatePlanFromApp(app.spec.id, { reviewsLeft: model.allReviewQueue.length, sectionsDone: model.totalPassed });
+              })}>Mark this part as done</button>`
+              : html`<a class="btn block" href="${quizHash}">${saved ? text.sectionQuizResume(model.savedQuizAnswered(saved), n, section) : passed ? tx(text.sectionQuizAgain, section) : text.sectionQuizStart(n, section)}</a>`}
           ${saved ? html`<button class="btn text" ${ui.onClick(async () => { await model.clearQuizProgress(key); ui.go(quizHash); })}>Start again</button>` : ''}
+          ${marked ? html`<p class="small" style="text-align:center;margin:0">${plural(marked, 'item')} marked as already known${n ? ', so the quiz skips them' : ''}.</p>` : ''}
         </div>` : ''}
       </div>`;
     },
   };
+}
+
+/**
+ * "I already know this" for one item in a lesson, made of [cardIds]. Marked
+ * items skip the lesson quiz and join the reviews as known (see markKnown).
+ * Shows nothing once the item is being studied, or if it has no review deck.
+ */
+export function knownToggle(app, ui, cardIds) {
+  const model = app.model;
+  if (!model.canMarkKnown(cardIds)) return '';
+  const on = cardIds.every((id) => model.isMarkedKnown(id));
+  return html`<button class="chip known-toggle ${on ? 'on' : ''}" type="button" aria-pressed="${on}"
+    title="${on ? 'Undo: learn it in the quiz after all' : 'Skip it in the quiz and check it in a month'}"
+    ${ui.onClick(() => (on ? model.unmarkKnown(cardIds) : model.markKnown(cardIds)))}>${on ? html`${icon('check')} Known` : 'I already know this'}</button>`;
 }
 
 export async function offerUnlock(app, section) {
@@ -327,7 +349,7 @@ function quizScreen(app, config) {
       const cards = isExtra
         ? config.cards()
         : section
-          ? section.cards
+          ? model.quizCards(section)
           : (config.kind === 'reviewAll' ? model.allReviewQueue : model.reviewQueue(part)).map((id) => model.course.cardById(id));
       st.engine = new QuizEngine(cards);
       st.session = model.startSession({ kind: isReview ? 'review' : st.alreadyPassed || isExtra ? 'practice' : 'section', part, section });
@@ -411,6 +433,8 @@ function quizScreen(app, config) {
     }
     await model.finishSession(st.session, { itemCount: engine.total, firstTryCorrect: engine.firstTryCorrect, passed });
     st.passed = passed;
+    // Today's plan, with this app's steps ticked off if they're now done.
+    st.plan = updatePlanFromApp(spec.id, { reviewsLeft: model.allReviewQueue.length, sectionsDone: model.totalPassed });
     st.finished = true;
     st.finishing = false;
     const stats = model.loadStudyStats();
@@ -432,7 +456,7 @@ function quizScreen(app, config) {
     render(ui) {
       if (!st.engine) begin();
       const engine = st.engine;
-      if (st.finished) return quizSummary(app, ui, { engine, part, section, passed: st.passed, alreadyPassed: st.alreadyPassed, isExtra, isReview, onTryAgain: () => { begin(false); ui.render(); } });
+      if (st.finished) return quizSummary(app, ui, { engine, part, section, passed: st.passed, alreadyPassed: st.alreadyPassed, isExtra, isReview, plan: st.plan, onTryAgain: () => { begin(false); ui.render(); } });
       if (engine.total === 0) return html`<div class="notice" style="margin-top:20px">Nothing to review right now.</div><div style="margin-top:12px"><button class="btn outline" ${ui.onClick(() => ui.back())}>Back</button></div>`;
       if (engine.isFinished || st.finishing) return html`<div class="spinner"></div>`;
       const done = (engine.total - engine.remaining) / engine.total;
@@ -455,7 +479,15 @@ export function celebrate(fresh) {
   toast(fresh.length === 1 ? `🏆 Achievement unlocked: ${fresh[0].title}` : `🏆 ${fresh.length} achievements unlocked: ${fresh.map((a) => a.title).join(', ')}`, 5000);
 }
 
-function quizSummary(app, ui, { engine, part, section, passed, alreadyPassed, isExtra, isReview, onTryAgain }) {
+/** The way on to the next step of today's plan, or a note that it's all done. */
+function planButton(app, plan) {
+  if (!plan || !plan.steps.length) return '';
+  const step = nextStep(plan);
+  if (!step) return html`<a class="btn tonal block" href="../index.html">${icon('checkCircle')} Today's plan is done</a>`;
+  return html`<a class="btn tonal block" href="${stepHref(step, app.spec.id)}">Next in today's plan: ${step.label}</a>`;
+}
+
+function quizSummary(app, ui, { engine, part, section, passed, alreadyPassed, isExtra, isReview, plan, onTryAgain }) {
   const model = app.model;
   const text = app.text;
   const next = section ? model.course.sectionAfter(section) : null;
@@ -488,6 +520,7 @@ function quizSummary(app, ui, { engine, part, section, passed, alreadyPassed, is
     ${passed === false ? html`<button class="btn block" ${ui.onClick(onTryAgain)}>Try again</button>` : ''}
     ${isExtra ? html`<button class="btn block" ${ui.onClick(onTryAgain)}>Do another extra review</button>` : ''}
     ${passed === true && next ? html`<button class="btn block" ${ui.onClick(() => ui.backThenReplace(path('section', next.id)))}>${nextLabel()}</button>` : ''}
+    ${planButton(app, plan)}
     <button class="btn outline block" ${ui.onClick(() => ui.back())}>${section ? (passed === false ? text.rereadSection : text.backToSection) : 'Done'}</button>
   </div>`;
 
@@ -1069,6 +1102,13 @@ export function createSrsApp(spec) {
         sectionsTotal: m.course.allSections.length,
         achievements: Object.keys(m.unlocked).length,
         achievementsTotal: m.achievements.length,
+        // The next lesson to study, for the landing page's plan for today.
+        next: (() => {
+          const s = m.nextSection;
+          if (!s) return null;
+          const l = m.course.lessonOf(s);
+          return { id: s.id, title: s.title, lesson: l.number, lessonTitle: l.title };
+        })(),
         updatedAt: Date.now(),
       }));
     } catch (e) { /* storage blocked */ }

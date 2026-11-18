@@ -5,7 +5,7 @@ import { Store } from '../shared/srs/store.js';
 import { Course } from '../shared/srs/course.js';
 import { SrsModel, SectionStatus, count, answersWhere } from '../shared/srs/model.js';
 import { statGrid, barRow } from '../shared/srs/ui.js';
-import { createSrsApp, boot, path, offerUnlock, progressPanel, LEVELS } from '../shared/srs/screens.js';
+import { createSrsApp, boot, path, offerUnlock, progressPanel, knownToggle, LEVELS } from '../shared/srs/screens.js';
 import { seeded } from '../shared/srs/quiz-engine.js';
 import { dayKey } from '../shared/srs/stats.js';
 import { KANA_SETS } from './kana.js';
@@ -70,7 +70,7 @@ function kanaSection(lesson, setName) {
     deckId: 'kana',
     blocks: [
       { type: 'text', text: 'Write each row in your notebook, following the stroke order. Say each sound as you write it. Watch the **order** and **direction** of each stroke, because that is what makes handwriting look natural.' },
-      ...set.rows.map((row) => ({ type: 'kana', title: row.name, kana: row.kana })),
+      ...set.rows.map((row, i) => ({ type: 'kana', title: row.name, kana: row.kana, cardId: `kana:${setName}.${i}` })),
       ...(set.words.length ? [{ type: 'text', text: `Then write these words in katakana: ${set.words.map(([k, m]) => `${k} (${m})`).join(', ')}.` }] : []),
     ],
     cards: [
@@ -316,13 +316,16 @@ function answerPanel(q, size = 76) {
 
 // ---------- Lesson content ----------
 
-function renderBlock(block) {
+function renderBlock(block, ui, app) {
   switch (block.type) {
     case 'text':
       return html`<p class="prose">${richText(block.text)}</p>`;
     case 'kana':
       return html`<div>
-        <div class="h3" style="margin-bottom:6px">${block.title}</div>
+        <div class="row" style="margin-bottom:6px;flex-wrap:wrap;gap:6px 10px">
+          <div class="h3 grow">${block.title}</div>
+          ${knownToggle(app, ui, [block.cardId])}
+        </div>
         <div class="wrap">${block.kana.map(([k, r]) => html`<div style="text-align:center">${strokeDiagram(k, 76)}<div class="small">${r}</div></div>`)}</div>
       </div>`;
     case 'kanji': {
@@ -343,7 +346,8 @@ function renderBlock(block) {
           ${block.words.map((w) => html`<div class="row" style="align-items:baseline;padding:3px 0;flex-wrap:wrap;gap:4px 10px">
             <span class="ja-m" lang="ja" style="font-size:1.3rem">${w.surface}</span>
             <span lang="ja">${w.reading}</span>
-            <span class="small">${w.meaning}</span>
+            <span class="small grow">${w.meaning}</span>
+            ${knownToggle(app, ui, [`word:${w.surface}`])}
           </div>`)}` : ''}
       </div>`;
     }

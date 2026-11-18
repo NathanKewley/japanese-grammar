@@ -458,6 +458,108 @@ def vocab_lessons_lookups_and_landing(c):
     no_errors(c)
 
 
+def quiz_size(c):
+    """The question count on the lesson screen's quiz button."""
+    import re
+    m = re.search(r'\((\d+) (?:questions|items)\)', c.text('.view'))
+    return int(m.group(1)) if m else None
+
+
+@test
+def mark_items_already_known(c):
+    # Vocabulary: one word marked, so the quiz skips its cards.
+    open_app(c, 'vocab/index.html#/section/v1.1')
+    c.js("vibeApp.model.unlockEarly(vibeApp.model.course.sectionById('v1.1'))")
+    c.sleep(0.3)
+    before = quiz_size(c)
+    c.click('I already know this', 0.4)
+    after = quiz_size(c)
+    check(before and after == before - 2, f'marking a kanji word should drop its 2 cards from the quiz: {before} -> {after}')
+    check('Known' in c.text('.known-toggle.on'), 'the button should show the word as known')
+    first = c.js("vibeApp.model.course.sectionById('v1.1').cards[0].id")
+    item = c.js("vibeApp.model.course.sectionById('v1.1').cards[0].learn[0].id")
+    check(learner_status(c, item)['status'] == 'known', 'a marked word should count as known')
+
+    # It lasts, and can be undone.
+    open_app(c, 'vocab/index.html#/section/v1.1', 1.5)
+    check(quiz_size(c) == after and c.js("document.querySelectorAll('.known-toggle.on').length") == 1, 'the mark should survive a reload')
+    c.click('.known-toggle.on', 0.4)
+    check(quiz_size(c) == before, 'undoing should put the cards back in the quiz')
+
+    # Every word in a part marked: the part can be finished without a quiz.
+    open_app(c, 'vocab/index.html#/section/v1.2', 1.5)
+    c.js("vibeApp.model.unlockEarly(vibeApp.model.course.sectionById('v1.2'))")
+    c.sleep(0.3)
+    c.js("document.querySelectorAll('.known-toggle').forEach((b) => b.click())")
+    c.sleep(0.5)
+    c.click('Mark this part as done', 0.5)
+    check(c.js("vibeApp.model.passed.has('v1.2')"), 'marking every word known should let the part be finished')
+
+    # The first review clears the mark, and the button goes.
+    open_app(c, 'vocab/index.html#/section/v1.1', 1.5)
+    c.click('I already know this', 0.4)
+    c.js(f"vibeApp.model.recordReview({json.dumps(first)}, {{ correct: true }})")
+    c.sleep(0.4)
+    check(not c.js(f"vibeApp.model.isMarkedKnown({json.dumps(first)})"), 'a review should clear the mark')
+
+    # Writing: a kana row.
+    open_app(c, 'writing/index.html#/section/l1.kana')
+    before = quiz_size(c)
+    c.click('I already know this', 0.4)
+    check(quiz_size(c) == before - 1, 'a marked kana row should leave the quiz')
+
+    # Conjugation: a word in a lesson table.
+    open_app(c, 'conjugation/index.html#/section/l2.learn')
+    c.js("vibeApp.model.unlockEarly(vibeApp.model.course.sectionById('l2.learn'))")
+    c.sleep(0.3)
+    before = quiz_size(c)
+    c.click('I already know this', 0.4)
+    check(quiz_size(c) == before - 2, 'a marked word should take both its forms out of the quiz')
+    c.click('a.btn.block', 1)
+    check(c.js("vibeApp.ui.screen.state.engine.total") == before - 2, 'the quiz itself should skip marked cards')
+    no_errors(c)
+
+
+@test
+def todays_plan_across_apps(c):
+    # Nothing studied yet: the plan starts with Vocabulary.
+    open_app(c, 'index.html', 2.5)
+    check('Vocabulary lesson 1' in c.text('#today'), f"a new learner should start with Vocabulary, got {c.text('#today')}")
+
+    # Writing studied, with its cards due: reviews first, then the lesson.
+    open_app(c, 'writing/index.html#/section/l1.kana')
+    c.click('Write from memory')
+    answer_all(c)
+    c.js("""(() => { const m = vibeApp.model;
+      for (const x of m.cards.values()) { x.card.due = Date.now() - 1000; m.store.write([{ table: 'srs_cards', put: { card_id: x.cardId, part_id: x.partId,
+        data: JSON.stringify({ cardId: 0, state: x.card.state, step: x.card.step, stability: x.card.stability, difficulty: x.card.difficulty, due: new Date(x.card.due).toISOString(), lastReview: null }) } }]); }
+      localStorage.removeItem('vibe.today'); })()""")
+    c.sleep(0.5)
+    open_app(c, 'index.html', 2.5)
+    steps = c.js("[...document.querySelectorAll('.today-step')].map((e) => e.textContent.trim())")
+    check(len(steps) == 2 and steps[0].startswith('Review') and 'Writing' in steps[0] and 'Vocabulary lesson 1' in steps[1], f'reviews then the lesson, got {steps}')
+
+    # Finishing the reviews offers the next step, in the other app.
+    open_app(c, 'writing/index.html#/quiz/review-all', 1.5)
+    answer_all(c)
+    nxt = c.js("[...document.querySelectorAll('a.btn')].find((a) => a.textContent.includes('today')) || null")
+    check(nxt is not None, 'the review summary should offer the next step')
+    check(c.js("[...document.querySelectorAll('a.btn')].find((a) => a.textContent.includes('Next in today')).getAttribute('href')") == '../vocab/index.html', 'the next step should link to Vocabulary')
+    open_app(c, 'index.html', 2.5)
+    check('1 of 2 done' in c.text('#today'), f"the reviews should be ticked off, got {c.text('#today')}")
+
+    # The lesson, then the plan's done and another lesson is offered.
+    open_app(c, 'vocab/index.html#/section/v1.1')
+    c.click('a.btn.block', 1)
+    answer_all(c)
+    check("Today's plan is done" in view(c), 'finishing the last step should say the plan is done')
+    open_app(c, 'index.html', 2.5)
+    today = c.text('#today')
+    check('2 of 2 done' in today and 'All done for today' in today, f'everything should be ticked off, got {today}')
+    check('Another lesson: Vocabulary lesson 1' in today and 'part 2 of 3' in today, f'the next part should be offered, got {today}')
+    no_errors(c)
+
+
 @test
 def app_backup_round_trip(c):
     open_app(c, 'writing/index.html#/section/l1.kana')

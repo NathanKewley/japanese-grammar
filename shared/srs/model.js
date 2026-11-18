@@ -14,6 +14,9 @@ export const MAX_DAILY_LIMIT = 100;
 
 const DAY = 86400000;
 
+/** Days until the first check of an item marked as already known. */
+export const KNOWN_FIRST_REVIEW_DAYS = 30;
+
 function dayNumber(t) {
   const d = new Date(t);
   return Math.round(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / DAY);
@@ -234,6 +237,54 @@ export class SrsModel {
     this.passed.add(section.id);
     for (const c of added) this.cards.set(c.cardId, c);
     await this.store.savePassedSection(section.id, now, added);
+    this.notify();
+  }
+
+  // ---------- Items you already know ----------
+
+  /** Whether [cardId] was marked as already known and hasn't been reviewed since. */
+  isMarkedKnown(cardId) {
+    const c = this.cards.get(cardId);
+    return !!(c && c.markedKnown);
+  }
+
+  /** A lesson's cards still to learn: those not marked as already known. */
+  quizCards(section) { return section.cards.filter((c) => !this.isMarkedKnown(c.id)); }
+
+  /** Cards that can be marked as known: in a review deck, and not being studied already. */
+  canMarkKnown(cardIds) {
+    return cardIds.length > 0 && cardIds.every((id) => {
+      const card = this.course.cardById(id);
+      return card && this.course.partOfCard(card) && (!this.cards.has(id) || this.isMarkedKnown(id));
+    });
+  }
+
+  /**
+   * Puts [cardIds] straight into their decks as known: no lesson quiz, and a
+   * first check in a month, so a wrong guess still comes back round.
+   */
+  async markKnown(cardIds) {
+    const now = this.now();
+    const added = [];
+    for (const id of cardIds) {
+      if (this.cards.has(id)) continue;
+      const part = this.course.partOfCard(this.course.cardById(id));
+      if (!part) continue;
+      const card = this.scheduler.review(newCard(now), Rating.easy, now);
+      card.stability = Math.max(card.stability, KNOWN_FIRST_REVIEW_DAYS);
+      card.due = now + KNOWN_FIRST_REVIEW_DAYS * DAY;
+      added.push({ cardId: id, partId: part.id, card, markedKnown: now });
+    }
+    for (const c of added) this.cards.set(c.cardId, c);
+    await this.store.saveMarkedKnown(added);
+    this.notify();
+  }
+
+  /** Undoes markKnown for cards not yet reviewed. */
+  async unmarkKnown(cardIds) {
+    const ids = cardIds.filter((id) => this.isMarkedKnown(id));
+    for (const id of ids) this.cards.delete(id);
+    await this.store.deleteCards(ids);
     this.notify();
   }
 

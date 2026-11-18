@@ -289,10 +289,25 @@ export class Store {
   loadCards() {
     const out = [];
     for (const r of this.t.srs_cards.values()) {
-      try { out.push({ cardId: r.card_id, partId: r.part_id, card: cardFromMap(JSON.parse(r.data)) }); } catch (e) { /* skip damaged card */ }
+      try {
+        out.push({ cardId: r.card_id, partId: r.part_id, card: cardFromMap(JSON.parse(r.data)), markedKnown: r.marked_known ?? null });
+      } catch (e) { /* skip damaged card */ }
     }
     return out;
   }
+
+  /**
+   * Saves cards marked as already known. The mark stays on the row until the
+   * card's first review rewrites it.
+   */
+  saveMarkedKnown(cards) {
+    return this.write(cards.map((c) => ({
+      table: 'srs_cards',
+      put: { card_id: c.cardId, part_id: c.partId, data: JSON.stringify(cardToMap(c.card)), marked_known: c.markedKnown },
+    })));
+  }
+
+  deleteCards(ids) { return this.write(ids.map((id) => ({ table: 'srs_cards', del: id }))); }
 
   /** Saves a review result and its log entry as one change. */
   saveReview(stored, day, at, rating) {

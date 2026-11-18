@@ -6,7 +6,7 @@ import { html, icon, plural, toast, furigana } from '../shared/srs/dom.js';
 import { Store } from '../shared/srs/store.js';
 import { Course } from '../shared/srs/course.js';
 import { SrsModel, SectionStatus, count, answersWhere } from '../shared/srs/model.js';
-import { createSrsApp, boot, path, offerUnlock, progressPanel, LEVELS } from '../shared/srs/screens.js';
+import { createSrsApp, boot, path, offerUnlock, progressPanel, knownToggle, LEVELS } from '../shared/srs/screens.js';
 import { cardToMap, newCard } from '../shared/srs/fsrs.js';
 import { speak, stopSpeaking, posLabel } from '../shared/srs/passage.js';
 import { normaliseTyped, hasRomaji, toHiragana } from '../shared/srs/romaji.js';
@@ -172,7 +172,7 @@ class VocabModel extends SrsModel {
     const now = this.now();
     const added = [];
     for (const w of words) {
-      for (const id of w.hasKanji ? [`mean:${w.key}`, `read:${w.key}`] : [`mean:${w.key}`]) {
+      for (const id of cardIdsOf(w)) {
         if (this.cards.has(id)) continue;
         const card = this.course.cardById(id);
         const part = card && this.course.partOfCard(card);
@@ -279,6 +279,8 @@ function exampleLine(ex, ui) {
   </div>`;
 }
 
+const cardIdsOf = (word) => (word.hasKanji ? [`mean:${word.key}`, `read:${word.key}`] : [`mean:${word.key}`]);
+
 /** What the learner model says about [word] from the other apps, if anything. */
 function knownElsewhere(word) {
   return APP && APP.learner ? describeWord(APP.learner, word.item, 'vocab') : '';
@@ -294,6 +296,7 @@ function wordCard(word, ui) {
       <button class="icon-btn" type="button" style="width:34px;height:34px" title="Say it" aria-label="Say it" ${ui.onClick(() => say(hiragana(word.r)))}>${icon('speaker')}</button>
     </div>
     ${known ? html`<p class="small known-note" style="color:var(--accent);font-weight:600;margin-top:2px">${known}</p>` : ''}
+    ${APP ? html`<div style="margin-top:6px">${knownToggle(APP, ui, cardIdsOf(word))}</div>` : ''}
     <div style="margin-top:4px">${word.m.map((m, i) => html`<p style="margin:0 0 2px">${word.m.length === 1 ? m : `${i + 1}. ${m}`}</p>`)}</div>
     ${word.examples.map((ex) => exampleLine(ex, ui))}
   </div>`;

@@ -43,6 +43,19 @@ because the landing page doesn't load the course content.
 Each app's Settings tab can back up and restore that app. The landing page can
 back up and restore everything at once.
 
+### Today's plan
+
+The landing page's "Today" card is one list across the apps (`shared/today.js`):
+a review step for each app with cards due, then one new lesson. Vocabulary goes
+first until it's ahead of Reading and Listening, then whichever of those is
+further behind; Writing and Conjugation join the rotation once you use them,
+and the app studied least recently goes first. The plan is kept for the day in
+`localStorage` (`vibe.today`). When a quiz ends, the app ticks off its own steps
+and offers the next one ("Next in today's plan"), so the day runs as one flow
+across the apps. The landing page checks every step against the apps' data
+whenever it opens. To choose the lesson it uses each app's summary, which
+includes the app's next lesson.
+
 ### What you know, across the apps
 
 `shared/learner.js` keeps one shared record of what you know, in its own
@@ -60,6 +73,13 @@ their progress: each app keeps its own database and review schedule as before.
   record can't drift from the app's data, even after a restore or reset.
   Word lookups in Reading and Listening are the only data kept just here, so
   whole-site backups include this database.
+
+Lessons in Vocabulary, Writing and Conjugation let you mark an item as already
+known (`knownToggle` in `shared/srs/screens.js`). Its cards skip the lesson quiz
+and join the reviews as known, with the first check in a month
+(`SrsModel.markKnown`); the mark is kept on the card's row (`marked_known`)
+until that first review, and can be undone until then. A part whose items are
+all marked can be finished without a quiz.
 
 The landing page shows the counts under "What you know", and the word popup in
 Reading and Listening says when you're already learning a word elsewhere. Rows

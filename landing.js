@@ -5,6 +5,7 @@ import { statGrid, barChart, legend, dayLabel } from './shared/srs/ui.js';
 import { TABLES, exportDatabase, importDatabase } from './shared/srs/store.js';
 import { dayKey, startOfDay } from './shared/srs/stats.js';
 import { Learner, LEARNER_DB, exportLearner, importLearner } from './shared/learner.js';
+import { refreshPlan, nextStep, chooseLesson } from './shared/today.js';
 
 const APPS = ['vocab', 'writing', 'conjugation', 'reading', 'listening'];
 const GRAMMAR_PREFIX = 'grammarNotebook.';
@@ -128,6 +129,7 @@ async function fillGlance() {
   const apps = {};
   for (const id of APPS) apps[id] = await appActivity(id, known);
   fillKnowledge(apps, known);
+  fillToday(apps);
 
   // Each tile: course progress from the app's own summary, and cards due.
   for (const id of APPS) {
@@ -160,8 +162,6 @@ async function fillGlance() {
     for (const id of active) week += apps[id].minutesByDay[k] || 0;
   }
   const s = streak(allDays);
-  const studiedToday = allDays.has(today);
-  const dueApps = APPS.filter((id) => apps[id] && apps[id].due > 0);
   summary.innerHTML = String(html`
     ${statGrid([
       ['Day streak', `${s ? '🔥 ' : ''}${s}`],
@@ -169,11 +169,7 @@ async function fillGlance() {
       ['Answered today', answeredToday],
       ['Studied this week', fmtMinutes(week)],
     ])}
-    <div class="due-row">
-      ${dueApps.length
-        ? html`<span class="small">Review:</span>${dueApps.map((id) => html`<a class="due-chip" style="--tile:var(--app-${id})" href="${id}/index.html#/quiz/review-all">${NAMES[id]} · ${apps[id].due}</a>`)}`
-        : html`<span class="small">${studiedToday ? 'All reviews done for today. Nice work.' : 'No reviews due. A new lesson keeps the streak going.'}</span>`}
-    </div>`);
+`);
   summary.hidden = false;
   backupReminder(apps, allDays);
 
@@ -194,6 +190,40 @@ async function fillGlance() {
       ${legend(used.map((id) => [`var(--app-${id})`, NAMES[id]]))}
       ${barChart(series.map((d) => ({ ...d, segments: d.segments.map(([v, c]) => [Math.round(v), c]) })))}`);
   }
+}
+
+// ---------- Today's plan ----------
+
+/** Today's plan: reviews due, then one new lesson, each a link into its app. */
+function fillToday(apps) {
+  const section = document.getElementById('today');
+  const activity = {};
+  const summaries = {};
+  for (const id of APPS) {
+    activity[id] = apps[id] || { due: 0, learned: 0, days: new Set() };
+    summaries[id] = readSummary(id);
+  }
+  const plan = refreshPlan({ activity, summaries });
+  if (!plan.steps.length) { section.hidden = true; return; }
+  const next = nextStep(plan);
+  const done = plan.steps.filter((s) => s.done).length;
+  const lesson = plan.steps.find((s) => s.kind === 'lesson');
+  // Once the day's lesson is done, another one is a tap away.
+  const another = !next && lesson ? chooseLesson({ activity, summaries }) : null;
+  section.innerHTML = String(html`
+    <div class="today-head"><h2 class="h2 grow" id="todayTitle">Today</h2><span class="small">${done} of ${plan.steps.length} done</span></div>
+    <ol class="today-steps">
+      ${plan.steps.map((s) => html`<li><a class="today-step ${s.done ? 'done' : ''}" href="${s.href}" style="--tile:var(--app-${s.app})">
+        <span class="dot">${s.done ? icon('check') : ''}</span>
+        <span class="grow step-label">${s.label}</span>
+        <span class="chevron">${icon('chevron')}</span>
+      </a></li>`)}
+    </ol>
+    ${next
+      ? html`<a class="btn block" href="${next.href}">${done ? 'Next' : 'Start with'}: ${next.label}</a>`
+      : html`<p class="small">All done for today. Nice work.</p>
+        ${another ? html`<a class="btn tonal block today-extra" href="${another.href}">Another lesson: ${another.label}</a>` : ''}`}`);
+  section.hidden = false;
 }
 
 // ---------- What you know ----------
