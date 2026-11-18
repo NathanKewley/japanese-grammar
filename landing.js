@@ -7,7 +7,7 @@ import { dayKey, startOfDay } from './shared/srs/stats.js';
 import { Learner, LEARNER_DB, exportLearner, importLearner } from './shared/learner.js';
 import { refreshPlan, nextStep, chooseLesson } from './shared/today.js';
 
-const APPS = ['vocab', 'writing', 'conjugation', 'reading', 'listening'];
+const APPS = ['grammar', 'vocab', 'writing', 'conjugation', 'reading', 'listening'];
 const GRAMMAR_PREFIX = 'grammarNotebook.';
 const BACKUP_APP = 'vibe_web_all';
 
@@ -21,7 +21,7 @@ toggle.addEventListener('click', () => { toggleTheme(); paintToggle(); });
 
 // ---------- At a glance ----------
 
-const NAMES = { vocab: 'Vocabulary', writing: 'Writing', conjugation: 'Conjugation', reading: 'Reading', listening: 'Listening' };
+const NAMES = { grammar: 'Grammar course', vocab: 'Vocabulary', writing: 'Writing', conjugation: 'Conjugation', reading: 'Reading', listening: 'Listening' };
 
 async function knownDatabases() {
   if (!indexedDB.databases) return null;
@@ -122,7 +122,7 @@ function fmtMinutes(m) {
 async function fillGlance() {
   try {
     const saved = JSON.parse(localStorage.getItem(`${GRAMMAR_PREFIX}saved`) || '[]');
-    if (saved.length) document.querySelector('[data-stat="grammar"]').textContent = `${saved.length} saved grammar point${saved.length === 1 ? '' : 's'}`;
+    if (saved.length) document.querySelector('[data-stat="library"]').textContent = `${saved.length} saved grammar point${saved.length === 1 ? '' : 's'}`;
   } catch (e) { /* storage blocked */ }
 
   const known = await knownDatabases();
@@ -228,7 +228,7 @@ function fillToday(apps) {
 
 // ---------- What you know ----------
 
-const KINDS = [['word', 'Words'], ['kanji', 'Kanji'], ['kana', 'Kana'], ['form', 'Conjugation forms']];
+const KINDS = [['grammar', 'Grammar points'], ['word', 'Words'], ['kanji', 'Kanji'], ['kana', 'Kana'], ['form', 'Conjugation forms']];
 
 /** The learner model's counts, and a note for apps whose progress isn't in it yet. */
 async function fillKnowledge(apps, known) {
@@ -416,7 +416,7 @@ async function restoreAll() {
     return;
   }
   const names = Object.keys(backup.apps).filter((id) => APPS.includes(id));
-  const parts = [...names.map((n) => n[0].toUpperCase() + n.slice(1)), ...(Object.keys(backup.grammar || {}).length ? ['Grammar'] : [])];
+  const parts = [...names.map((n) => NAMES[n]), ...(Object.keys(backup.grammar || {}).length ? ['Grammar Library'] : [])];
   const ok = await confirmDialog(
     'Replace your progress?',
     `This backup is from ${slashDate(new Date(backup.savedAt))} and holds: ${parts.join(', ') || 'nothing'}. Restoring replaces the progress saved in this browser for those apps. Close any other tabs of this site first.`,

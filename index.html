@@ -12,7 +12,7 @@
 <meta name="theme-color" content="#FAFAFA">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Nath's 日本語 Tools</title>
-<meta name="description" content="A JLPT grammar library and five spaced-repetition study apps: vocabulary, writing, conjugation, reading and listening.">
+<meta name="description" content="A JLPT grammar library and six spaced-repetition study apps: grammar, vocabulary, writing, conjugation, reading and listening.">
 <link rel="stylesheet" href="shared/core.css">
 <link rel="stylesheet" href="landing.css">
 <script src="shared/staging.js"></script>
@@ -31,7 +31,7 @@
     <h1 class="hub-title">Nath's 日本語 Tools</h1>
     <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode"></button>
   </header>
-  <p class="hub-sub">A grammar library and five spaced-repetition courses, from N5 to N1.</p>
+  <p class="hub-sub">A grammar library and six spaced-repetition courses, from N5 to N1.</p>
 
   <div id="backupReminder" class="backup-reminder" role="status" hidden></div>
 
@@ -45,6 +45,14 @@
       <span class="tile-body">
         <span class="tile-name">Grammar Library</span>
         <span class="tile-desc">JLPT grammar library: every pattern from N5 to N1, with examples and quizzes.</span>
+        <span class="tile-stat" data-stat="library"></span>
+      </span>
+    </a>
+    <a class="tile tile-wide" href="grammar-course/index.html" style="--tile:var(--app-grammar)">
+      <span class="tile-glyph" lang="ja">習</span>
+      <span class="tile-body">
+        <span class="tile-name">Grammar course</span>
+        <span class="tile-desc">Every grammar point in the library, a few at a time, with reviews.</span>
         <span class="tile-stat" data-stat="grammar"></span>
       </span>
     </a>

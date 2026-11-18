@@ -1,23 +1,25 @@
 # Nath's 日本語 Tools
 
-A static site with six ways to study Japanese, from N5 to N1. It runs on
+A static site with seven ways to study Japanese, from N5 to N1. It runs on
 GitHub Pages with no build step and no server.
 
 | App | Folder | What it does |
 | --- | --- | --- |
 | Grammar | `grammar/` | The JLPT grammar library: every pattern, with examples and quizzes. |
+| Grammar course | `grammar-course/` | The library's 485 grammar points, five a lesson, with fill-in-the-blank reviews. |
 | Vocabulary | `vocab/` | The 5,111 words of the readings and tracks, each lesson just before its passages. |
 | Writing | `writing/` | Kana and 2,195 kanji, written by hand on paper, with stroke order. |
 | Conjugation | `conjugation/` | Word types and every form, typed and checked. |
 | Reading | `reading/` | 132 graded readings with tappable words and comprehension questions. |
 | Listening | `listening/` | 132 voiced tracks with questions and dictation. |
 
-The landing page (`index.html`) links to all six. Four of the study apps are web
+The landing page (`index.html`) links to all seven. Four of the study apps are web
 ports of the Android apps in `vibe-jap-writing`, `vibe-srs-jap-conjugating`,
 `vibe-jap-reading` and `vibe-jap-listening`. They use the same content, the
 same FSRS scheduling and the same course structure, stats and achievements.
 Vocabulary is built for this site from the Reading and Listening content (see
-Updating content), on the same engine.
+Updating content), and the grammar course from the grammar library, both on the
+same engine.
 
 ![The grammar library](assets/screenshot.png)
 
@@ -28,8 +30,8 @@ Everything stays in the browser, on the device:
 - The grammar library keeps saved points and settings in `localStorage`
   (`grammarNotebook.*`). The theme key is shared by the whole site.
 - Each study app keeps its progress in its own IndexedDB database
-  (`vibe-vocab`, `vibe-writing`, `vibe-conjugation`, `vibe-reading`,
-  `vibe-listening`). The
+  (`vibe-grammar`, `vibe-vocab`, `vibe-writing`, `vibe-conjugation`,
+  `vibe-reading`, `vibe-listening`). The
   tables mirror the Android apps' SQLite schema. IndexedDB is used instead of
   `localStorage` because the answer history quickly outgrows `localStorage`'s
   5 MB limit.
@@ -63,8 +65,9 @@ database (`vibe-learner`). It's an index built from the apps, not a copy of
 their progress: each app keeps its own database and review schedule as before.
 
 - **Items** are things you can know, with the same id in every app: words by
-  headword and reading (`w:食べる|たべる`), kanji (`k:食`), kana (`kana:た`) and
-  conjugation forms (`f:te`).
+  headword and reading (`w:食べる|たべる`), kanji (`k:食`), kana (`kana:た`),
+  conjugation forms (`f:te`) and grammar points by their library id
+  (`g:n4-nagara`).
 - **Links** tie an item to an app's evidence for it. Cards and sections say what
   they teach in a `learn` list: a card in the review deck means you're
   studying the item, and a passed section means you've met it. A word is
@@ -83,8 +86,20 @@ all marked can be finished without a quiz.
 
 The landing page shows the counts under "What you know", and the word popup in
 Reading and Listening says when you're already learning a word elsewhere. Rows
-record when they last changed, ready for syncing between devices later. The
-Grammar Library isn't part of it yet.
+record when they last changed, ready for syncing between devices later.
+
+### Grammar across the apps
+
+The grammar course (`grammar-course/`) teaches the library's points in library
+order, five a lesson within each level, and quizzes each one as a
+fill-in-the-blank from one of its own examples, with options from related points.
+It uses the library's own logic for that: `grammar/grammar-core.js` holds the
+data access, highlighting, furigana and question-building that both pages load.
+The library opens an entry from a link like `grammar/index.html#n4-nagara`, and
+each entry shows where it stands in the course. `shared/grammar-links.js` maps
+Conjugation lessons and the form labels in Reading and Listening to grammar
+points, so Conjugation lessons and the word popup link into the library; the
+tests check every id and pattern there against the library's data.
 
 ## Layout
 
@@ -92,6 +107,8 @@ Grammar Library isn't part of it yet.
 index.html, landing.*      the landing page
 shared/core.css            the shared look (light and dark)
 shared/learner.js          what you know across the apps (see above)
+shared/today.js            today's plan across the apps
+shared/grammar-links.js    grammar points behind Conjugation lessons and passage forms
 shared/staging.js          keeps the staging site's data separate (see Staging)
 shared/srs/                the shared study-app engine
   fsrs.js                    FSRS scheduler, ported from the Dart fsrs 2.0.1 package
@@ -102,10 +119,11 @@ shared/srs/                the shared study-app engine
   screens.js, ui.js          the shared screens and the hash router
   passage.js                 tappable Japanese text with furigana and read-aloud
   romaji.js                  romaji to kana, for keyboards without Japanese input
-vocab/, writing/, conjugation/, reading/, listening/
+grammar-course/, vocab/, writing/, conjugation/, reading/, listening/
   app.js                     each app's content loader, model and screens
   data/                      content copied from the Android repos
 grammar/                   the grammar library
+  grammar-core.js            its data, highlighting and question-building, shared with the course
 tools/sync-content.sh      copies content from the Android repos
 tools/build-vocab.py       builds the vocabulary course from Reading and Listening
 ```

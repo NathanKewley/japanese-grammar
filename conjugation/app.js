@@ -10,6 +10,7 @@ import { seeded } from '../shared/srs/quiz-engine.js';
 import { normaliseTyped, hasRomaji, toHiragana } from '../shared/srs/romaji.js';
 import { speak, stopSpeaking } from '../shared/srs/passage.js';
 import { wordItem, formItem } from '../shared/learner.js';
+import { CONJUGATION_LESSONS, GRAMMAR_LABELS, libraryHref } from '../shared/grammar-links.js';
 
 // ---------- Answers ----------
 
@@ -261,12 +262,16 @@ function buildCourse(data, examples = {}) {
       kind: s.kind,
       deckId: l.part,
       forms: s.forms,
-      blocks: withExamples(
-        s.blocks.map((b) =>
-          b.t === 'table' ? { type: 'table', words: b.words.map((w) => words[w]), forms: b.forms.map((f) => forms[f]) } : { type: b.t, text: b.s }
+      blocks: [
+        // The grammar points behind a lesson's forms, in the Grammar Library.
+        ...(s.kind === 'learn' && CONJUGATION_LESSONS[l.number] ? [{ type: 'grammar', ids: CONJUGATION_LESSONS[l.number] }] : []),
+        ...withExamples(
+          s.blocks.map((b) =>
+            b.t === 'table' ? { type: 'table', words: b.words.map((w) => words[w]), forms: b.forms.map((f) => forms[f]) } : { type: b.t, text: b.s }
+          ),
+          exampleGroups(examples[s.id] || [], forms, words)
         ),
-        exampleGroups(examples[s.id] || [], forms, words)
-      ),
+      ],
       cards: s.cards.map(card),
     })),
   }));
@@ -506,6 +511,8 @@ function renderBlock(block, ui, app) {
         </div>
       </div>`;
     }
+    case 'grammar':
+      return html`<p class="small">In the Grammar Library: ${block.ids.map((id, i) => html`${i ? ' · ' : ''}<a href="${libraryHref(id)}" lang="ja">${GRAMMAR_LABELS[id]}</a>`)}</p>`;
     case 'examples':
       return html`<div>
         <div class="h3" style="margin-bottom:8px">In sentences</div>

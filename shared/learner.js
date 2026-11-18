@@ -11,6 +11,7 @@
 //   k:食             a kanji
 //   kana:た          a kana
 //   f:te             a conjugation form
+//   g:n4-nagara      a grammar point, by its Grammar Library id
 //
 // A link ties an item to the app evidence for it: a review card ("card") or a
 // passed lesson that used it ("seen"). Every app re-sends all its links
@@ -32,7 +33,7 @@ export const KNOWN_DAYS = 21;
 /** The FSRS state for a card in long-term review. */
 const REVIEW_STATE = 2;
 
-export const APP_NAMES = { vocab: 'Vocabulary', writing: 'Writing', conjugation: 'Conjugation', reading: 'Reading', listening: 'Listening' };
+export const APP_NAMES = { grammar: 'Grammar', vocab: 'Vocabulary', writing: 'Writing', conjugation: 'Conjugation', reading: 'Reading', listening: 'Listening' };
 
 // ---------- Items ----------
 
@@ -45,6 +46,8 @@ export const wordItem = (surface, reading, meaning = '') => ({
 export const kanjiItem = (char, meaning = '') => ({ id: `k:${char}`, kind: 'kanji', text: char, reading: '', meaning });
 export const kanaItem = (char, romaji = '') => ({ id: `kana:${char}`, kind: 'kana', text: char, reading: romaji, meaning: '' });
 export const formItem = (key, label) => ({ id: `f:${key}`, kind: 'form', text: label, reading: '', meaning: '' });
+/** A grammar point from the Grammar Library, by its id there (n4-nagara). */
+export const grammarItem = (entry) => ({ id: `g:${entry.id}`, kind: 'grammar', text: entry.pattern, reading: '', meaning: entry.title });
 
 /** The kanji in [text], as items. [meaningOf] looks up a kanji's meaning, if known. */
 export function kanjiItemsIn(text, meaningOf = () => '') {

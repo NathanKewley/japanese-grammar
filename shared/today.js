@@ -4,8 +4,9 @@
 // Reviews come first, a step for each app with cards due. Then one new
 // lesson. Vocabulary goes first until it's ahead of Reading and Listening
 // (vocabulary lesson n teaches the words of Reading n and Track n); then
-// whichever of those two is further behind. Writing and Conjugation join the
-// rotation once you use them, and the app studied least recently goes first.
+// whichever of those two is further behind. Grammar takes turns with them,
+// Writing and Conjugation join the rotation once you use them, and the app
+// studied least recently goes first.
 //
 // The plan lives in localStorage (vibe.today) for the day. Each app marks its
 // own steps done when a quiz ends and offers the next one, so the day works as
@@ -16,8 +17,8 @@ import { dayKey } from './srs/stats.js';
 
 const KEY = 'vibe.today';
 
-export const PLAN_APPS = ['vocab', 'writing', 'conjugation', 'reading', 'listening'];
-export const PLAN_NAMES = { vocab: 'Vocabulary', writing: 'Writing', conjugation: 'Conjugation', reading: 'Reading', listening: 'Listening' };
+export const PLAN_APPS = ['grammar', 'vocab', 'writing', 'conjugation', 'reading', 'listening'];
+export const PLAN_NAMES = { grammar: 'Grammar', vocab: 'Vocabulary', writing: 'Writing', conjugation: 'Conjugation', reading: 'Reading', listening: 'Listening' };
 
 export function loadPlan(now = Date.now()) {
   try {
@@ -71,6 +72,8 @@ export function chooseLesson({ activity, summaries }) {
   const passage = n('reading') <= n('listening') ? 'reading' : 'listening';
   const trio = n('vocab') <= n(passage) ? 'vocab' : passage;
   if (n(trio) !== Infinity) candidates.push(trio);
+  // Grammar runs alongside them.
+  if (n('grammar') !== Infinity) candidates.push('grammar');
   for (const id of ['writing', 'conjugation']) if (inUse(id) && n(id) !== Infinity) candidates.push(id);
   if (!candidates.length) return null;
   // The app studied least recently first (never studied counts as oldest).

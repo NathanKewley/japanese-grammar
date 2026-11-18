@@ -556,7 +556,62 @@ def todays_plan_across_apps(c):
     open_app(c, 'index.html', 2.5)
     today = c.text('#today')
     check('2 of 2 done' in today and 'All done for today' in today, f'everything should be ticked off, got {today}')
-    check('Another lesson: Vocabulary lesson 1' in today and 'part 2 of 3' in today, f'the next part should be offered, got {today}')
+    # Grammar hasn't been studied yet, so it's next in the rotation.
+    check('Another lesson: Grammar lesson 1' in today, f'the least recently studied app should be offered next, got {today}')
+    no_errors(c)
+
+
+@test
+def grammar_course_library_and_links(c):
+    # Every hand-written link points at a real grammar point, with its pattern.
+    open_app(c, 'grammar/index.html', 2)
+    bad = c.js("""import('../shared/grammar-links.js').then((L) => {
+      const bad = [];
+      const ids = new Set([...Object.keys(L.GRAMMAR_LABELS), ...Object.values(L.CONJUGATION_LESSONS).flat(), ...Object.values(L.PASSAGE_FORMS).flat()]);
+      for (const id of ids) {
+        const e = GrammarCore.findEntryById(id);
+        if (!e) bad.push(id + ': no such grammar point');
+        else if (L.GRAMMAR_LABELS[id] !== e.pattern) bad.push(id + ': label ' + L.GRAMMAR_LABELS[id] + ' is not ' + e.pattern);
+      }
+      return bad; })""")
+    check(not bad, 'grammar links: ' + '; '.join(bad or []))
+    check(c.js("GrammarCore.courseLessons().reduce((n, l) => n + l.entries.length, 0)") == c.js("GrammarCore.allEntries().length"), 'the course should cover every grammar point')
+
+    # The course: a lesson, one point marked known, the rest quizzed.
+    open_app(c, 'grammar-course/index.html#/section/g1')
+    first = c.js("vibeApp.model.course.sectionById('g1').cards[0].id")
+    check('The full entry in the Grammar Library' in view(c), 'lessons should link to the library')
+    before = quiz_size(c)
+    c.click('I already know this', 0.4)
+    check(quiz_size(c) == before - 1, 'a known point should leave the quiz')
+    c.click('a.btn.block', 1)
+    check(c.js("vibeApp.ui.screen.state.engine.currentQuestion.kind") == 'blank', 'questions should blank the grammar out of an example')
+    answer_all(c)
+    check(c.js("vibeApp.model.passed.has('g1')"), 'the first grammar lesson should pass')
+    second = c.js("vibeApp.model.course.sectionById('g1').cards[1].id")
+    check(learner_status(c, second)['status'] == 'learning', 'a quizzed point should be learning')
+    check(learner_status(c, first)['status'] == 'known', 'a point marked known should be known')
+
+    # The library: a deep link opens the entry, which shows where it stands.
+    entry = second[2:]
+    c.go(BASE + f'grammar/index.html#{entry}', 2.5)
+    check(c.js("document.querySelector('.entry.open') && document.querySelector('.entry.open').dataset.id") == entry, 'a deep link should open its entry')
+    line = c.js(f"document.querySelector('[data-course=\"{entry}\"]').innerText")
+    check('learning this' in line and 'lesson 1' in line, f'the entry should show its course status, got {line}')
+
+    # Conjugation and Reading link to the grammar.
+    open_app(c, 'conjugation/index.html#/section/l38.learn', 1.5)
+    check(c.js("[...document.querySelectorAll('.view a')].some((a) => a.getAttribute('href') === '../grammar/index.html#n5-nagara')"), 'Conjugation lesson 38 should link to ながら')
+    open_app(c, 'reading/index.html#/section/r3', 1.5)
+    found = c.js("""(async () => { for (const el of document.querySelectorAll('.pw[data-pk]')) {
+      if (!el.textContent.includes('です')) continue;
+      el.click(); await new Promise((r) => setTimeout(r, 20));
+      const g = document.querySelector('.word-popup .grammar-links a'); if (g) return g.getAttribute('href'); document.body.click(); } return null; })()""")
+    check(found == '../grammar/index.html#n5-desu', f'a polite です word should link to です, got {found}')
+
+    # The landing page has the course.
+    open_app(c, 'index.html', 2.5)
+    check('/' in c.text('[data-stat="grammar"]'), 'the Grammar course tile should show progress')
     no_errors(c)
 
 
@@ -644,6 +699,7 @@ def every_screen_renders(c):
         'reading': ['', '#/reviews', '#/stats', '#/settings', '#/section/r1', '#/item/reread%3A1'],
         'listening': ['', '#/reviews', '#/stats', '#/settings', '#/section/l1', '#/practice'],
         'vocab': ['', '#/reviews', '#/stats', '#/settings', '#/section/v1.1', '#/section/v60.2', '#/achievements'],
+        'grammar-course': ['', '#/reviews', '#/stats', '#/settings', '#/section/g1', '#/section/g100', '#/achievements'],
     }.items():
         for p in paths:
             open_app(c, f'{app}/index.html{p}', 1)

@@ -571,6 +571,12 @@ mark.grammar-hl {
   font-weight: 600;
 }
 
+/* ---------- Grammar course line ---------- */
+
+.entry-course { margin-top: 16px; font-size: 13.5px; color: var(--ink-soft); }
+.entry-course:empty { display: none; }
+.entry-course a { color: var(--entry-color, var(--accent)); font-weight: 600; }
+
 /* ---------- Worksheet trigger button ---------- */
 
 .worksheet-open-btn {

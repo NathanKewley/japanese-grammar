@@ -71,6 +71,7 @@ body[data-app="conjugation"] { --accent: var(--app-conjugation); }
 body[data-app="reading"] { --accent: var(--app-reading); }
 body[data-app="listening"] { --accent: var(--app-listening); }
 body[data-app="vocab"] { --accent: var(--app-vocab); }
+body[data-app="grammar"] { --accent: var(--app-grammar); }
 body[data-app] { --accent-soft: color-mix(in srgb, var(--accent) 13%, transparent); }
 
 * { box-sizing: border-box; }
@@ -656,6 +657,9 @@ ruby { ruby-align: center; }
 .pw.selected rt { color: inherit; opacity: .85; }
 .pw.spoken, .pw-p.spoken { background: color-mix(in srgb, var(--gold) 35%, transparent); }
 button.chip { border: 1px solid var(--rule-strong); cursor: pointer; font: inherit; font-size: .82rem; color: var(--ink); }
+/* A grammar point in an example sentence, and the blank where it goes. */
+.grammar-hl { background: var(--accent-soft); color: var(--accent); border-radius: 4px; padding: 0 1px; }
+.grammar-blank { display: inline-block; min-width: 3em; border-bottom: 2px solid var(--accent); text-align: center; color: var(--accent); }
 button.chip.on { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); font-weight: 600; }
 .known-toggle svg { width: 14px; height: 14px; flex: none; }
 .icon-btn:disabled { opacity: .4; cursor: default; }

@@ -3,6 +3,7 @@
 // speech engine. Used by Reading (passages) and Listening (transcripts).
 
 import { html, raw, esc, icon, toast, furigana } from './dom.js';
+import { grammarInForm, GRAMMAR_LABELS, libraryHref } from '../grammar-links.js';
 
 // ---------- Dictionary ----------
 
@@ -240,6 +241,10 @@ function openPopup(el) {
     ${known ? html`<p class="small known-note" style="color:var(--accent);font-weight:600;margin-top:2px">${known}</p>` : ''}
     ${showDictionary ? html`<p lang="ja" style="margin-top:4px">Dictionary form: ${entry.w === entry.r ? entry.w : `${entry.w}【${entry.r}】`}</p>` : ''}
     ${word.f && word.f !== 'name' ? html`<p lang="ja" style="color:var(--accent);font-weight:600">${word.f}</p>` : ''}
+    ${(() => {
+      const ids = word.f && word.f !== 'name' ? grammarInForm(word.f, text) : [];
+      return ids.length ? html`<p class="small grammar-links">Grammar: ${ids.map((id, i) => html`${i ? ' · ' : ''}<a href="${libraryHref(id)}" lang="ja">${GRAMMAR_LABELS[id]}</a>`)}</p>` : '';
+    })()}
     ${pos ? html`<p class="small">${pos}</p>` : ''}
     ${entry ? html`<div style="margin-top:6px">${entry.m.map((m, i) => html`<p style="margin-bottom:2px">${entry.m.length === 1 ? m : `${i + 1}. ${m}`}</p>`)}</div>` : ''}
     ${kanji.length ? html`<hr class="rule" style="margin:10px 0">${kanji.map((c) => kanjiRow(dict, c, p.lesson))}` : ''}`);
