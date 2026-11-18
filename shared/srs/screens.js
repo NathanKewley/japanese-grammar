@@ -7,6 +7,7 @@ import { QuizEngine, seeded, shuffled } from './quiz-engine.js';
 import { buildFocusAreas, buildInsights } from './focus.js';
 import { deleteDatabase } from './store.js';
 import { Learner } from '../learner.js';
+import { applyPendingPlacement } from '../placement.js';
 import { startOfDay } from './stats.js';
 
 export const EXTRA_REVIEW_SIZE = 20;
@@ -264,7 +265,9 @@ function sectionScreen(app, section) {
     render(ui) {
       const model = app.model;
       const text = app.text;
-      const passed = model.statusOf(section) === SectionStatus.passed;
+      const placed = model.isPlaced(section);
+      // A section skipped by the placement test is open, but not yet studied.
+      const passed = model.statusOf(section) === SectionStatus.passed && !placed;
       const key = SrsModel.sectionQuizKey(section);
       const saved = model.savedQuiz(key);
       const n = model.quizCards(section).length;
@@ -273,6 +276,7 @@ function sectionScreen(app, section) {
       const tx = (t, ...args) => (typeof t === 'function' ? t(...args) : t);
       return html`<div class="stack-lg">
         ${app.spec.renderSectionBody ? '' : html`<h1 class="h1" lang="ja">${section.title}</h1>`}
+        ${placed ? html`<div class="notice">You skipped this with the placement test${section.cards.length ? ', so none of it is in your reviews yet. Take the quiz to add it' : ''}.</div>` : ''}
         ${model.statusOf(section) === SectionStatus.locked ? html`<div class="notice">This section is still locked. You can read it, and unlock it early to take its quiz.</div>` : ''}
         ${app.spec.renderSectionBody ? app.spec.renderSectionBody(section, ui, app) : section.blocks.map((b) => app.spec.renderBlock(b, ui, app))}
         ${section.cards.length > 0 && (n > 0 || !passed) ? html`<div class="stack" style="position:sticky;bottom:0;padding:12px 0;background:linear-gradient(transparent,var(--bg) 30%)">
@@ -325,7 +329,8 @@ function quizScreen(app, config) {
   const title = config.title || (section ? section.title : part ? app.text.reviewPartTitle(part) : app.text.reviewAllTitle);
 
   function begin(resume = true) {
-    st.alreadyPassed = section != null && model.statusOf(section) === SectionStatus.passed;
+    // A section skipped by the placement test still adds its cards when its quiz is passed.
+    st.alreadyPassed = section != null && model.statusOf(section) === SectionStatus.passed && !model.isPlaced(section);
     st.last = null;
     st.finished = false;
     st.passed = null;
@@ -867,6 +872,7 @@ function settingsTab(app, ui) {
       <button class="btn text" style="color:var(--bad)" ${ui.onClick(() => resetApp(app))}>Delete all ${app.title} progress</button>
     </div>
     <hr class="rule">
+    ${placementSettings(app, ui)}
     <h3 class="h3">Review quizzes</h3>
     <p class="small">Each part has its own settings.</p>
     ${model.course.parts.map((part) => html`<div style="margin-top:16px"><div class="label" style="color:var(--ink)">${part.title}</div>${deckSettingsPanel(app, part, ui)}</div>`)}
@@ -874,6 +880,26 @@ function settingsTab(app, ui) {
     <h3 class="h3">About and credits</h3>
     <div class="small stack" style="margin-top:6px">${app.spec.credits || ''}</div>
   </div>`;
+}
+
+/** Undo for the placement test, while it has sections still to undo. */
+function placementSettings(app, ui) {
+  const n = app.model.placed.size;
+  if (!n) return '';
+  const undo = async () => {
+    const ok = await confirmDialog(
+      'Undo the placement test?',
+      `The ${plural(n, 'section')} it skipped will go back to not done, so the course starts from the first one you haven't passed yourself. Your own progress stays as it is.`,
+      'Undo placement'
+    );
+    if (!ok) return;
+    await app.model.undoPlacement();
+    toast('Placement undone.');
+  };
+  return html`<h3 class="h3">Placement test</h3>
+    <p class="small" style="margin:4px 0 10px">The placement test skipped ${plural(n, 'section')} you haven't studied here since. They're open to study whenever you like, and their quizzes add them to your reviews.</p>
+    <button class="btn outline block" ${ui.onClick(undo)}>Undo placement</button>
+    <hr class="rule">`;
 }
 
 function saveBackup(app) {
@@ -1111,6 +1137,10 @@ export function createSrsApp(spec) {
     syncSoon();
     if (ui.screen && !ui.screen.ignoreModel) ui.render();
   });
+  // A placement test result this app hasn't applied yet.
+  app.placementReady = applyPendingPlacement(spec.id, app.model)
+    .then((r) => { if (r && r.count) toast(`Skipped ahead past ${r.level}, from your placement test. Earlier lessons stay open to study.`, 6000); })
+    .catch((e) => console.error('Placement not applied', e));
   app.model.store.onError = () => toast("Couldn't save your progress. Your browser may be out of storage space.");
 
   document.addEventListener('visibilitychange', () => {

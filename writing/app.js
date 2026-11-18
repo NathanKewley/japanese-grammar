@@ -176,8 +176,10 @@ class WritingModel extends SrsModel {
    */
   dailyWriting(stats, n = 5) {
     const now = this.now();
+    // Not lessons skipped by the placement test: you haven't written them here.
+    const placed = this.placed;
     const eligible = this.course.lessons
-      .filter((l) => l.sections.some((s) => s.kind === 'writing' && this.passed.has(s.id)))
+      .filter((l) => l.sections.some((s) => s.kind === 'writing' && this.passed.has(s.id) && !placed.has(s.id)))
       .flatMap((l) => l.sentences);
     const weakness = this.kanjiMissShare(stats);
     const last = stats.lastAnswered();

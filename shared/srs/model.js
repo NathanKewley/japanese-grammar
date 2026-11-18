@@ -14,6 +14,9 @@ export const MAX_DAILY_LIMIT = 100;
 
 const DAY = 86400000;
 
+/** The JLPT levels, easiest first. */
+const PLACEMENT_LEVELS = ['N5', 'N4', 'N3', 'N2', 'N1'];
+
 /** Days until the first check of an item marked as already known. */
 export const KNOWN_FIRST_REVIEW_DAYS = 30;
 
@@ -238,6 +241,59 @@ export class SrsModel {
     for (const c of added) this.cards.set(c.cardId, c);
     await this.store.savePassedSection(section.id, now, added);
     this.notify();
+  }
+
+  // ---------- Placement test ----------
+
+  /** Sections passed by the placement test and not studied since: no cards, no quiz taken. */
+  get placed() { return this.store.placedSections(); }
+
+  isPlaced(section) { return this.placed.has(section.id); }
+
+  /**
+   * Every section up to the last lesson at [level] or below. Needs the app's
+   * lessonsAt(level); lessons between levels (like kana) come along.
+   */
+  placementSections(level) {
+    const upto = PLACEMENT_LEVELS.indexOf(level);
+    if (upto < 0 || !this.lessonsAt) return [];
+    const lessons = this.course.lessons;
+    let last = -1;
+    for (const lv of PLACEMENT_LEVELS.slice(0, upto + 1)) {
+      for (const l of this.lessonsAt(lv)) last = Math.max(last, lessons.indexOf(l));
+    }
+    return lessons.slice(0, last + 1).flatMap((l) => l.sections);
+  }
+
+  /**
+   * Skips ahead past [level]: its sections and those before count as passed,
+   * with no review cards, and stay open to study. Returns how many it passed.
+   */
+  async applyPlacement(level) {
+    const ids = this.placementSections(level).filter((s) => !this.passed.has(s.id)).map((s) => s.id);
+    if (!ids.length) return 0;
+    for (const id of ids) this.passed.add(id);
+    await this.store.savePlacedSections(ids, this.now());
+    this.notify();
+    return ids.length;
+  }
+
+  /** Puts back every section the placement test passed that hasn't been studied since. */
+  async undoPlacement() {
+    const ids = [...this.placed];
+    for (const id of ids) this.passed.delete(id);
+    await this.store.clearPlacedSections(ids);
+    this.notify();
+    return ids.length;
+  }
+
+  /** This model as achievements see it: sections passed by placement don't count. */
+  achievementView() {
+    const placed = this.placed;
+    if (!placed.size) return this;
+    const view = Object.create(this);
+    view.passed = new Set([...this.passed].filter((id) => !placed.has(id)));
+    return view;
   }
 
   // ---------- Items you already know ----------
@@ -477,7 +533,7 @@ export class SrsModel {
   }
 
   achievementFacts(stats) {
-    return { model: this, stats, perfectQuizzes: this.store.perfectSectionQuizzes() };
+    return { model: this.achievementView(), stats, perfectQuizzes: this.store.perfectSectionQuizzes() };
   }
 
   /** Records any newly reached achievements and returns them. */

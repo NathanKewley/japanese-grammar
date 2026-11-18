@@ -71,7 +71,7 @@ class QuietHandler(http.server.SimpleHTTPRequestHandler):
 
 def open_app(c, path, wait=3):
     c.go(BASE + path, 0.5)
-    c.wait_for("!!(window.vibeApp || document.querySelector('.tiles') || document.querySelector('.app-title'))", 15)
+    c.wait_for("!!(window.vibeApp || window.placement || document.querySelector('.tiles') || document.querySelector('.app-title'))", 15)
     c.sleep(wait - 0.5)
 
 
@@ -634,6 +634,106 @@ def grammar_sentence_building(c):
 
 
 @test
+def placement_test_and_skip_ahead(c):
+    # A first visit offers the test.
+    open_app(c, 'index.html', 2.5)
+    check('Already know some Japanese?' in c.js("document.querySelector('dialog.modal')?.innerText || ''"), 'a first visit should offer the placement test')
+    c.js("[...document.querySelectorAll('dialog.modal button')].find((b) => b.textContent.includes('Take the test')).click()")
+    c.wait_for("!!(window.placement && placement.state.phase === 'intro')", 15)
+
+    # Every level makes sound questions in every part.
+    bad = c.js("""(() => { const bad = []; const { SECTIONS, LEVELS } = placement;
+      for (const s of SECTIONS) for (const l of LEVELS) { const used = new Set();
+        for (let i = 0; i < 12; i++) { const q = s.make(l, used);
+          if (!q) { bad.push(s.id + ' ' + l + ': ran out at ' + i); break; }
+          if (q.options.length < 3 || new Set(q.options).size !== q.options.length || !(q.correctIndex >= 0)) bad.push(s.id + ' ' + l + ': bad options ' + q.options.join(' / ')); } }
+      return bad; })()""")
+    check(not bad, 'placement questions: ' + '; '.join(bad[:5]))
+
+    def take(section, until_level):
+        """Answers right below until_level (an index into N5..N1), then I don't know."""
+        n = 0
+        while c.js("placement.state.phase") == 'question' and n < 60:
+            right = c.js("placement.state.level") < until_level
+            c.js(f"""(() => {{ const q = placement.state.question;
+              const i = {'true' if right else 'false'} ? q.correctIndex : -1;
+              document.querySelector(`[data-act="answer"][data-i="${{i}}"]`).click(); }})()""")
+            n += 1
+        check(c.js("placement.state.phase") == 'between', f'{section} should end on its result')
+
+    c.click('Start the test', 0.3)
+    take('grammar', 2)  # N5 and N4 passed
+    check('N4 passed' in view(c), 'grammar should come out at N4: ' + view(c)[:200])
+    c.click('Continue', 0.3)
+    c.click('Stop here', 0.3)  # vocabulary: nothing passed
+    check('starting from N5' in view(c), 'stopping at once should pass nothing')
+    c.click('Continue', 0.3)
+    take('kanji', 1)
+    c.click('See your results', 0.3)
+    choices = c.js("Object.fromEntries([...document.querySelectorAll('[data-course]')].map((s) => [s.dataset.course, s.value]))")
+    check(choices == {'grammar': 'N4', 'conjugation': 'N4', 'vocab': '', 'reading': '', 'listening': '', 'writing': 'N5'}, f'result defaults: {choices}')
+    c.js("const s = document.querySelector('[data-course=listening]'); s.value = 'N5'; s.dispatchEvent(new Event('change', { bubbles: true }))")
+    c.click('Apply', 0.3)
+    saved = c.js("JSON.parse(localStorage.getItem('vibe.placement')).levels")
+    check(saved == {'grammar': 'N4', 'conjugation': 'N4', 'vocab': None, 'reading': None, 'listening': 'N5', 'writing': 'N5'}, f'saved levels: {saved}')
+    no_errors(c)
+
+    # The grammar course skips N5 and N4 when it opens, with no cards, even after a reload.
+    open_app(c, 'grammar-course/index.html')
+    expect = c.js("vibeApp.model.placementSections('N4').length")
+    check(expect == c.js("vibeApp.model.lessonsAt('N5').length + vibeApp.model.lessonsAt('N4').length"), 'N4 placement should cover the N5 and N4 lessons')
+    check(c.js("vibeApp.model.passed.size") == expect and c.js("vibeApp.model.placed.size") == expect, 'the N5 and N4 lessons should be placed')
+    check(c.js("vibeApp.model.course.lessonOf(vibeApp.model.nextSection).level") == 'N3', 'the next lesson should be N3')
+    open_app(c, 'grammar-course/index.html')
+    check(c.js("vibeApp.model.passed.size") == expect, 'a reload should not apply the placement again')
+    check(c.js("vibeApp.model.cards.size") == 0, 'placed lessons should add no review cards')
+    check(c.js("vibeApp.model.achievementView().lessonsComplete") == 0, 'placed lessons should not count for achievements')
+
+    # A placed lesson can still be studied: its quiz adds its cards.
+    c.go(BASE + 'grammar-course/index.html#/section/g1', 1.5)
+    check('You skipped this with the placement test' in view(c), 'a placed lesson should say so')
+    c.click('Start the quiz', 1)
+    answer_all(c)
+    check(c.js("vibeApp.model.cards.size") > 0 and not c.js("vibeApp.model.isPlaced(vibeApp.model.course.sectionById('g1'))"), 'studying a placed lesson should add its cards')
+
+    # Undo puts back everything not studied since.
+    c.go(BASE + 'grammar-course/index.html#/settings', 1.5)
+    c.click('Undo placement', 0.4)
+    c.js("document.querySelector('dialog.modal .btn:not(.text)').click()")
+    c.sleep(0.6)
+    check(c.js("vibeApp.model.placed.size") == 0 and c.js("[...vibeApp.model.passed]") == ['g1'], 'undo should leave only the studied lesson passed')
+    check('Undo placement' not in view(c), 'with nothing to undo, the setting should go')
+
+    # The other apps apply their own levels.
+    open_app(c, 'conjugation/index.html')
+    check(c.js("vibeApp.model.course.lessonOf(vibeApp.model.nextSection).number") == 36, 'Conjugation at N4 should start after keigo, at lesson 36')
+    open_app(c, 'writing/index.html')
+    check(c.js("vibeApp.model.placed.size") == c.js("vibeApp.model.placementSections('N5').length") > 0, 'Writing should skip N5')
+    check(c.js("vibeApp.model.dailyWriting(vibeApp.model.loadStudyStats()).length") == 0, 'placed lessons should not join the daily writing task')
+    open_app(c, 'listening/index.html')
+    check(c.js("vibeApp.model.placed.size") > 0, 'Listening should skip N5')
+    open_app(c, 'vocab/index.html')
+    check(c.js("vibeApp.model.passed.size") == 0, 'Vocabulary should start from the beginning')
+    check(c.js("JSON.parse(localStorage.getItem('vibe.placement')).applied.vocab") is not None, 'each app should note it applied its part')
+
+    # The test is offered only once.
+    open_app(c, 'index.html', 2.5)
+    check(not c.js("!!document.querySelector('dialog.modal')"), 'the test should not be offered twice')
+    check(c.js("!!document.querySelector('a[href=\"placement/index.html\"]')"), 'the landing page should link to the test')
+    no_errors(c)
+
+
+@test
+def placement_not_offered_to_existing_learners(c):
+    open_app(c, 'grammar/index.html', 1.5)
+    c.js("localStorage.setItem('vibe.summary.vocab', JSON.stringify({ lessonsDone: 1, lessonsTotal: 132, sectionsDone: 1, sectionsTotal: 400 }))")
+    open_app(c, 'index.html', 2.5)
+    check(not c.js("!!document.querySelector('dialog.modal')"), 'someone already studying should not be offered the test')
+    check(c.js("localStorage.getItem('vibe.placementOffered')") is not None, 'and should not be asked later either')
+    no_errors(c)
+
+
+@test
 def app_backup_round_trip(c):
     open_app(c, 'writing/index.html#/section/l1.kana')
     c.click('Write from memory')
@@ -686,6 +786,9 @@ def android_emulation_touch_install_and_enter(c):
 
     open_app(c, 'index.html', 2.5)
     check(c.send('Page.getInstallabilityErrors')['installabilityErrors'] == [], 'site should be installable')
+    # A first visit offers the placement test; a tap declines it.
+    tap('dialog.modal .btn.text')
+    check(not c.js("!!document.querySelector('dialog.modal')"), 'tapping Start from the beginning should close the placement offer')
     # The starting theme follows the system's, so check the tap flips it either way.
     before = c.js("document.documentElement.dataset.theme")
     tap('#themeToggle')

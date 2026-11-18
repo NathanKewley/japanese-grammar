@@ -139,7 +139,7 @@ class ReadingModel extends SrsModel {
   }
 
   achievementFacts(stats) {
-    return { model: this, stats, perfectQuizzes: this.store.perfectSectionQuizzes(1) };
+    return { model: this.achievementView(), stats, perfectQuizzes: this.store.perfectSectionQuizzes(1) };
   }
 
   buildAchievements() {

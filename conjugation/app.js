@@ -359,7 +359,12 @@ const LEVELS = { N5: 0, N4: 1, Keigo: 2, N3: 2, N2: 3, N1: 4 };
 // N3 to N1 patterns only suit some words, so they keep to the lessons' words.
 const FREE_LEVELS = new Set(['N5', 'N4', 'Keigo']);
 
+/** Each part's JLPT level, for the placement test. Keigo comes after N4, so it goes with it. */
+const PART_LEVELS = { n5v: 'N5', n5a: 'N5', n4: 'N4', keigo: 'N4', n3: 'N3', n2: 'N2', n1: 'N1' };
+
 class ConjugationModel extends SrsModel {
+  lessonsAt(level) { return this.course.lessons.filter((l) => PART_LEVELS[l.partId] === level); }
+
   /** The forms taught in passed sections, in course order. */
   get learnedForms() {
     return this.course.allSections.filter((s) => this.passed.has(s.id)).flatMap((s) => s.forms);

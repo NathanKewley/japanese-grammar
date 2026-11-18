@@ -13,7 +13,8 @@ GitHub Pages with no build step and no server.
 | Reading | `reading/` | 132 graded readings with tappable words and comprehension questions. |
 | Listening | `listening/` | 132 voiced tracks with questions and dictation. |
 
-The landing page (`index.html`) links to all seven. Four of the study apps are web
+The landing page (`index.html`) links to all seven, and to a placement test
+(`placement/`, see below). Four of the study apps are web
 ports of the Android apps in `vibe-jap-writing`, `vibe-srs-jap-conjugating`,
 `vibe-jap-reading` and `vibe-jap-listening`. They use the same content, the
 same FSRS scheduling and the same course structure, stats and achievements.
@@ -75,6 +76,33 @@ The landing page shows the counts under "What you know", and the word popup in
 Reading and Listening says when you're already learning a word elsewhere. Rows
 record when they last changed, ready for syncing between devices later.
 
+### Placement test
+
+`placement/` finds a level in grammar, vocabulary and kanji, so someone who
+already knows some Japanese can skip ahead. The landing page offers it once, in
+a popup on a first visit with nothing studied yet, and links to it after that.
+
+Each part climbs from N5: up to five questions a level, passed at four right
+and over at the second wrong answer. "I don't know" counts as wrong, so there's
+no need to guess. The questions come from the same places as the courses': the
+grammar course's fill-in-the-blank (`grammar-core.js`), word meanings from the
+Vocabulary content and kanji meanings from Writing's.
+
+The results screen sets a level for each course, which can be changed before
+applying: Conjugation follows grammar, Reading and Listening follow vocabulary,
+and Writing follows kanji (the test checks reading kanji, not writing them).
+The page saves the levels in `localStorage` (`vibe.placement`, read and written by
+`shared/placement.js`), and each app applies its own level the next time it opens.
+
+Placement skips ahead rather than marking items known, so it can't load
+thousands of reviews onto one day. Every section up to the last lesson at that
+level counts as passed, with no review cards (`SrsModel.applyPlacement`). The
+`placed_at` column marks those rows, and stays set until the section is studied.
+Placed sections stay open: taking one's quiz adds its cards as usual and clears
+the mark. Achievements ignore placed sections, the grammar course's sentence
+cards aren't added for them, and Writing's daily task leaves them out. Each
+app's Settings can undo the placement for sections not studied since.
+
 ### Grammar across the apps
 
 The grammar course (`grammar-course/`) teaches the library's points in library
@@ -103,6 +131,7 @@ shared/core.css            the shared look (light and dark)
 shared/learner.js          what you know across the apps (see above)
 shared/grammar-links.js    grammar points behind Conjugation lessons and passage forms
 shared/staging.js          keeps the staging site's data separate (see Staging)
+shared/placement.js        the placement test's result, until each app applies it
 shared/srs/                the shared study-app engine
   fsrs.js                    FSRS scheduler, ported from the Dart fsrs 2.0.1 package
   store.js                   IndexedDB tables, held in memory while an app is open
@@ -117,6 +146,7 @@ grammar-course/, vocab/, writing/, conjugation/, reading/, listening/
   data/                      content copied from the Android repos
 grammar/                   the grammar library
   grammar-core.js            its data, highlighting and question-building, shared with the course
+placement/                 the placement test
 tools/sync-content.sh      copies content from the Android repos
 tools/build-vocab.py       builds the vocabulary course from Reading and Listening
 ```
@@ -149,8 +179,8 @@ The folder defaults to this repo's parent.
 
 Browser tests drive a real headless Chrome through each app the way a learner
 would: lessons, typed and romaji answers, typo fixes, reviews, resuming a quiz,
-audio and dictation, backups, the landing page's stats and backup reminder, and
-Android phone emulation with touch. Any JavaScript error fails the test.
+audio and dictation, backups, the placement test, the landing page's stats and
+backup reminder, and Android phone emulation with touch. Any JavaScript error fails the test.
 
 ```
 python3 tools/tests/run.py            # everything, about 3 minutes

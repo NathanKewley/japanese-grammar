@@ -1,0 +1,68 @@
+/* The placement test page. Everything else comes from shared/core.css. */
+
+.placement-num {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: .9rem;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+/* N5 to N1, with the levels passed ticked and the current one outlined. */
+.placement-levels { display: flex; gap: 6px; }
+.placement-levels span {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 5px 0;
+  border-radius: 999px;
+  font-size: .8rem;
+  font-weight: 600;
+  color: var(--ink-faint);
+  background: var(--surface-2);
+  border: 1px solid transparent;
+}
+.placement-levels span.done { background: var(--accent-soft); color: var(--accent); }
+.placement-levels span.now { border-color: var(--accent); color: var(--ink); }
+.placement-levels svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+
+.placement-kanji { font-size: 3.4rem; line-height: 1.2; }
+
+.option.placement-idk { color: var(--ink-soft); border-style: dashed; text-align: center; }
+
+.placement-results {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+}
+
+.placement-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--rule);
+}
+.placement-row:last-child { border-bottom: 0; }
+.placement-row .grow { flex: 1 1 200px; min-width: 0; display: flex; flex-direction: column; }
+
+.placement-select {
+  flex: 0 1 auto;
+  max-width: 100%;
+  font: inherit;
+  font-size: .9rem;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--rule-strong);
+  background: var(--surface);
+  color: var(--ink);
+}

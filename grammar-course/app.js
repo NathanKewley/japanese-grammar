@@ -131,12 +131,14 @@ class GrammarModel extends SrsModel {
     const now = this.now();
     const added = [];
     const known = [];
+    // Lessons skipped by the placement test have no cards until studied.
+    const placed = this.placed;
     for (const section of this.course.allSections) {
       for (const card of section.cards) {
         if (!card.id.startsWith('gs:') || this.cards.has(card.id)) continue;
         const point = `g:${card.id.slice(3)}`;
         if (this.isMarkedKnown(point)) known.push(card.id);
-        else if (this.passed.has(section.id)) added.push({ cardId: card.id, partId: section.deckId, card: newCard(now) });
+        else if (this.passed.has(section.id) && !placed.has(section.id)) added.push({ cardId: card.id, partId: section.deckId, card: newCard(now) });
       }
     }
     if (added.length) {

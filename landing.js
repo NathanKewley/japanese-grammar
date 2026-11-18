@@ -1,10 +1,11 @@
 // The landing page: theme, a progress line on each tile, and whole-site backups.
 
-import { html, icon, initTheme, toggleTheme, currentTheme, toast, confirmDialog, slashDate } from './shared/srs/dom.js';
+import { html, icon, initTheme, toggleTheme, currentTheme, toast, confirmDialog, dialog, slashDate } from './shared/srs/dom.js';
 import { statGrid, barChart, legend, dayLabel } from './shared/srs/ui.js';
 import { TABLES, exportDatabase, importDatabase } from './shared/srs/store.js';
 import { dayKey, startOfDay } from './shared/srs/stats.js';
 import { Learner, LEARNER_DB, exportLearner, importLearner } from './shared/learner.js';
+import { placementOffered, markPlacementOffered } from './shared/placement.js';
 
 const APPS = ['grammar', 'vocab', 'writing', 'conjugation', 'reading', 'listening'];
 const GRAMMAR_PREFIX = 'grammarNotebook.';
@@ -148,7 +149,7 @@ async function fillGlance() {
   const active = APPS.filter((id) => apps[id] && apps[id].days.size > 0);
   const summary = document.getElementById('summary');
   const activity = document.getElementById('activity');
-  if (!active.length) { summary.hidden = true; activity.hidden = true; backupReminder(apps, new Set()); return; }
+  if (!active.length) { summary.hidden = true; activity.hidden = true; backupReminder(apps, new Set()); return apps; }
 
   const allDays = new Set(active.flatMap((id) => [...apps[id].days]));
   const today = dayKey(Date.now());
@@ -188,6 +189,36 @@ async function fillGlance() {
       ${legend(used.map((id) => [`var(--app-${id})`, NAMES[id]]))}
       ${barChart(series.map((d) => ({ ...d, segments: d.segments.map(([v, c]) => [Math.round(v), c]) })))}`);
   }
+  return apps;
+}
+
+// ---------- Placement test ----------
+
+/**
+ * Offers the placement test once, on a first visit: only when nothing has
+ * been studied yet, so people already using the site never see it.
+ */
+async function offerPlacement(apps) {
+  if (placementOffered()) return;
+  markPlacementOffered();
+  let saved = 0;
+  try { saved = JSON.parse(localStorage.getItem(`${GRAMMAR_PREFIX}saved`) || '[]').length; } catch (e) { /* storage blocked */ }
+  const started = saved > 0 || APPS.some((id) => {
+    const a = apps && apps[id];
+    const sum = readSummary(id);
+    return (a && (a.learned > 0 || a.days.size > 0)) || (sum && sum.sectionsDone > 0);
+  });
+  if (started) return;
+  const r = await dialog({
+    title: 'Already know some Japanese?',
+    body: html`<p class="muted">A short test finds your level in grammar, vocabulary and kanji, so the courses can skip what you already know. It takes 5 to 15 minutes, and you can stop any time.</p>
+      <p class="muted" style="margin-top:8px">You can also take it later, from the link under the courses.</p>`,
+    actions: [
+      { label: 'Start from the beginning', value: false, kind: 'text' },
+      { label: 'Take the test', value: true },
+    ],
+  });
+  if (r && r.value) location.href = 'placement/index.html';
 }
 
 // ---------- What you know ----------
@@ -414,5 +445,5 @@ async function restoreAll() {
 document.getElementById('backupAll').addEventListener('click', backupAll);
 document.getElementById('restoreAll').addEventListener('click', restoreAll);
 
-fillGlance();
+fillGlance().then(offerPlacement).catch((e) => console.error(e));
 storageLine();
