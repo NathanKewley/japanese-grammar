@@ -9,7 +9,7 @@ import { createSrsApp, boot, path, offerUnlock, progressPanel, knownToggle, LEVE
 import { seeded } from '../shared/srs/quiz-engine.js';
 import { dayKey } from '../shared/srs/stats.js';
 import { KANA_SETS } from './kana.js';
-import { setStrokes, setParts, partsOf, partsRow, focusedPart, strokeSteps, strokeControls, numbersToggle, tappableDiagram, listenForViewer, initStrokePrefs } from './strokes.js';
+import { prefs as strokePrefs, setStrokes, setParts, partsOf, partsRow, focusedPart, strokeSteps, strokeControls, numbersToggle, tappableDiagram, listenForViewer, initStrokePrefs } from './strokes.js';
 import { wordItem, kanaItem, kanjiItemsIn } from '../shared/learner.js';
 
 // ---------- Content ----------
@@ -276,7 +276,7 @@ function loadStrokes(app) {
 }
 
 /** A lesson's diagram, with any part picked out: tap it for the larger view. */
-const bigDiagram = (ch, size, ui) => tappableDiagram(ch, size, ui ? focusedPart(ui, ch) : null);
+const bigDiagram = (ch, size, ui) => tappableDiagram(ch, size, ui && strokePrefs.parts ? focusedPart(ui, ch) : null);
 
 /** The written answer, with the stroke order of every character in it. */
 function answerPanel(q, size = 76) {
@@ -319,7 +319,7 @@ function renderBlock(block, ui, app) {
         </div>
         <!-- Under the diagram and text, so its width can't push the text over. -->
         <div style="margin-top:10px">${strokeControls(ui)}</div>
-        ${partsOf(k.char).some((p) => p.c) ? html`<div class="label" style="margin:10px 0 4px">Parts</div>${partsRow(ui, k.char)}` : ''}
+        ${strokePrefs.parts && partsOf(k.char).some((p) => p.c) ? html`<div class="label" style="margin:10px 0 4px">Parts</div>${partsRow(ui, k.char)}` : ''}
         <div class="label" style="margin:10px 0 4px">Stroke by stroke</div>
         ${strokeSteps(k.char)}
         ${block.words.length ? html`<div class="label" style="margin:12px 0 2px">Words to write</div>

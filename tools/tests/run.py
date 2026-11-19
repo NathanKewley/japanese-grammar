@@ -885,6 +885,7 @@ def kanji_stroke_diagrams(c):
     c.js(f"[...{card}.querySelectorAll('.stroke-controls .chip')].find((b) => b.textContent.trim() === 'Parts').click()")
     c.sleep(0.3)
     check(c.js(f"{card}.querySelectorAll('.stroke-main path.ink[class*=part-]').length") == 0, 'Parts off should draw the kanji in one colour')
+    check(c.js(f"{card}.querySelectorAll('.part-chip').length") == 0, 'Parts off should hide the list of parts')
     c.js(f"[...{card}.querySelectorAll('.stroke-controls .chip')].find((b) => b.textContent.trim() === 'Parts').click()")
     c.sleep(0.3)
     # Play draws it stroke by stroke.

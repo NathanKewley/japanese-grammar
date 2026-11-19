@@ -239,13 +239,13 @@ export function openStrokeViewer(ch, onChange) {
     d.innerHTML = String(html`<div class="stroke-viewer-body">
       <div class="row"><div class="h2 grow" lang="ja">${ch}</div>
         <button class="icon-btn" type="button" data-close aria-label="Close" title="Close">${icon('cross')}</button></div>
-      <div class="stroke-viewer-art">${strokeDiagram(ch, size, { viewer: true, focus })}</div>
+      <div class="stroke-viewer-art">${strokeDiagram(ch, size, { viewer: true, focus: prefs.parts ? focus : null })}</div>
       <div class="stroke-controls">
         <button class="chip" type="button" data-play>${icon('play')} Play</button>
         <button class="chip ${prefs.numbers ? 'on' : ''}" type="button" data-numbers aria-pressed="${prefs.numbers}" title="Show stroke numbers">Numbers</button>
         ${partsOf(ch).some((p) => p.c) ? html`<button class="chip ${prefs.parts ? 'on' : ''}" type="button" data-parts aria-pressed="${prefs.parts}" title="Colour the parts the kanji is made of">Parts</button>` : ''}
       </div>
-      ${partChips(ch, focus, (i) => raw(`data-part="${i}"`))}
+      ${prefs.parts ? partChips(ch, focus, (i) => raw(`data-part="${i}"`)) : ''}
     </div>`);
   };
   paint();
