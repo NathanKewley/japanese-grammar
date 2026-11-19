@@ -2,7 +2,7 @@
 // Each app extends SrsModel with its own features.
 
 import { Scheduler, Rating, newCard, cardFromMap } from './fsrs.js';
-import { SCHEMA_VERSION } from './store.js';
+import { SCHEMA_VERSION, ANDROID_BACKUP_APPS } from './store.js';
 import { StudyStats, dayKey, startOfDay } from './stats.js';
 
 export const SectionStatus = { locked: 'locked', available: 'available', passed: 'passed' };
@@ -14,6 +14,12 @@ export const MAX_DAILY_LIMIT = 100;
 
 const DAY = 86400000;
 
+/** The JLPT levels, easiest first. */
+const PLACEMENT_LEVELS = ['N5', 'N4', 'N3', 'N2', 'N1'];
+
+/** Days until the first check of an item marked as already known. */
+export const KNOWN_FIRST_REVIEW_DAYS = 30;
+
 function dayNumber(t) {
   const d = new Date(t);
   return Math.round(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / DAY);
@@ -22,7 +28,7 @@ function dayNumber(t) {
 export class SrsModel {
   /**
    * config: {
-   *   appName,       e.g. 'Vibe Writing'
+   *   appName,       e.g. 'Writing'
    *   backupApp,     the id written into backup files
    *   passMark,      share right first time needed to pass a section
    *   statsOptions,  passed to StudyStats
@@ -118,7 +124,9 @@ export class SrsModel {
     const notBackup = `This file isn't a ${this.config.appName} backup.`;
     let decoded;
     try { decoded = JSON.parse(text); } catch (e) { throw new BackupError(notBackup); }
-    if (!decoded || typeof decoded !== 'object' || decoded.app !== this.config.backupApp) throw new BackupError(notBackup);
+    // A backup from this web app, or from the Android app it's ported from.
+    const fromAndroid = ANDROID_BACKUP_APPS[decoded && decoded.app] === this.config.backupApp.replace(/^vibe_web_/, '');
+    if (!decoded || typeof decoded !== 'object' || (decoded.app !== this.config.backupApp && !fromAndroid)) throw new BackupError(notBackup);
     if (typeof decoded.format !== 'number' || typeof decoded.schema !== 'number' || decoded.format > 1 || decoded.schema > SCHEMA_VERSION) {
       throw new BackupError('This backup came from a newer version of the app. Reload the page, then try again.');
     }
@@ -129,6 +137,7 @@ export class SrsModel {
       for (const row of cards) cardFromMap(JSON.parse(row.data));
       return {
         savedAt: decoded.savedAt,
+        fromAndroid,
         sectionsPassed: progress.filter((r) => r.passed_at != null).length,
         itemsLearned: cards.length,
         tables,
@@ -234,6 +243,107 @@ export class SrsModel {
     this.passed.add(section.id);
     for (const c of added) this.cards.set(c.cardId, c);
     await this.store.savePassedSection(section.id, now, added);
+    this.notify();
+  }
+
+  // ---------- Placement test ----------
+
+  /** Sections passed by the placement test and not studied since: no cards, no quiz taken. */
+  get placed() { return this.store.placedSections(); }
+
+  isPlaced(section) { return this.placed.has(section.id); }
+
+  /**
+   * Every section up to the last lesson at [level] or below. Needs the app's
+   * lessonsAt(level); lessons between levels (like kana) come along.
+   */
+  placementSections(level) {
+    const upto = PLACEMENT_LEVELS.indexOf(level);
+    if (upto < 0 || !this.lessonsAt) return [];
+    const lessons = this.course.lessons;
+    let last = -1;
+    for (const lv of PLACEMENT_LEVELS.slice(0, upto + 1)) {
+      for (const l of this.lessonsAt(lv)) last = Math.max(last, lessons.indexOf(l));
+    }
+    return lessons.slice(0, last + 1).flatMap((l) => l.sections);
+  }
+
+  /**
+   * Skips ahead past [level]: its sections and those before count as passed,
+   * with no review cards, and stay open to study. Returns how many it passed.
+   */
+  async applyPlacement(level) {
+    const ids = this.placementSections(level).filter((s) => !this.passed.has(s.id)).map((s) => s.id);
+    if (!ids.length) return 0;
+    for (const id of ids) this.passed.add(id);
+    await this.store.savePlacedSections(ids, this.now());
+    this.notify();
+    return ids.length;
+  }
+
+  /** Puts back every section the placement test passed that hasn't been studied since. */
+  async undoPlacement() {
+    const ids = [...this.placed];
+    for (const id of ids) this.passed.delete(id);
+    await this.store.clearPlacedSections(ids);
+    this.notify();
+    return ids.length;
+  }
+
+  /** This model as achievements see it: sections passed by placement don't count. */
+  achievementView() {
+    const placed = this.placed;
+    if (!placed.size) return this;
+    const view = Object.create(this);
+    view.passed = new Set([...this.passed].filter((id) => !placed.has(id)));
+    return view;
+  }
+
+  // ---------- Items you already know ----------
+
+  /** Whether [cardId] was marked as already known and hasn't been reviewed since. */
+  isMarkedKnown(cardId) {
+    const c = this.cards.get(cardId);
+    return !!(c && c.markedKnown);
+  }
+
+  /** A lesson's cards still to learn: those not marked as already known. */
+  quizCards(section) { return section.cards.filter((c) => !this.isMarkedKnown(c.id)); }
+
+  /** Cards that can be marked as known: in a review deck, and not being studied already. */
+  canMarkKnown(cardIds) {
+    return cardIds.length > 0 && cardIds.every((id) => {
+      const card = this.course.cardById(id);
+      return card && this.course.partOfCard(card) && (!this.cards.has(id) || this.isMarkedKnown(id));
+    });
+  }
+
+  /**
+   * Puts [cardIds] straight into their decks as known: no lesson quiz, and a
+   * first check in a month, so a wrong guess still comes back round.
+   */
+  async markKnown(cardIds) {
+    const now = this.now();
+    const added = [];
+    for (const id of cardIds) {
+      if (this.cards.has(id)) continue;
+      const part = this.course.partOfCard(this.course.cardById(id));
+      if (!part) continue;
+      const card = this.scheduler.review(newCard(now), Rating.easy, now);
+      card.stability = Math.max(card.stability, KNOWN_FIRST_REVIEW_DAYS);
+      card.due = now + KNOWN_FIRST_REVIEW_DAYS * DAY;
+      added.push({ cardId: id, partId: part.id, card, markedKnown: now });
+    }
+    for (const c of added) this.cards.set(c.cardId, c);
+    await this.store.saveMarkedKnown(added);
+    this.notify();
+  }
+
+  /** Undoes markKnown for cards not yet reviewed. */
+  async unmarkKnown(cardIds) {
+    const ids = cardIds.filter((id) => this.isMarkedKnown(id));
+    for (const id of ids) this.cards.delete(id);
+    await this.store.deleteCards(ids);
     this.notify();
   }
 
@@ -426,7 +536,7 @@ export class SrsModel {
   }
 
   achievementFacts(stats) {
-    return { model: this, stats, perfectQuizzes: this.store.perfectSectionQuizzes() };
+    return { model: this.achievementView(), stats, perfectQuizzes: this.store.perfectSectionQuizzes() };
   }
 
   /** Records any newly reached achievements and returns them. */

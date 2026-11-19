@@ -3,6 +3,7 @@
 // speech engine. Used by Reading (passages) and Listening (transcripts).
 
 import { html, raw, esc, icon, toast, furigana } from './dom.js';
+import { grammarInForm, GRAMMAR_LABELS, libraryHref } from '../grammar-links.js';
 
 // ---------- Dictionary ----------
 
@@ -24,7 +25,7 @@ const POS_LABELS = {
   vi: 'intransitive', vt: 'transitive', v5aru: 'u-verb (polite ある)', 'v5k-s': 'u-verb (行く)', 'v5r-i': 'u-verb (irregular)',
 };
 
-const posLabel = (code) => POS_LABELS[code] || (code.startsWith('v5') ? 'u-verb' : code);
+export const posLabel = (code) => POS_LABELS[code] || (code.startsWith('v5') ? 'u-verb' : code);
 
 /** The JMdict entries and kanji details that a content file carries. */
 export class Dictionary {
@@ -35,7 +36,7 @@ export class Dictionary {
 
   entry(i) { return i >= 0 ? this.entries[i] : null; }
 
-  /** Whether [c] is a kanji not learned by Vibe Writing lesson [lesson]. */
+  /** Whether [c] is a kanji not learned by Writing lesson [lesson]. */
   isUnlearned(c, lesson) {
     if (!isKanji(c) || c === '々') return false;
     const info = this.kanji[c];
@@ -188,6 +189,16 @@ function kanjiRow(dict, c, lesson) {
   </div>`;
 }
 
+// ---------- Learner model ----------
+
+let learnerHooks = null;
+
+/**
+ * Lets an app count word lookups and say what's already known about a word:
+ * { onLookup(entry), note(entry) -> text }. See wordLookupHooks in learner.js.
+ */
+export function connectLearner(hooks) { learnerHooks = hooks; }
+
 function openPopup(el) {
   const key = el.dataset.pk;
   const p = passages.get(key);
@@ -214,6 +225,9 @@ function openPopup(el) {
   const kanji = [...new Set([...text, ...(entry ? entry.w : '')].filter((c) => isKanji(c) && c !== '々'))];
   const pos = entry ? [...new Set(entry.p.map(posLabel))].join(', ') : '';
   const showDictionary = entry && (entry.w !== text || word.f);
+  // What's known from before this lookup, then the lookup itself.
+  const known = entry && learnerHooks ? learnerHooks.note(entry) : '';
+  if (entry && learnerHooks) learnerHooks.onLookup(entry);
   const box = document.createElement('div');
   box.className = 'word-popup';
   box.setAttribute('role', 'dialog');
@@ -224,8 +238,13 @@ function openPopup(el) {
       <button class="icon-btn" data-pop="close" title="Close" aria-label="Close">${icon('cross')}</button>
     </div>
     ${word.f === 'name' ? html`<p>A person's name</p>` : entry ? '' : html`<p class="muted">Not in the dictionary.</p>`}
+    ${known ? html`<p class="small known-note" style="color:var(--accent);font-weight:600;margin-top:2px">${known}</p>` : ''}
     ${showDictionary ? html`<p lang="ja" style="margin-top:4px">Dictionary form: ${entry.w === entry.r ? entry.w : `${entry.w}【${entry.r}】`}</p>` : ''}
     ${word.f && word.f !== 'name' ? html`<p lang="ja" style="color:var(--accent);font-weight:600">${word.f}</p>` : ''}
+    ${(() => {
+      const ids = word.f && word.f !== 'name' ? grammarInForm(word.f, text) : [];
+      return ids.length ? html`<p class="small grammar-links">Grammar: ${ids.map((id, i) => html`${i ? ' · ' : ''}<a href="${libraryHref(id)}" lang="ja">${GRAMMAR_LABELS[id]}</a>`)}</p>` : '';
+    })()}
     ${pos ? html`<p class="small">${pos}</p>` : ''}
     ${entry ? html`<div style="margin-top:6px">${entry.m.map((m, i) => html`<p style="margin-bottom:2px">${entry.m.length === 1 ? m : `${i + 1}. ${m}`}</p>`)}</div>` : ''}
     ${kanji.length ? html`<hr class="rule" style="margin:10px 0">${kanji.map((c) => kanjiRow(dict, c, p.lesson))}` : ''}`);
@@ -278,7 +297,7 @@ function renderWord(key, si, wi, w, dict, lesson, all) {
 /**
  * A passage. sentences: [{t, w: [{s, e, f}]}] (s = [text, reading] pairs, e =
  * entry index, f = form label); paragraphs: sentence counts per paragraph.
- * lesson: the Vibe Writing lesson whose kanji count as learned.
+ * lesson: the Writing lesson whose kanji count as learned.
  * opts: { ui, scale, slow, setSlow, setScale, toolbar, hooks, lineMarks }
  */
 export function renderPassage(key, { sentences, paragraphs, dict, lesson, ui, scale = 1, slow = false, setSlow, setScale, toolbar = true, toolbarExtra = '', hooks = {}, sentenceExtra, paragraphClass = '' }) {
@@ -303,8 +322,10 @@ export function renderPassage(key, { sentences, paragraphs, dict, lesson, ui, sc
       ${hooks.noReadAloud ? '' : html`<button class="btn tonal small" id="ra-${key}" ${ui.onClick(() => readAloud(key, slow))}>${icon(on ? 'pause' : 'speaker')} ${on ? 'Stop' : 'Read aloud'}</button>
       <button class="chip ${slow ? 'on' : ''}" ${ui.onClick(() => setSlow(!slow))} aria-pressed="${slow}">Slow</button>`}
       <button class="chip ${all ? 'on' : ''}" ${ui.onClick(() => { if (all) allFurigana.delete(key); else allFurigana.add(key); ui.render(); })} aria-pressed="${all}">All furigana</button>
-      ${setScale ? html`<button class="icon-btn" style="width:34px;height:34px;font-weight:700;font-size:.8rem" title="Smaller text" aria-label="Smaller text" ${scale <= 0.8 ? 'disabled' : ''} ${ui.onClick(() => setScale(scale - 0.1))}>A−</button>
-      <button class="icon-btn" style="width:34px;height:34px;font-weight:700" title="Larger text" aria-label="Larger text" ${scale >= 1.6 ? 'disabled' : ''} ${ui.onClick(() => setScale(scale + 0.1))}>A+</button>` : ''}
+      ${setScale ? html`<span class="text-size" role="group" aria-label="Text size">
+        <button type="button" title="Smaller text" aria-label="Smaller text" ${scale <= 0.8 ? 'disabled' : ''} ${ui.onClick(() => setScale(scale - 0.1))}>A−</button>
+        <button type="button" title="Larger text" aria-label="Larger text" ${scale >= 1.6 ? 'disabled' : ''} ${ui.onClick(() => setScale(scale + 0.1))}>A+</button>
+      </span>` : ''}
     </div>` : ''}
     <div class="passage" lang="ja" data-key="${key}" style="--pscale:${scale}">
       ${raw(paras.map((p, i) => `<p data-para="${i}"${paragraphClass ? ` class="${paragraphClass}"` : ''}>${p}</p>`).join(''))}

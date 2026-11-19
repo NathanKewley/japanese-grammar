@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2064%2064%27%3E%3Crect%20width%3D%2764%27%20height%3D%2764%27%20rx%3D%2714%27%20fill%3D%27%236E5AE0%27/%3E%3Ctext%20x%3D%2732%27%20y%3D%2745%27%20font-size%3D%2738%27%20text-anchor%3D%27middle%27%20fill%3D%27white%27%20font-family%3D%27sans-serif%27%3E%E8%A9%A6%3C/text%3E%3C/svg%3E">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="日本語">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#FAFAFA">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Placement test</title>
+<meta name="description" content="A short test that finds your JLPT level in grammar, vocabulary and kanji, so the courses can skip what you already know.">
+<!-- Web fonts load without holding up the page: text shows in the fallback font until they arrive. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&amp;family=Inter:wght@400;500;600;700;800&amp;display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&amp;family=Inter:wght@400;500;600;700;800&amp;display=swap"></noscript>
+<link rel="stylesheet" href="../shared/core.css">
+<link rel="stylesheet" href="placement.css">
+<script src="../shared/staging.js"></script>
+<script>
+  // Set the theme before the first paint, so dark mode doesn't flash.
+  try { var t = localStorage.getItem('grammarNotebook.theme'); } catch (e) {}
+  t = t || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  document.documentElement.setAttribute('data-theme', t);
+  document.querySelector('meta[name="theme-color"]').setAttribute('content', t === 'dark' ? '#0A0A0C' : '#FAFAFA');
+</script>
+<!-- Preloads: written by tools/preloads.py, so edit that instead. -->
+<link rel="modulepreload" href="placement.js">
+<link rel="modulepreload" href="../shared/srs/dom.js">
+<link rel="modulepreload" href="../shared/placement.js">
+<link rel="preload" href="../vocab/data/content.json" as="fetch" crossorigin>
+<link rel="preload" href="../writing/data/content.json" as="fetch" crossorigin>
+<!-- End of preloads. -->
+</head>
+<body>
+<div id="app"></div>
+<!-- The Grammar Library's data and logic, shared with the library page. -->
+<script src="../grammar/grammar-data.js"></script>
+<script src="../grammar/reference-data.js"></script>
+<script src="../grammar/alignment.js"></script>
+<script src="../grammar/grammar-core.js"></script>
+<script type="module" src="placement.js"></script>
+</body>
+</html>

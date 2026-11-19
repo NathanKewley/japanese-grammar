@@ -1,14 +1,16 @@
-// Vibe Conjugation: word types and every form from N5 to N1, typed and checked.
+// Conjugation: word types and every form from N5 to N1, typed and checked.
 
 import { html, raw, icon, richText, plural, toast, furigana, segText } from '../shared/srs/dom.js';
 import { Store } from '../shared/srs/store.js';
 import { Course } from '../shared/srs/course.js';
 import { SrsModel, SectionStatus, count, answersWhere } from '../shared/srs/model.js';
 import { statGrid, barRow } from '../shared/srs/ui.js';
-import { createSrsApp, boot, path, offerUnlock } from '../shared/srs/screens.js';
+import { createSrsApp, boot, path, offerUnlock, knownToggle, lessonFolds } from '../shared/srs/screens.js';
 import { seeded } from '../shared/srs/quiz-engine.js';
 import { normaliseTyped, hasRomaji, toHiragana } from '../shared/srs/romaji.js';
 import { speak, stopSpeaking } from '../shared/srs/passage.js';
+import { wordItem, formItem } from '../shared/learner.js';
+import { CONJUGATION_LESSONS, GRAMMAR_LABELS, libraryHref } from '../shared/grammar-links.js';
 
 // ---------- Answers ----------
 
@@ -99,7 +101,9 @@ function rubySegments(text) {
 /**
  * The example sentences for a section, grouped by form. Each sentence's {}
  * is filled with the word in that form, from the same data as the table, so
- * the two always agree. Sentences whose word or form is missing are skipped.
+ * the two always agree: its main form, or the variant numbered `v` when the
+ * sentence needs another one (行く's humble 伺う rather than 参る). Sentences
+ * whose word or form is missing are skipped.
  */
 function exampleGroups(raw, forms, words) {
   const groups = new Map();
@@ -107,9 +111,9 @@ function exampleGroups(raw, forms, words) {
     const form = forms[e.f];
     const wf = words[e.w] && words[e.w].forms[e.f];
     const parts = e.s.split('{}');
-    if (!form || !wf || parts.length !== 2) continue;
+    const middle = wf && (e.v != null ? wf.variants[e.v] : wf.main);
+    if (!form || !middle || parts.length !== 2) continue;
     const before = rubySegments(parts[0]);
-    const middle = wf.main;
     const segments = [...before, ...middle, ...rubySegments(parts[1])];
     const em = new Set(middle.map((_, i) => before.length + i));
     if (!groups.has(form.key)) groups.set(form.key, { form, sentences: [] });
@@ -189,6 +193,7 @@ function buildCourse(data, examples = {}) {
         explanation: answer.rule,
       }),
       info: { name: `${word.surface} → ${info.label}`, definition: segText(answer.main) },
+      learn: [wordItem(word.surface, word.reading, word.meaning), formItem(form, info.label)],
     };
   }
 
@@ -206,6 +211,7 @@ function buildCourse(data, examples = {}) {
           form: form.key,
           build: () => ({ type: 'typein', word, form, answer, shown: word.segments, before: raw.before, after: raw.after, english: raw.en, skill: form.label, explanation: answer.rule }),
           info: { name: `${segText(raw.before)}＿＿${segText(raw.after)}`, definition: `${segText(raw.before)}${segText(answer.main)}${segText(raw.after)} (${raw.en})` },
+          learn: [wordItem(word.surface, word.reading, word.meaning), formItem(form.key, form.label)],
         };
       }
       case 'type':
@@ -215,6 +221,7 @@ function buildCourse(data, examples = {}) {
           form: null,
           build: () => ({ type: 'choice', word, shown: word.segments, ask: 'What type of word is this?', options: raw.options, correctIndex: raw.answer, skill: 'Word types', explanation: typeExplanation(word) }),
           info: { name: `${word.surface}: what type?`, definition: word.kindLabel },
+          learn: [wordItem(word.surface, word.reading, word.meaning)],
         };
       case 'rev': {
         const form = forms[raw.f];
@@ -239,6 +246,7 @@ function buildCourse(data, examples = {}) {
             };
           },
           info: { name: `${segText(shown)}: which form?`, definition: form.label },
+          learn: [wordItem(word.surface, word.reading, word.meaning), formItem(form.key, form.label)],
         };
       }
       default:
@@ -256,12 +264,16 @@ function buildCourse(data, examples = {}) {
       kind: s.kind,
       deckId: l.part,
       forms: s.forms,
-      blocks: withExamples(
-        s.blocks.map((b) =>
-          b.t === 'table' ? { type: 'table', words: b.words.map((w) => words[w]), forms: b.forms.map((f) => forms[f]) } : { type: b.t, text: b.s }
+      blocks: [
+        // The grammar points behind a lesson's forms, in the Grammar Library.
+        ...(s.kind === 'learn' && CONJUGATION_LESSONS[l.number] ? [{ type: 'grammar', ids: CONJUGATION_LESSONS[l.number] }] : []),
+        ...withExamples(
+          s.blocks.map((b) =>
+            b.t === 'table' ? { type: 'table', words: b.words.map((w) => words[w]), forms: b.forms.map((f) => forms[f]) } : { type: b.t, text: b.s }
+          ),
+          exampleGroups(examples[s.id] || [], forms, words)
         ),
-        exampleGroups(examples[s.id] || [], forms, words)
-      ),
+      ],
       cards: s.cards.map(card),
     })),
   }));
@@ -349,7 +361,12 @@ const LEVELS = { N5: 0, N4: 1, Keigo: 2, N3: 2, N2: 3, N1: 4 };
 // N3 to N1 patterns only suit some words, so they keep to the lessons' words.
 const FREE_LEVELS = new Set(['N5', 'N4', 'Keigo']);
 
+/** Each part's JLPT level, for the placement test. Keigo comes after N4, so it goes with it. */
+const PART_LEVELS = { n5v: 'N5', n5a: 'N5', n4: 'N4', keigo: 'N4', n3: 'N3', n2: 'N2', n1: 'N1' };
+
 class ConjugationModel extends SrsModel {
+  lessonsAt(level) { return this.course.lessons.filter((l) => PART_LEVELS[l.partId] === level); }
+
   /** The forms taught in passed sections, in course order. */
   get learnedForms() {
     return this.course.allSections.filter((s) => this.passed.has(s.id)).flatMap((s) => s.forms);
@@ -473,7 +490,7 @@ class ConjugationModel extends SrsModel {
 
 // ---------- Lesson content ----------
 
-function renderBlock(block, ui) {
+function renderBlock(block, ui, app) {
   switch (block.type) {
     case 'text':
       return html`<p class="prose" lang="ja">${richText(block.text)}</p>`;
@@ -488,7 +505,8 @@ function renderBlock(block, ui) {
           ${block.words.filter((w) => block.forms.some((f) => w.forms[f.key])).map((w) => html`<div class="card">
             <div class="row" style="flex-wrap:wrap;align-items:flex-end;gap:4px 10px">
               <span class="ja-m" style="font-size:1.3rem">${furigana(w.segments)}</span>
-              <span class="small">${w.meaning} · ${w.kindLabel}</span>
+              <span class="small grow">${w.meaning} · ${w.kindLabel}</span>
+              ${knownToggle(app, ui, block.forms.map((f) => `conj:${w.surface}:${f.key}`).filter((id) => app.model.course.sectionCard(id)))}
             </div>
             <div style="margin-top:6px">
               ${block.forms.filter((f) => w.forms[f.key]).map((f) => html`<div class="${stacked ? '' : 'row'}" style="padding-top:6px;align-items:flex-end">
@@ -500,6 +518,8 @@ function renderBlock(block, ui) {
         </div>
       </div>`;
     }
+    case 'grammar':
+      return html`<p class="small">In the Grammar Library: ${block.ids.map((id, i) => html`${i ? ' · ' : ''}<a href="${libraryHref(id)}" lang="ja">${GRAMMAR_LABELS[id]}</a>`)}</p>`;
     case 'examples':
       return html`<div>
         <div class="h3" style="margin-bottom:8px">In sentences</div>
@@ -690,11 +710,7 @@ function renderToday(ui, app) {
         : "Ten conjugations in the forms you've learned, with any word, favouring the forms you get wrong most."}</p>
       <button class="btn outline block" ${ui.onClick(() => startDrill(app, ui))}>${drillDone ? 'Do another set' : "Start today's drill"}</button>
     </div>
-    ${course.parts.map((part) => html`<section>
-      <h2 class="h3">${part.title}</h2>
-      <p class="small">${part.summary}</p>
-      <div style="margin-top:6px">${course.lessons.filter((l) => l.partId === part.id).map((l) => lessonTile(app, ui, l))}</div>
-    </section>`)}
+    ${lessonFolds(app, ui, course.parts.map((part) => ({ title: part.title, summary: part.summary, lessons: course.lessons.filter((l) => l.partId === part.id) })), (l) => lessonTile(app, ui, l))}
   </div>`;
 }
 
@@ -735,7 +751,7 @@ boot(document.getElementById('app'), async () => {
   ]);
   const course = buildCourse(content, examples);
   const model = new ConjugationModel(store, course, {
-    appName: 'Vibe Conjugation',
+    appName: 'Conjugation',
     backupApp: 'vibe_web_conjugation',
     passMark: 0.8,
     noPartId: 'drill',
@@ -751,7 +767,7 @@ boot(document.getElementById('app'), async () => {
   model.load();
   return createSrsApp({
     id: 'conjugation',
-    title: 'Vibe Conjugation',
+    title: 'Conjugation',
     model,
     summaryNoun: 'lessons',
     backupFile: 'vibe-conjugation-backup',

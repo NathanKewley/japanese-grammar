@@ -1,11 +1,13 @@
 // The landing page: theme, a progress line on each tile, and whole-site backups.
 
-import { html, icon, initTheme, toggleTheme, currentTheme, toast, confirmDialog, slashDate } from './shared/srs/dom.js';
+import { html, icon, initTheme, toggleTheme, currentTheme, toast, confirmDialog, dialog, slashDate } from './shared/srs/dom.js';
 import { statGrid, barChart, legend, dayLabel } from './shared/srs/ui.js';
-import { TABLES, exportDatabase, importDatabase } from './shared/srs/store.js';
+import { TABLES, SCHEMA_VERSION, ANDROID_BACKUP_APPS, exportDatabase, importDatabase } from './shared/srs/store.js';
 import { dayKey, startOfDay } from './shared/srs/stats.js';
+import { Learner, LEARNER_DB, exportLearner, importLearner } from './shared/learner.js';
+import { placementOffered, markPlacementOffered, readPlacement } from './shared/placement.js';
 
-const APPS = ['writing', 'conjugation', 'reading', 'listening'];
+const APPS = ['grammar', 'vocab', 'writing', 'conjugation', 'reading', 'listening'];
 const GRAMMAR_PREFIX = 'grammarNotebook.';
 const BACKUP_APP = 'vibe_web_all';
 
@@ -19,7 +21,7 @@ toggle.addEventListener('click', () => { toggleTheme(); paintToggle(); });
 
 // ---------- At a glance ----------
 
-const NAMES = { writing: 'Writing', conjugation: 'Conjugation', reading: 'Reading', listening: 'Listening' };
+const NAMES = { grammar: 'Grammar', vocab: 'Vocabulary', writing: 'Writing', conjugation: 'Conjugation', reading: 'Reading', listening: 'Listening' };
 
 async function knownDatabases() {
   if (!indexedDB.databases) return null;
@@ -120,12 +122,13 @@ function fmtMinutes(m) {
 async function fillGlance() {
   try {
     const saved = JSON.parse(localStorage.getItem(`${GRAMMAR_PREFIX}saved`) || '[]');
-    if (saved.length) document.querySelector('[data-stat="grammar"]').textContent = `${saved.length} saved grammar point${saved.length === 1 ? '' : 's'}`;
+    if (saved.length) document.querySelector('[data-stat="library"]').textContent = `${saved.length} saved grammar point${saved.length === 1 ? '' : 's'}`;
   } catch (e) { /* storage blocked */ }
 
   const known = await knownDatabases();
   const apps = {};
   for (const id of APPS) apps[id] = await appActivity(id, known);
+  fillKnowledge(apps, known);
 
   // Each tile: course progress from the app's own summary, and cards due.
   for (const id of APPS) {
@@ -146,7 +149,7 @@ async function fillGlance() {
   const active = APPS.filter((id) => apps[id] && apps[id].days.size > 0);
   const summary = document.getElementById('summary');
   const activity = document.getElementById('activity');
-  if (!active.length) { summary.hidden = true; activity.hidden = true; backupReminder(apps, new Set()); return; }
+  if (!active.length) { summary.hidden = true; activity.hidden = true; backupReminder(apps, new Set()); return apps; }
 
   const allDays = new Set(active.flatMap((id) => [...apps[id].days]));
   const today = dayKey(Date.now());
@@ -158,8 +161,6 @@ async function fillGlance() {
     for (const id of active) week += apps[id].minutesByDay[k] || 0;
   }
   const s = streak(allDays);
-  const studiedToday = allDays.has(today);
-  const dueApps = APPS.filter((id) => apps[id] && apps[id].due > 0);
   summary.innerHTML = String(html`
     ${statGrid([
       ['Day streak', `${s ? '🔥 ' : ''}${s}`],
@@ -167,11 +168,7 @@ async function fillGlance() {
       ['Answered today', answeredToday],
       ['Studied this week', fmtMinutes(week)],
     ])}
-    <div class="due-row">
-      ${dueApps.length
-        ? html`<span class="small">Review:</span>${dueApps.map((id) => html`<a class="due-chip" style="--tile:var(--app-${id})" href="${id}/index.html#/quiz/review-all">${NAMES[id]} · ${apps[id].due}</a>`)}`
-        : html`<span class="small">${studiedToday ? 'All reviews done for today. Nice work.' : 'No reviews due. A new lesson keeps the streak going.'}</span>`}
-    </div>`);
+`);
   summary.hidden = false;
   backupReminder(apps, allDays);
 
@@ -192,10 +189,73 @@ async function fillGlance() {
       ${legend(used.map((id) => [`var(--app-${id})`, NAMES[id]]))}
       ${barChart(series.map((d) => ({ ...d, segments: d.segments.map(([v, c]) => [Math.round(v), c]) })))}`);
   }
+  return apps;
+}
+
+// ---------- Placement test ----------
+
+/**
+ * Offers the placement test once, on a first visit: only when nothing has
+ * been studied yet, so people already using the site never see it.
+ */
+async function offerPlacement(apps) {
+  if (placementOffered()) return;
+  markPlacementOffered();
+  let saved = 0;
+  try { saved = JSON.parse(localStorage.getItem(`${GRAMMAR_PREFIX}saved`) || '[]').length; } catch (e) { /* storage blocked */ }
+  const started = saved > 0 || APPS.some((id) => {
+    const a = apps && apps[id];
+    const sum = readSummary(id);
+    return (a && (a.learned > 0 || a.days.size > 0)) || (sum && sum.sectionsDone > 0);
+  });
+  if (started) return;
+  const r = await dialog({
+    title: 'Already know some Japanese?',
+    body: html`<p class="muted">A short test finds your level in grammar, vocabulary and kanji, so the courses can skip what you already know. It takes 5 to 15 minutes, and you can stop any time.</p>
+      <p class="muted" style="margin-top:8px">You can also take it later, from the link under the courses.</p>`,
+    actions: [
+      { label: 'Start from the beginning', value: false, kind: 'text' },
+      { label: 'Take the test', value: true },
+    ],
+  });
+  if (r && r.value) location.href = 'placement/index.html';
+}
+
+// ---------- What you know ----------
+
+const KINDS = [['grammar', 'Grammar points'], ['word', 'Words'], ['kanji', 'Kanji'], ['kana', 'Kana'], ['form', 'Conjugation forms']];
+
+/** The learner model's counts, and a note for apps whose progress isn't in it yet. */
+async function fillKnowledge(apps, known) {
+  const section = document.getElementById('knowledge');
+  let summary = { byKind: {}, synced: [] };
+  // Opening it would create it, so it's only read once an app has made it.
+  if (!known || known.has(LEARNER_DB)) {
+    try {
+      const learner = await Learner.open();
+      summary = learner.summary();
+      learner.close();
+    } catch (e) { /* not available */ }
+  }
+  const kinds = KINDS.filter(([k]) => summary.byKind[k]);
+  // An app with progress that hasn't been opened since the learner model arrived.
+  const missing = APPS.filter((id) => apps[id] && apps[id].learned + apps[id].days.size > 0 && !summary.synced.includes(id));
+  if (!kinds.length && !missing.length) { section.hidden = true; return; }
+  const num = (n) => html`<span class="k-num ${n ? '' : 'k-zero'}">${n}</span>`;
+  document.getElementById('knowledgeBody').innerHTML = String(html`
+    ${kinds.length ? html`<div class="k-table">
+      <span class="k-head">&nbsp;</span><span class="k-head k-num">Known</span><span class="k-head k-num">Learning</span><span class="k-head k-num">Met</span>
+      ${kinds.map(([k, label]) => {
+        const c = summary.byKind[k];
+        return html`<span>${label}</span>${num(c.known)}${num(c.learning)}${num(c.met)}`;
+      })}
+    </div>` : ''}
+    ${missing.length ? html`<p class="small k-note">Open ${missing.map((id) => NAMES[id]).join(' and ')} once to add what you've studied there.</p>` : ''}`);
+  section.hidden = false;
 }
 
 /**
- * How much this site's study data takes up: the four app databases and the
+ * How much this site's study data takes up: the app databases and the
  * grammar library's settings, measured as their saved contents. The browser's
  * own storage estimate covers the whole origin, which on GitHub Pages is
  * shared with every other project on the same account, so it isn't used.
@@ -211,6 +271,7 @@ async function storageLine() {
       const tables = await exportDatabase(name);
       if (tables) bytes += new Blob([JSON.stringify(tables)]).size;
     }
+    if (!known || known.has(LEARNER_DB)) bytes += new Blob([JSON.stringify(await exportLearner())]).size;
     try {
       for (let i = 0; i < localStorage.length; i++) {
         const k = localStorage.key(i);
@@ -300,8 +361,11 @@ async function backupAll() {
       if (k.startsWith(GRAMMAR_PREFIX)) grammar[k] = localStorage.getItem(k);
     }
   } catch (e) { /* storage blocked */ }
+  // What you know across the apps. Most of it is rebuilt from the apps, but
+  // word lookups are kept only there.
+  const learner = !known || known.has(LEARNER_DB) ? await exportLearner() : null;
   const now = Date.now();
-  const text = JSON.stringify({ app: BACKUP_APP, format: 1, savedAt: now, grammar, apps });
+  const text = JSON.stringify({ app: BACKUP_APP, format: 1, savedAt: now, grammar, apps, learner });
   const d = new Date(now);
   const stamp = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   const a = document.createElement('a');
@@ -326,6 +390,50 @@ function pickFile() {
   });
 }
 
+/** The web app a single-app backup belongs to (from this site or an Android app), or null. */
+function singleAppOf(appId) {
+  if (typeof appId !== 'string') return null;
+  if (ANDROID_BACKUP_APPS[appId]) return ANDROID_BACKUP_APPS[appId];
+  const web = appId.startsWith('vibe_web_') ? appId.slice('vibe_web_'.length) : null;
+  return APPS.includes(web) ? web : null;
+}
+
+/**
+ * Restores one app's backup into that app: a backup saved from its Settings
+ * tab, or one from the Android app it's ported from, which shares its tables.
+ */
+async function restoreOneApp(backup, id) {
+  const fromAndroid = !!ANDROID_BACKUP_APPS[backup.app];
+  const tables = backup.tables;
+  const valid = tables && typeof tables === 'object' && typeof backup.schema === 'number'
+    && Object.keys(TABLES).every((t) => tables[t] == null || Array.isArray(tables[t]));
+  if (!valid) {
+    toast("This backup file is damaged, so it can't be restored.");
+    return;
+  }
+  if (backup.format > 1 || backup.schema > SCHEMA_VERSION) {
+    toast('This backup came from a newer version of the app. Reload the page, then try again.');
+    return;
+  }
+  const passed = (tables.section_progress || []).filter((r) => r && r.passed_at != null).length;
+  const ok = await confirmDialog(
+    `Restore ${NAMES[id]}?`,
+    `This is a ${NAMES[id]} backup${fromAndroid ? ' from the Android app' : ''}, from ${slashDate(new Date(backup.savedAt))}, with ${passed} sections passed and ${(tables.srs_cards || []).length} items learned. Restoring it replaces the ${NAMES[id]} progress saved in this browser, including reviews, stats and your study log. Close any other tabs of this site first.`,
+    'Replace and restore'
+  );
+  if (!ok) return;
+  try {
+    await importDatabase(`vibe-${id}`, tables);
+  } catch (e) {
+    toast("Couldn't restore this backup. It may be damaged.");
+    return;
+  }
+  // Its saved summary is out of date until the app is next opened.
+  try { localStorage.removeItem(`vibe.summary.${id}`); } catch (e) { /* storage blocked */ }
+  toast(`${NAMES[id]} restored. Open it once to bring "What you know" up to date.`);
+  fillGlance();
+}
+
 async function restoreAll() {
   const file = await pickFile();
   if (!file) return;
@@ -336,10 +444,13 @@ async function restoreAll() {
     toast("This file isn't a backup from this site.");
     return;
   }
+  const single = backup && singleAppOf(backup.app);
+  if (single) {
+    await restoreOneApp(backup, single);
+    return;
+  }
   if (!backup || backup.app !== BACKUP_APP || typeof backup.apps !== 'object') {
-    toast(backup && typeof backup.app === 'string' && backup.app.startsWith('vibe_web_')
-      ? "That's a backup of a single app. Restore it from that app's Settings tab."
-      : "This file isn't a backup from this site.");
+    toast("This file isn't a backup from this site.");
     return;
   }
   if (backup.format > 1) {
@@ -347,7 +458,7 @@ async function restoreAll() {
     return;
   }
   const names = Object.keys(backup.apps).filter((id) => APPS.includes(id));
-  const parts = [...names.map((n) => n[0].toUpperCase() + n.slice(1)), ...(Object.keys(backup.grammar || {}).length ? ['Grammar'] : [])];
+  const parts = [...names.map((n) => NAMES[n]), ...(Object.keys(backup.grammar || {}).length ? ['Grammar Library'] : [])];
   const ok = await confirmDialog(
     'Replace your progress?',
     `This backup is from ${slashDate(new Date(backup.savedAt))} and holds: ${parts.join(', ') || 'nothing'}. Restoring replaces the progress saved in this browser for those apps. Close any other tabs of this site first.`,
@@ -362,6 +473,7 @@ async function restoreAll() {
       // Its saved summary is out of date until the app is next opened.
       try { localStorage.removeItem(`vibe.summary.${id}`); } catch (e) { /* storage blocked */ }
     }
+    if (backup.learner && typeof backup.learner === 'object') await importLearner(backup.learner);
     for (const [k, v] of Object.entries(backup.grammar || {})) {
       if (k.startsWith(GRAMMAR_PREFIX) && typeof v === 'string') localStorage.setItem(k, v);
     }
@@ -380,5 +492,10 @@ async function restoreAll() {
 document.getElementById('backupAll').addEventListener('click', backupAll);
 document.getElementById('restoreAll').addEventListener('click', restoreAll);
 
-fillGlance();
+// Once taken, the test can be retaken; a new result only skips further ahead.
+if (readPlacement()) {
+  document.getElementById('placementLink').innerHTML = String(html`<a href="placement/index.html">Retake the placement test</a> if you'd like the courses to skip further ahead.`);
+}
+
+fillGlance().then(offerPlacement).catch((e) => console.error(e));
 storageLine();

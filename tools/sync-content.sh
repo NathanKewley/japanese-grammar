@@ -43,4 +43,7 @@ for f in "$here/listening/audio/"*.ogg; do
     -c:a aac -b:a 32k -ac 1 -ar 24000 -movflags +faststart "${f%.ogg}.m4a"
 done
 
+# The vocabulary course is built from the Reading and Listening content.
+python3 "$here/tools/build-vocab.py"
+
 echo "Content synced from $src"

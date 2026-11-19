@@ -22,6 +22,18 @@ const AUTO_ID = ['review_log', 'quiz_sessions', 'quiz_answers', 'practice_log'];
 
 export const SCHEMA_VERSION = 1;
 
+/**
+ * The Android apps' backups, by the app id in the file, and the web app each
+ * restores into. They share this schema and their content ids, so a backup
+ * from the phone restores here as it is.
+ */
+export const ANDROID_BACKUP_APPS = {
+  vibe_jap_writing: 'writing',
+  vibe_srs_jap_conjugating: 'conjugation',
+  vibe_jap_reading: 'reading',
+  vibe_jap_listening: 'listening',
+};
+
 function openDb(name) {
   return new Promise((resolve, reject) => {
     if (!('indexedDB' in window)) { reject(new Error('IndexedDB unavailable')); return; }
@@ -272,16 +284,39 @@ export class Store {
     return { passed, early };
   }
 
+  /** Sections passed by the placement test and not studied since. */
+  placedSections() {
+    const out = new Set();
+    for (const r of this.t.section_progress.values()) if (r.placed_at != null && r.passed_at != null) out.add(r.section_id);
+    return out;
+  }
+
+  /** Passes [sectionIds] for the placement test, with no cards. */
+  savePlacedSections(sectionIds, at) {
+    return this.write(sectionIds.map((id) => {
+      const row = this.t.section_progress.get(id) || { section_id: id, early_unlocked_at: null };
+      return { table: 'section_progress', put: { ...row, passed_at: at, placed_at: at } };
+    }));
+  }
+
+  /** Undoes savePlacedSections. */
+  clearPlacedSections(sectionIds) {
+    return this.write(sectionIds.map((id) => {
+      const row = this.t.section_progress.get(id) || { section_id: id, early_unlocked_at: null };
+      return { table: 'section_progress', put: { ...row, passed_at: null, placed_at: null } };
+    }));
+  }
+
   markEarlyUnlocked(sectionId, at) {
     const row = this.t.section_progress.get(sectionId) || { section_id: sectionId, passed_at: null };
     return this.write([{ table: 'section_progress', put: { ...row, early_unlocked_at: at } }]);
   }
 
-  /** Records a passed section and its new cards as one change. */
+  /** Records a passed section and its new cards as one change. A placed section is now properly passed. */
   savePassedSection(sectionId, at, cards) {
     const row = this.t.section_progress.get(sectionId) || { section_id: sectionId, early_unlocked_at: null };
     return this.write([
-      { table: 'section_progress', put: { ...row, passed_at: at } },
+      { table: 'section_progress', put: { ...row, passed_at: at, placed_at: null } },
       ...cards.map((c) => ({ table: 'srs_cards', put: { card_id: c.cardId, part_id: c.partId, data: JSON.stringify(cardToMap(c.card)) } })),
     ]);
   }
@@ -289,10 +324,25 @@ export class Store {
   loadCards() {
     const out = [];
     for (const r of this.t.srs_cards.values()) {
-      try { out.push({ cardId: r.card_id, partId: r.part_id, card: cardFromMap(JSON.parse(r.data)) }); } catch (e) { /* skip damaged card */ }
+      try {
+        out.push({ cardId: r.card_id, partId: r.part_id, card: cardFromMap(JSON.parse(r.data)), markedKnown: r.marked_known ?? null });
+      } catch (e) { /* skip damaged card */ }
     }
     return out;
   }
+
+  /**
+   * Saves cards marked as already known. The mark stays on the row until the
+   * card's first review rewrites it.
+   */
+  saveMarkedKnown(cards) {
+    return this.write(cards.map((c) => ({
+      table: 'srs_cards',
+      put: { card_id: c.cardId, part_id: c.partId, data: JSON.stringify(cardToMap(c.card)), marked_known: c.markedKnown },
+    })));
+  }
+
+  deleteCards(ids) { return this.write(ids.map((id) => ({ table: 'srs_cards', del: id }))); }
 
   /** Saves a review result and its log entry as one change. */
   saveReview(stored, day, at, rating) {

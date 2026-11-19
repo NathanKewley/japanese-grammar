@@ -1,14 +1,15 @@
-// Vibe Writing: kana and kanji handwriting on paper, with self-marked quizzes.
+// Writing: kana and kanji handwriting on paper, with self-marked quizzes.
 
 import { html, raw, icon, richText, plural, toast } from '../shared/srs/dom.js';
 import { Store } from '../shared/srs/store.js';
 import { Course } from '../shared/srs/course.js';
 import { SrsModel, SectionStatus, count, answersWhere } from '../shared/srs/model.js';
 import { statGrid, barRow } from '../shared/srs/ui.js';
-import { createSrsApp, boot, path, offerUnlock, progressPanel, LEVELS } from '../shared/srs/screens.js';
+import { createSrsApp, boot, path, offerUnlock, progressPanel, knownToggle, LEVELS, lessonFolds, levelGroups } from '../shared/srs/screens.js';
 import { seeded } from '../shared/srs/quiz-engine.js';
 import { dayKey } from '../shared/srs/stats.js';
 import { KANA_SETS } from './kana.js';
+import { wordItem, kanaItem, kanjiItemsIn } from '../shared/learner.js';
 
 // ---------- Content ----------
 
@@ -50,9 +51,14 @@ function writeQuestion({ prompt, hint, answer, skill, answerReading = null }) {
   };
 }
 
-function card(id, build, name, definition) {
-  return { id, build, info: { name, definition } };
+/** [learn] lists what the card teaches, as learner-model items. */
+function card(id, build, name, definition, learn = []) {
+  return { id, build, info: { name, definition }, learn };
 }
+
+/** Each kanji's first meaning, for the learner model. Filled in by buildCourse. */
+let KANJI_MEANING = new Map();
+const kanjiMeaning = (c) => KANJI_MEANING.get(c) || '';
 
 function kanaSection(lesson, setName) {
   const set = KANA_SETS[setName];
@@ -64,7 +70,7 @@ function kanaSection(lesson, setName) {
     deckId: 'kana',
     blocks: [
       { type: 'text', text: 'Write each row in your notebook, following the stroke order. Say each sound as you write it. Watch the **order** and **direction** of each stroke, because that is what makes handwriting look natural.' },
-      ...set.rows.map((row) => ({ type: 'kana', title: row.name, kana: row.kana })),
+      ...set.rows.map((row, i) => ({ type: 'kana', title: row.name, kana: row.kana, cardId: `kana:${setName}.${i}` })),
       ...(set.words.length ? [{ type: 'text', text: `Then write these words in katakana: ${set.words.map(([k, m]) => `${k} (${m})`).join(', ')}.` }] : []),
     ],
     cards: [
@@ -74,11 +80,12 @@ function kanaSection(lesson, setName) {
           `kana:${setName}.${i}`,
           () => writeQuestion({ prompt: row.kana.map((k) => k[1]).join(' · '), hint: `Write in ${script}: ${row.name}`, answer: chars, skill: 'Kana' }),
           `${row.name} (${chars})`,
-          `The ${script} ${row.name.toLowerCase()}: ${row.kana.map(([k, r]) => `${k} ${r}`).join(', ')}.`
+          `The ${script} ${row.name.toLowerCase()}: ${row.kana.map(([k, r]) => `${k} ${r}`).join(', ')}.`,
+          row.kana.map(([k, r]) => kanaItem(k, r))
         );
       }),
       ...set.words.map(([word, meaning]) =>
-        card(`kana-word:${word}`, () => writeQuestion({ prompt: katakanaToHiragana(word), hint: `Write in katakana: ${meaning}`, answer: word, skill: 'Kana' }), word, `Katakana for ${meaning}.`)
+        card(`kana-word:${word}`, () => writeQuestion({ prompt: katakanaToHiragana(word), hint: `Write in katakana: ${meaning}`, answer: word, skill: 'Kana' }), word, `Katakana for ${meaning}.`, [wordItem(word, word, meaning)])
       ),
     ],
   };
@@ -95,13 +102,14 @@ function kanjiSection(lesson, kanji, words) {
       ...kanji.map((k) => ({ type: 'kanji', kanji: k, words: words.filter((w) => w.surface.includes(k.char)) })),
     ],
     cards: words.map((w) =>
-      card(`word:${w.surface}`, () => writeQuestion({ prompt: w.reading, hint: w.meaning, answer: w.surface, answerReading: w.reading, skill: 'Words' }), `${w.surface} (${w.reading})`, w.meaning)
+      card(`word:${w.surface}`, () => writeQuestion({ prompt: w.reading, hint: w.meaning, answer: w.surface, answerReading: w.reading, skill: 'Words' }), `${w.surface} (${w.reading})`, w.meaning,
+        [wordItem(w.surface, w.reading, w.meaning), ...kanjiItemsIn(w.surface, kanjiMeaning)])
     ),
   };
 }
 
 function sentenceCard(s) {
-  return card(s.id, () => writeQuestion({ prompt: s.reading, hint: s.english, answer: s.text, answerReading: s.reading, skill: 'Sentences' }), s.text, s.english);
+  return card(s.id, () => writeQuestion({ prompt: s.reading, hint: s.english, answer: s.text, answerReading: s.reading, skill: 'Sentences' }), s.text, s.english, kanjiItemsIn(s.kanji.join(''), kanjiMeaning));
 }
 
 function writingSection(lesson, sentences) {
@@ -119,6 +127,7 @@ function writingSection(lesson, sentences) {
 }
 
 function buildCourse(data) {
+  KANJI_MEANING = new Map(data.lessons.flatMap((l) => l.kanji.map((k) => [k.char, k.meanings[0] || ''])));
   const lessons = data.lessons.map((raw) => {
     const n = raw.number;
     const sentences = raw.sentences.map((s, i) => ({ id: `sentence:${n}.${i + 1}`, text: s.text, reading: s.reading, english: s.english, kanji: s.kanji }));
@@ -167,8 +176,10 @@ class WritingModel extends SrsModel {
    */
   dailyWriting(stats, n = 5) {
     const now = this.now();
+    // Not lessons skipped by the placement test: you haven't written them here.
+    const placed = this.placed;
     const eligible = this.course.lessons
-      .filter((l) => l.sections.some((s) => s.kind === 'writing' && this.passed.has(s.id)))
+      .filter((l) => l.sections.some((s) => s.kind === 'writing' && this.passed.has(s.id) && !placed.has(s.id)))
       .flatMap((l) => l.sentences);
     const weakness = this.kanjiMissShare(stats);
     const last = stats.lastAnswered();
@@ -248,8 +259,22 @@ class WritingModel extends SrsModel {
 
 // ---------- Stroke order ----------
 
-let STROKES = {};
+let STROKES = null;
 const BOX = 109;
+
+/**
+ * The stroke data is big (3 MB) and only drawn in lessons and answers, so it
+ * loads after the app opens; diagrams show an empty square until it arrives.
+ */
+function loadStrokes(app) {
+  fetch('data/strokes.json')
+    .then((r) => { if (!r.ok) throw new Error('stroke data missing'); return r.json(); })
+    .then((strokes) => {
+      STROKES = strokes;
+      if (app.ui.screen && !app.ui.screen.ignoreModel) app.ui.render();
+    })
+    .catch((e) => console.error('Stroke order unavailable', e));
+}
 
 /**
  * One character drawn from its strokes on a practice square, like the boxes in
@@ -257,7 +282,7 @@ const BOX = 109;
  * is highlighted, and [numbered] labels where each stroke starts.
  */
 function strokeDiagram(ch, size = 120, { upTo = null, numbered = true } = {}) {
-  const strokes = STROKES[ch] || [];
+  const strokes = (STROKES && STROKES[ch]) || [];
   const shown = upTo ?? strokes.length;
   const unit = BOX / size; // viewBox units per pixel
   const paths = [];
@@ -290,7 +315,7 @@ function strokeDiagram(ch, size = 120, { upTo = null, numbered = true } = {}) {
 
 /** The strokes of one character built up step by step. */
 function strokeSteps(ch, size = 52) {
-  const n = (STROKES[ch] || []).length;
+  const n = ((STROKES && STROKES[ch]) || []).length;
   const out = [];
   for (let i = 1; i <= n; i++) out.push(strokeDiagram(ch, size, { upTo: i, numbered: false }));
   return html`<div class="wrap" style="gap:4px">${out}</div>`;
@@ -307,13 +332,16 @@ function answerPanel(q, size = 76) {
 
 // ---------- Lesson content ----------
 
-function renderBlock(block) {
+function renderBlock(block, ui, app) {
   switch (block.type) {
     case 'text':
       return html`<p class="prose">${richText(block.text)}</p>`;
     case 'kana':
       return html`<div>
-        <div class="h3" style="margin-bottom:6px">${block.title}</div>
+        <div class="row" style="margin-bottom:6px;flex-wrap:wrap;gap:6px 10px">
+          <div class="h3 grow">${block.title}</div>
+          ${knownToggle(app, ui, [block.cardId])}
+        </div>
         <div class="wrap">${block.kana.map(([k, r]) => html`<div style="text-align:center">${strokeDiagram(k, 76)}<div class="small">${r}</div></div>`)}</div>
       </div>`;
     case 'kanji': {
@@ -334,7 +362,8 @@ function renderBlock(block) {
           ${block.words.map((w) => html`<div class="row" style="align-items:baseline;padding:3px 0;flex-wrap:wrap;gap:4px 10px">
             <span class="ja-m" lang="ja" style="font-size:1.3rem">${w.surface}</span>
             <span lang="ja">${w.reading}</span>
-            <span class="small">${w.meaning}</span>
+            <span class="small grow">${w.meaning}</span>
+            ${knownToggle(app, ui, [`word:${w.surface}`])}
           </div>`)}` : ''}
       </div>`;
     }
@@ -458,10 +487,7 @@ function renderToday(ui, app) {
         : "Five sentences from your lessons so far, favouring kanji you've marked wrong and sentences you haven't written lately."}</p>
       <button class="btn outline block" ${ui.onClick(() => startDailyWriting(app, ui))}>${writingDone ? 'Write another set' : "Start today's writing"}</button>
     </div>
-    ${LEVELS.map((level) => html`<section>
-      <h2 class="h3">${level}</h2>
-      <div class="" style="margin-top:6px">${model.lessonsAt(level).map((l) => lessonTile(app, ui, l))}</div>
-    </section>`)}
+    ${lessonFolds(app, ui, levelGroups(model), (l) => lessonTile(app, ui, l))}
   </div>`;
 }
 
@@ -473,24 +499,22 @@ const CREDITS = html`
 // ---------- Start ----------
 
 boot(document.getElementById('app'), async () => {
-  const [content, strokes, store] = await Promise.all([
+  const [content, store] = await Promise.all([
     fetch('data/content.json').then((r) => { if (!r.ok) throw new Error('content missing'); return r.json(); }),
-    fetch('data/strokes.json').then((r) => { if (!r.ok) throw new Error('stroke data missing'); return r.json(); }),
     Store.open('vibe-writing'),
   ]);
-  STROKES = strokes;
   const course = buildCourse(content);
   const model = new WritingModel(store, course, {
-    appName: 'Vibe Writing',
+    appName: 'Writing',
     backupApp: 'vibe_web_writing',
     passMark: 0.0, // Handwriting is self-marked, so a section passes once every item is ticked.
     noPartId: 'writing',
     statsOptions: { slowExcluded: (id, skill) => skill === 'Sentences' },
   });
   model.load();
-  return createSrsApp({
+  const app = createSrsApp({
     id: 'writing',
-    title: 'Vibe Writing',
+    title: 'Writing',
     model,
     summaryNoun: 'lessons',
     backupFile: 'vibe-writing-backup',
@@ -524,4 +548,6 @@ boot(document.getElementById('app'), async () => {
     outcomeFromJson: (json) => ({ correct: !!json.correct }),
     givenText: (o) => (o.correct ? 'Marked as right' : 'Marked as not yet'),
   });
+  loadStrokes(app);
+  return app;
 });

@@ -6,6 +6,8 @@ import { SrsModel, SectionStatus, BackupError, MIN_DAILY_LIMIT, MAX_DAILY_LIMIT,
 import { QuizEngine, seeded, shuffled } from './quiz-engine.js';
 import { buildFocusAreas, buildInsights } from './focus.js';
 import { deleteDatabase } from './store.js';
+import { Learner } from '../learner.js';
+import { applyPendingPlacement } from '../placement.js';
 import { startOfDay } from './stats.js';
 
 export const EXTRA_REVIEW_SIZE = 20;
@@ -52,7 +54,7 @@ const DEFAULT_TEXT = {
   sectionPassed: 'Section passed',
   sectionNotPassed: 'Section not passed',
   nextLesson: (l) => `Continue to Lesson ${l.number}: ${l.title}`,
-  backToSection: 'Back to the section',
+  backToLessons: 'Back to the lessons',
   rereadSection: 'Reread the section',
   missedTitle: (n) => `Items you got wrong (${n})`,
   missedNote: 'Tap an item name to see its details.',
@@ -113,11 +115,27 @@ function forecastChart(model, part) {
 
 // ---------- Reviews tab ----------
 
+/** What a tab shows before anything has been studied, with a way to start. */
+function emptyState(app, title, body) {
+  const next = app.model.nextSection;
+  return html`<div class="card empty-state">
+    <div class="h2">${title}</div>
+    <p style="margin-top:6px">${body}</p>
+    ${next ? html`<a class="btn block" style="margin-top:14px" href="${path('section', next.id)}">${app.model.totalPassed ? 'Go to your next lesson' : 'Start your first lesson'}</a>` : ''}
+  </div>`;
+}
+
 function reviewsTab(app, ui) {
   const model = app.model;
   const due = model.allReviewQueue.length;
   const saved = model.savedQuiz(SrsModel.reviewAllKey);
   const learned = model.course.parts.some((p) => model.summaryOf(p).totalCards > 0);
+  if (!learned && !saved) {
+    return html`<div class="stack">
+      ${emptyState(app, 'No reviews yet', "Each lesson you pass adds what it taught here. Reviews bring each item back just before you'd forget it, a few minutes a day.")}
+      <p class="small">Each part's daily limit and pause setting are in Settings.</p>
+    </div>`;
+  }
   return html`<div class="stack">
     ${saved || due > 0
       ? html`<a class="btn block" href="#/quiz/review-all">${saved ? app.text.reviewAllResume : app.text.reviewAll(due)}</a>`
@@ -263,25 +281,46 @@ function sectionScreen(app, section) {
     render(ui) {
       const model = app.model;
       const text = app.text;
-      const passed = model.statusOf(section) === SectionStatus.passed;
+      const placed = model.isPlaced(section);
+      // A section skipped by the placement test is open, but not yet studied.
+      const passed = model.statusOf(section) === SectionStatus.passed && !placed;
       const key = SrsModel.sectionQuizKey(section);
       const saved = model.savedQuiz(key);
-      const n = section.cards.length;
+      const n = model.quizCards(section).length;
+      const marked = section.cards.length - n;
       const quizHash = path('quiz', 'section', section.id);
       const tx = (t, ...args) => (typeof t === 'function' ? t(...args) : t);
       return html`<div class="stack-lg">
         ${app.spec.renderSectionBody ? '' : html`<h1 class="h1" lang="ja">${section.title}</h1>`}
+        ${placed ? html`<div class="notice">You skipped this with the placement test${section.cards.length ? ', so none of it is in your reviews yet. Take the quiz to add it' : ''}.</div>` : ''}
         ${model.statusOf(section) === SectionStatus.locked ? html`<div class="notice">This section is still locked. You can read it, and unlock it early to take its quiz.</div>` : ''}
         ${app.spec.renderSectionBody ? app.spec.renderSectionBody(section, ui, app) : section.blocks.map((b) => app.spec.renderBlock(b, ui, app))}
-        ${n > 0 ? html`<div class="stack" style="position:sticky;bottom:0;padding:12px 0;background:linear-gradient(transparent,var(--bg) 30%)">
+        ${section.cards.length > 0 && (n > 0 || !passed) ? html`<div class="stack" style="position:sticky;bottom:0;padding:12px 0;background:linear-gradient(transparent,var(--bg) 30%)">
           ${model.statusOf(section) === SectionStatus.locked
             ? html`<button class="btn block" ${ui.onClick(() => offerUnlock(app, section))}>Unlock early</button>`
-            : html`<a class="btn block" href="${quizHash}">${saved ? text.sectionQuizResume(model.savedQuizAnswered(saved), n, section) : passed ? tx(text.sectionQuizAgain, section) : text.sectionQuizStart(n, section)}</a>`}
+            : n === 0
+              ? html`<button class="btn block" ${ui.onClick(() => model.passSection(model.course.partOf(section), section, new Map()))}>Mark this part as done</button>`
+              : html`<a class="btn block" href="${quizHash}">${saved ? text.sectionQuizResume(model.savedQuizAnswered(saved), n, section) : passed ? tx(text.sectionQuizAgain, section) : text.sectionQuizStart(n, section)}</a>`}
           ${saved ? html`<button class="btn text" ${ui.onClick(async () => { await model.clearQuizProgress(key); ui.go(quizHash); })}>Start again</button>` : ''}
+          ${marked ? html`<p class="small" style="text-align:center;margin:0">${plural(marked, 'item')} marked as already known${n ? ', so the quiz skips them' : ''}.</p>` : ''}
         </div>` : ''}
       </div>`;
     },
   };
+}
+
+/**
+ * "I already know this" for one item in a lesson, made of [cardIds]. Marked
+ * items skip the lesson quiz and join the reviews as known (see markKnown).
+ * Shows nothing once the item is being studied, or if it has no review deck.
+ */
+export function knownToggle(app, ui, cardIds) {
+  const model = app.model;
+  if (!model.canMarkKnown(cardIds)) return '';
+  const on = cardIds.every((id) => model.isMarkedKnown(id));
+  return html`<button class="chip known-toggle ${on ? 'on' : ''}" type="button" aria-pressed="${on}"
+    title="${on ? 'Undo: learn it in the quiz after all' : 'Skip it in the quiz and check it in a month'}"
+    ${ui.onClick(() => (on ? model.unmarkKnown(cardIds) : model.markKnown(cardIds)))}>${on ? html`${icon('check')} Known` : 'I already know this'}</button>`;
 }
 
 export async function offerUnlock(app, section) {
@@ -306,7 +345,8 @@ function quizScreen(app, config) {
   const title = config.title || (section ? section.title : part ? app.text.reviewPartTitle(part) : app.text.reviewAllTitle);
 
   function begin(resume = true) {
-    st.alreadyPassed = section != null && model.statusOf(section) === SectionStatus.passed;
+    // A section skipped by the placement test still adds its cards when its quiz is passed.
+    st.alreadyPassed = section != null && model.statusOf(section) === SectionStatus.passed && !model.isPlaced(section);
     st.last = null;
     st.finished = false;
     st.passed = null;
@@ -326,7 +366,7 @@ function quizScreen(app, config) {
       const cards = isExtra
         ? config.cards()
         : section
-          ? section.cards
+          ? model.quizCards(section)
           : (config.kind === 'reviewAll' ? model.allReviewQueue : model.reviewQueue(part)).map((id) => model.course.cardById(id));
       st.engine = new QuizEngine(cards);
       st.session = model.startSession({ kind: isReview ? 'review' : st.alreadyPassed || isExtra ? 'practice' : 'section', part, section });
@@ -487,7 +527,11 @@ function quizSummary(app, ui, { engine, part, section, passed, alreadyPassed, is
     ${passed === false ? html`<button class="btn block" ${ui.onClick(onTryAgain)}>Try again</button>` : ''}
     ${isExtra ? html`<button class="btn block" ${ui.onClick(onTryAgain)}>Do another extra review</button>` : ''}
     ${passed === true && next ? html`<button class="btn block" ${ui.onClick(() => ui.backThenReplace(path('section', next.id)))}>${nextLabel()}</button>` : ''}
-    <button class="btn outline block" ${ui.onClick(() => ui.back())}>${section ? (passed === false ? text.rereadSection : text.backToSection) : 'Done'}</button>
+    ${section && passed === false
+      ? html`<button class="btn outline block" ${ui.onClick(() => ui.back())}>${text.rereadSection}</button>`
+      : section
+        ? html`<button class="btn outline block" ${ui.onClick(() => { ui.returnLesson = model.course.lessonOf(section); ui.home(); })}>${text.backToLessons}</button>`
+        : html`<button class="btn outline block" ${ui.onClick(() => ui.back())}>Done</button>`}
   </div>`;
 
   const bySkill = new Map();
@@ -649,6 +693,26 @@ function statsTab(app, ui) {
   const forecast = model.forecastAll(14);
   const worst = stats.topTrouble.length ? Math.max(...stats.topTrouble.map((i) => i.misses)) : 1;
 
+  const achievementsCard = statSection('Achievements', html`<a class="card tappable" href="#/achievements" style="display:block;color:inherit;text-decoration:none">
+      <div class="row"><span style="font-size:1.8rem">🏆</span><span class="grow h3">${Object.keys(unlocked).length} of ${all.length} unlocked</span><span class="chevron">${icon('chevron')}</span></div>
+      <div style="margin-top:10px">${progressBar(Object.keys(unlocked).length / all.length)}</div>
+      ${latest.length
+        ? html`<p class="label" style="margin-top:12px">Latest</p><div class="wrap" style="margin-top:4px">${latest.slice(0, 3).map((a) => html`<span class="chip">${a.icon} ${a.title}</span>`)}</div>`
+        : html`<p class="small" style="margin-top:8px">${text.firstAchievement}</p>`}
+    </a>`);
+  const practiceCard = statSection(`${text.practiceChart}, last 14 days`, html`
+      ${stats.practice.length ? barChart(days.map((d, i) => ({ label: dayLabel(i, days.length), segments: [[Math.round(d.practiceSeconds / 60), ACCENT]] }))) : html`<p>Nothing logged yet.</p>`}
+      <a class="btn outline small" style="margin-top:10px" href="#/practice">Open ${text.practiceTitle.toLowerCase()}</a>`, text.practiceNote);
+
+  // Before anything is studied, the numbers would all be zero.
+  if (!hasAnswers && learned === 0 && model.totalPassed === 0 && !stats.practice.length) {
+    return html`<div>
+      ${emptyState(app, 'Your stats start here', 'Once you answer your first quiz, this shows your streak, scores by skill, what you miss most, and when your reviews are coming up.')}
+      ${achievementsCard}
+      ${practiceCard}
+    </div>`;
+  }
+
   return html`<div>
     ${statGrid([
       [text.sectionsPassedStat, `${model.totalPassed}/${course.allSections.length}`],
@@ -665,13 +729,7 @@ function statsTab(app, ui) {
       ['Active days', stats.activeDays],
       ...(spec.overviewExtra ? spec.overviewExtra(model, stats) : []),
     ])}
-    ${statSection('Achievements', html`<a class="card tappable" href="#/achievements" style="display:block;color:inherit;text-decoration:none">
-      <div class="row"><span style="font-size:1.8rem">🏆</span><span class="grow h3">${Object.keys(unlocked).length} of ${all.length} unlocked</span><span class="chevron">${icon('chevron')}</span></div>
-      <div style="margin-top:10px">${progressBar(Object.keys(unlocked).length / all.length)}</div>
-      ${latest.length
-        ? html`<p class="label" style="margin-top:12px">Latest</p><div class="wrap" style="margin-top:4px">${latest.slice(0, 3).map((a) => html`<span class="chip">${a.icon} ${a.title}</span>`)}</div>`
-        : html`<p class="small" style="margin-top:8px">${text.firstAchievement}</p>`}
-    </a>`)}
+    ${achievementsCard}
     ${statSection('Recommended focus', focus.length
       ? focus.map((area) => html`<div style="margin-bottom:16px">
           <div class="h3" style="font-size:.95rem">${area.title}</div>
@@ -681,9 +739,7 @@ function statsTab(app, ui) {
       : html`<p>Nothing needs attention right now.</p>`)}
     ${insights.length ? statSection('Insights', html`<div class="stack">${insights.map((i) => html`<p>${i}</p>`)}</div>`) : ''}
     ${spec.statsExtra ? spec.statsExtra(model, stats, ui, app) : ''}
-    ${statSection(`${text.practiceChart}, last 14 days`, html`
-      ${stats.practice.length ? barChart(days.map((d, i) => ({ label: dayLabel(i, days.length), segments: [[Math.round(d.practiceSeconds / 60), ACCENT]] }))) : html`<p>Nothing logged yet.</p>`}
-      <a class="btn outline small" style="margin-top:10px" href="#/practice">Open ${text.practiceTitle.toLowerCase()}</a>`, text.practiceNote)}
+    ${practiceCard}
     ${hasAnswers ? html`
       ${statSection('Answers, last 14 days', html`${legend([[GOOD, 'Correct'], [BAD, 'Wrong']])}${barChart(days.map((d, i) => ({ label: dayLabel(i, days.length), segments: [[d.right, GOOD], [d.wrong, BAD]] })))}`)}
       ${statSection('Minutes in quizzes, last 14 days', barChart(days.map((d, i) => ({ label: dayLabel(i, days.length), segments: [[Math.round(d.millis / 6000) / 10, ACCENT]] }))))}
@@ -848,6 +904,7 @@ function settingsTab(app, ui) {
       <button class="btn text" style="color:var(--bad)" ${ui.onClick(() => resetApp(app))}>Delete all ${app.title} progress</button>
     </div>
     <hr class="rule">
+    ${placementSettings(app, ui)}
     <h3 class="h3">Review quizzes</h3>
     <p class="small">Each part has its own settings.</p>
     ${model.course.parts.map((part) => html`<div style="margin-top:16px"><div class="label" style="color:var(--ink)">${part.title}</div>${deckSettingsPanel(app, part, ui)}</div>`)}
@@ -855,6 +912,26 @@ function settingsTab(app, ui) {
     <h3 class="h3">About and credits</h3>
     <div class="small stack" style="margin-top:6px">${app.spec.credits || ''}</div>
   </div>`;
+}
+
+/** Undo for the placement test, while it has sections still to undo. */
+function placementSettings(app, ui) {
+  const n = app.model.placed.size;
+  if (!n) return '';
+  const undo = async () => {
+    const ok = await confirmDialog(
+      'Undo the placement test?',
+      `The ${plural(n, 'section')} it skipped will go back to not done, so the course starts from the first one you haven't passed yourself. Your own progress stays as it is.`,
+      'Undo placement'
+    );
+    if (!ok) return;
+    await app.model.undoPlacement();
+    toast('Placement undone.');
+  };
+  return html`<h3 class="h3">Placement test</h3>
+    <p class="small" style="margin:4px 0 10px">The placement test skipped ${plural(n, 'section')} you haven't studied here since. They're open to study whenever you like, and their quizzes add them to your reviews.</p>
+    <button class="btn outline block" ${ui.onClick(undo)}>Undo placement</button>
+    <hr class="rule">`;
 }
 
 function saveBackup(app) {
@@ -895,7 +972,7 @@ async function restoreBackup(app) {
   }
   const ok = await confirmDialog(
     'Replace your progress?',
-    `This backup is from ${slashDate(new Date(backup.savedAt))}, with ${backup.sectionsPassed} sections passed and ${backup.itemsLearned} items learned. Restoring it replaces everything currently saved for ${app.title}, including reviews, stats and your study log. To keep your current progress, save a backup first.`,
+    `This backup is from ${slashDate(new Date(backup.savedAt))}${backup.fromAndroid ? ', from the Android app' : ''}, with ${backup.sectionsPassed} sections passed and ${backup.itemsLearned} items learned. Restoring it replaces everything currently saved for ${app.title}, including reviews, stats and your study log. To keep your current progress, save a backup first.`,
     'Replace and restore'
   );
   if (!ok) return;
@@ -910,11 +987,53 @@ async function resetApp(app) {
     'Delete everything'
   );
   if (!ok) return;
+  // What this app said you know goes too.
+  if (app.learner) await app.learner.syncApp(app.spec.id, []);
   app.model.store.db && app.model.store.db.close();
   await deleteDatabase(app.dbName);
   location.hash = '#/';
   location.reload();
 }
+
+// ---------- Lesson lists ----------
+
+/**
+ * A Today tab's lessons, one fold per level or part ([groups]: {title,
+ * summary, lessons}). The fold holding the next lesson starts open, and a
+ * heading tap opens or closes it for as long as the app stays open. Each tile
+ * is tagged with its lesson number, so "Back to the lessons" can scroll to the
+ * lesson just finished.
+ */
+export function lessonFolds(app, ui, groups, tile, { listClass = '' } = {}) {
+  const model = app.model;
+  const folds = (ui.folds ||= new Map());
+  const next = model.nextSection ? model.course.lessonOf(model.nextSection) : null;
+  const back = ui.returnLesson;
+  if (back) {
+    ui.returnLesson = null;
+    ui.afterRender.push(() => setTimeout(() => {
+      const el = document.querySelector(`[data-lesson="${back.number}"]`);
+      if (el) el.scrollIntoView({ block: 'center' });
+    }, 0));
+  }
+  const tagged = (out, n) => raw(String(out).replace(/^\s*<[a-z]+/i, (m) => `${m} data-lesson="${n}"`));
+  return groups.filter((g) => g.lessons.length).map((g) => {
+    if (back && g.lessons.includes(back)) folds.set(g.title, true);
+    const open = folds.has(g.title) ? folds.get(g.title) : g.lessons.includes(next);
+    const done = g.lessons.filter((l) => model.lessonComplete(l)).length;
+    return html`<section class="fold ${open ? 'open' : ''}">
+      <button class="fold-head" type="button" aria-expanded="${open}" ${ui.onClick(() => { folds.set(g.title, !open); ui.render(); })}>
+        <span class="grow"><span class="h3">${g.title}</span>${g.summary ? html`<span class="small">${g.summary}</span>` : ''}</span>
+        <span class="small">${done}/${g.lessons.length}</span>
+        <span class="fold-caret">${icon('chevron')}</span>
+      </button>
+      ${open ? html`<div class="${listClass}" style="margin-top:6px">${g.lessons.map((l) => tagged(tile(l), l.number))}</div>` : ''}
+    </section>`;
+  });
+}
+
+/** The usual groups: one per JLPT level, from the model's lessonsAt(level). */
+export const levelGroups = (model) => LEVELS.map((level) => ({ title: level, lessons: model.lessonsAt(level) }));
 
 // ---------- Progress panel (Writing, Reading, Listening) ----------
 
@@ -948,6 +1067,24 @@ export function progressPanel(model, { noun, nouns, stats, lessonsAt }) {
 }
 
 // ---------- Wiring ----------
+
+/**
+ * Everything [model] shows you've studied, for the learner model. Cards and
+ * sections list what they teach in `learn` (items from learner.js): a card in
+ * the review deck is studied, a passed section's items are seen.
+ */
+function learnerEntries(model) {
+  const out = [];
+  for (const [id, stored] of model.cards) {
+    const card = model.course.cardById(id);
+    for (const item of (card && card.learn) || []) out.push({ item, ref: id, type: 'card', card: stored.card });
+  }
+  for (const s of model.course.allSections) {
+    if (!s.learn || !model.passed.has(s.id)) continue;
+    for (const item of s.learn) out.push({ item, ref: s.id, type: 'seen' });
+  }
+  return out;
+}
 
 /**
  * spec: {
@@ -1054,14 +1191,35 @@ export function createSrsApp(spec) {
   };
   app.writeSummary();
 
+  // The shared learner model: this app's evidence of what you know, sent in
+  // full whenever progress changes, so it always matches this app's data.
+  app.learner = null;
+  app.syncLearner = () => (app.learner ? app.learner.syncApp(spec.id, learnerEntries(app.model)) : Promise.resolve());
+  let learnerTimer = null;
+  const syncSoon = () => {
+    clearTimeout(learnerTimer);
+    learnerTimer = setTimeout(app.syncLearner, 400);
+  };
+  app.learnerReady = Learner.open()
+    .then((l) => { app.learner = l; return app.syncLearner(); })
+    .catch((e) => console.error('Learner model unavailable', e));
+
   app.model.onChange(() => {
     app.writeSummary();
+    syncSoon();
     if (ui.screen && !ui.screen.ignoreModel) ui.render();
   });
+  // A placement test result this app hasn't applied yet.
+  app.placementReady = applyPendingPlacement(spec.id, app.model)
+    .then((r) => { if (r && r.count) toast(`Skipped ahead past ${r.level}, from your placement test. Earlier lessons stay open to study.`, 6000); })
+    .catch((e) => console.error('Placement not applied', e));
   app.model.store.onError = () => toast("Couldn't save your progress. Your browser may be out of storage space.");
 
   document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'visible') app.model.refresh();
+    if (document.visibilityState !== 'visible') return;
+    app.model.refresh();
+    // Other tabs may have added to what you know.
+    if (app.learner) app.learner.reload().catch(() => {});
   });
 
   app.mount = (root) => ui.mount(root);
@@ -1072,7 +1230,8 @@ export function createSrsApp(spec) {
 
 /** Shows a loading spinner, then the app, or an error if the content can't load. */
 export async function boot(root, start) {
-  root.innerHTML = '<div class="spinner"></div>';
+  // The page may already show the app's frame with a spinner (see index.html).
+  if (!root.querySelector('.spinner')) root.innerHTML = '<div class="spinner"></div>';
   try {
     const app = await start();
     app.mount(root);

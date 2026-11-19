@@ -1,4 +1,4 @@
-// Vibe Reading: 132 graded readings from N5 messages to N1 literature, with
+// Reading: 132 graded readings from N5 messages to N1 literature, with
 // tappable words, comprehension questions and re-reading reviews.
 
 import { html, icon, plural } from '../shared/srs/dom.js';
@@ -6,9 +6,10 @@ import { Store } from '../shared/srs/store.js';
 import { Course } from '../shared/srs/course.js';
 import { SrsModel, SectionStatus, count, answersWhere } from '../shared/srs/model.js';
 import { statGrid, barRow } from '../shared/srs/ui.js';
-import { createSrsApp, boot, path, offerUnlock, progressPanel, LEVELS } from '../shared/srs/screens.js';
+import { createSrsApp, boot, path, offerUnlock, progressPanel, LEVELS, lessonFolds, levelGroups } from '../shared/srs/screens.js';
 import { Rating, newCard } from '../shared/srs/fsrs.js';
-import { Dictionary, renderPassage } from '../shared/srs/passage.js';
+import { Dictionary, renderPassage, connectLearner } from '../shared/srs/passage.js';
+import { passageWords, wordLookupHooks } from '../shared/learner.js';
 
 const LEVEL_SUMMARIES = {
   N5: 'Short messages, signs and conversations, mostly in kana.',
@@ -59,6 +60,8 @@ function buildCourse(data) {
       kind: 'reading',
       deckId: r.level.toLowerCase(),
       blocks: [{ type: 'reading', reading }],
+      // Passing a reading means you've met every word in it.
+      learn: passageWords(reading.sentences, data.entries),
       cards: r.q.map((q, i) => ({
         id: `q:${n}.${i + 1}`,
         build: (rng) => {
@@ -111,7 +114,9 @@ class ReadingModel extends SrsModel {
 
   /** Characters in the readings passed so far. */
   get charactersRead() {
-    return this.course.lessons.filter((l) => this.lessonComplete(l)).reduce((n, l) => n + l.reading.characters, 0);
+    // Not readings skipped by the placement test.
+    const read = this.achievementView();
+    return this.course.lessons.filter((l) => read.lessonComplete(l)).reduce((n, l) => n + l.reading.characters, 0);
   }
 
   /**
@@ -136,7 +141,7 @@ class ReadingModel extends SrsModel {
   }
 
   achievementFacts(stats) {
-    return { model: this, stats, perfectQuizzes: this.store.perfectSectionQuizzes(1) };
+    return { model: this.achievementView(), stats, perfectQuizzes: this.store.perfectSectionQuizzes(1) };
   }
 
   buildAchievements() {
@@ -334,10 +339,7 @@ function renderToday(ui, app) {
       </a>`;
     })() : ''}
     ${due > 0 || saved ? html`<a class="btn tonal block" href="#/quiz/review-all">${saved ? "Resume today's reviews" : `Re-read ${plural(due, 'passage')} due today`}</a>` : ''}
-    ${LEVELS.map((level) => html`<section>
-      <h2 class="h3">${level}</h2>
-      <div class="list" style="margin-top:6px">${model.lessonsAt(level).map((l) => readingTile(app, ui, l))}</div>
-    </section>`)}
+    ${lessonFolds(app, ui, levelGroups(model), (l) => readingTile(app, ui, l), { listClass: 'list' })}
   </div>`;
 }
 
@@ -360,7 +362,7 @@ boot(document.getElementById('app'), async () => {
   ]);
   const course = buildCourse(content);
   const model = new ReadingModel(store, course, {
-    appName: 'Vibe Reading',
+    appName: 'Reading',
     backupApp: 'vibe_web_reading',
     passMark: 0.8,
     noPartId: 'practice',
@@ -368,9 +370,9 @@ boot(document.getElementById('app'), async () => {
     statsOptions: { slowExcluded: (id, skill) => skill === 'Re-reading' },
   });
   model.load();
-  return createSrsApp({
+  const app = createSrsApp({
     id: 'reading',
-    title: 'Vibe Reading',
+    title: 'Reading',
     model,
     summaryNoun: 'readings',
     backupFile: 'vibe-reading-backup',
@@ -407,7 +409,7 @@ boot(document.getElementById('app'), async () => {
       sectionPassed: 'Reading passed',
       sectionNotPassed: 'Not passed yet',
       nextLesson: (l) => `Continue to the next reading: ${l.number}, ${l.title}`,
-      backToSection: 'Back to the passage',
+      backToLessons: 'Back to the readings',
       rereadSection: 'Read the passage again',
       missedTitle: (n) => `Questions you got wrong (${n})`,
       missedNote: 'Tap a question to see its answer and history.',
@@ -437,4 +439,6 @@ boot(document.getElementById('app'), async () => {
     sectionScreenTitle: (lesson) => `Reading ${lesson.number} · ${lesson.level}`,
     settingsExtra,
   });
+  connectLearner(wordLookupHooks(() => app.learner, 'reading'));
+  return app;
 });

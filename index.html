@@ -12,9 +12,15 @@
 <meta name="theme-color" content="#FAFAFA">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Nath's 日本語 Tools</title>
-<meta name="description" content="A JLPT grammar library and four spaced-repetition study apps: writing, conjugation, reading and listening.">
+<meta name="description" content="A JLPT grammar library and six spaced-repetition study apps: grammar, vocabulary, writing, conjugation, reading and listening.">
+<!-- Web fonts load without holding up the page: text shows in the fallback font until they arrive. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&amp;family=Inter:wght@400;500;600;700;800&amp;display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&amp;family=Inter:wght@400;500;600;700;800&amp;display=swap"></noscript>
 <link rel="stylesheet" href="shared/core.css">
 <link rel="stylesheet" href="landing.css">
+<script src="shared/staging.js"></script>
 <script>
   // Set the theme before the first paint, so dark mode doesn't flash.
   try { var t = localStorage.getItem('grammarNotebook.theme'); } catch (e) {}
@@ -22,6 +28,17 @@
   document.documentElement.setAttribute('data-theme', t);
   document.querySelector('meta[name="theme-color"]').setAttribute('content', t === 'dark' ? '#0A0A0C' : '#FAFAFA');
 </script>
+<!-- Preloads: written by tools/preloads.py, so edit that instead. -->
+<link rel="modulepreload" href="landing.js">
+<link rel="modulepreload" href="shared/srs/dom.js">
+<link rel="modulepreload" href="shared/srs/ui.js">
+<link rel="modulepreload" href="shared/srs/store.js">
+<link rel="modulepreload" href="shared/srs/stats.js">
+<link rel="modulepreload" href="shared/learner.js">
+<link rel="modulepreload" href="shared/placement.js">
+<link rel="modulepreload" href="shared/srs/fsrs.js">
+<link rel="modulepreload" href="shared/srs/quiz-engine.js">
+<!-- End of preloads. -->
 </head>
 <body>
 
@@ -30,7 +47,7 @@
     <h1 class="hub-title">Nath's 日本語 Tools</h1>
     <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode"></button>
   </header>
-  <p class="hub-sub">A grammar library and four spaced-repetition courses, from N5 to N1.</p>
+  <p class="hub-sub">Personal tools for Japanese study, based on spaced repetition.</p>
 
   <div id="backupReminder" class="backup-reminder" role="status" hidden></div>
 
@@ -42,7 +59,15 @@
       <span class="tile-body">
         <span class="tile-name">Grammar Library</span>
         <span class="tile-desc">JLPT grammar library: every pattern from N5 to N1, with examples and quizzes.</span>
-        <span class="tile-stat" data-stat="grammar"></span>
+        <span class="tile-stat" data-stat="library"></span>
+      </span>
+    </a>
+    <a class="tile" href="vocab/index.html" style="--tile:var(--app-vocab)">
+      <span class="tile-glyph" lang="ja">語</span>
+      <span class="tile-body">
+        <span class="tile-name">Vocabulary</span>
+        <span class="tile-desc">The words of every reading and track, learned just before you meet them.</span>
+        <span class="tile-stat" data-stat="vocab"></span>
       </span>
     </a>
     <a class="tile" href="writing/index.html" style="--tile:var(--app-writing)">
@@ -51,6 +76,14 @@
         <span class="tile-name">Writing</span>
         <span class="tile-desc">Kana and 2,195 kanji, written by hand on paper.</span>
         <span class="tile-stat" data-stat="writing"></span>
+      </span>
+    </a>
+    <a class="tile" href="grammar-course/index.html" style="--tile:var(--app-grammar)">
+      <span class="tile-glyph" lang="ja">習</span>
+      <span class="tile-body">
+        <span class="tile-name">Grammar</span>
+        <span class="tile-desc">Every grammar point in the library, a few at a time, with reviews.</span>
+        <span class="tile-stat" data-stat="grammar"></span>
       </span>
     </a>
     <a class="tile" href="conjugation/index.html" style="--tile:var(--app-conjugation)">
@@ -79,19 +112,31 @@
     </a>
   </nav>
 
+  <p class="placement-link small" id="placementLink"><a href="placement/index.html">Take the placement test</a> to find your level and skip what you already know.</p>
+
+  <section id="knowledge" class="knowledge" aria-labelledby="knowledgeTitle" hidden>
+    <h2 class="h2" id="knowledgeTitle">What you know</h2>
+    <p class="small">Across every app. Known means you'd still remember it in three weeks.</p>
+    <div id="knowledgeBody"></div>
+  </section>
+
   <section id="activity" class="activity" aria-labelledby="activityTitle" hidden>
     <h2 class="h2" id="activityTitle">Minutes studied, last 14 days</h2>
     <p class="small">Time in quizzes plus time you've logged, across every app.</p>
     <div id="activityChart"></div>
   </section>
 
-  <section class="card data-info" aria-labelledby="dataTitle">
-    <h2 class="h2" id="dataTitle">Where your progress is kept</h2>
+  <details class="card data-info">
+    <summary>
+      <h2 class="h2">How your data is stored (Backup/Restore)</h2>
+      <svg class="data-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+    </summary>
     <div class="prose small-prose">
       <p>There are no accounts and no server. Everything you do here is saved <strong>only in this browser, on this device</strong>:</p>
       <ul>
         <li>The grammar library keeps your saved points and settings in the browser's local storage.</li>
-        <li>The four study apps keep lessons passed, review schedules, answers and stats in the browser's IndexedDB storage.</li>
+        <li>The study apps keep lessons passed, review schedules, answers and stats in the browser's IndexedDB storage.</li>
+        <li>A shared record of what you know (the words, kanji, kana and forms you've met or are learning, and the words you've looked up) sits beside them, so every app sees the same picture.</li>
       </ul>
       <p>This means:</p>
       <ul>
@@ -102,17 +147,40 @@
       <p><strong>On iPhone and iPad:</strong> Safari clears the data of websites you haven't opened for a week. To keep your progress, add this site to your Home Screen (tap Share, then <em>Add to Home Screen</em>) and always open it from there. Home Screen apps aren't cleared like that. The Home Screen app keeps its own progress, separate from Safari's, so pick one and stick with it.</p>
       <p><strong>On Android:</strong> Chrome keeps your progress unless you clear the site's data or the phone runs very low on space. Installing the site (Chrome menu, then <em>Add to Home screen</em> or <em>Install app</em>) makes it open like an app and helps keep its data safe.</p>
       <p>To keep it safe, save a backup file now and then. You can restore it here or in another browser to carry on where you left off. Each app's Settings tab can also back up just that app.</p>
+      <p><strong>Moving from the Android apps:</strong> a backup from the Android Writing, Conjugation, Reading or Listening app restores here too. Use the button below, or that app's Settings tab. It brings over lessons passed, reviews, stats and your study log.</p>
     </div>
     <div class="stack" style="margin-top:14px">
       <button class="btn block" id="backupAll" type="button">Back up everything</button>
       <button class="btn outline block" id="restoreAll" type="button">Restore from a backup</button>
     </div>
     <p class="tiny" id="storageLine" style="margin-top:10px"></p>
+  </details>
+
+  <section class="more" aria-labelledby="moreTitle">
+    <h2 class="h2" id="moreTitle">Check out my other Japanese resources</h2>
+    <div class="tiles">
+      <a class="tile" href="https://github.com/NathanKewley/JOCR" target="_blank" rel="noopener" style="--tile:#5C6BC0">
+        <img class="tile-glyph tile-img" src="assets/icons/jocr.svg" alt="" width="56" height="56">
+        <span class="tile-body">
+          <span class="tile-name">JOCR</span>
+          <span class="tile-desc">Reads Japanese from a photo: the text split into words with readings, translations to reveal when you're ready, and words saved to renshuu.</span>
+          <span class="tile-stat">Android app · on GitHub ↗</span>
+        </span>
+      </a>
+      <a class="tile" href="https://github.com/NathanKewley/Kotatsu-Redo-OCR" target="_blank" rel="noopener" style="--tile:#B0389E">
+        <img class="tile-glyph tile-img" src="assets/icons/kotatsu-redo-ocr.png" alt="" width="56" height="56">
+        <span class="tile-body">
+          <span class="tile-name">Kotatsu-Redo-OCR</span>
+          <span class="tile-desc">A fork of the Kotatsu-Redo manga reader that adds OCR: a sidebar pulls the Japanese off each page into words to look up and save to renshuu.</span>
+          <span class="tile-stat">Android app · on GitHub ↗</span>
+        </span>
+      </a>
+    </div>
   </section>
 </main>
 
 <footer class="hub-wrap hub-foot small">
-  Built from four Android study apps. Dictionary data from JMdict and KANJIDIC2 (EDRDG, CC BY-SA 4.0), stroke order from KanjiVG (CC BY-SA 3.0); see each app's Settings tab for full credits.
+  Four of the apps are built from Android study apps. Dictionary data from JMdict and KANJIDIC2 (EDRDG, CC BY-SA 4.0), stroke order from KanjiVG (CC BY-SA 3.0); see each app's Settings tab for full credits.
 </footer>
 
 <script type="module" src="landing.js"></script>

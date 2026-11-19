@@ -1,20 +1,26 @@
 # Nath's 日本語 Tools
 
-A static site with five ways to study Japanese, from N5 to N1. It runs on
+A static site with seven ways to study Japanese, from N5 to N1. It runs on
 GitHub Pages with no build step and no server.
 
 | App | Folder | What it does |
 | --- | --- | --- |
 | Grammar | `grammar/` | The JLPT grammar library: every pattern, with examples and quizzes. |
+| Grammar | `grammar-course/` | The library's 485 grammar points, five a lesson, with fill-in-the-blank and sentence-building reviews. |
+| Vocabulary | `vocab/` | The 5,111 words of the readings and tracks, each lesson just before its passages. |
 | Writing | `writing/` | Kana and 2,195 kanji, written by hand on paper, with stroke order. |
 | Conjugation | `conjugation/` | Word types and every form, typed and checked. |
 | Reading | `reading/` | 132 graded readings with tappable words and comprehension questions. |
 | Listening | `listening/` | 132 voiced tracks with questions and dictation. |
 
-The landing page (`index.html`) links to all five. The four study apps are web
+The landing page (`index.html`) links to all seven, and to a placement test
+(`placement/`, see below). Four of the study apps are web
 ports of the Android apps in `vibe-jap-writing`, `vibe-srs-jap-conjugating`,
 `vibe-jap-reading` and `vibe-jap-listening`. They use the same content, the
 same FSRS scheduling and the same course structure, stats and achievements.
+Vocabulary is built for this site from the Reading and Listening content (see
+Updating content), and the grammar course from the grammar library, both on the
+same engine.
 
 ![The grammar library](assets/screenshot.png)
 
@@ -25,7 +31,8 @@ Everything stays in the browser, on the device:
 - The grammar library keeps saved points and settings in `localStorage`
   (`grammarNotebook.*`). The theme key is shared by the whole site.
 - Each study app keeps its progress in its own IndexedDB database
-  (`vibe-writing`, `vibe-conjugation`, `vibe-reading`, `vibe-listening`). The
+  (`vibe-grammar`, `vibe-vocab`, `vibe-writing`, `vibe-conjugation`,
+  `vibe-reading`, `vibe-listening`). The
   tables mirror the Android apps' SQLite schema. IndexedDB is used instead of
   `localStorage` because the answer history quickly outgrows `localStorage`'s
   5 MB limit.
@@ -37,13 +44,102 @@ progress on each tile comes from a small summary each app saves in
 because the landing page doesn't load the course content.
 
 Each app's Settings tab can back up and restore that app. The landing page can
-back up and restore everything at once.
+back up and restore everything at once, or restore any one app's backup.
+
+Backups from the Android apps restore too, into Writing, Conjugation, Reading or
+Listening (`ANDROID_BACKUP_APPS` in `shared/srs/store.js`). The web apps use the
+same tables, card format, settings keys and content ids, so the file's tables
+go in as they are. Android-only settings, such as dark mode or the departure
+date, are kept but unused. A quiz saved part-way through resumes with the same
+cards, though its questions may be worded differently: the two apps' random
+numbers differ.
+
+### What you know, across the apps
+
+`shared/learner.js` keeps one shared record of what you know, in its own
+database (`vibe-learner`). It's an index built from the apps, not a copy of
+their progress: each app keeps its own database and review schedule as before.
+
+- **Items** are things you can know, with the same id in every app: words by
+  headword and reading (`w:食べる|たべる`), kanji (`k:食`), kana (`kana:た`),
+  conjugation forms (`f:te`) and grammar points by their library id
+  (`g:n4-nagara`).
+- **Links** tie an item to an app's evidence for it. Cards and sections say what
+  they teach in a `learn` list: a card in the review deck means you're
+  studying the item, and a passed section means you've met it. A word is
+  *known* once one of its cards is expected to stick for three weeks.
+- Each app sends all its links when it opens and after every change, so the
+  record can't drift from the app's data, even after a restore or reset.
+  Word lookups in Reading and Listening are the only data kept just here, so
+  whole-site backups include this database.
+
+Lessons in Vocabulary, Writing and Conjugation let you mark an item as already
+known (`knownToggle` in `shared/srs/screens.js`). Its cards skip the lesson quiz
+and join the reviews as known, with the first check in a month
+(`SrsModel.markKnown`); the mark is kept on the card's row (`marked_known`)
+until that first review, and can be undone until then. A part whose items are
+all marked can be finished without a quiz.
+
+The landing page shows the counts under "What you know", and the word popup in
+Reading and Listening says when you're already learning a word elsewhere. Rows
+record when they last changed, ready for syncing between devices later.
+
+### Placement test
+
+`placement/` finds a level in grammar, vocabulary and kanji, so someone who
+already knows some Japanese can skip ahead. The landing page offers it once, in
+a popup on a first visit with nothing studied yet, and links to it after that.
+
+Each part climbs from N5: up to five questions a level, passed at four right
+and over at the second wrong answer. "I don't know" counts as wrong, so there's
+no need to guess. The questions come from the same places as the courses': the
+grammar course's fill-in-the-blank (`grammar-core.js`), word meanings from the
+Vocabulary content and kanji meanings from Writing's.
+
+The results screen sets a level for each course, which can be changed before
+applying: Conjugation follows grammar, Reading and Listening follow vocabulary,
+and Writing follows kanji (the test checks reading kanji, not writing them).
+The page saves the levels in `localStorage` (`vibe.placement`, read and written by
+`shared/placement.js`), and each app applies its own level the next time it opens.
+
+Placement skips ahead rather than marking items known, so it can't load
+thousands of reviews onto one day. Every section up to the last lesson at that
+level counts as passed, with no review cards (`SrsModel.applyPlacement`). The
+`placed_at` column marks those rows, and stays set until the section is studied.
+Placed sections stay open: taking one's quiz adds its cards as usual and clears
+the mark. Achievements ignore placed sections, the grammar course's sentence
+cards aren't added for them, and Writing's daily task leaves them out. Each
+app's Settings can undo the placement for sections not studied since.
+
+### Grammar across the apps
+
+The grammar course (`grammar-course/`) teaches the library's points in library
+order, five a lesson within each level. Each point has two cards: a
+fill-in-the-blank from one of its own examples, with options from related
+points, and sentence building, where one of its examples is split into pieces to
+tap back into order from the English. The pieces come from a simple rule in
+`grammar-core.js` (`sentencePieces`): a new piece starts where kanji or
+katakana follows a particle or word ending, or after 、 and 。, never inside a
+kanji reading or the grammar point itself. Examples that give fewer than three
+pieces are skipped, which leaves 55 of the 485 points with only the first card.
+An answer is right when the pieces rebuild the sentence exactly.
+It uses the library's own logic for that: `grammar/grammar-core.js` holds the
+data access, highlighting, furigana and question-building that both pages load.
+The library opens an entry from a link like `grammar/index.html#n4-nagara`, and
+each entry shows where it stands in the course. `shared/grammar-links.js` maps
+Conjugation lessons and the form labels in Reading and Listening to grammar
+points, so Conjugation lessons and the word popup link into the library; the
+tests check every id and pattern there against the library's data.
 
 ## Layout
 
 ```
 index.html, landing.*      the landing page
 shared/core.css            the shared look (light and dark)
+shared/learner.js          what you know across the apps (see above)
+shared/grammar-links.js    grammar points behind Conjugation lessons and passage forms
+shared/staging.js          keeps the staging site's data separate (see Staging)
+shared/placement.js        the placement test's result, until each app applies it
 shared/srs/                the shared study-app engine
   fsrs.js                    FSRS scheduler, ported from the Dart fsrs 2.0.1 package
   store.js                   IndexedDB tables, held in memory while an app is open
@@ -53,11 +149,15 @@ shared/srs/                the shared study-app engine
   screens.js, ui.js          the shared screens and the hash router
   passage.js                 tappable Japanese text with furigana and read-aloud
   romaji.js                  romaji to kana, for keyboards without Japanese input
-writing/, conjugation/, reading/, listening/
+grammar-course/, vocab/, writing/, conjugation/, reading/, listening/
   app.js                     each app's content loader, model and screens
   data/                      content copied from the Android repos
 grammar/                   the grammar library
+  grammar-core.js            its data, highlighting and question-building, shared with the course
+placement/                 the placement test
 tools/sync-content.sh      copies content from the Android repos
+tools/build-vocab.py       builds the vocabulary course from Reading and Listening
+tools/preloads.py          keeps each page's list of code and content to fetch up front
 ```
 
 ## Updating content
@@ -69,11 +169,20 @@ it across:
 tools/sync-content.sh [FOLDER_HOLDING_THE_REPOS]
 ```
 
+The sync then rebuilds the vocabulary course (`vocab/data/content.json`) with
+`tools/build-vocab.py`. Lesson n holds the words that first appear in Reading n
+or Track n, in the order they come up, leaving pure grammar words (particles,
+the copula) to the grammar library. Each word keeps an example sentence from
+its lesson's passages, with the track's audio timing when it comes from
+Listening. To rebuild it on its own: `python3 tools/build-vocab.py`.
+
 `conjugation/data/examples.json` is written for this site, not copied, so a
 sync leaves it alone. It holds the example sentences shown under each lesson's
 table, keyed by section id. Each sentence names a word and form, with `{}`
 where the word goes in that form and furigana written as `漢字[かんじ]`. The
-tests check every sentence still fits the synced content.
+word's main form fills the slot unless `v` picks another of its variants (行く's
+humble form is 参る, but `"v": 1` gives 伺う). The tests check every sentence
+still fits the synced content.
 
 The folder defaults to this repo's parent.
 
@@ -81,8 +190,8 @@ The folder defaults to this repo's parent.
 
 Browser tests drive a real headless Chrome through each app the way a learner
 would: lessons, typed and romaji answers, typo fixes, reviews, resuming a quiz,
-audio and dictation, backups, the landing page's stats and backup reminder, and
-Android phone emulation with touch. Any JavaScript error fails the test.
+audio and dictation, backups, the placement test, the landing page's stats and
+backup reminder, and Android phone emulation with touch. Any JavaScript error fails the test.
 
 ```
 python3 tools/tests/run.py            # everything, about 3 minutes
@@ -94,6 +203,28 @@ isn't found). Each test starts its own web server and a fresh browser profile.
 Run them after `tools/sync-content.sh` too: the apps reimplement the Android
 apps' logic, so a change to a content format shows up here first.
 
+## Loading quickly
+
+There's no build step, so each page does a few things to open fast:
+
+- **Everything is fetched at once.** A browser finds a module's imports only
+  after downloading it, which would load an app's code in rounds. Each page lists
+  all its modules (`<link rel="modulepreload">`) and the content it fetches on
+  start (`<link rel="preload">`) in its `<head>`. `tools/preloads.py` writes
+  those lists: run it after adding, removing or moving an import or a content
+  file. The tests fail if a list is out of date.
+- **Web fonts don't hold up the page.** They load from Google alongside it, and
+  text shows in the fallback font until they arrive.
+- **The app's frame shows at once.** Each app's `index.html` holds its header
+  and a spinner, which the app replaces when it's ready.
+- **Writing's stroke data loads after the app opens.** It's the biggest file
+  (3 MB) and is only drawn in lessons and answers.
+- **Pages fade into each other** (`@view-transition` in `core.css`) in
+  browsers that support it, instead of flashing blank.
+
+GitHub Pages lets browsers keep files for 10 minutes, after which each visit
+checks them with the server again.
+
 ## Running locally
 
 The apps load their content with `fetch` and use ES modules, so open them
@@ -104,6 +235,27 @@ python3 -m http.server 8000
 ```
 
 Then open http://localhost:8000.
+
+## Staging
+
+Changes are tested on a copy of the site before they go live. The copy is a
+second repo, `japanese-grammar-staging`, with GitHub Pages turned on:
+
+```
+git push -f staging some-branch:main
+```
+
+Then open https://nathankewley.github.io/japanese-grammar-staging/.
+
+Both sites are on `nathankewley.github.io`, and browsers keep saved data per
+site, so they would normally share progress. `shared/staging.js`, loaded first
+on every page, prevents that: on any copy whose first folder ends in
+`-staging`, it quietly adds a `staging.` prefix to every saved setting and
+database. Staging starts empty and can't touch real progress, and an orange
+STAGING tab on the left edge shows which site you're on. The code still sees the
+usual names, so backups work in both directions: restore a real backup on
+staging to test with a copy of your progress. On the real site the script does
+nothing.
 
 ## Notes
 

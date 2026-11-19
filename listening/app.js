@@ -1,13 +1,14 @@
-// Vibe Listening: 132 voiced tracks with JLPT-style questions and dictation.
+// Listening: 132 voiced tracks with JLPT-style questions and dictation.
 
 import { html, icon, plural } from '../shared/srs/dom.js';
 import { Store } from '../shared/srs/store.js';
 import { Course } from '../shared/srs/course.js';
 import { SrsModel, SectionStatus, count, answersWhere } from '../shared/srs/model.js';
 import { statGrid, barRow } from '../shared/srs/ui.js';
-import { createSrsApp, boot, path, offerUnlock, progressPanel, LEVELS } from '../shared/srs/screens.js';
+import { createSrsApp, boot, path, offerUnlock, progressPanel, LEVELS, lessonFolds, levelGroups } from '../shared/srs/screens.js';
 import { Rating, newCard } from '../shared/srs/fsrs.js';
-import { Dictionary, renderPassage, resetPassages } from '../shared/srs/passage.js';
+import { Dictionary, renderPassage, resetPassages, connectLearner } from '../shared/srs/passage.js';
+import { passageWords, wordLookupHooks } from '../shared/learner.js';
 import { normaliseTyped, hasRomaji, toHiragana } from '../shared/srs/romaji.js';
 
 const LEVEL_SUMMARIES = {
@@ -95,6 +96,8 @@ function buildCourse(data) {
           kind: 'listening',
           deckId: deck,
           blocks: [],
+          // Passing a track means you've met every word in it.
+          learn: passageWords(it.lines, data.entries),
           cards: it.q.map((q, i) => ({ id: `q:${n}.${i + 1}`, build: (rng) => choice(item, q, rng), info: { name: q.q, definition: q.o[0] } })),
           reviewCard: {
             id: reviewId,
@@ -201,7 +204,7 @@ class ListeningModel extends SrsModel {
   }
 
   achievementFacts(stats) {
-    return { model: this, stats, perfectQuizzes: this.store.perfectSectionQuizzes(1) };
+    return { model: this.achievementView(), stats, perfectQuizzes: this.store.perfectSectionQuizzes(1) };
   }
 
   buildAchievements() {
@@ -604,10 +607,7 @@ function renderToday(ui, app) {
       </a>`;
     })() : ''}
     ${due > 0 || saved ? html`<a class="btn tonal block" href="#/quiz/review-all">${saved ? "Resume today's reviews" : `Review ${plural(due, 'card')} due today`}</a>` : ''}
-    ${LEVELS.map((level) => html`<section>
-      <h2 class="h3">${level}</h2>
-      <div class="list" style="margin-top:6px">${model.lessonsAt(level).map((l) => trackTile(app, ui, l))}</div>
-    </section>`)}
+    ${lessonFolds(app, ui, levelGroups(model), (l) => trackTile(app, ui, l), { listClass: 'list' })}
   </div>`;
 }
 
@@ -625,7 +625,7 @@ boot(document.getElementById('app'), async () => {
   ]);
   const course = buildCourse(content);
   const model = new ListeningModel(store, course, {
-    appName: 'Vibe Listening',
+    appName: 'Listening',
     backupApp: 'vibe_web_listening',
     passMark: 0.8,
     noPartId: 'practice',
@@ -633,9 +633,9 @@ boot(document.getElementById('app'), async () => {
   });
   MODEL = model;
   model.load();
-  return createSrsApp({
+  const app = createSrsApp({
     id: 'listening',
-    title: 'Vibe Listening',
+    title: 'Listening',
     model,
     summaryNoun: 'tracks',
     backupFile: 'vibe-listening-backup',
@@ -644,6 +644,7 @@ boot(document.getElementById('app'), async () => {
       sectionQuizStart: (n, s) => (s.kind === 'dictation' ? `Start dictation (${plural(n, 'line')})` : `Start listening (${n} questions)`),
       sectionQuizResume: (done, n) => `Resume (${done} of ${n} done)`,
       sectionQuizAgain: (s) => (s.kind === 'dictation' ? 'Write them again' : 'Answer the questions again'),
+      backToLessons: 'Back to the tracks',
       itemTimesNote: 'Time to first answer. Red means it was missed first time. Dictation takes longer than picking an option.',
       practiceTitle: 'Outside listening log',
       practiceChart: 'Minutes of outside listening',
@@ -686,4 +687,6 @@ boot(document.getElementById('app'), async () => {
     partItemCount: (part) => part.sections.reduce((n, s) => n + (s.reviewCard ? 1 : s.cards.length), 0),
     sectionScreenTitle: (lesson) => `Track ${lesson.number} · ${lesson.level}`,
   });
+  connectLearner(wordLookupHooks(() => app.learner, 'listening'));
+  return app;
 });
