@@ -145,20 +145,20 @@ export function strokeControls(ui, { scope = '.kanji-card', rerender } = {}) {
   const play = (ev, el) => drawStrokes(el.closest(scope).querySelector('svg.stroke[data-char]'));
   return html`<div class="stroke-controls">
     <button class="chip" type="button" ${ui.onClick(play)}>${icon('play')} Play</button>
-    <button class="chip ${prefs.numbers ? 'on' : ''}" type="button" aria-pressed="${prefs.numbers}" ${ui.onClick(() => { setNumbers(!prefs.numbers); redraw(); })}>Stroke numbers</button>
+    <button class="chip ${prefs.numbers ? 'on' : ''}" type="button" aria-pressed="${prefs.numbers}" title="Show stroke numbers" ${ui.onClick(() => { setNumbers(!prefs.numbers); redraw(); })}>Numbers</button>
   </div>`;
 }
 
 /** Just the numbers switch, for a set of kana. */
 export function numbersToggle(ui) {
-  return html`<button class="chip ${prefs.numbers ? 'on' : ''}" type="button" aria-pressed="${prefs.numbers}" ${ui.onClick(() => { setNumbers(!prefs.numbers); ui.render(); })}>Stroke numbers</button>`;
+  return html`<button class="chip ${prefs.numbers ? 'on' : ''}" type="button" aria-pressed="${prefs.numbers}" title="Show stroke numbers" ${ui.onClick(() => { setNumbers(!prefs.numbers); ui.render(); })}>Numbers</button>`;
 }
 
 // ---------- Larger view ----------
 
 /**
  * The diagram large, in its own window, with the same controls. Tapping a
- * lesson's diagram opens it. [onChange] runs after a setting changes, so the
+ * lesson's diagram opens it, already drawn. [onChange] runs after a setting changes, so the
  * page behind can redraw too.
  */
 export function openStrokeViewer(ch, onChange) {
@@ -172,7 +172,7 @@ export function openStrokeViewer(ch, onChange) {
       <div class="stroke-viewer-art">${strokeDiagram(ch, size, { viewer: true })}</div>
       <div class="stroke-controls">
         <button class="chip" type="button" data-play>${icon('play')} Play</button>
-        <button class="chip ${prefs.numbers ? 'on' : ''}" type="button" data-numbers aria-pressed="${prefs.numbers}">Stroke numbers</button>
+        <button class="chip ${prefs.numbers ? 'on' : ''}" type="button" data-numbers aria-pressed="${prefs.numbers}" title="Show stroke numbers">Numbers</button>
       </div>
     </div>`);
   };
@@ -190,6 +190,6 @@ export function openStrokeViewer(ch, onChange) {
   });
   d.addEventListener('close', () => d.remove());
   document.body.appendChild(d);
+  // It opens already drawn; Play animates it.
   d.showModal();
-  drawStrokes(d.querySelector('svg.stroke'));
 }
