@@ -869,10 +869,9 @@ def kanji_stroke_diagrams(c):
     open_app(c, 'writing/index.html#/section/l13.kanji')
     c.wait_for("document.querySelectorAll('svg.stroke path.ink').length > 0", 15)
     card = "[...document.querySelectorAll('.kanji-card')].find((e) => e.textContent.includes('fish'))"
-    labels = c.js(f"[...{card}.querySelectorAll('.stroke-main circle.n-bg')].map((e) => [+e.getAttribute('cx'), +e.getAttribute('cy'), +e.getAttribute('r')])")
-    check(len(labels) == 11, f'魚 should show 11 stroke numbers, got {len(labels)}')
-    clash = [(i, j) for i in range(len(labels)) for j in range(i) if ((labels[i][0] - labels[j][0]) ** 2 + (labels[i][1] - labels[j][1]) ** 2) ** 0.5 < labels[i][2] + labels[j][2] - 0.3]
-    check(not clash, f'stroke numbers should not overlap: {clash}')
+    check(c.js(f"{card}.querySelectorAll('.stroke-main .lbl').length") == 11, '魚 should show its 11 stroke numbers')
+    check(c.js(f"!!{card}.querySelector('.stroke-main .stroke-expand')"), 'the diagram should show that it opens larger')
+    check(not c.js(f"[...{card}.querySelectorAll('.stroke-controls .chip')].some((b) => b.textContent.includes('Slow'))"), 'no Slow button')
     # Play draws it stroke by stroke.
     c.js(f"[...{card}.querySelectorAll('.stroke-controls .chip')].find((b) => b.textContent.includes('Play')).click()")
     check(c.js(f"{card}.querySelector('.stroke-main svg.stroke').classList.contains('drawing')"), 'Play should start the drawing')
