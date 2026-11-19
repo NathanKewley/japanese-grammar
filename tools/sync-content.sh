@@ -24,6 +24,7 @@ copy() {
 
 copy "$src/vibe-jap-writing/assets/content.json" "$here/writing/data/content.json"
 copy "$src/vibe-jap-writing/assets/strokes.json" "$here/writing/data/strokes.json"
+copy "$src/vibe-jap-writing/assets/parts.json" "$here/writing/data/parts.json"
 copy "$src/vibe-srs-jap-conjugating/assets/content.json" "$here/conjugation/data/content.json"
 copy "$src/vibe-jap-reading/assets/content.json" "$here/reading/data/content.json"
 copy "$src/vibe-jap-listening/assets/content.json" "$here/listening/data/content.json"

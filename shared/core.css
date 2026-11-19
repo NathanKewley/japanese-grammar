@@ -30,6 +30,12 @@
   --app-listening: #9A3F8E;
   --app-vocab: #A15C07;
 
+  /* A kanji's parts, in Writing. */
+  --part-0: #D9534F;
+  --part-1: #2E7FD6;
+  --part-2: #2E9E5B;
+  --part-3: #B9770E;
+
   --radius: 14px;
   color-scheme: light;
 }
@@ -61,6 +67,11 @@
   --app-reading: #6CC48F;
   --app-listening: #E08AD6;
   --app-vocab: #EDA94E;
+
+  --part-0: #FF7B72;
+  --part-1: #6CB4FF;
+  --part-2: #5FD08A;
+  --part-3: #F2C14E;
 
   color-scheme: dark;
 }
@@ -673,6 +684,57 @@ dialog.modal .actions { display: flex; justify-content: flex-end; gap: 8px; marg
 .stroke .ink.current { stroke: var(--accent); }
 .stroke .dot { fill: var(--accent); }
 .stroke .n { fill: var(--accent); font-family: 'Inter', sans-serif; font-weight: 700; }
+.stroke .pen { fill: var(--accent); opacity: 0; }
+
+/* A kanji's parts, each in its own colour (partsOf in writing/strokes.js). */
+.stroke .ink.part-0, .part-swatch.part-0 { stroke: var(--part-0); background: var(--part-0); }
+.stroke .ink.part-1, .part-swatch.part-1 { stroke: var(--part-1); background: var(--part-1); }
+.stroke .ink.part-2, .part-swatch.part-2 { stroke: var(--part-2); background: var(--part-2); }
+.stroke .ink.part-3, .part-swatch.part-3 { stroke: var(--part-3); background: var(--part-3); }
+.stroke .ink.faded { opacity: .22; }
+.part-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.part-chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px 4px 8px; border-radius: 999px; border: 1px solid var(--rule-strong); background: var(--surface); color: var(--ink); font: inherit; font-size: .85rem; cursor: pointer; }
+.part-chip.on { border-color: var(--accent); background: var(--accent-soft); }
+.part-swatch { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+.part-char { font-family: 'Noto Sans JP', sans-serif; font-size: 1.05rem; }
+.part-name { color: var(--ink-soft); }
+.part-radical { font-size: .72rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: .03em; }
+
+/* Drawing the character stroke by stroke (drawStrokes in writing/strokes.js). */
+.stroke.drawing .ink { stroke-dasharray: 1; stroke-dashoffset: 1; animation: stroke-draw var(--dur) linear var(--delay) forwards; }
+.stroke.drawing .pen { animation: stroke-pen var(--dur) linear var(--delay) forwards; }
+.stroke.drawing .lbl { opacity: 0; animation: stroke-appear 1ms linear var(--delay) forwards; }
+@keyframes stroke-draw { to { stroke-dashoffset: 0; } }
+@keyframes stroke-pen { 0% { opacity: 1; } 99% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes stroke-appear { to { opacity: 1; } }
+
+/* A lesson's diagram, its controls, and the larger view it opens. */
+.stroke-main { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+.stroke-open { position: relative; padding: 0; border: 0; background: none; cursor: zoom-in; color: inherit; line-height: 0; border-radius: 6px; }
+/* The corner badge that says a diagram opens larger. */
+.stroke-expand {
+  position: absolute;
+  right: 3px;
+  bottom: 3px;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-2);
+  border: 1px solid var(--rule-strong);
+  color: var(--accent);
+}
+.stroke-expand svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.stroke-open:hover .stroke-expand { background: var(--accent-soft); border-color: var(--accent); }
+.stroke-open:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.stroke-controls { display: flex; flex-wrap: wrap; gap: 6px; }
+.stroke-controls .chip svg { width: 14px; height: 14px; }
+dialog.stroke-viewer { width: min(640px, calc(100vw - 16px)); max-width: none; }
+.stroke-viewer-body { padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+@media (max-width: 480px) { .stroke-viewer-body { padding: 12px; } }
+.stroke-viewer-art { display: flex; justify-content: center; }
 
 @media (max-width: 480px) {
   .h1 { font-size: 1.3rem; }
