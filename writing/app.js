@@ -9,6 +9,7 @@ import { createSrsApp, boot, path, offerUnlock, progressPanel, knownToggle, LEVE
 import { seeded } from '../shared/srs/quiz-engine.js';
 import { dayKey } from '../shared/srs/stats.js';
 import { KANA_SETS } from './kana.js';
+import { setStrokes, strokeSteps, strokeControls, numbersToggle, tappableDiagram, listenForViewer, initStrokePrefs } from './strokes.js';
 import { wordItem, kanaItem, kanjiItemsIn } from '../shared/learner.js';
 
 // ---------- Content ----------
@@ -259,9 +260,6 @@ class WritingModel extends SrsModel {
 
 // ---------- Stroke order ----------
 
-let STROKES = null;
-const BOX = 109;
-
 /**
  * The stroke data is big (3 MB) and only drawn in lessons and answers, so it
  * loads after the app opens; diagrams show an empty square until it arrives.
@@ -270,63 +268,21 @@ function loadStrokes(app) {
   fetch('data/strokes.json')
     .then((r) => { if (!r.ok) throw new Error('stroke data missing'); return r.json(); })
     .then((strokes) => {
-      STROKES = strokes;
+      setStrokes(strokes);
       if (app.ui.screen && !app.ui.screen.ignoreModel) app.ui.render();
     })
     .catch((e) => console.error('Stroke order unavailable', e));
 }
 
-/**
- * One character drawn from its strokes on a practice square, like the boxes in
- * a writing notebook. Strokes after [upTo] are left out, the stroke at [upTo]
- * is highlighted, and [numbered] labels where each stroke starts.
- */
-function strokeDiagram(ch, size = 120, { upTo = null, numbered = true } = {}) {
-  const strokes = (STROKES && STROKES[ch]) || [];
-  const shown = upTo ?? strokes.length;
-  const unit = BOX / size; // viewBox units per pixel
-  const paths = [];
-  for (let i = 0; i < shown && i < strokes.length; i++) {
-    const current = upTo != null && i === shown - 1;
-    const pts = strokes[i];
-    let d = '';
-    for (let j = 0; j + 1 < pts.length; j += 2) d += `${j ? 'L' : 'M'}${pts[j]},${pts[j + 1]}`;
-    const width = Math.max(2 * unit, BOX * (current ? 0.055 : 0.045));
-    paths.push(`<path class="ink${current ? ' current' : ''}" d="${d}" stroke-width="${width.toFixed(2)}"/>`);
-    if (current) paths.push(`<circle class="dot" cx="${pts[0]}" cy="${pts[1]}" r="${Math.max(2.5 * unit, BOX * 0.04).toFixed(2)}"/>`);
-  }
-  if (numbered) {
-    const font = Math.max(9 * unit, BOX * 0.085);
-    strokes.forEach((pts, i) => {
-      const label = String(i + 1);
-      const w = font * 0.6 * label.length;
-      const x = Math.min(Math.max(pts[0] - 2 * unit, w), BOX);
-      const y = Math.min(Math.max(pts[1], font), BOX);
-      paths.push(`<text class="n" x="${x.toFixed(1)}" y="${y.toFixed(1)}" font-size="${font.toFixed(1)}" text-anchor="end">${label}</text>`);
-    });
-  }
-  return raw(`<svg class="stroke" width="${size}" height="${size}" viewBox="0 0 ${BOX} ${BOX}" role="img" aria-label="Stroke order for ${ch}">
-    <rect class="frame" x="0.5" y="0.5" width="${BOX - 1}" height="${BOX - 1}"/>
-    <line class="guide" x1="0" y1="${BOX / 2}" x2="${BOX}" y2="${BOX / 2}"/>
-    <line class="guide" x1="${BOX / 2}" y1="0" x2="${BOX / 2}" y2="${BOX}"/>
-    ${paths.join('')}
-  </svg>`);
-}
-
-/** The strokes of one character built up step by step. */
-function strokeSteps(ch, size = 52) {
-  const n = ((STROKES && STROKES[ch]) || []).length;
-  const out = [];
-  for (let i = 1; i <= n; i++) out.push(strokeDiagram(ch, size, { upTo: i, numbered: false }));
-  return html`<div class="wrap" style="gap:4px">${out}</div>`;
-}
+/** A lesson's diagram: tap it for the larger view. */
+const bigDiagram = (ch, size) => tappableDiagram(ch, size);
 
 /** The written answer, with the stroke order of every character in it. */
 function answerPanel(q, size = 76) {
   const chars = [...new Set(q.strokeChars)];
   return html`<div>
     <div class="ja-xl" lang="ja">${q.answer}</div>
-    ${chars.length ? html`<div class="wrap" style="margin-top:8px">${chars.map((c) => strokeDiagram(c, size))}</div>` : ''}
+    ${chars.length ? html`<div class="wrap" style="margin-top:8px">${chars.map((c) => tappableDiagram(c, size))}</div>` : ''}
   </div>`;
 }
 
@@ -340,15 +296,19 @@ function renderBlock(block, ui, app) {
       return html`<div>
         <div class="row" style="margin-bottom:6px;flex-wrap:wrap;gap:6px 10px">
           <div class="h3 grow">${block.title}</div>
+          ${numbersToggle(ui)}
           ${knownToggle(app, ui, [block.cardId])}
         </div>
-        <div class="wrap">${block.kana.map(([k, r]) => html`<div style="text-align:center">${strokeDiagram(k, 76)}<div class="small">${r}</div></div>`)}</div>
+        <div class="wrap">${block.kana.map(([k, r]) => html`<div style="text-align:center">${bigDiagram(k, 76, ui)}<div class="small">${r}</div></div>`)}</div>
       </div>`;
     case 'kanji': {
       const k = block.kanji;
-      return html`<div class="card">
+      return html`<div class="card kanji-card">
         <div class="row top" style="gap:14px;flex-wrap:wrap">
-          ${strokeDiagram(k.char, 132)}
+          <div class="stroke-main">
+            ${bigDiagram(k.char, 150, ui)}
+            ${strokeControls(ui)}
+          </div>
           <div style="flex:1;min-width:160px">
             <div class="h3">${k.meanings.join(', ')}</div>
             ${k.on.length ? html`<div lang="ja" style="margin-top:4px">音 ${k.on.join('、')}</div>` : ''}
@@ -504,6 +464,7 @@ boot(document.getElementById('app'), async () => {
     Store.open('vibe-writing'),
   ]);
   const course = buildCourse(content);
+  initStrokePrefs(store);
   const model = new WritingModel(store, course, {
     appName: 'Writing',
     backupApp: 'vibe_web_writing',
@@ -549,5 +510,7 @@ boot(document.getElementById('app'), async () => {
     givenText: (o) => (o.correct ? 'Marked as right' : 'Marked as not yet'),
   });
   loadStrokes(app);
+  // Any diagram opens its larger view on a tap; a setting changed there redraws the page.
+  listenForViewer(() => app.ui.render());
   return app;
 });

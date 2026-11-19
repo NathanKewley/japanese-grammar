@@ -865,6 +865,46 @@ def lesson_lists_and_empty_tabs(c):
 
 
 @test
+def kanji_stroke_diagrams(c):
+    open_app(c, 'writing/index.html#/section/l13.kanji')
+    c.wait_for("document.querySelectorAll('svg.stroke path.ink').length > 0", 15)
+    card = "[...document.querySelectorAll('.kanji-card')].find((e) => e.textContent.includes('fish'))"
+    labels = c.js(f"[...{card}.querySelectorAll('.stroke-main circle.n-bg')].map((e) => [+e.getAttribute('cx'), +e.getAttribute('cy'), +e.getAttribute('r')])")
+    check(len(labels) == 11, f'魚 should show 11 stroke numbers, got {len(labels)}')
+    clash = [(i, j) for i in range(len(labels)) for j in range(i) if ((labels[i][0] - labels[j][0]) ** 2 + (labels[i][1] - labels[j][1]) ** 2) ** 0.5 < labels[i][2] + labels[j][2] - 0.3]
+    check(not clash, f'stroke numbers should not overlap: {clash}')
+    # Play draws it stroke by stroke.
+    c.js(f"[...{card}.querySelectorAll('.stroke-controls .chip')].find((b) => b.textContent.includes('Play')).click()")
+    check(c.js(f"{card}.querySelector('.stroke-main svg.stroke').classList.contains('drawing')"), 'Play should start the drawing')
+    # Numbers off, remembered.
+    c.js(f"[...{card}.querySelectorAll('.stroke-controls .chip')].find((b) => b.textContent.includes('Stroke numbers')).click()")
+    c.sleep(0.4)
+    check(c.js("document.querySelectorAll('.kanji-card .stroke-main .lbl').length") == 0, 'turning numbers off should hide them')
+    c.sleep(0.5)
+    open_app(c, 'writing/index.html#/section/l13.kanji')
+    c.wait_for("document.querySelectorAll('svg.stroke path.ink').length > 0", 15)
+    check(c.js("document.querySelectorAll('.kanji-card .stroke-main .lbl').length") == 0, 'numbers off should be remembered')
+    c.js(f"[...{card}.querySelectorAll('.stroke-controls .chip')].find((b) => b.textContent.includes('Stroke numbers')).click()")
+    c.sleep(0.4)
+    # The larger view.
+    c.js(f"{card}.querySelector('.stroke-open').click()")
+    c.sleep(0.5)
+    check(c.js("document.querySelectorAll('dialog.stroke-viewer .lbl').length") == 11, 'the larger view should show the numbers')
+    c.js("document.querySelector('dialog.stroke-viewer [data-close]').click()")
+    c.sleep(0.3)
+    check(not c.js("!!document.querySelector('dialog.stroke-viewer')"), 'the larger view should close')
+    # A quiz answer's diagram opens it too.
+    c.js("vibeApp.model.unlockEarly(vibeApp.model.course.sectionById('l13.kanji'))")
+    c.sleep(0.4)
+    c.click('a.btn.block', 1)
+    c.click('Show answer', 0.4)
+    c.js("document.querySelector('[data-viewer]').click()")
+    c.sleep(0.5)
+    check(c.js("!!document.querySelector('dialog.stroke-viewer svg.stroke')"), "a quiz answer's diagram should open the larger view")
+    no_errors(c)
+
+
+@test
 def app_backup_round_trip(c):
     open_app(c, 'writing/index.html#/section/l1.kana')
     c.click('Write from memory')

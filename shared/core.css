@@ -673,6 +673,28 @@ dialog.modal .actions { display: flex; justify-content: flex-end; gap: 8px; marg
 .stroke .ink.current { stroke: var(--accent); }
 .stroke .dot { fill: var(--accent); }
 .stroke .n { fill: var(--accent); font-family: 'Inter', sans-serif; font-weight: 700; }
+/* Stroke numbers sit on a disc in the card's colour, so ink can't hide them. */
+.stroke .n-bg { fill: var(--surface); stroke: color-mix(in srgb, var(--accent) 45%, transparent); }
+.stroke .n-lead { stroke: color-mix(in srgb, var(--accent) 55%, transparent); stroke-linecap: round; }
+.stroke .pen { fill: var(--accent); opacity: 0; }
+
+/* Drawing the character stroke by stroke (drawStrokes in writing/strokes.js). */
+.stroke.drawing .ink { stroke-dasharray: 1; stroke-dashoffset: 1; animation: stroke-draw var(--dur) linear var(--delay) forwards; }
+.stroke.drawing .pen { animation: stroke-pen var(--dur) linear var(--delay) forwards; }
+.stroke.drawing .lbl { opacity: 0; animation: stroke-appear 1ms linear var(--delay) forwards; }
+@keyframes stroke-draw { to { stroke-dashoffset: 0; } }
+@keyframes stroke-pen { 0% { opacity: 1; } 99% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes stroke-appear { to { opacity: 1; } }
+
+/* A lesson's diagram, its controls, and the larger view it opens. */
+.stroke-main { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+.stroke-open { padding: 0; border: 0; background: none; cursor: zoom-in; color: inherit; line-height: 0; border-radius: 6px; }
+.stroke-open:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.stroke-controls { display: flex; flex-wrap: wrap; gap: 6px; }
+.stroke-controls .chip svg { width: 14px; height: 14px; }
+dialog.stroke-viewer { width: min(380px, calc(100vw - 32px)); }
+.stroke-viewer-body { padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+.stroke-viewer-art { display: flex; justify-content: center; }
 
 @media (max-width: 480px) {
   .h1 { font-size: 1.3rem; }
