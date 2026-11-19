@@ -322,8 +322,10 @@ export function renderPassage(key, { sentences, paragraphs, dict, lesson, ui, sc
       ${hooks.noReadAloud ? '' : html`<button class="btn tonal small" id="ra-${key}" ${ui.onClick(() => readAloud(key, slow))}>${icon(on ? 'pause' : 'speaker')} ${on ? 'Stop' : 'Read aloud'}</button>
       <button class="chip ${slow ? 'on' : ''}" ${ui.onClick(() => setSlow(!slow))} aria-pressed="${slow}">Slow</button>`}
       <button class="chip ${all ? 'on' : ''}" ${ui.onClick(() => { if (all) allFurigana.delete(key); else allFurigana.add(key); ui.render(); })} aria-pressed="${all}">All furigana</button>
-      ${setScale ? html`<button class="icon-btn" style="width:34px;height:34px;font-weight:700;font-size:.8rem" title="Smaller text" aria-label="Smaller text" ${scale <= 0.8 ? 'disabled' : ''} ${ui.onClick(() => setScale(scale - 0.1))}>A−</button>
-      <button class="icon-btn" style="width:34px;height:34px;font-weight:700" title="Larger text" aria-label="Larger text" ${scale >= 1.6 ? 'disabled' : ''} ${ui.onClick(() => setScale(scale + 0.1))}>A+</button>` : ''}
+      ${setScale ? html`<span class="text-size" role="group" aria-label="Text size">
+        <button type="button" title="Smaller text" aria-label="Smaller text" ${scale <= 0.8 ? 'disabled' : ''} ${ui.onClick(() => setScale(scale - 0.1))}>A−</button>
+        <button type="button" title="Larger text" aria-label="Larger text" ${scale >= 1.6 ? 'disabled' : ''} ${ui.onClick(() => setScale(scale + 0.1))}>A+</button>
+      </span>` : ''}
     </div>` : ''}
     <div class="passage" lang="ja" data-key="${key}" style="--pscale:${scale}">
       ${raw(paras.map((p, i) => `<p data-para="${i}"${paragraphClass ? ` class="${paragraphClass}"` : ''}>${p}</p>`).join(''))}

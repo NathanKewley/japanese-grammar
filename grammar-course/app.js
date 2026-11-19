@@ -8,7 +8,7 @@ import { Store } from '../shared/srs/store.js';
 import { Course } from '../shared/srs/course.js';
 import { SrsModel, SectionStatus, count, answersWhere } from '../shared/srs/model.js';
 import { newCard, cardToMap } from '../shared/srs/fsrs.js';
-import { createSrsApp, boot, path, offerUnlock, progressPanel, knownToggle, LEVELS } from '../shared/srs/screens.js';
+import { createSrsApp, boot, path, offerUnlock, progressPanel, knownToggle, LEVELS, lessonFolds, levelGroups } from '../shared/srs/screens.js';
 import { grammarItem } from '../shared/learner.js';
 import { CONJUGATION_FOR_GRAMMAR } from '../shared/grammar-links.js';
 
@@ -328,10 +328,7 @@ function renderToday(ui, app) {
     })() : ''}
     ${due > 0 || saved ? html`<a class="btn tonal block" href="#/quiz/review-all">${saved ? "Resume today's reviews" : `Review ${plural(due, 'card')} due today`}</a>` : ''}
     <a class="btn outline block" href="${LIBRARY}">Browse the Grammar Library</a>
-    ${LEVELS.map((level) => html`<section>
-      <h2 class="h3">${level}</h2>
-      <div class="list" style="margin-top:6px">${model.lessonsAt(level).map((l) => lessonTile(app, ui, l))}</div>
-    </section>`)}
+    ${lessonFolds(app, ui, levelGroups(model), (l) => lessonTile(app, ui, l), { listClass: 'list' })}
   </div>`;
 }
 

@@ -5,7 +5,7 @@ import { Store } from '../shared/srs/store.js';
 import { Course } from '../shared/srs/course.js';
 import { SrsModel, SectionStatus, count, answersWhere } from '../shared/srs/model.js';
 import { statGrid, barRow } from '../shared/srs/ui.js';
-import { createSrsApp, boot, path, offerUnlock, progressPanel, knownToggle, LEVELS } from '../shared/srs/screens.js';
+import { createSrsApp, boot, path, offerUnlock, progressPanel, knownToggle, LEVELS, lessonFolds, levelGroups } from '../shared/srs/screens.js';
 import { seeded } from '../shared/srs/quiz-engine.js';
 import { dayKey } from '../shared/srs/stats.js';
 import { KANA_SETS } from './kana.js';
@@ -487,10 +487,7 @@ function renderToday(ui, app) {
         : "Five sentences from your lessons so far, favouring kanji you've marked wrong and sentences you haven't written lately."}</p>
       <button class="btn outline block" ${ui.onClick(() => startDailyWriting(app, ui))}>${writingDone ? 'Write another set' : "Start today's writing"}</button>
     </div>
-    ${LEVELS.map((level) => html`<section>
-      <h2 class="h3">${level}</h2>
-      <div class="" style="margin-top:6px">${model.lessonsAt(level).map((l) => lessonTile(app, ui, l))}</div>
-    </section>`)}
+    ${lessonFolds(app, ui, levelGroups(model), (l) => lessonTile(app, ui, l))}
   </div>`;
 }
 

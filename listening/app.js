@@ -5,7 +5,7 @@ import { Store } from '../shared/srs/store.js';
 import { Course } from '../shared/srs/course.js';
 import { SrsModel, SectionStatus, count, answersWhere } from '../shared/srs/model.js';
 import { statGrid, barRow } from '../shared/srs/ui.js';
-import { createSrsApp, boot, path, offerUnlock, progressPanel, LEVELS } from '../shared/srs/screens.js';
+import { createSrsApp, boot, path, offerUnlock, progressPanel, LEVELS, lessonFolds, levelGroups } from '../shared/srs/screens.js';
 import { Rating, newCard } from '../shared/srs/fsrs.js';
 import { Dictionary, renderPassage, resetPassages, connectLearner } from '../shared/srs/passage.js';
 import { passageWords, wordLookupHooks } from '../shared/learner.js';
@@ -607,10 +607,7 @@ function renderToday(ui, app) {
       </a>`;
     })() : ''}
     ${due > 0 || saved ? html`<a class="btn tonal block" href="#/quiz/review-all">${saved ? "Resume today's reviews" : `Review ${plural(due, 'card')} due today`}</a>` : ''}
-    ${LEVELS.map((level) => html`<section>
-      <h2 class="h3">${level}</h2>
-      <div class="list" style="margin-top:6px">${model.lessonsAt(level).map((l) => trackTile(app, ui, l))}</div>
-    </section>`)}
+    ${lessonFolds(app, ui, levelGroups(model), (l) => trackTile(app, ui, l), { listClass: 'list' })}
   </div>`;
 }
 

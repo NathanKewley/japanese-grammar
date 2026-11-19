@@ -342,6 +342,45 @@ details.lesson > summary .caret { transition: transform .15s; color: var(--ink-f
 details.lesson[open] > summary .caret { transform: rotate(90deg); }
 details.lesson > .list { padding: 0 0 8px 30px; }
 
+/* Text size in Reading and Listening: one control, so it never splits across lines. */
+/* On a narrow phone it wraps to the right-hand end of the next row. */
+.text-size { display: inline-flex; flex: none; margin-left: auto; border: 1px solid var(--rule); border-radius: 999px; overflow: hidden; background: var(--surface); }
+.text-size button { border: 0; background: none; color: var(--ink); font: inherit; font-weight: 700; font-size: .8rem; width: 30px; height: 32px; padding: 0; cursor: pointer; }
+.text-size button + button { border-left: 1px solid var(--rule); }
+.text-size button:disabled { opacity: .4; cursor: default; }
+
+/* A word shown large, its reading on a line above (wordHeading in vocab/app.js). */
+.word-head { display: inline-flex; flex-direction: column; align-items: flex-start; line-height: 1.15; }
+.word-reading { font-size: .85rem; color: var(--ink-soft); font-family: 'Noto Sans JP', sans-serif; }
+
+/* Further senses of a word, behind a tap. */
+.more-senses > summary { cursor: pointer; color: var(--accent); font-size: .85rem; font-weight: 600; margin: 2px 0 4px; }
+
+/* A tab with nothing to show yet. */
+.empty-state { text-align: left; }
+
+/* A Today tab's lessons, folded by level or part (lessonFolds in screens.js). */
+.fold + .fold { margin-top: 10px; }
+.fold-head {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.fold-head:hover { border-color: var(--accent); }
+.fold-head .grow { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.fold-caret { color: var(--ink-faint); display: inline-flex; transition: transform .15s; }
+.fold-caret svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; }
+.fold.open .fold-caret { transform: rotate(90deg); }
+
 /* ---------- Stats ---------- */
 
 .section-title { margin: 26px 0 4px; }

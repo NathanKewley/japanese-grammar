@@ -283,7 +283,7 @@
       : s === "learning" ? "You're learning this in your grammar reviews."
       : "Study it with spaced reviews:";
     return '<span class="entry-course-text">' + escapeHtml(text) + "</span> " +
-      '<a href="' + href + '">Grammar course lesson ' + lesson.number + "</a>";
+      '<a href="' + href + '">Grammar lesson ' + lesson.number + "</a>";
   }
 
   function paintCourseLines() {

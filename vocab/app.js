@@ -6,7 +6,7 @@ import { html, icon, plural, toast, furigana } from '../shared/srs/dom.js';
 import { Store } from '../shared/srs/store.js';
 import { Course } from '../shared/srs/course.js';
 import { SrsModel, SectionStatus, count, answersWhere } from '../shared/srs/model.js';
-import { createSrsApp, boot, path, offerUnlock, progressPanel, knownToggle, LEVELS } from '../shared/srs/screens.js';
+import { createSrsApp, boot, path, offerUnlock, progressPanel, knownToggle, LEVELS, lessonFolds, levelGroups } from '../shared/srs/screens.js';
 import { cardToMap, newCard } from '../shared/srs/fsrs.js';
 import { speak, stopSpeaking, posLabel } from '../shared/srs/passage.js';
 import { normaliseTyped, hasRomaji, toHiragana } from '../shared/srs/romaji.js';
@@ -286,18 +286,43 @@ function knownElsewhere(word) {
   return APP && APP.learner ? describeWord(APP.learner, word.item, 'vocab') : '';
 }
 
+/**
+ * A word shown large, with its whole reading on a line above it rather than
+ * as furigana: a reading wider than its kanji (おとこ over 男) would push the
+ * kanji off the left edge.
+ */
+function wordHeading(word, cls, style = '') {
+  if (!word.hasKanji) return html`<span class="${cls}" lang="ja" style="${style}">${word.w}</span>`;
+  return html`<span class="word-head">
+    <span class="word-reading" lang="ja">${hiragana(word.r)}</span>
+    <span class="${cls}" lang="ja" style="${style}">${word.w}</span>
+  </span>`;
+}
+
+/** How many senses show at first; the rest, often rare or old, are a tap away. */
+const SENSES_SHOWN = 2;
+
+function meaningList(senses) {
+  const line = (m, i) => html`<p style="margin:0 0 2px">${senses.length === 1 ? m : `${i + 1}. ${m}`}</p>`;
+  const more = senses.slice(SENSES_SHOWN);
+  return html`<div style="margin-top:4px">
+    ${senses.slice(0, SENSES_SHOWN).map(line)}
+    ${more.length ? html`<details class="more-senses"><summary>More meanings</summary>${more.map((m, i) => line(m, i + SENSES_SHOWN))}</details>` : ''}
+  </div>`;
+}
+
 function wordCard(word, ui) {
   const pos = [...new Set(word.pos.map(posLabel))].join(', ');
   const known = knownElsewhere(word);
   return html`<div class="card vocab-word">
     <div class="row" style="align-items:flex-end;gap:4px 10px;flex-wrap:wrap">
-      <span class="ja-m" style="font-size:1.6rem">${furigana(word.segments)}</span>
+      ${wordHeading(word, 'ja-m', 'font-size:1.6rem')}
       <span class="small grow">${pos}</span>
       <button class="icon-btn" type="button" style="width:34px;height:34px" title="Say it" aria-label="Say it" ${ui.onClick(() => say(hiragana(word.r)))}>${icon('speaker')}</button>
     </div>
     ${known ? html`<p class="small known-note" style="color:var(--accent);font-weight:600;margin-top:2px">${known}</p>` : ''}
     ${APP ? html`<div style="margin-top:6px">${knownToggle(APP, ui, cardIdsOf(word))}</div>` : ''}
-    <div style="margin-top:4px">${word.m.map((m, i) => html`<p style="margin:0 0 2px">${word.m.length === 1 ? m : `${i + 1}. ${m}`}</p>`)}</div>
+    ${meaningList(word.m)}
     ${word.examples.map((ex) => exampleLine(ex, ui))}
   </div>`;
 }
@@ -329,7 +354,7 @@ function renderQuestion({ question: q, ui, answer }) {
   if (q.type === 'choice') {
     return html`<div class="stack">
       <div class="h3">What does this mean?</div>
-      <div class="ja-xl" style="font-size:2.3rem">${furigana(q.word.segments)}</div>
+      <div>${wordHeading(q.word, 'ja-xl', 'font-size:2.3rem')}</div>
       <div class="stack" style="margin-top:8px">
         ${q.options.map((opt, i) => html`<button class="option" ${ui.onClick(() => answer({ correct: i === q.correctIndex, given: opt }))}>${opt}</button>`)}
       </div>
@@ -371,7 +396,7 @@ function answerPanel(q, ui) {
   const w = q.word;
   return html`<div>
     <div class="row" style="align-items:flex-end;gap:8px">
-      <span class="ja-l">${furigana(w.segments)}</span>
+      ${wordHeading(w, 'ja-l')}
       <button class="icon-btn" type="button" style="width:34px;height:34px" title="Say it" aria-label="Say it" ${ui.onClick(() => say(hiragana(w.r)))}>${icon('speaker')}</button>
     </div>
     <p style="margin-top:4px">${w.m[0]}</p>
@@ -477,10 +502,7 @@ function renderToday(ui, app) {
     })() : ''}
     ${due > 0 || saved ? html`<a class="btn tonal block" href="#/quiz/review-all">${saved ? "Resume today's reviews" : `Review ${plural(due, 'card')} due today`}</a>` : ''}
     ${lookupsPanel(app, ui)}
-    ${LEVELS.map((level) => html`<section>
-      <h2 class="h3">${level}</h2>
-      <div style="margin-top:6px">${model.lessonsAt(level).map((l) => lessonTile(app, ui, l))}</div>
-    </section>`)}
+    ${lessonFolds(app, ui, levelGroups(model), (l) => lessonTile(app, ui, l))}
   </div>`;
 }
 

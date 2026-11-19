@@ -722,6 +722,7 @@ def placement_test_and_skip_ahead(c):
     open_app(c, 'index.html', 2.5)
     check(not c.js("!!document.querySelector('dialog.modal')"), 'the test should not be offered twice')
     check(c.js("!!document.querySelector('a[href=\"placement/index.html\"]')"), 'the landing page should link to the test')
+    check(c.text('#placementLink').startswith('Retake the placement test'), 'after a placement, the link should offer a retake')
     no_errors(c)
 
 
@@ -748,6 +749,8 @@ def lesson_end_returns_to_the_lessons(c):
     answer_all(c)
     c.click('Back to the lessons', 1.2)
     check(c.js("location.hash") in ('', '#/'), 'back should go to the app home, not ' + c.js("location.hash"))
+    check(c.js("(() => { const el = document.querySelector('[data-lesson=\"2\"]'); if (!el) return false; const r = el.getBoundingClientRect(); return r.top >= 0 && r.bottom <= innerHeight; })()"),
+          'the lesson just finished should be in view')
     check(c.js("vibeApp.ui.stack.length") == 1, f'the in-app history should be unwound: {c.js("vibeApp.ui.stack")}')
 
     # Opened straight into a lesson, it still ends at home.
@@ -831,6 +834,33 @@ def android_backups_restore(c):
     check(c.js("vibeApp.model.passed.has('r1')") and c.js("vibeApp.model.cards.size") == 1, 'the Reading progress should be restored')
     check(c.js("vibeApp.model.lookups") == 12, 'its counts should carry over')
     check(c.js("vibeApp.model.cards.get(" + json.dumps(card) + ").card.stability") == 3.2, 'the card schedule should carry over')
+    no_errors(c)
+
+
+@test
+def lesson_lists_and_empty_tabs(c):
+    # Today lists fold by level, with only the next lesson's level open.
+    open_app(c, 'vocab/index.html')
+    check(c.js("document.querySelectorAll('.fold').length") == 5 and c.js("document.querySelectorAll('.fold.open').length") == 1, 'one fold per level, only N5 open')
+    check(not c.js("!!document.querySelector('[data-lesson=\"16\"]')"), 'N4 lessons should stay folded away')
+    c.js("[...document.querySelectorAll('.fold-head')].find((b) => b.textContent.includes('N4')).click()")
+    c.sleep(0.3)
+    check(c.js("!!document.querySelector('[data-lesson=\"16\"]')"), 'tapping N4 should open it')
+    # Conjugation folds by part.
+    open_app(c, 'conjugation/index.html')
+    check(c.js("document.querySelectorAll('.fold').length") == 7, 'Conjugation should fold by part')
+    # A word's further senses wait behind a tap.
+    open_app(c, 'vocab/index.html#/section/v1.1')
+    check(c.js("!!document.querySelector('.vocab-word details.more-senses')"), 'extra meanings should be folded away')
+    check(c.js("!!document.querySelector('.vocab-word .word-head .word-reading')"), 'a word should show its reading above it')
+    # Before any study, Reviews and Stats say what they're for.
+    open_app(c, 'vocab/index.html#/reviews')
+    check('No reviews yet' in view(c) and 'Start your first lesson' in view(c), 'Reviews should explain itself before any study')
+    open_app(c, 'vocab/index.html#/stats')
+    check('Your stats start here' in view(c) and 'Achievements' in view(c), 'Stats should explain itself before any study')
+    # The library's header matches the apps'.
+    open_app(c, 'grammar/index.html', 2)
+    check(c.js("!!document.querySelector('.app-header .home-btn[href=\"../index.html\"]')") and 'Furigana' in c.text('.furigana-chip'), 'library header')
     no_errors(c)
 
 

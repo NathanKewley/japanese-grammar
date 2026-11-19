@@ -5,7 +5,7 @@ import { statGrid, barChart, legend, dayLabel } from './shared/srs/ui.js';
 import { TABLES, SCHEMA_VERSION, ANDROID_BACKUP_APPS, exportDatabase, importDatabase } from './shared/srs/store.js';
 import { dayKey, startOfDay } from './shared/srs/stats.js';
 import { Learner, LEARNER_DB, exportLearner, importLearner } from './shared/learner.js';
-import { placementOffered, markPlacementOffered } from './shared/placement.js';
+import { placementOffered, markPlacementOffered, readPlacement } from './shared/placement.js';
 
 const APPS = ['grammar', 'vocab', 'writing', 'conjugation', 'reading', 'listening'];
 const GRAMMAR_PREFIX = 'grammarNotebook.';
@@ -491,6 +491,11 @@ async function restoreAll() {
 
 document.getElementById('backupAll').addEventListener('click', backupAll);
 document.getElementById('restoreAll').addEventListener('click', restoreAll);
+
+// Once taken, the test can be retaken; a new result only skips further ahead.
+if (readPlacement()) {
+  document.getElementById('placementLink').innerHTML = String(html`<a href="placement/index.html">Retake the placement test</a> if you'd like the courses to skip further ahead.`);
+}
 
 fillGlance().then(offerPlacement).catch((e) => console.error(e));
 storageLine();

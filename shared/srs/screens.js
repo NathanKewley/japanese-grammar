@@ -115,11 +115,27 @@ function forecastChart(model, part) {
 
 // ---------- Reviews tab ----------
 
+/** What a tab shows before anything has been studied, with a way to start. */
+function emptyState(app, title, body) {
+  const next = app.model.nextSection;
+  return html`<div class="card empty-state">
+    <div class="h2">${title}</div>
+    <p style="margin-top:6px">${body}</p>
+    ${next ? html`<a class="btn block" style="margin-top:14px" href="${path('section', next.id)}">${app.model.totalPassed ? 'Go to your next lesson' : 'Start your first lesson'}</a>` : ''}
+  </div>`;
+}
+
 function reviewsTab(app, ui) {
   const model = app.model;
   const due = model.allReviewQueue.length;
   const saved = model.savedQuiz(SrsModel.reviewAllKey);
   const learned = model.course.parts.some((p) => model.summaryOf(p).totalCards > 0);
+  if (!learned && !saved) {
+    return html`<div class="stack">
+      ${emptyState(app, 'No reviews yet', "Each lesson you pass adds what it taught here. Reviews bring each item back just before you'd forget it, a few minutes a day.")}
+      <p class="small">Each part's daily limit and pause setting are in Settings.</p>
+    </div>`;
+  }
   return html`<div class="stack">
     ${saved || due > 0
       ? html`<a class="btn block" href="#/quiz/review-all">${saved ? app.text.reviewAllResume : app.text.reviewAll(due)}</a>`
@@ -514,7 +530,7 @@ function quizSummary(app, ui, { engine, part, section, passed, alreadyPassed, is
     ${section && passed === false
       ? html`<button class="btn outline block" ${ui.onClick(() => ui.back())}>${text.rereadSection}</button>`
       : section
-        ? html`<button class="btn outline block" ${ui.onClick(() => ui.home())}>${text.backToLessons}</button>`
+        ? html`<button class="btn outline block" ${ui.onClick(() => { ui.returnLesson = model.course.lessonOf(section); ui.home(); })}>${text.backToLessons}</button>`
         : html`<button class="btn outline block" ${ui.onClick(() => ui.back())}>Done</button>`}
   </div>`;
 
@@ -677,6 +693,26 @@ function statsTab(app, ui) {
   const forecast = model.forecastAll(14);
   const worst = stats.topTrouble.length ? Math.max(...stats.topTrouble.map((i) => i.misses)) : 1;
 
+  const achievementsCard = statSection('Achievements', html`<a class="card tappable" href="#/achievements" style="display:block;color:inherit;text-decoration:none">
+      <div class="row"><span style="font-size:1.8rem">🏆</span><span class="grow h3">${Object.keys(unlocked).length} of ${all.length} unlocked</span><span class="chevron">${icon('chevron')}</span></div>
+      <div style="margin-top:10px">${progressBar(Object.keys(unlocked).length / all.length)}</div>
+      ${latest.length
+        ? html`<p class="label" style="margin-top:12px">Latest</p><div class="wrap" style="margin-top:4px">${latest.slice(0, 3).map((a) => html`<span class="chip">${a.icon} ${a.title}</span>`)}</div>`
+        : html`<p class="small" style="margin-top:8px">${text.firstAchievement}</p>`}
+    </a>`);
+  const practiceCard = statSection(`${text.practiceChart}, last 14 days`, html`
+      ${stats.practice.length ? barChart(days.map((d, i) => ({ label: dayLabel(i, days.length), segments: [[Math.round(d.practiceSeconds / 60), ACCENT]] }))) : html`<p>Nothing logged yet.</p>`}
+      <a class="btn outline small" style="margin-top:10px" href="#/practice">Open ${text.practiceTitle.toLowerCase()}</a>`, text.practiceNote);
+
+  // Before anything is studied, the numbers would all be zero.
+  if (!hasAnswers && learned === 0 && model.totalPassed === 0 && !stats.practice.length) {
+    return html`<div>
+      ${emptyState(app, 'Your stats start here', 'Once you answer your first quiz, this shows your streak, scores by skill, what you miss most, and when your reviews are coming up.')}
+      ${achievementsCard}
+      ${practiceCard}
+    </div>`;
+  }
+
   return html`<div>
     ${statGrid([
       [text.sectionsPassedStat, `${model.totalPassed}/${course.allSections.length}`],
@@ -693,13 +729,7 @@ function statsTab(app, ui) {
       ['Active days', stats.activeDays],
       ...(spec.overviewExtra ? spec.overviewExtra(model, stats) : []),
     ])}
-    ${statSection('Achievements', html`<a class="card tappable" href="#/achievements" style="display:block;color:inherit;text-decoration:none">
-      <div class="row"><span style="font-size:1.8rem">🏆</span><span class="grow h3">${Object.keys(unlocked).length} of ${all.length} unlocked</span><span class="chevron">${icon('chevron')}</span></div>
-      <div style="margin-top:10px">${progressBar(Object.keys(unlocked).length / all.length)}</div>
-      ${latest.length
-        ? html`<p class="label" style="margin-top:12px">Latest</p><div class="wrap" style="margin-top:4px">${latest.slice(0, 3).map((a) => html`<span class="chip">${a.icon} ${a.title}</span>`)}</div>`
-        : html`<p class="small" style="margin-top:8px">${text.firstAchievement}</p>`}
-    </a>`)}
+    ${achievementsCard}
     ${statSection('Recommended focus', focus.length
       ? focus.map((area) => html`<div style="margin-bottom:16px">
           <div class="h3" style="font-size:.95rem">${area.title}</div>
@@ -709,9 +739,7 @@ function statsTab(app, ui) {
       : html`<p>Nothing needs attention right now.</p>`)}
     ${insights.length ? statSection('Insights', html`<div class="stack">${insights.map((i) => html`<p>${i}</p>`)}</div>`) : ''}
     ${spec.statsExtra ? spec.statsExtra(model, stats, ui, app) : ''}
-    ${statSection(`${text.practiceChart}, last 14 days`, html`
-      ${stats.practice.length ? barChart(days.map((d, i) => ({ label: dayLabel(i, days.length), segments: [[Math.round(d.practiceSeconds / 60), ACCENT]] }))) : html`<p>Nothing logged yet.</p>`}
-      <a class="btn outline small" style="margin-top:10px" href="#/practice">Open ${text.practiceTitle.toLowerCase()}</a>`, text.practiceNote)}
+    ${practiceCard}
     ${hasAnswers ? html`
       ${statSection('Answers, last 14 days', html`${legend([[GOOD, 'Correct'], [BAD, 'Wrong']])}${barChart(days.map((d, i) => ({ label: dayLabel(i, days.length), segments: [[d.right, GOOD], [d.wrong, BAD]] })))}`)}
       ${statSection('Minutes in quizzes, last 14 days', barChart(days.map((d, i) => ({ label: dayLabel(i, days.length), segments: [[Math.round(d.millis / 6000) / 10, ACCENT]] }))))}
@@ -966,6 +994,46 @@ async function resetApp(app) {
   location.hash = '#/';
   location.reload();
 }
+
+// ---------- Lesson lists ----------
+
+/**
+ * A Today tab's lessons, one fold per level or part ([groups]: {title,
+ * summary, lessons}). The fold holding the next lesson starts open, and a
+ * heading tap opens or closes it for as long as the app stays open. Each tile
+ * is tagged with its lesson number, so "Back to the lessons" can scroll to the
+ * lesson just finished.
+ */
+export function lessonFolds(app, ui, groups, tile, { listClass = '' } = {}) {
+  const model = app.model;
+  const folds = (ui.folds ||= new Map());
+  const next = model.nextSection ? model.course.lessonOf(model.nextSection) : null;
+  const back = ui.returnLesson;
+  if (back) {
+    ui.returnLesson = null;
+    ui.afterRender.push(() => setTimeout(() => {
+      const el = document.querySelector(`[data-lesson="${back.number}"]`);
+      if (el) el.scrollIntoView({ block: 'center' });
+    }, 0));
+  }
+  const tagged = (out, n) => raw(String(out).replace(/^\s*<[a-z]+/i, (m) => `${m} data-lesson="${n}"`));
+  return groups.filter((g) => g.lessons.length).map((g) => {
+    if (back && g.lessons.includes(back)) folds.set(g.title, true);
+    const open = folds.has(g.title) ? folds.get(g.title) : g.lessons.includes(next);
+    const done = g.lessons.filter((l) => model.lessonComplete(l)).length;
+    return html`<section class="fold ${open ? 'open' : ''}">
+      <button class="fold-head" type="button" aria-expanded="${open}" ${ui.onClick(() => { folds.set(g.title, !open); ui.render(); })}>
+        <span class="grow"><span class="h3">${g.title}</span>${g.summary ? html`<span class="small">${g.summary}</span>` : ''}</span>
+        <span class="small">${done}/${g.lessons.length}</span>
+        <span class="fold-caret">${icon('chevron')}</span>
+      </button>
+      ${open ? html`<div class="${listClass}" style="margin-top:6px">${g.lessons.map((l) => tagged(tile(l), l.number))}</div>` : ''}
+    </section>`;
+  });
+}
+
+/** The usual groups: one per JLPT level, from the model's lessonsAt(level). */
+export const levelGroups = (model) => LEVELS.map((level) => ({ title: level, lessons: model.lessonsAt(level) }));
 
 // ---------- Progress panel (Writing, Reading, Listening) ----------
 

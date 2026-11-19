@@ -5,7 +5,7 @@ import { Store } from '../shared/srs/store.js';
 import { Course } from '../shared/srs/course.js';
 import { SrsModel, SectionStatus, count, answersWhere } from '../shared/srs/model.js';
 import { statGrid, barRow } from '../shared/srs/ui.js';
-import { createSrsApp, boot, path, offerUnlock, knownToggle } from '../shared/srs/screens.js';
+import { createSrsApp, boot, path, offerUnlock, knownToggle, lessonFolds } from '../shared/srs/screens.js';
 import { seeded } from '../shared/srs/quiz-engine.js';
 import { normaliseTyped, hasRomaji, toHiragana } from '../shared/srs/romaji.js';
 import { speak, stopSpeaking } from '../shared/srs/passage.js';
@@ -710,11 +710,7 @@ function renderToday(ui, app) {
         : "Ten conjugations in the forms you've learned, with any word, favouring the forms you get wrong most."}</p>
       <button class="btn outline block" ${ui.onClick(() => startDrill(app, ui))}>${drillDone ? 'Do another set' : "Start today's drill"}</button>
     </div>
-    ${course.parts.map((part) => html`<section>
-      <h2 class="h3">${part.title}</h2>
-      <p class="small">${part.summary}</p>
-      <div style="margin-top:6px">${course.lessons.filter((l) => l.partId === part.id).map((l) => lessonTile(app, ui, l))}</div>
-    </section>`)}
+    ${lessonFolds(app, ui, course.parts.map((part) => ({ title: part.title, summary: part.summary, lessons: course.lessons.filter((l) => l.partId === part.id) })), (l) => lessonTile(app, ui, l))}
   </div>`;
 }
 
