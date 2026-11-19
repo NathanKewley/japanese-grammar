@@ -731,8 +731,9 @@ dialog.modal .actions { display: flex; justify-content: flex-end; gap: 8px; marg
 .stroke-open:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .stroke-controls { display: flex; flex-wrap: wrap; gap: 6px; }
 .stroke-controls .chip svg { width: 14px; height: 14px; }
-dialog.stroke-viewer { width: min(380px, calc(100vw - 32px)); }
+dialog.stroke-viewer { width: min(640px, calc(100vw - 16px)); max-width: none; }
 .stroke-viewer-body { padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+@media (max-width: 480px) { .stroke-viewer-body { padding: 12px; } }
 .stroke-viewer-art { display: flex; justify-content: center; }
 
 @media (max-width: 480px) {

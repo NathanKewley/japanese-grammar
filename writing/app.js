@@ -308,7 +308,6 @@ function renderBlock(block, ui, app) {
         <div class="row top" style="gap:14px;flex-wrap:wrap">
           <div class="stroke-main">
             ${bigDiagram(k.char, 150, ui)}
-            ${strokeControls(ui)}
           </div>
           <div style="flex:1;min-width:160px">
             <div class="h3">${k.meanings.join(', ')}</div>
@@ -318,6 +317,8 @@ function renderBlock(block, ui, app) {
             ${k.radical ? html`<div class="small" style="margin-top:2px">Radical <span lang="ja" style="color:var(--ink)">${k.radical.c}</span> ${k.radical.m} (no. ${k.radical.n})</div>` : ''}
           </div>
         </div>
+        <!-- Under the diagram and text, so its width can't push the text over. -->
+        <div style="margin-top:10px">${strokeControls(ui)}</div>
         ${partsOf(k.char).some((p) => p.c) ? html`<div class="label" style="margin:10px 0 4px">Parts</div>${partsRow(ui, k.char)}` : ''}
         <div class="label" style="margin:10px 0 4px">Stroke by stroke</div>
         ${strokeSteps(k.char)}

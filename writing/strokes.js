@@ -232,7 +232,8 @@ export function numbersToggle(ui) {
 export function openStrokeViewer(ch, onChange) {
   const d = document.createElement('dialog');
   d.className = 'modal stroke-viewer';
-  const size = Math.min(320, window.innerWidth - 72);
+  // The whole width of a phone, up to a comfortable size on a big screen.
+  const size = Math.min(600, window.innerWidth - 48, window.innerHeight - 260);
   let focus = null;
   const paint = () => {
     d.innerHTML = String(html`<div class="stroke-viewer-body">
