@@ -24,13 +24,12 @@ const partName = (c) => (PARTS && PARTS.names[c]) || '';
 
 // ---------- Preferences ----------
 
-/** Stroke numbers, and parts in colour, on or off. Kept in the app's settings. */
-export const prefs = { numbers: true, parts: true };
+/** Stroke numbers on or off. Kept in the app's settings. */
+export const prefs = { numbers: true };
 let saveSetting = null;
 
 export function initStrokePrefs(store) {
   prefs.numbers = store.loadSetting('stroke_numbers') !== '0';
-  prefs.parts = store.loadSetting('stroke_parts') !== '0';
   saveSetting = (key, value) => store.saveSetting(key, value);
 }
 
@@ -39,10 +38,6 @@ function setNumbers(on) {
   if (saveSetting) saveSetting('stroke_numbers', on ? '1' : '0');
 }
 
-function setPartsColour(on) {
-  prefs.parts = on;
-  if (saveSetting) saveSetting('stroke_parts', on ? '1' : '0');
-}
 
 /** For each stroke, the index of the part it belongs to (or -1). */
 function partOfStroke(ch) {
@@ -89,8 +84,7 @@ export function strokeDiagram(ch, size = 120, { upTo = null, numbered = true, vi
   const partClass = (i) => {
     const p = owner[i] ?? -1;
     if (focus != null) return p === focus ? ` part-${focus % 4}` : ' faded';
-    // Always in colour outside the larger view, which has its own Parts switch.
-    return (viewer ? prefs.parts : true) && p >= 0 ? ` part-${p % 4}` : '';
+    return p >= 0 ? ` part-${p % 4}` : '';
   };
   const shown = upTo ?? strokes.length;
   const unit = BOX / size; // viewBox units per pixel
@@ -252,7 +246,7 @@ export function openStrokeViewer(ch, onChange) {
     d.innerHTML = String(html`<div class="stroke-viewer-body">
       <div class="row"><div class="h2 grow" lang="ja">${ch}</div>
         <button class="icon-btn" type="button" data-close aria-label="Close" title="Close">${icon('cross')}</button></div>
-      <div class="stroke-viewer-art">${strokeDiagram(ch, size, { viewer: true, focus: prefs.parts && step == null ? focus : null, upTo: step, stepping: step != null })}</div>
+      <div class="stroke-viewer-art">${strokeDiagram(ch, size, { viewer: true, focus: step == null ? focus : null, upTo: step, stepping: step != null })}</div>
       <div class="small stroke-count">${step == null ? `${total} strokes` : `Stroke ${step} of ${total}`}</div>
       <div class="stroke-controls viewer-controls">
         <span class="control-group">
@@ -262,10 +256,9 @@ export function openStrokeViewer(ch, onChange) {
         </span>
         <span class="control-group settings">
         <button class="chip ${prefs.numbers ? 'on' : ''}" type="button" data-numbers aria-pressed="${prefs.numbers}" title="Show stroke numbers">Numbers</button>
-        ${partsOf(ch).some((p) => p.c) ? html`<button class="chip ${prefs.parts ? 'on' : ''}" type="button" data-parts aria-pressed="${prefs.parts}" title="Colour the parts the kanji is made of">Parts</button>` : ''}
         </span>
       </div>
-      ${prefs.parts ? partChips(ch, focus, (i) => raw(`data-part="${i}"`)) : ''}
+      ${partChips(ch, focus, (i) => raw(`data-part="${i}"`))}
     </div>`);
   };
   paint();
@@ -289,9 +282,8 @@ export function openStrokeViewer(ch, onChange) {
       const i = Number(el.getAttribute('data-part'));
       focus = focus === i ? null : i;
       paint();
-    } else if (el.hasAttribute('data-numbers') || el.hasAttribute('data-parts')) {
-      if (el.hasAttribute('data-numbers')) setNumbers(!prefs.numbers);
-      else setPartsColour(!prefs.parts);
+    } else if (el.hasAttribute('data-numbers')) {
+      setNumbers(!prefs.numbers);
       paint();
       if (onChange) onChange();
     }

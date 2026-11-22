@@ -900,6 +900,7 @@ def kanji_stroke_diagrams(c):
     c.js(f"{viewer}.querySelectorAll('.part-chip')[2].click()")
     c.sleep(0.2)
     check(c.js(f"{viewer}.querySelectorAll('path.ink.faded').length") == 7, 'picking 灬 should fade the other strokes')
+    check(not c.js(f"[...{viewer}.querySelectorAll('.chip')].some((b) => b.textContent.trim() === 'Parts')"), 'the larger view has no Parts switch either')
     c.js(f"{viewer}.querySelectorAll('.part-chip')[2].click()")
     c.sleep(0.2)
     # Stroke by stroke, at your own pace.
