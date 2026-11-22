@@ -80,11 +80,12 @@ function timings(strokes) {
  * [upTo] is highlighted. With [numbered], each stroke's number shows (if
  * stroke numbers are on). Every diagram can be animated by drawStrokes().
  */
-export function strokeDiagram(ch, size = 120, { upTo = null, numbered = true, viewer = false, focus = null } = {}) {
+export function strokeDiagram(ch, size = 120, { upTo = null, numbered = true, viewer = false, focus = null, stepping = false } = {}) {
   const strokes = strokesOf(ch);
   // Each part in its own colour (when Parts is on); a part picked out from the
-  // list is in colour with the rest faded.
-  const owner = upTo == null ? partOfStroke(ch) : [];
+  // list is in colour with the rest faded. Stepping through the larger view
+  // keeps the colours; the small step-by-step strip doesn't.
+  const owner = upTo == null || stepping ? partOfStroke(ch) : [];
   const partClass = (i) => {
     const p = owner[i] ?? -1;
     if (focus != null) return p === focus ? ` part-${focus % 4}` : ' faded';
@@ -106,9 +107,18 @@ export function strokeDiagram(ch, size = 120, { upTo = null, numbered = true, vi
     // The pen, seen only while the stroke is being drawn.
     if (upTo == null) parts.push(`<circle class="pen" cx="${pts[0]}" cy="${pts[1]}" r="${Math.max(2.6 * unit, BOX * 0.035).toFixed(2)}" style="${t}"/>`);
   }
-  if (numbered && prefs.numbers && upTo == null) {
+  // Stepping: the strokes still to come, faintly, so you can see where it's going.
+  if (stepping) {
+    for (let i = shown; i < strokes.length; i++) {
+      const pts = strokes[i];
+      let d = '';
+      for (let j = 0; j + 1 < pts.length; j += 2) d += `${j ? 'L' : 'M'}${pts[j]},${pts[j + 1]}`;
+      parts.push(`<path class="ink ghost" d="${d}" stroke-width="${Math.max(2 * unit, BOX * 0.045).toFixed(2)}"/>`);
+    }
+  }
+  if (numbered && prefs.numbers && (upTo == null || stepping)) {
     const font = Math.max(9 * unit, BOX * 0.085);
-    strokes.forEach((pts, i) => {
+    strokes.slice(0, shown).forEach((pts, i) => {
       const label = String(i + 1);
       const w = font * 0.6 * label.length;
       const x = Math.min(Math.max(pts[0] - 2 * unit, w), BOX);
@@ -131,7 +141,7 @@ export function strokeDiagram(ch, size = 120, { upTo = null, numbered = true, vi
  * data-viewer does, through one listener, so diagrams in quiz answers can too.
  */
 export function tappableDiagram(ch, size, focus = null) {
-  return html`<button class="stroke-open" type="button" data-viewer="${ch}" title="Show larger" aria-label="Show ${ch} larger">${strokeDiagram(ch, size, { focus })}<span class="stroke-expand" aria-hidden="true">${raw(EXPAND_ICON)}</span></button>`;
+  return html`<button class="stroke-open" type="button" data-viewer="${ch}" title="Show larger" aria-label="Show ${ch} larger">${strokeDiagram(ch, size, { focus })}<span class="stroke-caption" aria-hidden="true">${raw(EXPAND_ICON)} Enlarge</span></button>`;
 }
 
 /** Two arrows pointing out to the corners: "show larger". */
@@ -235,13 +245,21 @@ export function openStrokeViewer(ch, onChange) {
   // The whole width of a phone, up to a comfortable size on a big screen.
   const size = Math.min(600, window.innerWidth - 48, window.innerHeight - 260);
   let focus = null;
+  // The stroke being stepped to, or null for the whole kanji.
+  let step = null;
+  const total = strokesOf(ch).length;
   const paint = () => {
     d.innerHTML = String(html`<div class="stroke-viewer-body">
       <div class="row"><div class="h2 grow" lang="ja">${ch}</div>
         <button class="icon-btn" type="button" data-close aria-label="Close" title="Close">${icon('cross')}</button></div>
-      <div class="stroke-viewer-art">${strokeDiagram(ch, size, { viewer: true, focus: prefs.parts ? focus : null })}</div>
+      <div class="stroke-viewer-art">${strokeDiagram(ch, size, { viewer: true, focus: prefs.parts && step == null ? focus : null, upTo: step, stepping: step != null })}</div>
       <div class="stroke-controls">
         <button class="chip" type="button" data-play>${icon('play')} Play</button>
+        <button class="chip" type="button" data-prev ${step === 1 ? 'disabled' : ''} title="Previous stroke">${icon('back')} Previous</button>
+        <button class="chip" type="button" data-next title="Next stroke">Next ${icon('chevron')}</button>
+        <span class="small stroke-count">${step == null ? `${total} strokes` : `Stroke ${step} of ${total}`}</span>
+      </div>
+      <div class="stroke-controls">
         <button class="chip ${prefs.numbers ? 'on' : ''}" type="button" data-numbers aria-pressed="${prefs.numbers}" title="Show stroke numbers">Numbers</button>
         ${partsOf(ch).some((p) => p.c) ? html`<button class="chip ${prefs.parts ? 'on' : ''}" type="button" data-parts aria-pressed="${prefs.parts}" title="Colour the parts the kanji is made of">Parts</button>` : ''}
       </div>
@@ -253,8 +271,17 @@ export function openStrokeViewer(ch, onChange) {
     const el = ev.target.closest('button');
     if (ev.target === d || (el && el.hasAttribute('data-close'))) { d.close(); return; }
     if (!el) return;
-    if (el.hasAttribute('data-play')) drawStrokes(d.querySelector('svg.stroke'));
-    else if (el.hasAttribute('data-part')) {
+    if (el.hasAttribute('data-play')) {
+      if (step != null) { step = null; paint(); }
+      drawStrokes(d.querySelector('svg.stroke'));
+    } else if (el.hasAttribute('data-next')) {
+      // From the whole kanji, start at the first stroke; after the last, show it whole again.
+      step = step == null ? 1 : step < total ? step + 1 : null;
+      paint();
+    } else if (el.hasAttribute('data-prev')) {
+      step = step == null ? Math.max(1, total - 1) : Math.max(1, step - 1);
+      paint();
+    } else if (el.hasAttribute('data-part')) {
       const i = Number(el.getAttribute('data-part'));
       focus = focus === i ? null : i;
       paint();
