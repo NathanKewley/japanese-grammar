@@ -692,6 +692,19 @@ dialog.modal .actions { display: flex; justify-content: flex-end; gap: 8px; marg
 .stroke .ink.part-2, .part-swatch.part-2 { stroke: var(--part-2); background: var(--part-2); }
 .stroke .ink.part-3, .part-swatch.part-3 { stroke: var(--part-3); background: var(--part-3); }
 .stroke .ink.faded { opacity: .22; }
+.stroke .ink.ghost { stroke: currentColor; opacity: .13; }
+.stroke-count { text-align: center; margin-top: -4px; }
+/* Stepping: Next draws the newest stroke in, with its pen. */
+.stroke.step-in .ink.current { stroke-dasharray: 1; stroke-dashoffset: 1; animation: stroke-draw var(--dur) linear forwards; }
+.stroke.step-in .pen { animation: stroke-pen var(--dur) linear forwards; }
+/* The larger view's controls: the stroke buttons, a divider, then the settings.
+   On a narrow phone the settings wrap below as a pair. */
+.viewer-controls { justify-content: center; align-items: center; }
+.control-group { display: inline-flex; flex-wrap: nowrap; gap: 6px; }
+.control-group.settings { border-left: 1px solid var(--rule-strong); padding-left: 8px; }
+/* Too narrow for one line: the line break separates them instead. */
+@media (max-width: 520px) { .control-group.settings { border-left: 0; padding-left: 0; } }
+.stroke-controls .chip:disabled { opacity: .45; cursor: default; }
 .part-chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .part-chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px 4px 8px; border-radius: 999px; border: 1px solid var(--rule-strong); background: var(--surface); color: var(--ink); font: inherit; font-size: .85rem; cursor: pointer; }
 .part-chip.on { border-color: var(--accent); background: var(--accent-soft); }
@@ -711,23 +724,11 @@ dialog.modal .actions { display: flex; justify-content: flex-end; gap: 8px; marg
 /* A lesson's diagram, its controls, and the larger view it opens. */
 .stroke-main { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
 .stroke-open { position: relative; padding: 0; border: 0; background: none; cursor: zoom-in; color: inherit; line-height: 0; border-radius: 6px; }
-/* The corner badge that says a diagram opens larger. */
-.stroke-expand {
-  position: absolute;
-  right: 3px;
-  bottom: 3px;
-  width: 22px;
-  height: 22px;
-  border-radius: 6px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--surface-2);
-  border: 1px solid var(--rule-strong);
-  color: var(--accent);
-}
-.stroke-expand svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
-.stroke-open:hover .stroke-expand { background: var(--accent-soft); border-color: var(--accent); }
+/* "Enlarge" under a diagram: below it, so it never covers a stroke. */
+.stroke-open { display: inline-flex; flex-direction: column; align-items: center; gap: 3px; }
+.stroke-caption { display: inline-flex; align-items: center; gap: 4px; font-size: .72rem; font-weight: 600; line-height: 1.2; color: var(--accent); }
+.stroke-caption svg { width: 11px; height: 11px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.stroke-open:hover .stroke-caption { text-decoration: underline; }
 .stroke-open:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .stroke-controls { display: flex; flex-wrap: wrap; gap: 6px; }
 .stroke-controls .chip svg { width: 14px; height: 14px; }

@@ -24,13 +24,12 @@ const partName = (c) => (PARTS && PARTS.names[c]) || '';
 
 // ---------- Preferences ----------
 
-/** Stroke numbers, and parts in colour, on or off. Kept in the app's settings. */
-export const prefs = { numbers: true, parts: true };
+/** Stroke numbers on or off. Kept in the app's settings. */
+export const prefs = { numbers: true };
 let saveSetting = null;
 
 export function initStrokePrefs(store) {
   prefs.numbers = store.loadSetting('stroke_numbers') !== '0';
-  prefs.parts = store.loadSetting('stroke_parts') !== '0';
   saveSetting = (key, value) => store.saveSetting(key, value);
 }
 
@@ -39,10 +38,6 @@ function setNumbers(on) {
   if (saveSetting) saveSetting('stroke_numbers', on ? '1' : '0');
 }
 
-function setPartsColour(on) {
-  prefs.parts = on;
-  if (saveSetting) saveSetting('stroke_parts', on ? '1' : '0');
-}
 
 /** For each stroke, the index of the part it belongs to (or -1). */
 function partOfStroke(ch) {
@@ -80,15 +75,16 @@ function timings(strokes) {
  * [upTo] is highlighted. With [numbered], each stroke's number shows (if
  * stroke numbers are on). Every diagram can be animated by drawStrokes().
  */
-export function strokeDiagram(ch, size = 120, { upTo = null, numbered = true, viewer = false, focus = null } = {}) {
+export function strokeDiagram(ch, size = 120, { upTo = null, numbered = true, viewer = false, focus = null, stepping = false } = {}) {
   const strokes = strokesOf(ch);
   // Each part in its own colour (when Parts is on); a part picked out from the
-  // list is in colour with the rest faded.
-  const owner = upTo == null ? partOfStroke(ch) : [];
+  // list is in colour with the rest faded. Stepping through the larger view
+  // keeps the colours; the small step-by-step strip doesn't.
+  const owner = upTo == null || stepping ? partOfStroke(ch) : [];
   const partClass = (i) => {
     const p = owner[i] ?? -1;
     if (focus != null) return p === focus ? ` part-${focus % 4}` : ' faded';
-    return prefs.parts && p >= 0 ? ` part-${p % 4}` : '';
+    return p >= 0 ? ` part-${p % 4}` : '';
   };
   const shown = upTo ?? strokes.length;
   const unit = BOX / size; // viewBox units per pixel
@@ -103,12 +99,21 @@ export function strokeDiagram(ch, size = 120, { upTo = null, numbered = true, vi
     const t = `--delay:${times[i].delay}ms;--dur:${times[i].dur}ms`;
     parts.push(`<path class="ink${current ? ' current' : partClass(i)}" d="${d}" pathLength="1" stroke-width="${width.toFixed(2)}" style="${t}"/>`);
     if (current) parts.push(`<circle class="dot" cx="${pts[0]}" cy="${pts[1]}" r="${Math.max(2.5 * unit, BOX * 0.04).toFixed(2)}"/>`);
-    // The pen, seen only while the stroke is being drawn.
-    if (upTo == null) parts.push(`<circle class="pen" cx="${pts[0]}" cy="${pts[1]}" r="${Math.max(2.6 * unit, BOX * 0.035).toFixed(2)}" style="${t}"/>`);
+    // The pen, seen only while the stroke is being drawn (when stepping, the newest stroke's).
+    if (upTo == null || (stepping && current)) parts.push(`<circle class="pen" cx="${pts[0]}" cy="${pts[1]}" r="${Math.max(2.6 * unit, BOX * 0.035).toFixed(2)}" style="${t}"/>`);
   }
-  if (numbered && prefs.numbers && upTo == null) {
+  // Stepping: the strokes still to come, faintly, so you can see where it's going.
+  if (stepping) {
+    for (let i = shown; i < strokes.length; i++) {
+      const pts = strokes[i];
+      let d = '';
+      for (let j = 0; j + 1 < pts.length; j += 2) d += `${j ? 'L' : 'M'}${pts[j]},${pts[j + 1]}`;
+      parts.push(`<path class="ink ghost" d="${d}" stroke-width="${Math.max(2 * unit, BOX * 0.045).toFixed(2)}"/>`);
+    }
+  }
+  if (numbered && prefs.numbers && (upTo == null || stepping)) {
     const font = Math.max(9 * unit, BOX * 0.085);
-    strokes.forEach((pts, i) => {
+    strokes.slice(0, shown).forEach((pts, i) => {
       const label = String(i + 1);
       const w = font * 0.6 * label.length;
       const x = Math.min(Math.max(pts[0] - 2 * unit, w), BOX);
@@ -131,7 +136,7 @@ export function strokeDiagram(ch, size = 120, { upTo = null, numbered = true, vi
  * data-viewer does, through one listener, so diagrams in quiz answers can too.
  */
 export function tappableDiagram(ch, size, focus = null) {
-  return html`<button class="stroke-open" type="button" data-viewer="${ch}" title="Show larger" aria-label="Show ${ch} larger">${strokeDiagram(ch, size, { focus })}<span class="stroke-expand" aria-hidden="true">${raw(EXPAND_ICON)}</span></button>`;
+  return html`<button class="stroke-open" type="button" data-viewer="${ch}" title="Show larger" aria-label="Show ${ch} larger">${strokeDiagram(ch, size, { focus })}<span class="stroke-caption" aria-hidden="true">${raw(EXPAND_ICON)} Click to Enlarge</span></button>`;
 }
 
 /** Two arrows pointing out to the corners: "show larger". */
@@ -204,7 +209,7 @@ export const focusedPart = (ui, ch) => (ui.partFocus && ui.partFocus.has(ch) ? u
 // ---------- Controls ----------
 
 /**
- * Play, Numbers and Parts, for the diagram in the same [scope]
+ * Play and Numbers, for the diagram in the same [scope]
  * (the nearest element matching it). [rerender] redraws after a setting changes.
  */
 export function strokeControls(ui, { scope = '.kanji-card', rerender } = {}) {
@@ -213,7 +218,6 @@ export function strokeControls(ui, { scope = '.kanji-card', rerender } = {}) {
   return html`<div class="stroke-controls">
     <button class="chip" type="button" ${ui.onClick(play)}>${icon('play')} Play</button>
     <button class="chip ${prefs.numbers ? 'on' : ''}" type="button" aria-pressed="${prefs.numbers}" title="Show stroke numbers" ${ui.onClick(() => { setNumbers(!prefs.numbers); redraw(); })}>Numbers</button>
-    <button class="chip ${prefs.parts ? 'on' : ''}" type="button" aria-pressed="${prefs.parts}" title="Colour the parts the kanji is made of" ${ui.onClick(() => { setPartsColour(!prefs.parts); redraw(); })}>Parts</button>
   </div>`;
 }
 
@@ -235,17 +239,26 @@ export function openStrokeViewer(ch, onChange) {
   // The whole width of a phone, up to a comfortable size on a big screen.
   const size = Math.min(600, window.innerWidth - 48, window.innerHeight - 260);
   let focus = null;
+  // The stroke being stepped to, or null for the whole kanji.
+  let step = null;
+  const total = strokesOf(ch).length;
   const paint = () => {
     d.innerHTML = String(html`<div class="stroke-viewer-body">
       <div class="row"><div class="h2 grow" lang="ja">${ch}</div>
         <button class="icon-btn" type="button" data-close aria-label="Close" title="Close">${icon('cross')}</button></div>
-      <div class="stroke-viewer-art">${strokeDiagram(ch, size, { viewer: true, focus: prefs.parts ? focus : null })}</div>
-      <div class="stroke-controls">
-        <button class="chip" type="button" data-play>${icon('play')} Play</button>
+      <div class="stroke-viewer-art">${strokeDiagram(ch, size, { viewer: true, focus: step == null ? focus : null, upTo: step, stepping: step != null })}</div>
+      <div class="small stroke-count">${step == null ? `${total} strokes` : `Stroke ${step} of ${total}`}</div>
+      <div class="stroke-controls viewer-controls">
+        <span class="control-group">
+          <button class="chip" type="button" data-prev ${step === 1 ? 'disabled' : ''}>${icon('back')} Previous Stroke</button>
+          <button class="chip" type="button" data-play>${icon('play')} Play</button>
+          <button class="chip" type="button" data-next>Next Stroke ${icon('chevron')}</button>
+        </span>
+        <span class="control-group settings">
         <button class="chip ${prefs.numbers ? 'on' : ''}" type="button" data-numbers aria-pressed="${prefs.numbers}" title="Show stroke numbers">Numbers</button>
-        ${partsOf(ch).some((p) => p.c) ? html`<button class="chip ${prefs.parts ? 'on' : ''}" type="button" data-parts aria-pressed="${prefs.parts}" title="Colour the parts the kanji is made of">Parts</button>` : ''}
+        </span>
       </div>
-      ${prefs.parts ? partChips(ch, focus, (i) => raw(`data-part="${i}"`)) : ''}
+      ${partChips(ch, focus, (i) => raw(`data-part="${i}"`))}
     </div>`);
   };
   paint();
@@ -253,14 +266,24 @@ export function openStrokeViewer(ch, onChange) {
     const el = ev.target.closest('button');
     if (ev.target === d || (el && el.hasAttribute('data-close'))) { d.close(); return; }
     if (!el) return;
-    if (el.hasAttribute('data-play')) drawStrokes(d.querySelector('svg.stroke'));
-    else if (el.hasAttribute('data-part')) {
+    if (el.hasAttribute('data-play')) {
+      if (step != null) { step = null; paint(); }
+      drawStrokes(d.querySelector('svg.stroke'));
+    } else if (el.hasAttribute('data-next')) {
+      // From the whole kanji, start at the first stroke; after the last, show it whole again.
+      step = step == null ? 1 : step < total ? step + 1 : null;
+      paint();
+      // The new stroke draws itself in.
+      if (step != null) d.querySelector('svg.stroke').classList.add('step-in');
+    } else if (el.hasAttribute('data-prev')) {
+      step = step == null ? Math.max(1, total - 1) : Math.max(1, step - 1);
+      paint();
+    } else if (el.hasAttribute('data-part')) {
       const i = Number(el.getAttribute('data-part'));
       focus = focus === i ? null : i;
       paint();
-    } else if (el.hasAttribute('data-numbers') || el.hasAttribute('data-parts')) {
-      if (el.hasAttribute('data-numbers')) setNumbers(!prefs.numbers);
-      else setPartsColour(!prefs.parts);
+    } else if (el.hasAttribute('data-numbers')) {
+      setNumbers(!prefs.numbers);
       paint();
       if (onChange) onChange();
     }
