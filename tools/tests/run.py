@@ -870,17 +870,13 @@ def kanji_stroke_diagrams(c):
     c.wait_for("document.querySelectorAll('svg.stroke path.ink').length > 0", 15)
     card = "[...document.querySelectorAll('.kanji-card')].find((e) => e.textContent.includes('fish'))"
     check(c.js(f"{card}.querySelectorAll('.stroke-main .lbl').length") == 11, '魚 should show its 11 stroke numbers')
-    check('Enlarge' in c.js(f"{card}.querySelector('.stroke-main .stroke-caption').textContent"), 'the diagram should say it opens larger, under it')
+    check('Click to Enlarge' in c.js(f"{card}.querySelector('.stroke-main .stroke-caption').textContent"), 'the diagram should say it opens larger, under it')
     check(not c.js(f"[...{card}.querySelectorAll('.stroke-controls .chip')].some((b) => b.textContent.includes('Slow'))"), 'no Slow button')
     # Its parts in colour, and its radical; the list of parts waits for the larger view.
     check('Radical 魚 fish (no. 195)' in c.js(f"{card}.innerText"), 'the radical should show')
     check(c.js(f"{card}.querySelectorAll('.stroke-main path.ink.part-2').length") == 4, '灬 should be coloured as its own part')
     check(c.js(f"{card}.querySelectorAll('.part-chip').length") == 0, 'the card should not list the parts')
-    c.js(f"[...{card}.querySelectorAll('.stroke-controls .chip')].find((b) => b.textContent.trim() === 'Parts').click()")
-    c.sleep(0.3)
-    check(c.js(f"{card}.querySelectorAll('.stroke-main path.ink[class*=part-]').length") == 0, 'Parts off should draw the kanji in one colour')
-    c.js(f"[...{card}.querySelectorAll('.stroke-controls .chip')].find((b) => b.textContent.trim() === 'Parts').click()")
-    c.sleep(0.3)
+    check(not c.js(f"[...{card}.querySelectorAll('.stroke-controls .chip')].some((b) => b.textContent.trim() === 'Parts')"), 'the card has no Parts switch: its parts are always in colour')
     # Play draws it stroke by stroke.
     c.js(f"[...{card}.querySelectorAll('.stroke-controls .chip')].find((b) => b.textContent.includes('Play')).click()")
     check(c.js(f"{card}.querySelector('.stroke-main svg.stroke').classList.contains('drawing')"), 'Play should start the drawing')
@@ -911,6 +907,7 @@ def kanji_stroke_diagrams(c):
     c.js(f"{viewer}.querySelector('[data-next]').click()")
     c.sleep(0.2)
     check('Stroke 2 of 11' in c.js(f"{viewer}.innerText"), 'Next should step through the strokes')
+    check(c.js(f"{viewer}.querySelector('svg.stroke').classList.contains('step-in')"), 'Next should draw the new stroke in')
     check(c.js(f"{viewer}.querySelectorAll('path.ink:not(.ghost)').length") == 2 and c.js(f"{viewer}.querySelectorAll('path.ink.ghost').length") == 9, 'two strokes drawn, the rest faint')
     c.js(f"{viewer}.querySelector('[data-prev]').click()")
     c.sleep(0.2)

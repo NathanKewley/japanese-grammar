@@ -693,7 +693,17 @@ dialog.modal .actions { display: flex; justify-content: flex-end; gap: 8px; marg
 .stroke .ink.part-3, .part-swatch.part-3 { stroke: var(--part-3); background: var(--part-3); }
 .stroke .ink.faded { opacity: .22; }
 .stroke .ink.ghost { stroke: currentColor; opacity: .13; }
-.stroke-count { margin-left: auto; align-self: center; }
+.stroke-count { text-align: center; margin-top: -4px; }
+/* Stepping: Next draws the newest stroke in, with its pen. */
+.stroke.step-in .ink.current { stroke-dasharray: 1; stroke-dashoffset: 1; animation: stroke-draw var(--dur) linear forwards; }
+.stroke.step-in .pen { animation: stroke-pen var(--dur) linear forwards; }
+/* The larger view's controls: the stroke buttons, a divider, then the settings.
+   On a narrow phone the settings wrap below as a pair. */
+.viewer-controls { justify-content: center; align-items: center; }
+.control-group { display: inline-flex; flex-wrap: nowrap; gap: 6px; }
+.control-group.settings { border-left: 1px solid var(--rule-strong); padding-left: 8px; }
+/* Too narrow for one line: the line break separates them instead. */
+@media (max-width: 520px) { .control-group.settings { border-left: 0; padding-left: 0; } }
 .stroke-controls .chip:disabled { opacity: .45; cursor: default; }
 .part-chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .part-chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px 4px 8px; border-radius: 999px; border: 1px solid var(--rule-strong); background: var(--surface); color: var(--ink); font: inherit; font-size: .85rem; cursor: pointer; }

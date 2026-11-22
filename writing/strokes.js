@@ -89,7 +89,8 @@ export function strokeDiagram(ch, size = 120, { upTo = null, numbered = true, vi
   const partClass = (i) => {
     const p = owner[i] ?? -1;
     if (focus != null) return p === focus ? ` part-${focus % 4}` : ' faded';
-    return prefs.parts && p >= 0 ? ` part-${p % 4}` : '';
+    // Always in colour outside the larger view, which has its own Parts switch.
+    return (viewer ? prefs.parts : true) && p >= 0 ? ` part-${p % 4}` : '';
   };
   const shown = upTo ?? strokes.length;
   const unit = BOX / size; // viewBox units per pixel
@@ -104,8 +105,8 @@ export function strokeDiagram(ch, size = 120, { upTo = null, numbered = true, vi
     const t = `--delay:${times[i].delay}ms;--dur:${times[i].dur}ms`;
     parts.push(`<path class="ink${current ? ' current' : partClass(i)}" d="${d}" pathLength="1" stroke-width="${width.toFixed(2)}" style="${t}"/>`);
     if (current) parts.push(`<circle class="dot" cx="${pts[0]}" cy="${pts[1]}" r="${Math.max(2.5 * unit, BOX * 0.04).toFixed(2)}"/>`);
-    // The pen, seen only while the stroke is being drawn.
-    if (upTo == null) parts.push(`<circle class="pen" cx="${pts[0]}" cy="${pts[1]}" r="${Math.max(2.6 * unit, BOX * 0.035).toFixed(2)}" style="${t}"/>`);
+    // The pen, seen only while the stroke is being drawn (when stepping, the newest stroke's).
+    if (upTo == null || (stepping && current)) parts.push(`<circle class="pen" cx="${pts[0]}" cy="${pts[1]}" r="${Math.max(2.6 * unit, BOX * 0.035).toFixed(2)}" style="${t}"/>`);
   }
   // Stepping: the strokes still to come, faintly, so you can see where it's going.
   if (stepping) {
@@ -141,7 +142,7 @@ export function strokeDiagram(ch, size = 120, { upTo = null, numbered = true, vi
  * data-viewer does, through one listener, so diagrams in quiz answers can too.
  */
 export function tappableDiagram(ch, size, focus = null) {
-  return html`<button class="stroke-open" type="button" data-viewer="${ch}" title="Show larger" aria-label="Show ${ch} larger">${strokeDiagram(ch, size, { focus })}<span class="stroke-caption" aria-hidden="true">${raw(EXPAND_ICON)} Enlarge</span></button>`;
+  return html`<button class="stroke-open" type="button" data-viewer="${ch}" title="Show larger" aria-label="Show ${ch} larger">${strokeDiagram(ch, size, { focus })}<span class="stroke-caption" aria-hidden="true">${raw(EXPAND_ICON)} Click to Enlarge</span></button>`;
 }
 
 /** Two arrows pointing out to the corners: "show larger". */
@@ -214,7 +215,7 @@ export const focusedPart = (ui, ch) => (ui.partFocus && ui.partFocus.has(ch) ? u
 // ---------- Controls ----------
 
 /**
- * Play, Numbers and Parts, for the diagram in the same [scope]
+ * Play and Numbers, for the diagram in the same [scope]
  * (the nearest element matching it). [rerender] redraws after a setting changes.
  */
 export function strokeControls(ui, { scope = '.kanji-card', rerender } = {}) {
@@ -223,7 +224,6 @@ export function strokeControls(ui, { scope = '.kanji-card', rerender } = {}) {
   return html`<div class="stroke-controls">
     <button class="chip" type="button" ${ui.onClick(play)}>${icon('play')} Play</button>
     <button class="chip ${prefs.numbers ? 'on' : ''}" type="button" aria-pressed="${prefs.numbers}" title="Show stroke numbers" ${ui.onClick(() => { setNumbers(!prefs.numbers); redraw(); })}>Numbers</button>
-    <button class="chip ${prefs.parts ? 'on' : ''}" type="button" aria-pressed="${prefs.parts}" title="Colour the parts the kanji is made of" ${ui.onClick(() => { setPartsColour(!prefs.parts); redraw(); })}>Parts</button>
   </div>`;
 }
 
@@ -253,15 +253,17 @@ export function openStrokeViewer(ch, onChange) {
       <div class="row"><div class="h2 grow" lang="ja">${ch}</div>
         <button class="icon-btn" type="button" data-close aria-label="Close" title="Close">${icon('cross')}</button></div>
       <div class="stroke-viewer-art">${strokeDiagram(ch, size, { viewer: true, focus: prefs.parts && step == null ? focus : null, upTo: step, stepping: step != null })}</div>
-      <div class="stroke-controls">
-        <button class="chip" type="button" data-play>${icon('play')} Play</button>
-        <button class="chip" type="button" data-prev ${step === 1 ? 'disabled' : ''} title="Previous stroke">${icon('back')} Previous</button>
-        <button class="chip" type="button" data-next title="Next stroke">Next ${icon('chevron')}</button>
-        <span class="small stroke-count">${step == null ? `${total} strokes` : `Stroke ${step} of ${total}`}</span>
-      </div>
-      <div class="stroke-controls">
+      <div class="small stroke-count">${step == null ? `${total} strokes` : `Stroke ${step} of ${total}`}</div>
+      <div class="stroke-controls viewer-controls">
+        <span class="control-group">
+          <button class="chip" type="button" data-prev ${step === 1 ? 'disabled' : ''}>${icon('back')} Previous Stroke</button>
+          <button class="chip" type="button" data-play>${icon('play')} Play</button>
+          <button class="chip" type="button" data-next>Next Stroke ${icon('chevron')}</button>
+        </span>
+        <span class="control-group settings">
         <button class="chip ${prefs.numbers ? 'on' : ''}" type="button" data-numbers aria-pressed="${prefs.numbers}" title="Show stroke numbers">Numbers</button>
         ${partsOf(ch).some((p) => p.c) ? html`<button class="chip ${prefs.parts ? 'on' : ''}" type="button" data-parts aria-pressed="${prefs.parts}" title="Colour the parts the kanji is made of">Parts</button>` : ''}
+        </span>
       </div>
       ${prefs.parts ? partChips(ch, focus, (i) => raw(`data-part="${i}"`)) : ''}
     </div>`);
@@ -278,6 +280,8 @@ export function openStrokeViewer(ch, onChange) {
       // From the whole kanji, start at the first stroke; after the last, show it whole again.
       step = step == null ? 1 : step < total ? step + 1 : null;
       paint();
+      // The new stroke draws itself in.
+      if (step != null) d.querySelector('svg.stroke').classList.add('step-in');
     } else if (el.hasAttribute('data-prev')) {
       step = step == null ? Math.max(1, total - 1) : Math.max(1, step - 1);
       paint();
