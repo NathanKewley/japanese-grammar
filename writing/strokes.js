@@ -223,7 +223,7 @@ export function strokeControls(ui, { scope = '.kanji-card', rerender } = {}) {
 
 /** Just the numbers switch, for a set of kana. */
 export function numbersToggle(ui) {
-  return html`<button class="chip ${prefs.numbers ? 'on' : ''}" type="button" aria-pressed="${prefs.numbers}" title="Show stroke numbers" ${ui.onClick(() => { setNumbers(!prefs.numbers); ui.render(); })}>Numbers</button>`;
+  return html`<button class="chip touch ${prefs.numbers ? 'on' : ''}" type="button" aria-pressed="${prefs.numbers}" title="Show stroke numbers" ${ui.onClick(() => { setNumbers(!prefs.numbers); ui.render(); })}>Numbers</button>`;
 }
 
 // ---------- Larger view ----------
